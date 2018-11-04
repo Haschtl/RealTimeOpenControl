@@ -74,7 +74,7 @@ class RTLogger(ScriptFunctions):
         if value:
             self.tcpRunning = True
             print("TCPServer gestartet")
-            self.tcp = jsonsocket.Server("localhost",self.config["tcpPort"])
+            self.tcp = jsonsocket.Server("0.0.0.0",self.config["tcpPort"])
             self.__tcpserver = Thread(target=self.tcpListener)
             self.__tcpserver.start()
         else:
@@ -83,7 +83,7 @@ class RTLogger(ScriptFunctions):
             if self.tcp:
                 self.tcp.close()
 
-    def sendTCP(self, hostname="localhost", *args, **kwargs):
+    def sendTCP(self, hostname="0.0.0.0", *args, **kwargs):
         self.tcpclient.createTCPClient(hostname)
         self.tcpclient.sendTCP(*args, **kwargs)
 
