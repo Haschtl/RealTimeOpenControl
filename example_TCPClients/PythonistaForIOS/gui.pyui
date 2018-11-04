@@ -1,0 +1,141 @@
+[
+  {
+    "nodes" : [
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{0, 0}, {320, 543}}",
+        "class" : "View",
+        "attributes" : {
+          "frame" : "{{110, 190}, {100, 100}}",
+          "background_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+          "class" : "View",
+          "name" : "view1",
+          "uuid" : "8CBFC217-ACB7-496A-B2A0-8091900867C6"
+        },
+        "selected" : true
+      },
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{0, 6}, {320, 32}}",
+        "class" : "Label",
+        "attributes" : {
+          "flex" : "W",
+          "name" : "label1",
+          "text_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
+          "frame" : "{{45, 104}, {150, 32}}",
+          "uuid" : "CBD56E84-A1B8-402F-9135-39B9CA97C198",
+          "class" : "Label",
+          "alignment" : "center",
+          "text" : "RTOC",
+          "background_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+          "font_size" : 18,
+          "font_name" : "<System>"
+        },
+        "selected" : false
+      },
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{0, 46}, {320, 32}}",
+        "class" : "TextField",
+        "attributes" : {
+          "flex" : "W",
+          "font_size" : 17,
+          "frame" : "{{20, 104}, {200, 32}}",
+          "spellchecking_type" : "default",
+          "class" : "TextField",
+          "uuid" : "9EEFF029-8CE0-4162-9846-236564C00733",
+          "alignment" : "center",
+          "text" : "192.168.178.103",
+          "autocorrection_type" : "default",
+          "name" : "textfield1",
+          "font_name" : "<System>"
+        },
+        "selected" : false
+      },
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{142, 170}, {51, 31}}",
+        "class" : "Switch",
+        "attributes" : {
+          "action" : "switchOn",
+          "flex" : "WLR",
+          "frame" : "{{95, 105}, {51, 31}}",
+          "class" : "Switch",
+          "uuid" : "4F65BADB-32CB-4E93-BE27-33AB5F7BFE94",
+          "value" : false,
+          "background_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+          "name" : "switch1"
+        },
+        "selected" : false
+      },
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{149, 113}, {178, 32}}",
+        "class" : "TextField",
+        "attributes" : {
+          "uuid" : "DB69FA66-8C6F-4DC2-A197-5BEC99C59987",
+          "font_size" : 17,
+          "background_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+          "frame" : "{{60, 224}, {200, 32}}",
+          "tint_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+          "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+          "action" : "changeSamplerate",
+          "alignment" : "left",
+          "autocorrection_type" : "default",
+          "text" : "1",
+          "text_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+          "font_name" : "<System>",
+          "spellchecking_type" : "default",
+          "class" : "TextField",
+          "name" : "textfield2",
+          "flex" : "WL"
+        },
+        "selected" : false
+      },
+      {
+        "nodes" : [
+
+        ],
+        "frame" : "{{0, 113}, {141, 32}}",
+        "class" : "Label",
+        "attributes" : {
+          "uuid" : "7875D4B4-6351-4700-A301-EDCAF9662C0E",
+          "font_size" : 18,
+          "background_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+          "frame" : "{{85, 224}, {150, 32}}",
+          "tint_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
+          "alignment" : "left",
+          "alpha" : 1,
+          "text" : "Samplerate",
+          "text_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
+          "font_name" : "<System>",
+          "class" : "Label",
+          "name" : "label2",
+          "flex" : "WR"
+        },
+        "selected" : false
+      }
+    ],
+    "frame" : "{{0, 0}, {320, 480}}",
+    "class" : "View",
+    "attributes" : {
+      "border_color" : "RGBA(0.000000,0.000000,0.000000,1.000000)",
+      "enabled" : true,
+      "background_color" : "RGBA(1.000000,1.000000,1.000000,1.000000)",
+      "name" : "RTOC",
+      "tint_color" : "RGBA(0.000000,0.478000,1.000000,1.000000)",
+      "flex" : ""
+    },
+    "selected" : false
+  }
+]

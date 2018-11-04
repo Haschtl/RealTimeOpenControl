@@ -1,9 +1,6 @@
 # RealTime OpenControl (RTOC)
 ### Version: 1.6
 
-### This README and the Wiki is written in german, english version following soon
-### RealTime OpenControl is available in german AND english, with (bad?) english as default
-
 ![Übersicht](screenshots/overview.png)
 
 RTOC starten:
@@ -47,7 +44,7 @@ Die Oberfläche hat erweiterte Darstellungsoptionen und verschiedene Messtools f
 - Im Hintergrund laufen
 - Daten importieren und exportieren
 
-## [Alles weitere steht im Wiki](https://github.com/Haschtl/RealTimeOpenControl/wiki)
+## [Alles weitere steht im Wiki](https://git.kellerbase.de/haschtl/kellerlogger/wikis/RealTime-OpenControl-(RTOC))
 ### Screenshots - siehe unten
 
 ## Python3 Paket-Abhängigkeiten
@@ -70,6 +67,9 @@ Optional für Plugins:
 - [VC820Py von adnidor (für das HoldPeak_VC820 Plugin)](https://github.com/adnidor/vc820py)
 
 Alle Icons, die in dieser Software (inklusive Plugins) benutzt werden, werden freundlicherweise zur Verfügung gestellt von [Icons8](www.icons8.com)
+
+## Beispiel TCP Client für Pythonista (iOS)
+![Pythonista TCP Client](example_TCPClients/PythonistaForIOS/screenshot.PNG)
 
 ## MultiWindow
 ![multiWindow](screenshots/multiWindow.png)
