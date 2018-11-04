@@ -1,0 +1,32 @@
+{
+    "language": "en",
+    "lastSessions": [],
+    "darkmode": true,
+    "scriptWidget": true,
+    "deviceWidget": true,
+    "signalsWidget": true,
+    "pluginsWidget": false,
+    "eventWidget": true,
+    "newSignalSymbols": true,
+    "plotLabelsEnabled": true,
+    "plotGridEnabled": true,
+    "grid": [
+        true,
+        true,
+        1.0
+    ],
+    "plotLegendEnabled": true,
+    "blinkingIdentifier": true,
+    "signalStyles": [],
+    "defaultRecordLength": 5000,
+    "plotRate": 8,
+    "plotInverted": false,
+    "xTimeBase": true,
+    "timeAxis": true,
+    "systemTray": true,
+    "tcpserver": true,
+    "defaultScriptSampleTime": 10,
+    "lastScript": "",
+    "signalInactivityTimeout": 2,
+    "tcpPort": 5050
+}

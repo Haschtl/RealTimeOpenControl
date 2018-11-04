@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>200</width>
+    <height>138</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QPushButton" name="crosshairButton">
+     <property name="toolTip">
+      <string>Zeige Crosshair</string>
+     </property>
+     <property name="statusTip">
+      <string>Zeige Crosshair</string>
+     </property>
+     <property name="text">
+      <string>Fadenkreuz</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icons/crosshair.png</normaloff>icons/crosshair.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>25</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="measureButton">
+     <property name="toolTip">
+      <string>Öffne Mess-Rechteck in Plot</string>
+     </property>
+     <property name="statusTip">
+      <string>Öffne Mess-Rechteck in Plot</string>
+     </property>
+     <property name="text">
+      <string>Rechteck-Messwerkzeug</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icons/measure.png</normaloff>icons/measure.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>25</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item>
+    <widget class="QPushButton" name="cutButton">
+     <property name="toolTip">
+      <string>Zeige Crosshair</string>
+     </property>
+     <property name="statusTip">
+      <string>Zeige Crosshair</string>
+     </property>
+     <property name="text">
+      <string>Schneide-Werkzeug</string>
+     </property>
+     <property name="icon">
+      <iconset>
+       <normaloff>icons/cut.png</normaloff>icons/cut.png</iconset>
+     </property>
+     <property name="iconSize">
+      <size>
+       <width>25</width>
+       <height>25</height>
+      </size>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
