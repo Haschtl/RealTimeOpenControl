@@ -1,6 +1,9 @@
 # RealTime OpenControl (RTOC)
 ### Version: 1.6
 
+### This README and the Wiki is written in german, english version following soon
+### RealTime OpenControl is available in german AND english, with (bad?) english as default
+
 ![Übersicht](screenshots/overview.png)
 
 RTOC starten:
