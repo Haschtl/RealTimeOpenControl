@@ -47,7 +47,7 @@ Die Oberfläche hat erweiterte Darstellungsoptionen und verschiedene Messtools f
 - Im Hintergrund laufen
 - Daten importieren und exportieren
 
-## [Alles weitere steht im Wiki](https://git.kellerbase.de/haschtl/kellerlogger/wikis/RealTime-OpenControl-(RTOC))
+## [Alles weitere steht im Wiki](https://github.com/Haschtl/RealTimeOpenControl/wiki)
 ### Screenshots - siehe unten
 
 ## Python3 Paket-Abhängigkeiten
