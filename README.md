@@ -1,6 +1,9 @@
 # RealTime OpenControl (RTOC)
 ### Version: 1.6
 
+### This README and the Wiki is written in german, english version following soon
+### RealTime OpenControl is available in german AND english, with (bad?) english as default
+
 ![Übersicht](screenshots/overview.png)
 
 RTOC starten:
@@ -44,7 +47,7 @@ Die Oberfläche hat erweiterte Darstellungsoptionen und verschiedene Messtools f
 - Im Hintergrund laufen
 - Daten importieren und exportieren
 
-## [Alles weitere steht im Wiki](https://git.kellerbase.de/haschtl/kellerlogger/wikis/RealTime-OpenControl-(RTOC))
+## [Alles weitere steht im Wiki](https://github.com/Haschtl/RealTimeOpenControl/wiki)
 ### Screenshots - siehe unten
 
 ## Python3 Paket-Abhängigkeiten
