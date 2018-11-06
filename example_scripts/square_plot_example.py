@@ -1,1 +1,1 @@
-stream(Funktionsgenerator.Square.latest*2)
+stream(Generator.Square.latest*2)

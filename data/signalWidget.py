@@ -127,6 +127,14 @@ class SignalWidget(QtWidgets.QToolButton):
         else:
             self.legendName = devicename+"."+signalname+" ["+unit+"]"
         self.plot = pg.PlotDataItem(x=[], y=[], name=self.legendName)
+
+        # REMOVE THIS PART IF ITS TOO SLOW
+        self.display_text= pg.TextItem(text='',color=(200, 200, 200), fill=(200, 200, 200, 50),anchor=(1,1))
+        self.display_text.hide()
+        self.plotWidget.plot.addItem(self.display_text)
+        self.plotWidget.plot.scene().sigMouseMoved.connect(self.onMove)
+
+
         #self.plot.setClickable(True)
         self.plotWidget.legend.addItem(self.plot, self.legendName)
         symbol, brush = self.findStyle()
@@ -148,6 +156,18 @@ class SignalWidget(QtWidgets.QToolButton):
         #self.plot.sigPointsClicked.connect(self.signalClickedAction)
 
         self.signalModifications = [0, 0, 1, 1]
+
+    def onMove(self, pos):
+        act_pos = self.plot.mapFromScene(pos)
+        p1 = self.plot.scatter.pointsAt(act_pos)
+        if len(p1)!=0:
+            x, y = p1[0].pos()
+            print(x)
+            self.display_text.setText(self.devicename+'.'+self.signalname+'\nx=%f\ny=%f'%(x,y))
+            self.display_text.setPos(x,y)
+            self.display_text.show()
+        else:
+            self.display_text.hide()
 
     def findStyle(self):
         for signal in self.plotWidget.plotStyles.keys():

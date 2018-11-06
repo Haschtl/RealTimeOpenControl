@@ -60,9 +60,10 @@ Die Oberfläche hat erweiterte Darstellungsoptionen und verschiedene Messtools f
 
 Optional für Plugins:
 - pip3 install minimalmodbus (DPS5020)
--
+
 ## Externe Bibliotheken und Skripte
 - [Jsonsocket von mdebbar](https://github.com/mdebbar/jsonsocket)
+- [Taurus PyQtGraph](https://github.com/taurus-org/taurus_pyqtgraph.git)
 - [ImportCode Script von avtivestate.com](http://code.activestate.com/recipes/82234-importing-a-dynamically-generated-module/)
 - [VC820Py von adnidor (für das HoldPeak_VC820 Plugin)](https://github.com/adnidor/vc820py)
 

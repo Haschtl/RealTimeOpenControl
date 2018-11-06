@@ -1,3 +1,3 @@
-Funktionsgenerator.setLabels()
-if Funktionsgenerator.Square.latest==1:
-	Funktionsgenerator.gen_freq=Funktionsgenerator.gen_freq+1
+Generator.setLabels()
+if Generator.Square.latest==1:
+	Generator.gen_freq=Generator.gen_freq+1

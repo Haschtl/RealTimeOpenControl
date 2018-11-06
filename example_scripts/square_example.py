@@ -1,4 +1,4 @@
-print(round(Funktionsgenerator.Square.latest-Funktionsgenerator.offset))
-if(round(Funktionsgenerator.Square.latest-Funktionsgenerator.offset)>= 1):
-	Funktionsgenerator.offset += 0.1
-Funktionsgenerator.setLabels()
+print(round(Generator.Square.latest-Generator.offset))
+if(round(Generator.Square.latest-Generator.offset)>= 1):
+	Generator.offset += 0.1
+Generator.setLabels()

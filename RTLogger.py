@@ -83,7 +83,7 @@ class RTLogger(ScriptFunctions):
             if self.tcp:
                 self.tcp.close()
 
-    def sendTCP(self, hostname="0.0.0.0", *args, **kwargs):
+    def sendTCP(self, hostname="localhost", *args, **kwargs):
         self.tcpclient.createTCPClient(hostname)
         self.tcpclient.sendTCP(*args, **kwargs)
 
@@ -139,6 +139,8 @@ class RTLogger(ScriptFunctions):
                         devicename = msg.get('dname',"noDevice")
                         unit = msg.get('unit',[""])
                         datasX = msg.get('x',None)
+                        if devicename == None:
+                            devicename = "noDevice"
                         if plot:
                             self.plot(datasX, datasY, datanames,devicename, unit)
                         else:
@@ -204,6 +206,7 @@ class RTLogger(ScriptFunctions):
                 self.analysePlugin(self.pluginObjects[name], name)
                 self.pluginStatus[name] = "OK"
                 print("PLUGIN: " + name+' connected\n')
+                self.addNewEvent(text=self.tr("Plugin gestartet: ")+name.replace("plugins.",""),sname="", dname="RTOC", priority = 0)
                 return True, ""
             else:
                 print("PLUGIN not found: '"+str(name)+"'\n")
@@ -224,6 +227,7 @@ class RTLogger(ScriptFunctions):
                 self.pluginStatus[name] = "STOPPED"
                 self.pluginObjects[name].close()
                 print("PLUGIN: " + name+' disconnected\n')
+                self.addNewEvent(text=self.tr("Plugin gestoppt: ")+name.replace("plugins.",""),sname="", dname="RTOC", priority = 0)
             # else:
             #    print("Plugin "+name+" not loaded")
             return True
@@ -288,7 +292,7 @@ class RTLogger(ScriptFunctions):
         self.signals = [[deque([], newLength), deque([], newLength)]
                         for _ in range(len(self.signalNames))]
         self.signalUnits = [deque([], newLength) for _ in range(len(self.signalNames))]
-        self.events = [[deque([], newLength), deque([], newLength)]
+        self.events = [[deque([], newLength), deque([], newLength), deque([], newLength)]
                        for _ in range(len(self.signalNames))]
 
     def resizeSignals(self, newLength=None):
@@ -303,7 +307,7 @@ class RTLogger(ScriptFunctions):
         self.signalUnits = [deque(list(self.signalUnits[idx]), newLength)
                             for idx in range(len(self.signalNames))]
 
-        self.events = [[deque(list(self.events[idx][0]), newLength), deque(list(self.events[idx][1]), newLength)]
+        self.events = [[deque(list(self.events[idx][0]), newLength), deque(list(self.events[idx][1]), newLength), deque(list(self.events[idx][2]), newLength)]
                        for idx in range(len(self.signalNames))]
 
     def removeSignal(self, id):
@@ -330,11 +334,12 @@ class RTLogger(ScriptFunctions):
         newID = self.getNewID()
         self.signalIDs.append(newID)
         self.signals += [[deque([], newLength), deque([], newLength)]]
-        self.events += [[deque([], newLength), deque([], newLength)]]
+        self.events += [[deque([], newLength), deque([], newLength),deque([], self.maxLength)]]
         self.signalUnits += [deque([], newLength)]
         if self.newSignalCallback:
             #self.newSignal = [len(self.signalNames)-1, devicename, dataname, dataunit]
             self.newSignalCallback(newID, devicename, dataname, dataunit)
+        self.addNewEvent(text=self.tr("Signal-Stream hinzugefügt: ")+dataname+"."+devicename,sname="", dname="RTOC", priority = 0)
         self.__addNewData(dataY, dataunit, devicename, dataname, dataX, createCallback)
 
     def __addNewData(self, dataY, dataunit, devicename, dataname, dataX=None, createCallback=True):
@@ -358,6 +363,7 @@ class RTLogger(ScriptFunctions):
         dataname = kwargs.get('sname', "noName")
         devicename = kwargs.get('dname', "noDevice")
         x = kwargs.get('x', None)
+        priority = kwargs.get('priority', 0)
         for idx, arg in enumerate(args):
             if idx == 0:
                 strung = arg
@@ -367,6 +373,11 @@ class RTLogger(ScriptFunctions):
                 devicename = arg
             if idx == 3:
                 x = arg
+            if idx == 4:
+                priority = arg
+
+        if priority not in [0,1,2]:
+            priority = 0
 
         callback = False
         if [devicename, dataname] not in self.signalNames:
@@ -374,7 +385,7 @@ class RTLogger(ScriptFunctions):
             self.signals += [[deque([], self.maxLength), deque([], self.maxLength)]]
             newID = self.getNewID()
             self.signalIDs.append(newID)
-            self.events += [[deque([], self.maxLength), deque([], self.maxLength)]]
+            self.events += [[deque([], self.maxLength), deque([], self.maxLength), deque([], self.maxLength)]]
             self.signalUnits += [deque([], self.maxLength)]
             self.signals[self.signalNames.index([devicename, dataname])][0].append(time.time())
             self.signals[self.signalNames.index([devicename, dataname])][1].append(0)
@@ -387,20 +398,24 @@ class RTLogger(ScriptFunctions):
         else:
             self.events[idx][0].append(float(x))
         self.events[idx][1].append(strung)
+        self.events[idx][2].append(priority)
         if self.newEventCallback:
-            self.newEventCallback(x, strung, devicename, dataname)
-        if self.newSignalCallback and callback:
+            self.newEventCallback(x, strung, devicename, dataname, priority)
+        if self.newSignalCallback and callback and (devicename!="RTOC"):
             #self.newSignal = [len(self.signalNames)-1, devicename, dataname, ""]
             self.newSignalCallback(newID, devicename, dataname, "")
         # if self.callbackEvent:
         #    self.callbackEvent()
+
+    def tr(self, *args):
+        return args
 
     def __plotNewSignal(self, x, y, dataunit, devicename, dataname, createCallback=False):
         # Add a new signal-stream
         print("LOGGER: Adding signalplot: "+devicename+", "+dataname)
         newLength = self.maxLength
         self.signalNames += [[devicename, dataname]]
-        self.events += [[deque([], self.maxLength), deque([], self.maxLength)]]
+        self.events += [[deque([], self.maxLength), deque([], self.maxLength),deque([], self.maxLength)]]
         self.signalIDs.append(self.getNewID())
         self.signals += [[deque([], newLength), deque([], newLength)]]
         self.signalUnits += [deque([], newLength)]
@@ -408,6 +423,7 @@ class RTLogger(ScriptFunctions):
         if self.newSignalCallback:
             #self.newSignal = [self.signalIDs[-1], devicename, dataname, dataunit]
             self.newSignalCallback(self.signalIDs[-1], devicename, dataname, dataunit)
+        self.addNewEvent(text=self.tr("Signal-Plot hinzugefügt: ")+dataname+"."+devicename,sname="", dname="RTOC", priority = 0)
 
     def __plotNewData(self, x, y, dataunit, devicename, dataname, createCallback=False):
         # Add new data to a signal-stream
@@ -694,9 +710,10 @@ class RTLogger(ScriptFunctions):
                         self.plot(data["data"][signal][0], data["data"][signal][1],
                                   name[1], name[0], data["data"][signal][2], False)
                 for signal in data["events"].keys():
-                    name = signal.split(".")
-                    for idx, event in enumerate(data["events"][signal][0]):
-                        self.addNewEvent(data["events"][signal][1][idx], name[1], name[0], event)
+                    if signal != ".":
+                        name = signal.split(".")
+                        for idx, event in enumerate(data["events"][signal][0]):
+                            self.addNewEvent(data["events"][signal][1][idx], name[1], name[0], event, data["events"][signal][2])
             return True
         except:
             tb = traceback.format_exc()
@@ -752,7 +769,7 @@ class RTLogger(ScriptFunctions):
             idx = self.signalIDs.index(id)
             return self.events[idx]
         else:
-            return [[],[]]
+            return [[],[],[]]
 
     def getSignalUnits(self, id):
         if id in self.signalIDs:

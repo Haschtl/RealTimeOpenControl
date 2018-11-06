@@ -106,7 +106,7 @@
          </item>
          <item>
           <property name="text">
-           <string>plotLine(text=&quot;&quot;, sname=&quot;noName&quot;, dname=&quot;noDevice&quot;, x=clock) </string>
+           <string>event(text=&quot;&quot;, sname=&quot;noName&quot;, dname=&quot;noDevice&quot;, x=clock, priority=0) </string>
           </property>
          </item>
          <item>

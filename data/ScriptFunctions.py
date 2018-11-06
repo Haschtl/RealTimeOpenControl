@@ -54,7 +54,7 @@ class ScriptFunctions:
     def replaceLoggerFunctions(self, s):
         s = s.replace("stream(", "self.addData(")
 
-        s = s.replace("plotLine(", "self.addNewEvent(")
+        s = s.replace("event(", "self.addNewEvent(")
         s = s.replace("plot(", "self.plot(")
 
         s = s.replace("print(", "prints += print(")

@@ -1,12 +1,11 @@
-global ki=0.8
-global kp=0.4
-global kd=1
+ki=0
+kp=0
+kd=1
+desired = 0
 global oldI=0
-global error=0
-global regelung=0
 value = math.sin(clock)
+global.oldI=value
 stream(value, "signal")
-self.oldI = self.error +  value-self.regelung
-self.error = value-self.regelung
-self.regelung = self.ki*self.oldI+self.kp*self.error+rtoc.d(noDevice.signal)+self.regelung
-stream(self.regelung, "regler")
+regelung, newI =rtoc.PID(noDevice.signal, desired, kp, ki, kd, global.oldI)
+global.oldI = newI
+stream(regelung, "regler")

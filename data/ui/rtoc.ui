@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>643</width>
-    <height>372</height>
+    <height>424</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -450,6 +450,12 @@
    </attribute>
   </widget>
   <widget class="QDockWidget" name="eventWidgets">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="windowTitle">
     <string>Events</string>
    </property>

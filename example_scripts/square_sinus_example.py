@@ -1,1 +1,1 @@
-stream(np.sin(clock)*Funktionsgenerator.Square.latest)
+stream(np.sin(clock)*Generator.Square.latest)

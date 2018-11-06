@@ -154,7 +154,7 @@ Copyright (C) 2018 Sebastian Keller</source>
 <context>
     <name>EventWidget</name>
     <message>
-        <location filename="../data/eventWidget.py" line="31"/>
+        <location filename="../data/eventWidget.py" line="34"/>
         <source>%H:%M:%S %d.%m.%Y</source>
         <translation>%H:%M:%S %Y.%m.%d</translation>
     </message>
@@ -217,12 +217,12 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../data/ui/plotViewWidget.ui" line="72"/>
+        <location filename="../data/ui/plotViewWidget.ui" line="142"/>
         <source>X-Achse als Zeit formatieren</source>
         <translation>Horizontal is timeaxis</translation>
     </message>
     <message>
-        <location filename="../data/ui/plotViewWidget.ui" line="75"/>
+        <location filename="../data/ui/plotViewWidget.ui" line="145"/>
         <source>Zeitachse</source>
         <translation>Timeaxis</translation>
     </message>
@@ -237,7 +237,7 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation>Timesignal</translation>
     </message>
     <message>
-        <location filename="../data/ui/plotViewWidget.ui" line="145"/>
+        <location filename="../data/ui/plotViewWidget.ui" line="75"/>
         <source>Darstellung invertieren</source>
         <translation>Invert color</translation>
     </message>
@@ -646,32 +646,42 @@ Copyright (C) 2018 Sebastian Keller</source>
     <message>
         <location filename="../data/ui/eventWidget.ui" line="34"/>
         <source>Von</source>
-        <translation>From</translation>
+        <translation type="obsolete">From</translation>
     </message>
     <message>
         <location filename="../data/ui/eventWidget.ui" line="48"/>
         <source>bis</source>
-        <translation>till</translation>
+        <translation type="obsolete">till</translation>
     </message>
     <message>
-        <location filename="../data/ui/eventWidget.ui" line="108"/>
+        <location filename="../data/ui/eventWidget.ui" line="189"/>
         <source>Zeitpunkt</source>
         <translation>Timepoint</translation>
     </message>
     <message>
-        <location filename="../data/ui/eventWidget.ui" line="113"/>
+        <location filename="../data/ui/eventWidget.ui" line="194"/>
         <source>Inhalt</source>
         <translation>Content</translation>
     </message>
     <message>
         <location filename="../data/ui/eventWidget.ui" line="118"/>
         <source>Gerät</source>
-        <translation>Device</translation>
+        <translation type="obsolete">Device</translation>
     </message>
     <message>
-        <location filename="../data/ui/eventWidget.ui" line="123"/>
+        <location filename="../data/ui/eventWidget.ui" line="204"/>
         <source>Signal</source>
         <translation>Signal</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/eventWidget.ui" line="40"/>
+        <source>Filter</source>
+        <translation>Filter</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/eventWidget.ui" line="134"/>
+        <source>Lösche alle Signale</source>
+        <translation type="obsolete">Delete all Events</translation>
     </message>
 </context>
 <context>
@@ -918,61 +928,94 @@ Copyright (C) 2018 Sebastian Keller</source>
     </message>
 </context>
 <context>
+    <name>RTLogger</name>
+    <message>
+        <location filename="../RTLogger.py" line="209"/>
+        <source>Plugin gestartet: </source>
+        <translation>Plugin startet: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="231"/>
+        <source>Plugin gestoppt</source>
+        <translation type="obsolete">Plugin stopped: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="343"/>
+        <source>Signal-Stream hinzugefÃ¼gt: </source>
+        <translation>Signal-Stream added: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="427"/>
+        <source>Neues Signal geplottet: </source>
+        <translation type="obsolete">Signal-Plot added: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="231"/>
+        <source>Plugin gestoppt: </source>
+        <translation>Plugin gestoppt: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="427"/>
+        <source>Signal-Plot hinzugefÃ¼gt: </source>
+        <translation>Signal-Plot added: </translation>
+    </message>
+</context>
+<context>
     <name>RTOC</name>
     <message>
-        <location filename="../RTOC.py" line="243"/>
+        <location filename="../RTOC.py" line="246"/>
         <source>Anzeigen</source>
         <translation>Show</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="244"/>
+        <location filename="../RTOC.py" line="247"/>
         <source>Beenden</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="245"/>
+        <location filename="../RTOC.py" line="248"/>
         <source>Im Hintergrund laufen</source>
         <translation>Run in background</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="246"/>
+        <location filename="../RTOC.py" line="249"/>
         <source>TCP Server</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="385"/>
+        <location filename="../RTOC.py" line="388"/>
         <source>Fehler</source>
         <translation>Failure</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="383"/>
+        <location filename="../RTOC.py" line="386"/>
         <source>Fehler beim Laden der GerÃ¤te GUI
 Bitte Code Ã¼berprÃ¼fen.</source>
         <translation>Loading device GUI failed.</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="385"/>
+        <location filename="../RTOC.py" line="388"/>
         <source>Fehler beim Laden des GerÃ¤ts
 Bitte stellen Sie sicher, dass das GerÃ¤t verbunden ist.</source>
         <translation>Loading device failed. Please make sure the device is connected.</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="427"/>
+        <location filename="../RTOC.py" line="430"/>
         <source>RealTime OpenControl</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="426"/>
+        <location filename="../RTOC.py" line="429"/>
         <source>lÃ¤uft im Hintergrund weiter und zeichnet Messwerte auf</source>
         <translation>is running in background and collecting data</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="436"/>
+        <location filename="../RTOC.py" line="439"/>
         <source>Speichern</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="436"/>
+        <location filename="../RTOC.py" line="439"/>
         <source>Wollen Sie die aktuelle Sitzung speichern?</source>
         <translation>Do you want to save the current session?</translation>
     </message>

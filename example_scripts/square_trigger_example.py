@@ -1,4 +1,4 @@
-trig Funktionsgenerator.Square.latest == 1:
+trig Generator.Square.latest == 1:
 	print("Trigger")
-if Funktionsgenerator.Square.latest == 1:
+if Generator.Square.latest == 1:
 	print("no Trigger")

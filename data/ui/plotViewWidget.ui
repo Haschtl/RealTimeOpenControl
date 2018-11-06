@@ -57,8 +57,8 @@
        </property>
       </widget>
      </item>
-     <item row="4" column="1">
-      <widget class="QPushButton" name="timeAxisButton">
+     <item row="0" column="1">
+      <widget class="QPushButton" name="invertPlotButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
@@ -66,17 +66,17 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>X-Achse als Zeit formatieren</string>
+        <string>Darstellung invertieren</string>
        </property>
        <property name="statusTip">
-        <string>X-Achse als Zeit formatieren</string>
+        <string>Darstellung invertieren</string>
        </property>
        <property name="text">
-        <string>Zeitachse</string>
+        <string>Darstellung invertieren</string>
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>icons/xaxislabel.png</normaloff>icons/xaxislabel.png</iconset>
+         <normaloff>icons/invert.png</normaloff>icons/invert.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -127,8 +127,8 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QPushButton" name="invertPlotButton">
+     <item row="4" column="1">
+      <widget class="QPushButton" name="timeAxisButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
          <horstretch>0</horstretch>
@@ -136,17 +136,17 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>Darstellung invertieren</string>
+        <string>X-Achse als Zeit formatieren</string>
        </property>
        <property name="statusTip">
-        <string>Darstellung invertieren</string>
+        <string>X-Achse als Zeit formatieren</string>
        </property>
        <property name="text">
-        <string>Darstellung invertieren</string>
+        <string>Zeitachse</string>
        </property>
        <property name="icon">
         <iconset>
-         <normaloff>icons/invert.png</normaloff>icons/invert.png</iconset>
+         <normaloff>icons/xaxislabel.png</normaloff>icons/xaxislabel.png</iconset>
        </property>
        <property name="iconSize">
         <size>

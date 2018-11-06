@@ -1,2 +1,2 @@
-trig Funktionsgenerator.Square.latest > 0:
-	Funktionsgenerator.gen_level += 1
+trig Generator.Square.latest > 0:
+	Generator.gen_level += 1

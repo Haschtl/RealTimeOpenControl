@@ -151,8 +151,8 @@ class Plugin(LoggerPlugin):
         self.phase = self.widget.phase.value()
 
     def __changeSignal(self):
-        self.event(self.widget.function.currentText(),
-                   self.widget.function.currentText(), self.devicename)
+        #self.event(self.widget.function.currentText(),
+        #           self.widget.function.currentText(), self.devicename)
         self.datanames[0] = self.widget.function.currentText()
 
     def setLabels(self):

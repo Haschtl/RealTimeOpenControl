@@ -1,2 +1,2 @@
-if Funktionsgenerator.Sinus.latest >0.5:
-	Funktionsgenerator.Sinus.latest = 0.5
+if Generator.Sinus.latest >0.5:
+	Generator.Sinus.latest = 0.5

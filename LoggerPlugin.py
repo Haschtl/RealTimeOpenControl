@@ -58,6 +58,7 @@ class LoggerPlugin:
         dataname = kwargs.get('sname', None)
         devicename = kwargs.get('dname', None)
         xpos = kwargs.get('x', None)
+        priority = kwargs.get('priority', 0)
         for idx, arg in enumerate(args):
             if idx == 0:
                 text = arg
@@ -67,6 +68,8 @@ class LoggerPlugin:
                 devicename = arg
             if idx == 3:
                 xpos = arg
+            if idx == 4:
+                priority = arg
 
         if dataname == None:
             if len(self.datanames) != 0:
@@ -76,7 +79,7 @@ class LoggerPlugin:
         if devicename == None:
             devicename = self.deviceName
         if self.__ev:
-            self.__ev(text, dataname, devicename, xpos)
+            self.__ev(text, dataname, devicename, xpos, priority)
         else:
             print("No event connected")
 

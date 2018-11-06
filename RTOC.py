@@ -120,7 +120,7 @@ class Callback(QtCore.QThread):
         self.received.emit(self.idx, self.devicename, self.dataname, self.unit)
 
 class EventCallback(QtCore.QThread):
-    received = QtCore.pyqtSignal(float, str, str, str)
+    received = QtCore.pyqtSignal(float, str, str, str, int)
 
     def __init__(self):
         super(EventCallback, self).__init__()
@@ -128,17 +128,19 @@ class EventCallback(QtCore.QThread):
         self.text = ''
         self.dname = ''
         self.sname = ''
+        self.priority = 0
 
-    def setValues(self, time, text, dname, sname):
+    def setValues(self, time, text, dname, sname, priority):
         self.time = time
         self.text = text
         self.dname = dname
         self.sname = sname
+        self.priority = priority
         self.run()
 
     def run(self):
         # print(received)
-        self.received.emit(self.time, self.text, self.dname, self.sname)
+        self.received.emit(self.time, self.text, self.dname, self.sname, self.priority)
 
 class Updater(QtCore.QThread):
     received = QtCore.pyqtSignal()
@@ -161,6 +163,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.tray_icon.activated.connect(self.systemTrayClickAction)
 
         self.logger = RTLogger.RTLogger()
+        self.logger.tr = self.tr
         self.forceQuit = False
         self.newSignalThread = Callback(self)
         self.newSignalThread.received.connect(self.addNewSignal)

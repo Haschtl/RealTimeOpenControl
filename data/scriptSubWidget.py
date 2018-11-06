@@ -130,6 +130,10 @@ class ScriptSubWidget(QtWidgets.QWidget):
 
         self.startScriptButton.setStyleSheet("QToolButton:checked, QToolButton:pressed,QToolButton::menu-button:pressed {background-color: #31363b;}")
 
+        self.triggerWidget.triggerSignals.clear()
+        for element in self.logger.signalNames:
+            self.triggerWidget.triggerSignals.addItem(".".join(element))
+
     def toggleScript(self):
         scriptRunning = self.startScriptButton.isChecked()
         if not scriptRunning:
