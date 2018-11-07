@@ -6,6 +6,8 @@ import datetime
 
 
 class EventWidget(QtWidgets.QWidget):
+    refresh = QtCore.pyqtSignal()
+
     def __init__(self, logger):
         super(EventWidget, self).__init__()
         uic.loadUi("data/ui/eventWidget.ui", self)
@@ -25,6 +27,7 @@ class EventWidget(QtWidgets.QWidget):
         self.middleButton.clicked.connect(self.setmydata)
         self.lowButton.clicked.connect(self.setmydata)
         self.clearButton.clicked.connect(self.clear)
+        self.refresh.connect(self.setmydata,  QtCore.Qt.QueuedConnection)
 
     def clear(self):
         self.events = []
@@ -45,7 +48,8 @@ class EventWidget(QtWidgets.QWidget):
         # newitem = QtWidgets.QTableWidgetItem(signalname)
         # self.tableWidget.setItem(r, 3, newitem)
         # self.tableWidget.viewport().update()
-        events = self.setmydata()
+        self.refresh.emit()
+        #events = self.setmydata()
         #self.tableWidget
         #self.tableWidget.resizeColumnsToContents()
 

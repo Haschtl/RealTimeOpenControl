@@ -9,8 +9,6 @@ import importlib
 from threading import Thread
 from collections import deque
 import numpy as np
-#from multiprocessing.connection import Listener
-import socket
 
 import plugins
 import data.lib.general_lib as lib
@@ -22,11 +20,9 @@ from LoggerPlugin import LoggerPlugin
 
 class RTLogger(ScriptFunctions):
     def __init__(self):
-        #sys.setrecursionlimit(1500)
         self.run = True
         self.config = {}
         self.load_config()
-        # self.plugins={}
         self.pluginObjects = {}  # dict with all plugins
         self.pluginFunctions = {}
         self.pluginParameters = {}
@@ -37,9 +33,6 @@ class RTLogger(ScriptFunctions):
         for finder, name, ispkg in iter_namespace(plugins):
             if name not in ["plugins.Template", "plugins.LoggerPlugin"]:
                 self.devicenames += [name]
-        #print("Available devices")
-        #[print("- "+name.replace("plugins.", "")) for name in self.devicenames]
-        #print("")
 
         self.signals = []
         self.signalNames = []
@@ -50,10 +43,6 @@ class RTLogger(ScriptFunctions):
         self.triggerExpressions = []
         self.triggerValues = []
 
-        # self.__server = Thread(target=self.multiprocessingListener)    # Actualize data
-        # self.__server.start()
-
-        #self.tcp = jsonsocket.Server("localhost",self.config["tcpPort"])
         self.tcp = None
         self.toggleTcpServer(self.config['tcpserver'])
 
@@ -64,7 +53,7 @@ class RTLogger(ScriptFunctions):
         self.scriptExecutedCallback = None
         self.handleScriptCallback = None
         self.clearCallback = None
-
+        self.newEventCallback = None
         self.tcpclient = LoggerPlugin(None,None,None)
 
     def toggleTcpServer(self, value = None):
@@ -87,45 +76,7 @@ class RTLogger(ScriptFunctions):
         self.tcpclient.createTCPClient(hostname)
         self.tcpclient.sendTCP(*args, **kwargs)
 
-    # client
-    # def multiprocessingChild(self, conn):
-    #     while self.run:
-    #         try:
-    #             msg = conn.recv()
-    #             # this just echos the value back, replace with your custom logic
-    #             if type(msg) == list:
-    #                 datasY = []
-    #                 datanames = [""]
-    #                 devicename = "noDevice"
-    #                 callback = [""]
-    #                 datasX = [None]
-    #                 for idx, value in enumerate(msg):
-    #                     if idx == 0:
-    #                         datasY = value
-    #                     elif idx == 1:
-    #                         datanames = value
-    #                     elif idx == 2:
-    #                         devicename = value
-    #                     elif idx == 3:
-    #                         callback = value
-    #                     elif idx == 4:
-    #                         datasX = value
-    #                 self.addDataCallback(datasY, datanames, devicename, callback, datasX, True)
-    #                 msg = True
-    #             else:
-    #                 msg = False
-    #             conn.send(msg)
-    #         except EOFError:
-    #             print("Error in reading")
-    #             try:
-    #                 conn.send(False)
-    #             except:
-    #                 print("... and in sending")
-    #                 break
-
     def tcpListener(self):
-        #while self.run:
-        #self.tcp.listen()
         while self.tcpRunning:
             ans = {'error':False}
             try:
@@ -168,25 +119,14 @@ class RTLogger(ScriptFunctions):
                         if key not in ans.keys():
                             ans[key]=msg[key]
                 self.tcp.send(ans)
+            except OSError:
+                print("TCP Server idle")
             except:
                 tb = traceback.format_exc()
                 print(tb)
                 print("Error in TCP-Connection")
                 ans['error']=True
                 #self.tcp.send(ans)
-
-    # server
-    # def multiprocessingListener(self):
-    #     address = ('127.0.0.1', self.config['multithreadingPort'])
-    #     self.serv = Listener(address)
-    #     while self.run:
-    #         try:
-    #             #serv = Listener(address)
-    #             client = self.serv.accept()
-    #             self.multiprocessingChild(client)
-    #             # self.serv.close()
-    #         except:
-    #             print("multiprocessingListener died almost")
 
 
     # Plugin functions ############################################################
@@ -523,28 +463,28 @@ class RTLogger(ScriptFunctions):
             if idx == 3:
                 createCallback = arg
 
-        try:
-            if type(data) == list:
-                if len(data) == 2:
-                    if [devicename, dataname] in self.signalNames:
-                        self.__addNewData(float(data[1]),
-                                          dataunit, devicename, dataname, float(data[0]), createCallback)
-                    else:
-                        self.__addNewSignal(float(data[1]),
-                                            dataunit, devicename, dataname, float(data[0]), createCallback)
-                else:
-                    print("Wrong data size")
-            else:
+        #try:
+        if type(data) == list:
+            if len(data) == 2:
                 if [devicename, dataname] in self.signalNames:
-                    self.__addNewData(data,
-                                      dataunit, devicename, dataname, None, createCallback)
+                    self.__addNewData(float(data[1]),
+                                      dataunit, devicename, dataname, float(data[0]), createCallback)
                 else:
-                    self.__addNewSignal(data,
-                                        dataunit, devicename, dataname, None, createCallback)
-        except:
-            tb = traceback.format_exc()
-            print(tb)
-            print("SCRIPT FAILURE\nSignal not available")
+                    self.__addNewSignal(float(data[1]),
+                                        dataunit, devicename, dataname, float(data[0]), createCallback)
+            else:
+                print("Wrong data size")
+        elif type(data) == int or type(data) == float:
+            if [devicename, dataname] in self.signalNames:
+                self.__addNewData(data,
+                                  dataunit, devicename, dataname, None, createCallback)
+            else:
+                self.__addNewSignal(data,
+                                    dataunit, devicename, dataname, None, createCallback)
+        # except:
+        #     tb = traceback.format_exc()
+        #     print(tb)
+        #     print("SCRIPT FAILURE\nSignal not available")
 
     def plot(self, x=[], y=[], *args, **kwargs):
         dataname = kwargs.get('sname', "noName")
@@ -564,21 +504,21 @@ class RTLogger(ScriptFunctions):
         if y == []:
             y = x
             x = list(range(len(x)))
-        try:
-            if len(x) == len(y):
-                if [devicename, dataname] in self.signalNames:
-                    self.__plotNewData(x, y,
-                                       dataunit, devicename, dataname, createCallback)
+        #try:
+        if len(x) == len(y):
+            if [devicename, dataname] in self.signalNames:
+                self.__plotNewData(x, y,
+                                   dataunit, devicename, dataname, createCallback)
 
-                else:
-                    self.__plotNewSignal(x, y,
-                                         dataunit, devicename, dataname, createCallback)
             else:
-                print("Plotting aborted. len(x)!=len(y)")
-        except:
-            tb = traceback.format_exc()
-            print(tb)
-            print("SCRIPT FAILURE\nPlotting failed!")
+                self.__plotNewSignal(x, y,
+                                     dataunit, devicename, dataname, createCallback)
+        else:
+            print("Plotting aborted. len(x)!=len(y)")
+        # except:
+        #     tb = traceback.format_exc()
+        #     print(tb)
+        #     print("SCRIPT FAILURE\nPlotting failed!")
 
 # Other functions #########################################################
 
@@ -696,29 +636,31 @@ class RTLogger(ScriptFunctions):
             json.dump(jsonfile, fp, sort_keys=False, indent=4, separators=(',', ': '))
 
     def restoreJSON(self, filename="restore.json"):
-        try:
-            if os.path.exists(filename):
-                with open(filename) as f:
-                    data = json.load(f)
-                self.clear()
-                self.maxLength = data["maxLength"]
-                #self.events[0]=deque(data["events"][0], self.maxLength)
-                #self.events[1]=deque(data["events"][1], self.maxLength)
-                for signal in data["data"].keys():
+        # try:
+        if os.path.exists(filename):
+            with open(filename) as f:
+                data = json.load(f)
+            self.clear()
+            self.maxLength = data["maxLength"]
+            #self.events[0]=deque(data["events"][0], self.maxLength)
+            #self.events[1]=deque(data["events"][1], self.maxLength)
+            for signal in data["data"].keys():
+                name = signal.split(".")
+                if len(data["data"][signal][0]) != 0:
+                    self.plot(data["data"][signal][0], data["data"][signal][1],
+                              name[1], name[0], data["data"][signal][2], False)
+            for signal in data["events"].keys():
+                if signal != ".":
                     name = signal.split(".")
-                    if len(data["data"][signal][0]) != 0:
-                        self.plot(data["data"][signal][0], data["data"][signal][1],
-                                  name[1], name[0], data["data"][signal][2], False)
-                for signal in data["events"].keys():
-                    if signal != ".":
-                        name = signal.split(".")
-                        for idx, event in enumerate(data["events"][signal][0]):
-                            self.addNewEvent(data["events"][signal][1][idx], name[1], name[0], event, data["events"][signal][2])
+                    for idx, event in enumerate(data["events"][signal][0]):
+                        self.addNewEvent(data["events"][signal][1][idx], name[1], name[0], event, data["events"][signal][2])
             return True
-        except:
-            tb = traceback.format_exc()
-            print(tb)
+        else:
             return False
+        # except:
+        #     tb = traceback.format_exc()
+        #     print(tb)
+        #     return False
 
     def exportCSV(self, filename):
         textfile = ''

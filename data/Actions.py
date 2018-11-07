@@ -38,37 +38,39 @@ class Actions:
 
         self.searchEdit.textChanged.connect(self.filterDevices)
 
-    def toggleTcpServer(self):
-        self.logger.toggleTcpServer(self.TCPServerAction.isChecked())
+    # def toggleTcpServer(self):
+    #     self.logger.toggleTcpServer(self.TCPServerAction.isChecked())
 
-    def trayToggleTcpServer(self):
+    def toggleTcpServer(self):
         if self.config["tcpserver"]:
             self.config["tcpserver"] = False
-            self.logger.toggleTcpServer(False)
-            self.TCPServerAction.setChecked(False)
+            #self.logger.toggleTcpServer(False)
+            #self.TCPServerAction.setChecked(False)
         else:
             self.config["tcpserver"] = True
-            self.logger.toggleTcpServer(True)
-            self.TCPServerAction.setChecked(True)
+        self.logger.toggleTcpServer(self.config["tcpserver"])
+        self.TCPServerAction.setChecked(self.config["tcpserver"])
 
     def toggleSystemTray(self):
-        if self.systemTrayAction.isChecked():
-            self.config["systemTray"] = True
-        else:
-            self.config["systemTray"] = False
-
-    def trayToggleSystemTray(self):
         if self.config["systemTray"]:
             self.config["systemTray"] = False
-            self.systemTrayAction.setChecked(False)
+            #self.systemTrayAction.setChecked(True)
         else:
             self.config["systemTray"] = True
-            self.systemTrayAction.setChecked(True)
+        self.systemTrayAction.setChecked(self.config["systemTray"])
+
+    # def trayToggleSystemTray(self):
+    #     if self.config["systemTray"]:
+    #         self.config["systemTray"] = False
+    #         self.systemTrayAction.setChecked(False)
+    #     else:
+    #         self.config["systemTray"] = True
+    #         self.systemTrayAction.setChecked(True)
 
     def systemTrayClickAction(self, reason):
         if reason == QtWidgets.QSystemTrayIcon.Context:
-            self.tcp_action.setChecked(self.config['systemTray'])
-            self.hide_action.setChecked(self.config['tcpserver'])
+            self.tcp_action.setChecked(self.config['tcpserver'])
+            self.hide_action.setChecked(self.config['systemTray'])
         elif reason == QtWidgets.QSystemTrayIcon.DoubleClick:
             self.tray_icon.hide()
             self.show()

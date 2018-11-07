@@ -294,11 +294,6 @@
            <verstretch>0</verstretch>
           </sizepolicy>
          </property>
-         <item>
-          <property name="text">
-           <string>clock</string>
-          </property>
-         </item>
         </widget>
        </item>
       </layout>

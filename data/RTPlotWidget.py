@@ -10,7 +10,7 @@ import data.define as define
 
 class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
     droppedTree = QtCore.pyqtSignal(dict)
-
+    addSignal2 = QtCore.pyqtSignal(str, str, int, str)
     def __init__(self, logger, selfself, id):
         super(RTPlotWidget, self).__init__()
         #print("creating new plot widget")
@@ -39,7 +39,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.mouseX = 0
         self.mouseY = 0
         self.lastSignalClick = [0,0]
-
+        self.addSignal2.connect(self.addSignal, QtCore.Qt.QueuedConnection)
         self.signalHeight = define.signalButtonHeight
 
         self.connectButtons()

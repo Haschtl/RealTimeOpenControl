@@ -715,7 +715,11 @@ class TimeAxisItem(pg.AxisItem):
         self.linkToView(viewBox)
         self._oldAxis = plotItem.axes[self.orientation]['item']
         self._oldAxis.hide()
+        #self._oldAxis.setParent(None)
+        #self._oldAxis.deleteLater()
         plotItem.axes[self.orientation]['item'] = self
         pos = plotItem.axes[self.orientation]['pos']
+        item = plotItem.layout.removeItem(self._oldAxis)
+        #item.removeWidget(self._oldAxis)
         plotItem.layout.addItem(self, *pos)
         self.setZValue(-1000)

@@ -98,58 +98,6 @@ class SubWindow(QtWidgets.QMainWindow):#, RTPlotWidget):
     def addSignal(self, devicename, signalname, id, unit):
         self.widget.addSignal(devicename, signalname, id, unit)
 
-class Callback(QtCore.QThread):
-    received = QtCore.pyqtSignal(int, str, str, str)
-
-    def __init__(self, idx=0, devicename="", dataname="", unit=""):
-        super(Callback, self).__init__()
-        self.idx = idx
-        self.devicename = devicename
-        self.dataname = dataname
-        self.unit = unit
-
-    def setValues(self, idx, devicename, dataname, unit):
-        self.idx = idx
-        self.devicename = devicename
-        self.dataname = dataname
-        self.unit = unit
-        self.run()
-
-    def run(self):
-        # print(received)
-        self.received.emit(self.idx, self.devicename, self.dataname, self.unit)
-
-class EventCallback(QtCore.QThread):
-    received = QtCore.pyqtSignal(float, str, str, str, int)
-
-    def __init__(self):
-        super(EventCallback, self).__init__()
-        self.time = 0
-        self.text = ''
-        self.dname = ''
-        self.sname = ''
-        self.priority = 0
-
-    def setValues(self, time, text, dname, sname, priority):
-        self.time = time
-        self.text = text
-        self.dname = dname
-        self.sname = sname
-        self.priority = priority
-        self.run()
-
-    def run(self):
-        # print(received)
-        self.received.emit(self.time, self.text, self.dname, self.sname, self.priority)
-
-class Updater(QtCore.QThread):
-    received = QtCore.pyqtSignal()
-
-    def run(self):
-        while True:
-            time.sleep(0.1)
-            self.received.emit()
-
 
 class RTOC(QtWidgets.QMainWindow, Actions):
     def __init__(self):
@@ -165,11 +113,8 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.logger = RTLogger.RTLogger()
         self.logger.tr = self.tr
         self.forceQuit = False
-        self.newSignalThread = Callback(self)
-        self.newSignalThread.received.connect(self.addNewSignal)
-        # #self.newSignalThread.start()
-        self.logger.newSignalCallback = self.newSignalThread.setValues
-        #self.logger.newSignalCallback = self.newSignalThread
+
+        self.logger.newSignalCallback = self.addNewSignal
         self.logger.callback = self.newDataCallback
         self.logger.clearCallback = self.clearData
         self.config = self.logger.config
@@ -189,12 +134,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
 
         self.logger.scriptExecutedCallback = self.scriptWidget.executedCallback
         self.logger.handleScriptCallback = self.scriptWidget.triggeredScriptCallback
-
-
-        self.newEventThread = EventCallback()
-        self.newEventThread.received.connect(self.eventWidget.update)
-        self.logger.newEventCallback = self.newEventThread.setValues
-
+        self.logger.newEventCallback = self.eventWidget.update
         if not self.config["pluginsWidget"]:
             self.pluginsWidget.hide()
         if not self.config["scriptWidget"]:
@@ -241,17 +181,18 @@ class RTOC(QtWidgets.QMainWindow, Actions):
 
     def initTrayIcon(self):
         show_action = QtWidgets.QAction(self.tr("Anzeigen"), self)
-        quit_action = QtWidgets.QAction(self.tr("Beenden"), self)
-        self.hide_action = QtWidgets.QAction(self.tr("Im Hintergrund laufen"), self)
-        self.tcp_action = QtWidgets.QAction(self.tr("TCP Server"), self)
-        self.hide_action.setCheckable(True)
-        self.tcp_action.setCheckable(True)
-        self.tcp_action.setChecked(self.config['systemTray'])
-        self.hide_action.setChecked(self.config['tcpserver'])
         show_action.triggered.connect(self.show)
-        self.hide_action.triggered.connect(self.trayToggleSystemTray)
+        self.hide_action = QtWidgets.QAction(self.tr("Im Hintergrund laufen"), self)
+        self.hide_action.setCheckable(True)
+        self.hide_action.setChecked(self.config['systemTray'])
+        self.hide_action.triggered.connect(self.toggleSystemTray)
+        self.tcp_action = QtWidgets.QAction(self.tr("TCP Server"), self)
+        self.tcp_action.setCheckable(True)
+        self.tcp_action.setChecked(self.config['tcpserver'])
+        self.tcp_action.triggered.connect(self.toggleTcpServer)
+        quit_action = QtWidgets.QAction(self.tr("Beenden"), self)
         quit_action.triggered.connect(self.forceClose)
-        self.tcp_action.triggered.connect(self.trayToggleTcpServer)
+
         tray_menu = QtWidgets.QMenu()
         tray_menu.addAction(show_action)
         tray_menu.addAction(self.hide_action)
@@ -259,6 +200,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.systemTrayAction.setChecked(self.config["systemTray"])
+        self.TCPServerAction.setChecked(self.config["tcpserver"])
 
     def initDeviceWidget(self):
         for plugin in self.logger.devicenames:
@@ -388,9 +330,10 @@ class RTOC(QtWidgets.QMainWindow, Actions):
 
     def addNewSignal(self, id, devicename, signalname, dataunit):
         #idx , devicename, signalname, dataunit = self.logger.newSignal
-        self.plotWidgets[self.activePlotWidgetIndex].addSignal(
+        self.plotWidgets[self.activePlotWidgetIndex].addSignal2.emit(
             devicename, signalname, id, dataunit)
         self.scriptWidget.updateListWidget()
+        #QtCore.QMetaObject.invokeMethod(self.plotWidgets[self.activePlotWidgetIndex], "addSignal", QtCore.Qt.QueuedConnection, devicename, signalname, id, dataunit)
 
     def newDataCallback(self):
         devicename, dataname = self.logger.latestSignal
@@ -482,34 +425,35 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         super(RTOC, self).mousePressEvent(event)
 
 
-def splashScreen(app):
-    # Create and display the splash screen
-    splash_pix = QtGui.QPixmap('data/splash.png')
-    splash = QtWidgets.QSplashScreen(splash_pix, QtCore.Qt.WindowStaysOnTopHint)
-    splash.setMask(splash_pix.mask())
-    #splash.show()
-    #app.processEvents()
+# def splashScreen(app):
+#     # Create and display the splash screen
+#     splash_pix = QtGui.QPixmap('data/splash.png')
+#     splash = QtWidgets.QSplashScreen(splash_pix, QtCore.Qt.WindowStaysOnTopHint)
+#     splash.setMask(splash_pix.mask())
+#     #splash.show()
+#     #app.processEvents()
+#
+#     splash.setEnabled(False)
+#     # splash = QSplashScreen(splash_pix)
+#     # adding progress bar
+#     progressBar = QtWidgets.QProgressBar(splash)
+#     progressBar.setStyleSheet("QProgressBar{border: 0px solid grey;border-radius: 20px;text-align: center; background-color: rgba(255, 255, 255, 0)} QProgressBar::chunk {background-color: rgba(31, 31, 31, 0.7);width: 10px;margin: 0px;}")
+#     progressBar.setMaximum(10)
+#     progressBar.setGeometry(0, splash_pix.height() -27, splash_pix.width(), 27)
+#
+#     # splash.setMask(splash_pix.mask())
+#
+#     splash.show()
+#     #splash.showMessage("<h1><font color='white'>RealTime OpenControl loading ...</font></h1>\nv1.6", QtCore.Qt.AlignBottom | QtCore.Qt.AlignCenter, QtCore.Qt.black)
 
-    splash.setEnabled(False)
-    # splash = QSplashScreen(splash_pix)
-    # adding progress bar
-    progressBar = QtWidgets.QProgressBar(splash)
-    progressBar.setStyleSheet("QProgressBar{border: 0px solid grey;border-radius: 20px;text-align: center; background-color: rgba(255, 255, 255, 0)} QProgressBar::chunk {background-color: rgba(31, 31, 31, 0.7);width: 10px;margin: 0px;}")
-    progressBar.setMaximum(10)
-    progressBar.setGeometry(0, splash_pix.height() -27, splash_pix.width(), 27)
+    # for i in range(1, 11):
+    #     progressBar.setValue(i)
+    #     t = time.time()
+    #     while time.time() < t + 0.1:
+    #        app.processEvents()
+    #
+    # return splash
 
-    # splash.setMask(splash_pix.mask())
-
-    splash.show()
-    #splash.showMessage("<h1><font color='white'>RealTime OpenControl loading ...</font></h1>\nv1.6", QtCore.Qt.AlignBottom | QtCore.Qt.AlignCenter, QtCore.Qt.black)
-
-    for i in range(1, 11):
-        progressBar.setValue(i)
-        t = time.time()
-        while time.time() < t + 0.1:
-           app.processEvents()
-
-    return splash
 
 def setStyleSheet(app, myapp):
     try:
@@ -519,7 +463,7 @@ def setStyleSheet(app, myapp):
         #mw = qtmodern.windows.ModernWindow(myapp)
         mw = myapp
         return app, mw
-    except:
+    except ImportError:
         tb = traceback.format_exc()
         print(tb)
         print("New Style not installed")
@@ -527,6 +471,7 @@ def setStyleSheet(app, myapp):
             stylesheet = myfile.read().replace('\n', '')
         app.setStyleSheet(stylesheet)
         return app, myapp
+
 
 def setLanguage(app):
     with open("config.json", encoding="UTF-8") as jsonfile:
@@ -540,7 +485,8 @@ def setLanguage(app):
     # compile translationfile: % lrelease-qt5 lang/de_de.ts
     # use self.tr("TEXT TO TRANSLATE") in the code
 
-if __name__ == '__main__':
+
+def main():
     app = QtWidgets.QApplication(sys.argv)
     with open("config.json", encoding="UTF-8") as jsonfile:
         config = json.load(jsonfile, encoding="UTF-8")
@@ -555,10 +501,14 @@ if __name__ == '__main__':
             # use self.tr("TEXT TO TRANSLATE") in the code
     myapp = RTOC()
 
-    splash = splashScreen(app)
+    # splash = splashScreen(app)
     app, myapp = setStyleSheet(app, myapp)
 
     myapp.show()
-    splash.finish(myapp)
+    # splash.finish(myapp)
     app.exec_()
+
+
+if __name__ == '__main__':
+    main()
     sys.exit()

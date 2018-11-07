@@ -60,12 +60,12 @@ class toggleTable(QtWidgets.QWidget):
                         self.stream(datas, snames=snames, dname=self.name.replace(' ',''))
                     # plot
 
-    def toggleUpdate(self, i):
-        if i == 0:
+    def toggleUpdate(self, checkbox_state):
+        if checkbox_state == 0:
             self.run = None
-        elif i == 1:
+        elif checkbox_state == 1:
             self.run = False
-        elif i == 2:
+        elif checkbox_state == 2:
             self.run = True
 
     def __dict2QTable(self, data):

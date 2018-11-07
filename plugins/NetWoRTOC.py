@@ -36,18 +36,14 @@ class Plugin(LoggerPlugin):
             if diff < 1/self.samplerate:
                 time.sleep(1/self.samplerate-diff)
             start_time = time.time()
-            try:
-                ans = self.sendTCP(getSignalList= True)
-                if ans:
-                    if 'signallist' in ans.keys():
-                        if ans['signallist'] != self.__siglist:
-                            self.__siglist = ans['signallist']
-                            self.updateList()
-                    if self.widget.streamButton.isChecked():
-                        self.plotSignals()
-            except:
-                tb = traceback.format_exc()
-                print(tb)
+            ans = self.sendTCP(getSignalList= True)
+            if ans:
+                if 'signallist' in ans.keys():
+                    if ans['signallist'] != self.__siglist:
+                        self.__siglist = ans['signallist']
+                        self.updateList()
+                if self.widget.streamButton.isChecked():
+                    self.plotSignals()
             diff = time.time() - start_time
 
     def plotSignals(self):

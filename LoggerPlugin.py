@@ -151,6 +151,9 @@ class LoggerPlugin:
                 response = self.sock.recv()
                 self.sock.close()
                 return response
+            except ConnectionRefusedError:
+                print('TCP Connection refused')
+                return False
             except:
                 tb = traceback.format_exc()
                 print(tb)
