@@ -496,12 +496,12 @@ def splashScreen(app):
     progressBar = QtWidgets.QProgressBar(splash)
     progressBar.setStyleSheet("QProgressBar{border: 0px solid grey;border-radius: 20px;text-align: center; background-color: rgba(255, 255, 255, 0)} QProgressBar::chunk {background-color: rgba(31, 31, 31, 0.7);width: 10px;margin: 0px;}")
     progressBar.setMaximum(10)
-    progressBar.setGeometry(0, splash_pix.height() -20, splash_pix.width(), 20)
+    progressBar.setGeometry(0, splash_pix.height() -27, splash_pix.width(), 27)
 
     # splash.setMask(splash_pix.mask())
 
     splash.show()
-    splash.showMessage("<h1><font color='white'>RealTime OpenControl loading ...</font></h1>\nv1.6", QtCore.Qt.AlignTop | QtCore.Qt.AlignCenter, QtCore.Qt.black)
+    #splash.showMessage("<h1><font color='white'>RealTime OpenControl loading ...</font></h1>\nv1.6", QtCore.Qt.AlignBottom | QtCore.Qt.AlignCenter, QtCore.Qt.black)
 
     for i in range(1, 11):
         progressBar.setValue(i)
