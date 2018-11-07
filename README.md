@@ -1,10 +1,28 @@
 # RealTime OpenControl (RTOC)
 ### Version: 1.6
 
+Compatible with Windows and Linux
+
+### Currently this README and the WIKI-documentation is only available in german. The software is available in english AND german, selectable in the menu. English translations for the documentation is following soon!
+
+Short description: RealTime OpenControl is a universal measurement, plot and control-software. It's purpose is to put measurements from different devices (for example 3d-printers, multimeters, power supplies, microcontroller,...) into one tool. Its fully expandable for every device with Python-Plugins and a running TCP-server. You can also control the devices (if your plugin has this functionality) with python-scripts, which you can write and run at runtime! This makes it also possible to plot everything else. There are some example-plugins and example-scripts included. It also offers an extended plotting-GUI with multiple plots, measure-tools, style-adjustments.
+Just have a look at the screenshots and the wiki, download it, try it, and send me suggestions and bug-reports, if you find some! 
+Note: the english-translation is not perfect, some text isn't translated. This will be fixed sooner or later, depending on the feedback.
+
+### Usecases:
+- Home-automation
+- temperature-sensor calibration
+- system-monitor
+- long-time-measurements
+- just playing around with plots
+
+You can download the python3-sourcecode and run it with `python3 RTOC.py` or you can download the build from here and run it without python (currently Windows only!)
+
 ![Übersicht](screenshots/overview.png)
 
 RTOC starten:
 > python3 RTOC.py
+> Alternativ wird hier ein BUILD (inklusive Installer) bereitgestellt (bisher nur Windows!)
 
 RealTime OpenControl ermöglicht eine geräteübergreifende Messaufzeichnung.
 Außerdem kann man mit dem integrierten Python-Skript-Editor auf die Messdaten und Geräte zugreifen und mit diesen interagieren. Somit lassen sich langsame Regelungen zwischen mehreren Geräten realisieren.
