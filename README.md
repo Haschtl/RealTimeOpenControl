@@ -14,10 +14,13 @@ Note: the english-translation is not perfect, some text isn't translated. This w
 - long-time-measurements
 - just playing around with plots
 
+You can download the python3-sourcecode and run it with `python3 RTOC.py` or you can download the build from here and run it without python!
+
 ![Übersicht](screenshots/overview.png)
 
 RTOC starten:
 > python3 RTOC.py
+> Alternativ wird hier ein BUILD bereitgestellt (inklusive Installer)
 
 RealTime OpenControl ermöglicht eine geräteübergreifende Messaufzeichnung.
 Außerdem kann man mit dem integrierten Python-Skript-Editor auf die Messdaten und Geräte zugreifen und mit diesen interagieren. Somit lassen sich langsame Regelungen zwischen mehreren Geräten realisieren.
