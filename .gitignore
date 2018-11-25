@@ -1,8 +1,0 @@
-__pycache__/
-data/__pycache__/
-data/lib/__pycache__/
-ProFiler.log
-build/
-dist/
-setup.py
-avbin64.dll

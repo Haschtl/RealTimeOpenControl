@@ -1,0 +1,25 @@
+Metadata-Version: 1.2
+Name: RTOC
+Version: 1.7
+Summary: RealTime OpenControl
+Home-page: https://github.com/Haschtl/RealTimeOpenControl
+Author: Sebastian Keller
+Author-email: sebastiankeller@online.de
+License: GNU
+Description: RealTime OpenControl is a universal measurement, plot and control-software.
+        It's purpose is to put measurements from different devices (for example 3d-printers, multimeters, power supplies, microcontroller,...) into one tool.
+        Its fully expandable for every device with Python-Plugins and a running TCP-server.
+        You can also control the devices (if your plugin has this functionality) with python-scripts, which you can write and run at runtime! This makes it also possible to plot everything else.
+        There are some example-plugins and example-scripts included.
+        It also offers an extended plotting-GUI with multiple plots, measure-tools, style-adjustments.
+        
+Platform: UNKNOWN
+Classifier: Programming Language :: Python
+Classifier: Programming Language :: Python :: 3
+Classifier: Environment :: Other Environment
+Classifier: Intended Audience :: Science/Research
+Classifier: License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)
+Classifier: Operating System :: OS Independent
+Classifier: Topic :: Scientific/Engineering :: Visualization
+Classifier: Topic :: Software Development :: User Interfaces
+Requires-Python: >=3

@@ -1,3 +1,3 @@
 #!/bin/sh
-cd ~/Software/RealTimeOpenControl
+cd RTOC
 python3 RTOC.py

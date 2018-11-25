@@ -1,37 +1,43 @@
 # RealTime OpenControl (RTOC)
-### Version: 1.6
+### Version: 1.7
 
-Compatible with Windows and Linux
-
-### Currently this README and the WIKI-documentation is only available in german. The software is available in english AND german, selectable in the menu. English translations for the documentation is following soon!
-
-Short description: RealTime OpenControl is a universal measurement, plot and control-software. It's purpose is to put measurements from different devices (for example 3d-printers, multimeters, power supplies, microcontroller,...) into one tool. Its fully expandable for every device with Python-Plugins and a running TCP-server. You can also control the devices (if your plugin has this functionality) with python-scripts, which you can write and run at runtime! This makes it also possible to plot everything else. There are some example-plugins and example-scripts included. It also offers an extended plotting-GUI with multiple plots, measure-tools, style-adjustments.
-Just have a look at the screenshots and the wiki, download it, try it, and send me suggestions and bug-reports, if you find some! 
-Note: the english-translation is not perfect, some text isn't translated. This will be fixed sooner or later, depending on the feedback.
-
-### Usecases:
-- Home-automation
-- temperature-sensor calibration
-- system-monitor
-- long-time-measurements
-- just playing around with plots
-
-You can download the python3-sourcecode and run it with `python3 RTOC.py` or you can download the build from here and run it without python (currently Windows only!)
-
+![Beispielschematik](screenshots/RTOC-schematik.png)
 ![Übersicht](screenshots/overview.png)
 
-RTOC starten:
+# Installation
+## With pip3 (Recommended)
+> pip3 install RTOC
+> python3 -m RTOC [-s] [-r 'REMOTEADRESSE']
+
+## From source
+Klone RTOC in ein beliebiges Verzeichnis und wechsle in das Verzeichnis:
+
+RTOC mit GUI starten:
 > python3 RTOC.py
-> Alternativ wird hier ein BUILD (inklusive Installer) bereitgestellt (bisher nur Windows!)
+
+RTOC nur Logger-Server starten:
+> python3 RTOC.py -s
+
+RTOC im Remote-Modus starten (NetWoRTOC-Plugin im Vordergrund):
+> python3 RTOC-py -r 'REMOTEADRESSE'
 
 RealTime OpenControl ermöglicht eine geräteübergreifende Messaufzeichnung.
 Außerdem kann man mit dem integrierten Python-Skript-Editor auf die Messdaten und Geräte zugreifen und mit diesen interagieren. Somit lassen sich langsame Regelungen zwischen mehreren Geräten realisieren.
-Z.B.: Temperaturmessung mit Multimeter (mit USB-Anschluss) und Regelung eines Heizelements auf eine Solltemperatur. Ideal zum Aufzeichnen, Testen und Optimieren von Regelungen. Eignet sich auch für Custom-HomeAutomation (z.B.: auf Raspberry Pi oder HomeServer) mit maximaler Flexibilität und Anpassbarkeit
+Z.B.: Temperaturmessung mit Multimeter (mit USB-Anschluss) und Regelung eines Heizelements auf eine Solltemperatur. Ideal zum Aufzeichnen, Testen und Optimieren von Regelungen.
+
+Eignet sich auch für Custom-HomeAutomation (z.B.: auf Raspberry Pi oder HomeServer) mit maximaler Flexibilität und Anpassbarkeit. Dabei kann über TCP auf den RTOC-Server zugegriffen werden. Dadurch können auch Plugin-Funktionen ausgeführt und Parameter angepasst werden.
+Somit lässt sich der Logger auch einfach als Python-Remote-Steuerung verwenden. Fast ebenso viele Funktionen bietet der integrierte Telegram-Bot.
 
 Die Einbindung neuer Geräte ist einfach möglich:
 - Als Python-Plugin für RTOC (v.a. für lokale Geräte)
 - Als TCP-Client (v.a. für Netzwerkgeräte)
+  - Die TCP-Schnittstelle stellt hierbei alle Funktionen bereit, die das RTOC-Backend bereitstellt
 (für weitere Infos siehe Wiki)
+
+Steuerung der Geräte ist noch einfacher:
+- Direkt in der GUI
+- Remote über das Netzwerk bzw. Internet mit TCP
+- Mit Telegram-Bot
 
 ### Standart/Beispiel Plugins:
 - Funktionsgenerator: Erzeugt Sinus, Square, Sawtooth, Random, AC, DC
@@ -39,15 +45,18 @@ Die Einbindung neuer Geräte ist einfach möglich:
 - Octoprint: Aufzeichnung für 3D-Drucker
 - DPS5020: Netzgerät-Aufzeichnung und Steuerung (evtl. auch DPS5005, ...)
 - HoldPeak VC820: Multimeter Messaufzeichnung (wahrsch. auch andere VC820)
-- NetWoRTOC: Datenaustausch zwischen mehreren RTOC's im Netzwerk
+- NetWoRTOC: Steuerung und Datenaustausch zwischen mehreren RTOC's im Netzwerk
 
 
-Die Oberfläche hat erweiterte Darstellungsoptionen und verschiedene Messtools für den Plot bereit.
+Die Oberfläche hat erweiterte Darstellungsoptionen und stellt verschiedene Messtools für den Plot bereit.
 
 ## Funktionsübersicht
 - Plugins und TCP-Clients:
   - können Daten als Stream(=append) oder Plot(=replace) senden
   - können Events senden
+- Remotesteuerung per TCP oder Telegram-Bot:
+  - Ermöglicht reine Serveranwendungen z.B. auf Raspberry Pi
+  - Kompletter Zugriff per Telegram-Bot
 - Skripte:
   - Multi-Tab Skript-Editor
   - Der Nutzer kann während der Laufzeit mit den Signalen und Plugins interagieren:
@@ -66,15 +75,17 @@ Die Oberfläche hat erweiterte Darstellungsoptionen und verschiedene Messtools f
 ### Screenshots - siehe unten
 
 ## Python3 Paket-Abhängigkeiten
-- sudo apt install python3-pyqt5
-- sudo apt install python3-pyqt5.qtsvg
-- sudo apt install python3-pip
-- pip3 install numpy
-- pip3 install pyqtgraph
-- pip3 install markdown2
-- pip3 install xlsxwriter
-- pip3 install scipy
-- pip3 install qtmodern
+- numpy
+- pyqt5
+- pyqtgraph
+- markdown2
+- xlsxwriter
+- scipy
+- qtmodern
+- python-telegram-bot
+- matplotlib
+- requests
+- python-nmap
 
 Optional für Plugins:
 - pip3 install minimalmodbus (DPS5020)

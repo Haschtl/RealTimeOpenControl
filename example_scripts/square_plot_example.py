@@ -1,1 +1,0 @@
-stream(Generator.Square.latest*2)
