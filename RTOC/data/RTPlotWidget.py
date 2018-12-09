@@ -8,6 +8,8 @@ from .RTPlotActions import RTPlotActions
 from .signalWidget import SignalWidget
 from . import define as define
 import os
+import sys
+
 
 class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
     droppedTree = QtCore.pyqtSignal(dict)
@@ -15,7 +17,12 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
 
     def __init__(self, logger, selfself, id):
         super(RTPlotWidget, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/plotWidget.ui", self)
         self.setAcceptDrops(True)
         self.setObjectName("RTPlotWidget"+str(id))
@@ -131,7 +138,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         idx = len(self.signalObjects)
         self.signalObjects.append(signalObject)
         self.plot.addItem(self.signalObjects[idx].plot)
-        self.plot.addItem(self.signalObjects[idx].labelItem)
+        self.plot.addItem(self.signalObjects[idx].labelItem, ignoreBounds = True)
         if not self.plotViewWidget.labelButton.isChecked():
             self.signalObjects[idx].labelItem.hide()
 
@@ -180,7 +187,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         idx = len(self.signalObjects)
         self.signalObjects.append(SignalWidget(self, self.logger, devicename, signalname, id, unit))
         self.plot.addItem(self.signalObjects[idx].plot)
-        self.plot.addItem(self.signalObjects[idx].labelItem)
+        self.plot.addItem(self.signalObjects[idx].labelItem, ignoreBounds = True)
         if not self.plotViewWidget.labelButton.isChecked():
             self.signalObjects[idx].labelItem.hide()
 

@@ -61,7 +61,12 @@ class SubWindow(QtWidgets.QMainWindow):
         self.setDockOptions(_DOCK_OPTS)
         self.setCentralWidget(self.widget.widget)
         self.setWindowTitle(title)
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         app_icon = QtGui.QIcon(packagedir+"/data/icon.png")
         self.setWindowIcon(app_icon)
         self.show()
@@ -108,7 +113,12 @@ class SubWindow(QtWidgets.QMainWindow):
 class RTOC(QtWidgets.QMainWindow, Actions):
     def __init__(self):
         super(RTOC, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/data/ui/rtoc.ui", self)
         self.app_icon = QtGui.QIcon(packagedir+"/data/icon.png")
         self.setWindowIcon(self.app_icon)
@@ -151,9 +161,14 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             self.deviceWidget.hide()
         if not self.config["eventWidget"]:
             self.eventWidgets.hide()
-        self.TCPServerAction.setChecked(self.config["tcpserver"])
+        self.actionTCPServer.setChecked(self.config["tcpserver"])
+        self.HTMLServerAction.setChecked(self.config["rtoc_web"])
         self.actionTelegramBot.setChecked(self.config["telegram_bot"])
         self.actionBotToken.setText(self.config['telegram_token'])
+        if self.config['tcppassword']=='':
+            self.actionTCPPassword.setText(self.tr('Passwort-Schutz: Aus'))
+        else:
+            self.actionTCPPassword.setText(self.tr('Passwort-Schutz: An'))
         self.newPlotWidget()
 
         self.updateLabels()
@@ -209,7 +224,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.systemTrayAction.setChecked(self.config["systemTray"])
-        self.TCPServerAction.setChecked(self.config["tcpserver"])
+        self.actionTCPServer.setChecked(self.config["tcpserver"])
 
     def initDeviceWidget(self):
         for plugin in self.logger.devicenames.keys():
@@ -437,8 +452,14 @@ class RTOC(QtWidgets.QMainWindow, Actions):
 class RTOC_TCP(QtWidgets.QMainWindow):
     def __init__(self):
         super(RTOC_TCP, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         self.logger = RTLogger.RTLogger(True)
+        self.config = self.logger.config
         app_icon = QtGui.QIcon(packagedir+"/data/icon.png")
         self.tray_icon = QtWidgets.QSystemTrayIcon(self)
         self.tray_icon.setIcon(app_icon)
@@ -511,7 +532,12 @@ def setLanguage(app):
         config={'language':'en'}
     if config['language'] == 'en':
         translator = QtCore.QTranslator()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         translator.load(packagedir+"/lang/en_en.qm")
         app.installTranslator(translator)
     # more info here: http://kuanyui.github.io/2014/09/03/pyqt-i18n/
@@ -557,7 +583,12 @@ def startRemoteRTOC(remotepath):
     if config['language'] == 'en':
         print("English language selected")
         translator = QtCore.QTranslator()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         translator.load(packagedir+"/lang/en_en.qm")
         app.installTranslator(translator)
     myapp = RTOC()
@@ -576,7 +607,9 @@ def startRemoteRTOC(remotepath):
     myapp.toggleDevice('NetWoRTOC', button)
     myapp.logger.getPlugin('NetWoRTOC').start(remotepath)
     myapp.logger.getPlugin('NetWoRTOC').widget.comboBox.setCurrentText(remotepath)
-    myapp.logger.getPlugin('NetWoRTOC').widget.streamButton.setChecked(True)
+    myapp.logger.getPlugin('NetWoRTOC').run = False
+    myapp.logger.getPlugin('NetWoRTOC').__openConnectionCallback()
+    #myapp.logger.getPlugin('NetWoRTOC').widget.streamButton.setChecked(True)
     app.exec_()
 
 
@@ -591,7 +624,12 @@ def startRTOC():
     if config['language'] == 'en':
         print("English language selected")
         translator = QtCore.QTranslator()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         translator.load(packagedir+"/lang/en_en.qm")
         app.installTranslator(translator)
         # more info here: http://kuanyui.github.io/2014/09/03/pyqt-i18n/

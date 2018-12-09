@@ -1,6 +1,7 @@
 from PyQt5 import uic
 from PyQt5 import QtWidgets
 import os
+import sys
 
 from .stylePlotGUI import plotStyler
 
@@ -8,7 +9,12 @@ from .stylePlotGUI import plotStyler
 class plotMultiStyler(QtWidgets.QDialog):
     def __init__(self, signalnames, plots=[], logger=None):
         super(plotMultiStyler, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/stylePlotDialog.ui", self)
         self.setCallbacks()
 

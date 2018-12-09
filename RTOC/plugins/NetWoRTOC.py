@@ -79,10 +79,7 @@ class Plugin(LoggerPlugin):
                     for sig in ans['signals'].keys():
                         signame = sig.split('.')
                         s = ans['signals'][sig]
-                        if s[2] != []:
-                            u = s[2][-1]
-                        else:
-                            u = ''
+                        u = s[2]
                         self.plot(s[0],s[1],sname = signame[1], dname=signame[0]+"_Remote", unit=u)
 
     def toggleDevice(self, plugin, button):
@@ -169,6 +166,7 @@ class Plugin(LoggerPlugin):
         # self.widget.pluginCallWidget.clearSelection()
 
     def __openConnectionCallback(self):
+        donot = False
         if self.run:
             self.run = False
             self.widget.connectButton.setText(translate('NetWoRTOC',"Verbinden"))
@@ -179,20 +177,37 @@ class Plugin(LoggerPlugin):
             self.run = True
             try:
                 ok = self.sendTCP()
-                if ok != False:
+                if ok is None:
+                    text, ok2 = pyqtlib.text_message(self.widget, translate('NetWoRTOC','Passwort'), translate('NetWoRTOC',"Der RTOC-Server ")+address+translate('NetWoRTOC'," ist passwortgeschützt. Bitte Passwort eintragen"), translate('NetWoRTOC','TCP-Passwort'))
+                    if ok2:
+                        print('hello')
+                        self.tcppassword = text
+                        return self.widget.connectButton.clicked.emit()
+                        donot = True
+                    else:
+                        ok = None
+                elif ok != False:
                     ok = True
             except:
                 ok = False
-            if ok:
-                self.run = True
-                self.__updater = Thread(target=self.updateT)
-                self.__updater.start()
-                self.widget.connectButton.setText(translate('NetWoRTOC',"Beenden"))
+            if not donot:
+                if ok:
+                    self.run = True
+                    self.__updater = Thread(target=self.updateT)
+                    self.__updater.start()
+                    self.widget.connectButton.setText(translate('NetWoRTOC',"Beenden"))
+                elif ok is False:
+                    self.__base_address = ""
+                    self.run = False
+                    self.widget.connectButton.setText(translate('NetWoRTOC',"Fehler"))
+                    self.__clearAll()
+                else:
+                    self.__base_address = ""
+                    self.run = False
+                    self.widget.connectButton.setText(translate('NetWoRTOC',"Geschützt"))
+                    self.__clearAll()
             else:
-                self.__base_address = ""
-                self.run = False
-                self.widget.connectButton.setText(translate('NetWoRTOC',"Fehler"))
-                self.__clearAll()
+                print('You should not do this')
         self.enableGUI(self.run)
 
     def __clearAll(self):
@@ -214,6 +229,7 @@ class Plugin(LoggerPlugin):
         self.widget.clearButton.setEnabled(value)
 
     def start(self, address):
+        donot = False
         if self.run:
             self.run = False
         else:
@@ -221,19 +237,37 @@ class Plugin(LoggerPlugin):
             self.run = True
             try:
                 ok = self.sendTCP()
-                if ok != False:
+                if ok is None:
+                    text, ok2 = pyqtlib.text_message(self.widget, translate('NetWoRTOC','Passwort'), translate('NetWoRTOC',"Der RTOC-Server ")+address+translate('NetWoRTOC'," ist passwortgeschützt. Bitte Passwort eintragen"), translate('NetWoRTOC','TCP-Passwort'))
+                    if ok2:
+                        print('hello')
+                        self.tcppassword = text
+                        return self.widget.connectButton.clicked.emit()
+                        donot = True
+                    else:
+                        ok = None
+                elif ok != False:
                     ok = True
             except:
                 ok = False
-            if ok:
-                self.run = True
-                self.__updater = Thread(target=self.updateT)
-                self.__updater.start()
-                self.widget.connectButton.setText(translate('NetWoRTOC',"Beenden"))
+            if not donot:
+                if ok:
+                    self.run = True
+                    self.__updater = Thread(target=self.updateT)
+                    self.__updater.start()
+                    self.widget.connectButton.setText(translate('NetWoRTOC',"Beenden"))
+                elif ok is False:
+                    self.__base_address = ""
+                    self.run = False
+                    self.widget.connectButton.setText(translate('NetWoRTOC',"Fehler"))
+                    self.__clearAll()
+                else:
+                    self.__base_address = ""
+                    self.run = False
+                    self.widget.connectButton.setText(translate('NetWoRTOC',"Geschützt"))
+                    self.__clearAll()
             else:
-                self.__base_address = ""
-                self.run = False
-                self.widget.connectButton.setText(translate('NetWoRTOC',"Fehler"))
+                print('You should not do this')
 
 
     def __changeSamplerate(self):

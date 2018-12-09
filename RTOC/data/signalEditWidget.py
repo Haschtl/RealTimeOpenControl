@@ -4,6 +4,7 @@ import time
 import os
 from collections import deque
 import numpy as np
+import sys
 
 from .lib import pyqt_customlib as pyqtlib
 from .stylePlotGUI import plotStyler
@@ -12,7 +13,12 @@ from .stylePlotGUI import plotStyler
 class SignalEditWidget(QtWidgets.QWidget):
     def __init__(self, selfself, id, plotWidget):
         super(SignalEditWidget, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/signalWidget2.ui", self)
         self.self = selfself
         self.id = id
@@ -100,7 +106,7 @@ class SignalEditWidget(QtWidgets.QWidget):
         self.close()
 
     def cutSignal(self):
-        if not self.plotWidget.plotToolsWidget.cutButton.isChecked():
+        if not self.plotWidget.cutButton.isChecked():
             pyqtlib.info_message(self.tr("Info"), self.tr("Wähle zuerst das Schneide-Tool aus"),
                                  self.tr("Du musst zuerst deine Schnittbereich festlegen"))
         else:
@@ -133,7 +139,7 @@ class SignalEditWidget(QtWidgets.QWidget):
                     signalname = self.self.logger.getSignalNames(self.id)[1] + \
                         "_cut"+str(len(self.self.logger.signals))
                     devicename = self.self.logger.getSignalNames(self.id)[0]
-                    unit = self.self.logger.getSignalUnits(self.id)[-1]
+                    unit = self.self.logger.getSignalUnits(self.id)
                     x = list(self.self.logger.getSignal(self.id)[0])[minIdx:maxIdx]
                     y = list(self.self.logger.getSignal(self.id)[1])[minIdx:maxIdx]
                     self.self.logger.plot(x, y, signalname, devicename, unit)
@@ -166,8 +172,8 @@ class SignalEditWidget(QtWidgets.QWidget):
         signalname = self.self.logger.getSignalNames(self.id)[1]
         devicename = self.self.logger.getSignalNames(self.id)[0]
         x, y = self.self.logger.getSignal(self.id)
-        units = self.self.logger.getSignalUnits(self.id)
-        self.self.logger.plot(x, y, signalname+"_2", devicename, units[-1])
+        unit = self.self.logger.getSignalUnits(self.id)
+        self.self.logger.plot(x, y, signalname+"_2", devicename, unit)
 
     def zeroXOffset(self):
         value = self.self.logger.getSignal(self.id)[0][-1]

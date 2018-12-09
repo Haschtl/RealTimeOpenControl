@@ -365,13 +365,21 @@
      <addaction name="actionTelegramBot"/>
      <addaction name="actionBotToken"/>
     </widget>
+    <widget class="QMenu" name="menuTCP_Server">
+     <property name="title">
+      <string>TCP - Server</string>
+     </property>
+     <addaction name="actionTCPServer"/>
+     <addaction name="actionTCPPassword"/>
+    </widget>
     <addaction name="loadSessionAction"/>
     <addaction name="saveSessionAction"/>
     <addaction name="separator"/>
     <addaction name="importDataAction"/>
     <addaction name="exportDataAction"/>
     <addaction name="separator"/>
-    <addaction name="TCPServerAction"/>
+    <addaction name="menuTCP_Server"/>
+    <addaction name="HTMLServerAction"/>
     <addaction name="menuTelegram_Bot"/>
     <addaction name="separator"/>
     <addaction name="systemTrayAction"/>
@@ -623,17 +631,6 @@
     <string>Minimize to SystemTray</string>
    </property>
   </action>
-  <action name="TCPServerAction">
-   <property name="checkable">
-    <bool>true</bool>
-   </property>
-   <property name="checked">
-    <bool>true</bool>
-   </property>
-   <property name="text">
-    <string>TCP - Server</string>
-   </property>
-  </action>
   <action name="multiprocessingListenerAction">
    <property name="checkable">
     <bool>true</bool>
@@ -677,6 +674,27 @@
    </property>
    <property name="text">
     <string>Aktiviert</string>
+   </property>
+  </action>
+  <action name="HTMLServerAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>RTOC - Web</string>
+   </property>
+  </action>
+  <action name="actionTCPServer">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Aktivieren</string>
+   </property>
+  </action>
+  <action name="actionTCPPassword">
+   <property name="text">
+    <string>Passwort-Schutz</string>
    </property>
   </action>
  </widget>

@@ -437,7 +437,7 @@ class telegramBot(QObject):
         for idx, signal in enumerate(namelist):
             if signal != ['RTOC', '']:
                 value = self.logger.getSignal(self.logger.getSignalId(signal[0], signal[1]))[1][-1]
-                unit = self.logger.getSignalUnits(self.logger.getSignalId(signal[0], signal[1]))[-1]
+                unit = self.logger.getSignalUnits(self.logger.getSignalId(signal[0], signal[1]))
                 strung = strung+signal[0]+'.'+signal[1]+': '+str(value)+" "+str(unit)+"\n"
         if strung == "":
             strung = translate('telegram', "Keine Messwerte vorhanden")

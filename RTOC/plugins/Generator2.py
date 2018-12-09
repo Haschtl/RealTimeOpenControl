@@ -61,7 +61,7 @@ class Plugin(LoggerPlugin):
     # loadGUI needs to return a QWidget, which will be implemented into the Plugins-Area
     def loadGUI(self):
         self.widget = QtWidgets.QWidget()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        packagedir = self.getDir(__file__)
         uic.loadUi(packagedir+"/Funktionsgenerator/gen_function.ui", self.widget)
         self.setCallbacks()
         self.setLabels()

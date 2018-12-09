@@ -121,7 +121,7 @@ class Plugin(LoggerPlugin):
 
     def loadGUI(self):
         self.widget = QtWidgets.QWidget()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        packagedir = self.getDir(__file__)
         uic.loadUi(packagedir+"/System/system.ui", self.widget)
         #self.setCallbacks()
         self.tables = []
@@ -147,7 +147,7 @@ class Plugin(LoggerPlugin):
         self.widget.networkLayout.addWidget(self.tables[6])
         self.tables.append(toggleTable('Network Connections', self.stream, getNetworkConnections, None))
         self.widget.networkLayout.addWidget(self.tables[7])
-        self.tables.append(toggleTable('Network Addresses', self.stream, getNetworkInfo, None))
+        self.tables.append(toggleTable('Network Adresses', self.stream, getNetworkInfo, None))
         self.widget.networkLayout.addWidget(self.tables[8])
         self.tables.append(toggleTable('Network Stats', self.stream, getNetworkStats, None))
         self.widget.networkLayout.addWidget(self.tables[9])

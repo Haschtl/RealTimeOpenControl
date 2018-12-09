@@ -7,6 +7,7 @@ import traceback
 from threading import Thread
 from .importCode import importCode
 import os
+import sys
 from .lib import pyqt_customlib as pyqtlib
 
 
@@ -52,7 +53,12 @@ class Callback(QtCore.QThread):
 class ScriptSubWidget(QtWidgets.QWidget):
     def __init__(self, logger, scriptstr, filepath=""):
         super(ScriptSubWidget, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/scriptSubWidget.ui", self)
 
         self.infoEdit.hide()
@@ -108,7 +114,12 @@ class ScriptSubWidget(QtWidgets.QWidget):
 
         action = QtWidgets.QWidgetAction(self.startScriptButton)
         self.triggerWidget = QtWidgets.QWidget()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/triggerWidget.ui", self.triggerWidget)
         action.setDefaultWidget(self.triggerWidget)
         self.startScriptButton.menu().addAction(action)

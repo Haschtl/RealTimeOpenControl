@@ -236,7 +236,7 @@ class SignalWidget(QtWidgets.QToolButton):
         if len(self.logger.signals) > 0:
             if len(self.logger.getSignal(self.id)[1]) > 0:
                 current_signal = self.logger.getSignal(self.id)[1][-1]
-                current_unit = self.logger.getSignalUnits(self.id)[-1]
+                current_unit = self.logger.getSignalUnits(self.id)
                 self.setText(self.signalname)
                 self.label.setText(str(round(current_signal, 5))+" "+str(current_unit))
 

@@ -35,7 +35,7 @@ class Plugin(LoggerPlugin):
 
     def loadGUI(self): # Only needed for Plugin-GUI
         self.widget = QtWidgets.QWidget()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        packagedir = self.getDir(__file__)
         uic.loadUi(packagedir+"/Template/template.ui", self.widget)
         return self.widget
 

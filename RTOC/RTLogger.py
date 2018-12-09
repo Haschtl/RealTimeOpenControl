@@ -12,6 +12,8 @@ import numpy as np
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtCore import QObject
 import sys
+import subprocess
+import hashlib
 
 try:
     from .data.lib import general_lib as lib
@@ -79,7 +81,9 @@ defaultconfig = {
     "telegram_token": "",
     "telegram_eventlevel": 1,
     "telegram_chat_ids": [],
-    "documentfolder": ""
+    "documentfolder": "",
+    "rtoc_web": False,
+    "tcppassword": ''
 }
 
 class RTLogger(ScriptFunctions, QObject):
@@ -120,9 +124,22 @@ class RTLogger(ScriptFunctions, QObject):
         self.startDeviceCallback = None
         self.stopDeviceCallback = None
         self.tcpclient = LoggerPlugin(None, None, None)
-
+        self.rtoc_web = None
         self.telegramBot = telegramBot(self)
         self.toggleTelegramBot()
+        self.toggleHTMLPage()
+
+    def getDir(self, dir = None):
+        if dir == None:
+            dir = __file__
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(dir))
+
+        return packagedir
 
     def getDeviceList(self):
         print("Default plugins:")
@@ -152,13 +169,30 @@ class RTLogger(ScriptFunctions, QObject):
         else:
             self.telegramBot.stop()
 
+    def toggleHTMLPage(self, value=None):
+        if value is None:
+            value = self.config['rtoc_web']
+        self.config['rtoc_web'] = value
+        if value:
+            self.rtoc_web = subprocess.Popen(["bokeh", "serve", self.getDir(__file__)+"/RTOC_Web.py"], shell=False)
+            print('HTML-Server running at localhost:5006')
+        else:
+            if self.rtoc_web:
+                #subprocess.call(["kill", "-9", "%d" % self.rtoc_web.pid])
+                print('HTML-Server killed')
+                self.rtoc_web.kill()
+                self.rtoc_web = None
+
     def toggleTcpServer(self, value=None):
         if value is None:
             value = self.config['tcpserver']
         self.config['tcpserver'] = value
         if value:
             try:
-                self.tcp = jsonsocket.Server("0.0.0.0", self.config["tcpPort"])
+                password = None
+                if self.config['tcppassword'] != "":
+                    password = self.config['tcppassword']
+                self.tcp = jsonsocket.Server("0.0.0.0", self.config["tcpPort"], password)
                 self.tcpRunning = True
                 self.__tcpserver = Thread(target=self.tcpListener)
                 self.__tcpserver.start()
@@ -173,6 +207,14 @@ class RTLogger(ScriptFunctions, QObject):
             if self.tcp:
                 self.tcp.close()
 
+    def setTCPPassword(self, strung):
+        self.config['tcppassword'] = strung
+        if self.tcp:
+            if strung == '' or strung == None:
+                self.tcp.setKeyword(None)
+            elif type(strung) == str:
+                self.tcp.setKeyword(strung)
+
     def sendTCP(self, hostname="localhost", *args, **kwargs):
         self.tcpclient.createTCPClient(hostname)
         self.tcpclient.sendTCP(*args, **kwargs)
@@ -186,63 +228,89 @@ class RTLogger(ScriptFunctions, QObject):
             try:
                 self.tcp.accept()
                 msg = self.tcp.recv()
-                if type(msg) == dict:
-                    if 'y' in msg.keys():
-                        plot = msg.get('plot', False)
-                        datasY = msg.get('y', [])
-                        datanames = msg.get('sname', [""])
-                        devicename = msg.get('dname', "noDevice")
-                        unit = msg.get('unit', [""])
-                        datasX = msg.get('x', None)
-                        if devicename is None:
-                            devicename = "noDevice"
-                        if plot:
-                            self.plot(datasX, datasY, datanames, devicename, unit)
-                        else:
-                            self.addDataCallback(datasY, datanames, devicename, unit, datasX, True)
-                        ans['sent'] = True
-                    if 'getSignalList' in msg.keys():
-                        signalNames = self.signalNames
-                        if ['RTOC', ''] in signalNames:
-                            signalNames.pop(signalNames.index(['RTOC', '']))
-                        ans['signalList'] = signalNames
-                    if 'getPluginList' in msg.keys():
-                        ans['pluginList'] = self.getPluginDict()
-                    if 'event' in msg.keys():
-                        self.addNewEvent(*msg['event'])
-                    if 'getEventList' in msg.keys():
-                        ans['events'] = {}
-                        for name in self.signalNames:
-                            sig = self.getEvents(self.getSignalId(name[0], name[1]))
-                            ans['events'][".".join(name)] = [list(sig[0]), list(sig[1])]
-                    if 'getEvent' in msg.keys():
-                        ans['events'] = {}
-                        for device in msg['getEvent']:
-                            dev = device.split('.')
-                            sig = self.getEvents(self.getSignalId(dev[0], dev[1]))
-                            ans['events'][device] = [list(sig[0]), list(sig[1])]
-                    if 'getSignal' in msg.keys():
-                        ans['signals'] = {}
-                        for device in msg['getSignal']:
-                            dev = device.split('.')
-                            sig = self.getSignal(self.getSignalId(dev[0], dev[1]))
-                            unit = self.getSignalUnits(self.getSignalId(dev[0], dev[1]))
-                            ans['signals'][device] = [list(sig[0]), list(sig[1]), unit]
-                    if 'getLatest' in msg.keys():
-                        ans['latest'] = {}
-                        for device in msg['getLatest']:
-                            dev = device.split('.')
-                            sig = self.getSignal(self.getSignalId(dev[0], dev[1]))
-                            ans['latest'][device] = sig[1][-1]
-                    if 'remove' in msg.keys():
-                        ans['remove'] = 'Not implemented'
-                    if 'plugin' in msg.keys():
-                        ans['plugin'] = self.handleTcpPlugins(msg['plugin'])
-                    if 'logger' in msg.keys():
-                        ans['logger'] = self.handleTcpLogger(msg['logger'])
-                    for key in msg.keys():
-                        if key not in ans.keys():
-                            ans[key] = msg[key]
+                if type(msg) == dict and msg != {}:
+                    # if self.config['tcppassword'] == "":
+                    #     authorized = True
+                    # elif 'password' in msg.keys():
+                    #     hash_object = hashlib.sha256(self.config['tcppassword'].encode('utf-8'))
+                    #     hex_dig = hash_object.hexdigest()
+                    #     if msg['password'] == hex_dig:
+                    #         authorized = True
+                    #     else:
+                    #         authorized = False
+                    # else:
+                    #     authorized = False
+                    # if 'password' in msg.keys():
+                    #     msg.pop('password')
+                    # if authorized:
+                        if 'y' in msg.keys():
+                            plot = msg.get('plot', False)
+                            datasY = msg.get('y', [])
+                            datanames = msg.get('sname', [""])
+                            devicename = msg.get('dname', "noDevice")
+                            unit = msg.get('unit', [""])
+                            datasX = msg.get('x', None)
+                            if devicename is None:
+                                devicename = "noDevice"
+                            if plot:
+                                self.plot(datasX, datasY, datanames, devicename, unit)
+                            else:
+                                self.addDataCallback(datasY, datanames, devicename, unit, datasX, True)
+                            ans['sent'] = True
+                        if 'getSignalList' in msg.keys():
+                            signalNames = self.signalNames
+                            if ['RTOC', ''] in signalNames:
+                                signalNames.pop(signalNames.index(['RTOC', '']))
+                            ans['signalList'] = signalNames
+                        if 'getPluginList' in msg.keys():
+                            ans['pluginList'] = self.getPluginDict()
+                        if 'event' in msg.keys():
+                            self.addNewEvent(*msg['event'])
+                        if 'getEventList' in msg.keys():
+                            ans['events'] = {}
+                            for name in self.signalNames:
+                                sig = self.getEvents(self.getSignalId(name[0], name[1]))
+                                ans['events'][".".join(name)] = [list(sig[0]), list(sig[1])]
+                        if 'getEvent' in msg.keys():
+                            ans['events'] = {}
+                            for device in msg['getEvent']:
+                                dev = device.split('.')
+                                sig = self.getEvents(self.getSignalId(dev[0], dev[1]))
+                                ans['events'][device] = [list(sig[0]), list(sig[1])]
+                        if 'getSignal' in msg.keys():
+                            ans['signals'] = {}
+                            if type(msg['getSignal']) == list:
+                                for device in msg['getSignal']:
+                                    dev = device.split('.')
+                                    sig = self.getSignal(self.getSignalId(dev[0], dev[1]))
+                                    unit = self.getSignalUnits(self.getSignalId(dev[0], dev[1]))
+                                    ans['signals'][device] = [list(sig[0]), list(sig[1]), unit]
+                            elif msg['getSignal'] == 'all':
+                                for dev in self.signalNames:
+                                    sig = self.getSignal(self.getSignalId(dev[0], dev[1]))
+                                    unit = self.getSignalUnits(self.getSignalId(dev[0], dev[1]))
+                                    ans['signals']['.'.join(dev)] = [list(sig[0]), list(sig[1]), unit]
+                        if 'getLatest' in msg.keys():
+                            ans['latest'] = {}
+                            for device in msg['getLatest']:
+                                dev = device.split('.')
+                                sig = self.getSignal(self.getSignalId(dev[0], dev[1]))
+                                ans['latest'][device] = sig[1][-1]
+                        if 'remove' in msg.keys():
+                            ans['remove'] = 'Not implemented'
+                        if 'plugin' in msg.keys():
+                            ans['plugin'] = self.handleTcpPlugins(msg['plugin'])
+                        if 'logger' in msg.keys():
+                            ans['logger'] = self.handleTcpLogger(msg['logger'])
+                        for key in msg.keys():
+                            if key not in ans.keys():
+                                ans[key] = msg[key]
+                else:
+                    ans['error'] = True
+                    if True:
+                        ans['password'] = 'RTOC-Server is password protected!'
+                    else:
+                        ans['password'] = 'Wrong password'
                 self.tcp.send(ans)
             except OSError:
                 print("TCP Server idle")
@@ -436,6 +504,7 @@ class RTLogger(ScriptFunctions, QObject):
             if self.config['telegram_eventlevel'] <= 1:
                 self.telegramBot.sendMessage(self.config['telegram_name'] + " wird beendet.")
         self.telegramBot.stop()
+        self.toggleHTMLPage(False)
         for name in self.devicenames.keys():
             self.stopPlugin(name)
 
@@ -478,7 +547,8 @@ class RTLogger(ScriptFunctions, QObject):
             self.config["defaultRecordLength"] = self.maxLength
         self.signals = [[deque([], newLength), deque([], newLength)]
                         for _ in range(len(self.signalNames))]
-        self.signalUnits = [deque([], newLength) for _ in range(len(self.signalNames))]
+        #self.signalUnits = [deque([], newLength) for _ in range(len(self.signalNames))]
+        self.signalUnits = ['' for _ in range(len(self.signalNames))]
         self.events = [[deque([], newLength), deque([], newLength), deque([], newLength)]
                        for _ in range(len(self.signalNames))]
 
@@ -491,8 +561,8 @@ class RTLogger(ScriptFunctions, QObject):
 
         self.signals = [[deque(list(self.signals[idx][0]), newLength), deque(list(self.signals[idx][1]), newLength)]
                         for idx in range(len(self.signalNames))]
-        self.signalUnits = [deque(list(self.signalUnits[idx]), newLength)
-                            for idx in range(len(self.signalNames))]
+        #self.signalUnits = [deque(list(self.signalUnits[idx]), newLength)
+        #                    for idx in range(len(self.signalNames))]
 
         self.events = [[deque(list(self.events[idx][0]), newLength), deque(list(self.events[idx][1]), newLength), deque(list(self.events[idx][2]), newLength)]
                        for idx in range(len(self.signalNames))]
@@ -522,7 +592,8 @@ class RTLogger(ScriptFunctions, QObject):
         self.signalIDs.append(newID)
         self.signals += [[deque([], newLength), deque([], newLength)]]
         self.events += [[deque([], newLength), deque([], newLength), deque([], self.maxLength)]]
-        self.signalUnits += [deque([], newLength)]
+        #self.signalUnits += [deque([], newLength)]
+        self.signalUnits += ['']
         if self.newSignalCallback:
             #self.newSignal = [len(self.signalNames)-1, devicename, dataname, dataunit]
             self.newSignalCallback(newID, devicename, dataname, dataunit)
@@ -540,7 +611,8 @@ class RTLogger(ScriptFunctions, QObject):
         else:
             self.signals[idx][0].append(dataX)
         self.signals[idx][1].append(dataY)
-        self.signalUnits[idx].append(dataunit)
+        #self.signalUnits[idx].append(dataunit)
+        self.signalUnits[idx] = dataunit
         if self.handleScriptCallback:
             self.handleScriptCallback(devicename, dataname)
         if self.callback and createCallback:
@@ -575,10 +647,11 @@ class RTLogger(ScriptFunctions, QObject):
             self.signalIDs.append(newID)
             self.events += [[deque([], self.maxLength),
                              deque([], self.maxLength), deque([], self.maxLength)]]
-            self.signalUnits += [deque([], self.maxLength)]
+            #self.signalUnits += [deque([], self.maxLength)]
+            self.signalUnits += ['']
             self.signals[self.signalNames.index([devicename, dataname])][0].append(time.time())
             self.signals[self.signalNames.index([devicename, dataname])][1].append(0)
-            self.signalUnits[self.signalNames.index([devicename, dataname])].append("")
+            #self.signalUnits[self.signalNames.index([devicename, dataname])].append("")
             callback = True
         idx = self.signalNames.index([devicename, dataname])
         if x is None:
@@ -613,7 +686,8 @@ class RTLogger(ScriptFunctions, QObject):
                          deque([], self.maxLength)]]
         self.signalIDs.append(self.getNewID())
         self.signals += [[deque([], newLength), deque([], newLength)]]
-        self.signalUnits += [deque([], newLength)]
+        #self.signalUnits += [deque([], newLength)]
+        self.signalUnits += ['']
         self.__plotNewData(x, y, dataunit, devicename, dataname, createCallback)
         if self.newSignalCallback:
             self.newSignalCallback(self.signalIDs[-1], devicename, dataname, dataunit)
@@ -630,11 +704,12 @@ class RTLogger(ScriptFunctions, QObject):
         self.signals[idx][1] = deque(y, self.maxLength)
         if type(dataunit) == str:
             self.signalUnits[idx] = deque([dataunit]*len(x), self.maxLength)
+            self.signalUnits[idx] = dataunit
         elif type(dataunit) == list:
-            self.signalUnits[idx] = deque(dataunit, self.maxLength)
+            self.signalUnits[idx] = dataunit[-1]
         else:
             print("no unit specified")
-            self.signalUnits[idx] = deque([""]*len(x), self.maxLength)
+            self.signalUnits[idx] = ''
         if self.handleScriptCallback:
             self.handleScriptCallback(devicename, dataname)
         if self.callback and createCallback:
@@ -650,9 +725,10 @@ class RTLogger(ScriptFunctions, QObject):
             print("\nData:")
             for data in self.signals[idx][1]:
                 sys.stdout.write(str(round(data, 1))+'\t\t')
-            print("\nUnits:")
-            for data in self.signalUnits[idx]:
-                sys.stdout.write(str(data)+'\t\t')
+            print("\nUnit: ")
+            #for data in self.signalUnits[idx]:
+            #    sys.stdout.write(str(data)+'\t\t')
+            sys.stdout.write(str(self.signalUnits[idx])+'\t\t')
             print("")
 
     def getSignalId(self, devicename, dataname):
@@ -673,7 +749,7 @@ class RTLogger(ScriptFunctions, QObject):
     def addDataCallback(self, datasY=[], *args, **kwargs):
         datanames = kwargs.get('snames', [""])
         devicename = kwargs.get('dname', "noDevice")
-        callback = kwargs.get('unit', [""])
+        callback = kwargs.get('unit', "")
         datasX = kwargs.get('x', [None])
         createCallback = kwargs.get("c", True)
         for idx, arg in enumerate(args):
@@ -844,9 +920,12 @@ class RTLogger(ScriptFunctions, QObject):
                     row += 1
             col += 1
             row = 1
-            for data in self.signalUnits[idx]:
-                worksheet2.write(row, col, str(data))
-                row += 1
+            worksheet2.write(row, col, str(self.signalUnits[idx]))
+            row += 1
+            #for data in self.signalUnits[idx]:
+            #    worksheet2.write(row, col, str(data))
+            #    row += 1
+
 
         workbook.close()
 
@@ -869,10 +948,11 @@ class RTLogger(ScriptFunctions, QObject):
                 if isinstance(value, np.generic):
                     y[idx2] = np.asscalar(value)
             jsonfile["data"][".".join(name)].append(x.tolist())
-            if len(self.signalUnits[idx]) == 0:
-                self.signalUnits[idx].append("")
+            # if len(self.signalUnits[idx]) == 0:
+            #     self.signalUnits[idx].append("")
             jsonfile["data"][".".join(name)].append(y.tolist())
-            jsonfile["data"][".".join(name)].append(self.signalUnits[idx][0])
+            #jsonfile["data"][".".join(name)].append(self.signalUnits[idx][0])
+            jsonfile["data"][".".join(name)].append(self.signalUnits[idx])
             jsonfile["events"][".".join(name)].append(list(self.events[idx][0]))
             jsonfile["events"][".".join(name)].append(list(self.events[idx][1]))
 
@@ -942,6 +1022,9 @@ class RTLogger(ScriptFunctions, QObject):
                 self.config["lastSessions"] = newlist
                 for lastpath in self.config["lastSessions"]:
                     self.lastEditedList.append(lastpath)
+                for key in defaultconfig.keys():
+                    if key not in self.config.keys():
+                        self.config[key] = defaultconfig[key]
             except:
                 print('Error loading config.json')
                 self.config = defaultconfig
@@ -952,6 +1035,7 @@ class RTLogger(ScriptFunctions, QObject):
         self.config['documentfolder'] = userpath
         conf = dict(self.config)
         conf['telegram_bot'] = False
+        conf['rtoc_web'] = False
         with open(self.config['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
             json.dump(conf, fp,  sort_keys=False, indent=4, separators=(',', ': '))
 
@@ -978,7 +1062,7 @@ class RTLogger(ScriptFunctions, QObject):
     def getSignalUnits(self, id):
         if id in self.signalIDs:
             idx = self.signalIDs.index(id)
-            return list(self.signalUnits[idx])
+            return str(self.signalUnits[idx])
         else:
             return []
 

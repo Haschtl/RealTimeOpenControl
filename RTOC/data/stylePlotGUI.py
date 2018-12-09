@@ -3,6 +3,7 @@ from PyQt5 import uic
 from PyQt5 import QtWidgets, QtGui
 import pyqtgraph as pg
 import os
+import sys
 
 from . import define as define
 
@@ -10,7 +11,12 @@ from . import define as define
 class plotStyler(QtWidgets.QDialog):
     def __init__(self, plot=None, title="", stylesheet=""):
         super(plotStyler, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/stylePlotDialog2.ui", self)
         self.setWindowTitle(title)
         self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)

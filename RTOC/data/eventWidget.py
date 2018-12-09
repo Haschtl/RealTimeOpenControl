@@ -4,13 +4,19 @@ from PyQt5 import QtCore
 from PyQt5 import uic
 import datetime
 import os
+import sys
 
 class EventWidget(QtWidgets.QWidget):
     refresh = QtCore.pyqtSignal()
 
     def __init__(self, logger):
         super(EventWidget, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/eventWidget.ui", self)
 
         self.logger = logger

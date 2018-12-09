@@ -1,12 +1,15 @@
 # LoggerPlugin v1.6
 import traceback
 import time
+import sys
+import os
 
 try:
     from . import jsonsocket
 except:
     import jsonsocket
 
+import hashlib
 
 class LoggerPlugin:
     def __init__(self, stream=None, plot=None, event=None):
@@ -21,8 +24,21 @@ class LoggerPlugin:
         # -------------
         self.run = False  # False -> stops thread
         self.smallGUI = False
+        self.tcppassword = ''
         self.xy = False
         self.widget = None
+
+    def getDir(self, dir = None):
+        if dir == None:
+            dir = __file__
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/plugins'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(dir))
+
+        return packagedir
 
     def stream(self, *args, **kwargs):
         if self.__cb:
@@ -84,8 +100,11 @@ class LoggerPlugin:
         else:
             print("No event connected")
 
-    def createTCPClient(self, address="localhost"):
+    def createTCPClient(self, address="localhost", password=None):
         self.tcpaddress = address
+        if password != None:
+            self.tcppassword = password
+            self.sock.setKeyword(password)
         self.sock = jsonsocket.Client()
 
     def sendTCP(self, *args, **kwargs):
@@ -148,14 +167,22 @@ class LoggerPlugin:
             dicti['logger'] = logger
         if pluginlist:
             dicti['getPluginList'] = True
-
-        if self.sock and self.run:
+        #if self.tcppassword != '' and self.tcppassword != None:
+            #hash_object = hashlib.sha256(self.tcppassword.encode('utf-8'))
+            #hex_dig = hash_object.hexdigest()
+            #dicti['password'] = hex_dig
+        if self.sock:
             try:
-                self.sock.connect(self.tcpaddress, 5050)
+                self.sock.connect(self.tcpaddress, 5050, self.tcppassword)
                 self.sock.send(dicti)
                 response = self.sock.recv()
                 self.sock.close()
-                return response
+                if response == None:
+                #if 'password' in response.keys():
+                    print('passwordprotected')
+                    return None
+                else:
+                    return response
             except ConnectionRefusedError:
                 print('TCP Connection refused')
                 try:

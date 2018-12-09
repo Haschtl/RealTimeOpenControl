@@ -4,57 +4,57 @@
 <context>
     <name>Actions</name>
     <message>
-        <location filename="../data/Actions.py" line="90"/>
+        <location filename="../data/Actions.py" line="111"/>
         <source>Warnung</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="90"/>
+        <location filename="../data/Actions.py" line="111"/>
         <source>Wollen Sie wirklich alle Daten lÃ¶schen?</source>
         <translation>Do you really want to delete all data?</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="90"/>
+        <location filename="../data/Actions.py" line="111"/>
         <source>(Unwiederrufbar)</source>
         <translation>(Data will be lost)</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="100"/>
+        <location filename="../data/Actions.py" line="121"/>
         <source>Session laden</source>
         <translation>Load session</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="115"/>
+        <location filename="../data/Actions.py" line="136"/>
         <source>Session speichern</source>
         <translation>Save session</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="145"/>
+        <location filename="../data/Actions.py" line="166"/>
         <source>Excel-Tabelle (*.xlsx)</source>
         <translation>Excel-Table (*.xlsx)</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="147"/>
+        <location filename="../data/Actions.py" line="168"/>
         <source>CSV-Datei (*.csv)</source>
         <translation>CSV-File (*.csv)</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="140"/>
+        <location filename="../data/Actions.py" line="161"/>
         <source>Export</source>
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="140"/>
+        <location filename="../data/Actions.py" line="161"/>
         <source>Excel-Tabelle (*.xlsx);;CSV-Datei (*.csv)</source>
         <translation>Excel-Table (*.xlsx);;CSV-File (*.csv)</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="202"/>
+        <location filename="../data/Actions.py" line="223"/>
         <source>Ãber</source>
         <translation>About</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="202"/>
+        <location filename="../data/Actions.py" line="223"/>
         <source>RealTime OpenControl (RTOC) ist eine freie OpenSource Software unter der BSD-3-Lizenz.
 
 Alle Symbole werden unter der &apos;Creative Commons Attribution-NoDerivs 3.0 Unported&apos; Lizenz bereitgestellt von icons8 (https://icons8.de)
@@ -63,14 +63,63 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="225"/>
+        <location filename="../data/Actions.py" line="246"/>
         <source>Sprache geÃ¤ndert</source>
         <translation>Language changed</translation>
     </message>
     <message>
-        <location filename="../data/Actions.py" line="225"/>
+        <location filename="../data/Actions.py" line="246"/>
         <source>Bitte Programm neustarten</source>
         <translation>Please restart this software</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="61"/>
+        <source>RTOC - Web gestartet</source>
+        <translation>RTOC - Web started</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="74"/>
+        <source>Bot Token eingeben</source>
+        <translation>Enter Bot-Token</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="74"/>
+        <source>Bitte erzeugen sie in Telegram mit &quot;Botfather&quot; einen Bot,
+ generiere einen Bot und fÃ¼ge dessen Token hier ein</source>
+        <translation>Please generate a bot with &quot;Botfather&quot; in Telegram
+and enter it&apos;s bot-token here:</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="81"/>
+        <source>TCP Passwort eingeben</source>
+        <translation>Enter TCP-Passwort</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="81"/>
+        <source>SchÃ¼tze deine Ãbertragung ein bisschen (wirklich nur ein bisschen) vor unerwÃ¼nschten GÃ¤sten
+Leer lassen, um Passwort zu deaktivieren</source>
+        <translation>Protect your TCP-Connection a little bit (really just a little bit)
+Leave empty to deactivate password-protection</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="86"/>
+        <source>Passwort-Schutz: Aus</source>
+        <translation>Password-Protection: Off</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="88"/>
+        <source>Passwort-Schutz: An</source>
+        <translation>Passwort-Protection: On</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="61"/>
+        <source>RTOC - Web ist jetzt unter localhost:5006 erreichbar</source>
+        <translation>RTOC - Web is now reachable at &apos;localhost:5006&apos;</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="61"/>
+        <source>Diese Seite kann im gesamten Netzwerk geÃ¶ffnet werden</source>
+        <translation>This page can be opened in local network</translation>
     </message>
 </context>
 <context>
@@ -154,7 +203,7 @@ Copyright (C) 2018 Sebastian Keller</source>
 <context>
     <name>EventWidget</name>
     <message>
-        <location filename="../data/eventWidget.py" line="38"/>
+        <location filename="../data/eventWidget.py" line="44"/>
         <source>%H:%M:%S %d.%m.%Y</source>
         <translation>%H:%M:%S %Y.%m.%d</translation>
     </message>
@@ -727,7 +776,7 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation type="obsolete">Devices with plugins will be shown here</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="552"/>
+        <location filename="../data/ui/rtoc.ui" line="560"/>
         <source>&amp;Plugins</source>
         <translation>Plugins</translation>
     </message>
@@ -747,72 +796,72 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="383"/>
+        <location filename="../data/ui/rtoc.ui" line="391"/>
         <source>Unterfenster-Darstellung verwalten</source>
         <translation>Arrange View</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="386"/>
+        <location filename="../data/ui/rtoc.ui" line="394"/>
         <source>&amp;Fenster</source>
         <translation>View</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="395"/>
+        <location filename="../data/ui/rtoc.ui" line="403"/>
         <source>&amp;Hilfe</source>
         <translation>Help</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="415"/>
+        <location filename="../data/ui/rtoc.ui" line="423"/>
         <source>Skripte</source>
         <translation>Scripts</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="451"/>
+        <location filename="../data/ui/rtoc.ui" line="459"/>
         <source>toolBar</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="487"/>
+        <location filename="../data/ui/rtoc.ui" line="495"/>
         <source>&amp;Daten exportieren</source>
         <translation>Export data</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="511"/>
+        <location filename="../data/ui/rtoc.ui" line="519"/>
         <source>Bitte nutze RECHTSKLICK auf Plotbereich</source>
         <translation>Please use RIGHTCLICK in plot</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="495"/>
+        <location filename="../data/ui/rtoc.ui" line="503"/>
         <source>&amp;Beenden</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="500"/>
+        <location filename="../data/ui/rtoc.ui" line="508"/>
         <source>&amp;Plot anpassen</source>
         <translation>Style plot</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="503"/>
+        <location filename="../data/ui/rtoc.ui" line="511"/>
         <source>Plot-Darstellung</source>
         <translation>Plot-Style</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="508"/>
+        <location filename="../data/ui/rtoc.ui" line="516"/>
         <source>&amp;Plot exportieren</source>
         <translation>Export plot</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="516"/>
+        <location filename="../data/ui/rtoc.ui" line="524"/>
         <source>Fenster</source>
         <translation>View</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="527"/>
+        <location filename="../data/ui/rtoc.ui" line="535"/>
         <source>&amp;Signale</source>
         <translation>Signals</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="530"/>
+        <location filename="../data/ui/rtoc.ui" line="538"/>
         <source>Signale-Unterfenster</source>
         <translation>Signal-Subwindow</translation>
     </message>
@@ -822,57 +871,57 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation type="obsolete">Devices-Subwindow</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="555"/>
+        <location filename="../data/ui/rtoc.ui" line="563"/>
         <source>Plugins-Unterfenster</source>
         <translation>Plugin-Subwindow</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="563"/>
+        <location filename="../data/ui/rtoc.ui" line="571"/>
         <source>S&amp;kript</source>
         <translation>Scripts</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="566"/>
+        <location filename="../data/ui/rtoc.ui" line="574"/>
         <source>Skripte-Unterfenster</source>
         <translation>Script-Subwindow</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="571"/>
+        <location filename="../data/ui/rtoc.ui" line="579"/>
         <source>&amp;Skript laden</source>
         <translation>Load script</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="574"/>
+        <location filename="../data/ui/rtoc.ui" line="582"/>
         <source>Skript aus Datei laden</source>
         <translation>Load script from file</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="579"/>
+        <location filename="../data/ui/rtoc.ui" line="587"/>
         <source>S&amp;kript speichern</source>
         <translation>Save script</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="582"/>
+        <location filename="../data/ui/rtoc.ui" line="590"/>
         <source>Skript in Datei speichern</source>
         <translation>Save script to file</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="587"/>
+        <location filename="../data/ui/rtoc.ui" line="595"/>
         <source>S&amp;ession speichern</source>
         <translation>Save session</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="592"/>
+        <location filename="../data/ui/rtoc.ui" line="600"/>
         <source>Zuletzt geladen</source>
         <translation>Latest sessions</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="597"/>
+        <location filename="../data/ui/rtoc.ui" line="605"/>
         <source>Session &amp;laden</source>
         <translation>Load session</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="602"/>
+        <location filename="../data/ui/rtoc.ui" line="610"/>
         <source>&amp;Hilfe zu KellerLogger</source>
         <translation>Help</translation>
     </message>
@@ -882,42 +931,42 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation type="obsolete">About RTOC</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="612"/>
+        <location filename="../data/ui/rtoc.ui" line="620"/>
         <source>Daten &amp;importieren</source>
         <translation>Import data</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="623"/>
+        <location filename="../data/ui/rtoc.ui" line="631"/>
         <source>Minimize to SystemTray</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="634"/>
+        <location filename="../data/ui/rtoc.ui" line="370"/>
         <source>TCP - Server</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="642"/>
+        <location filename="../data/ui/rtoc.ui" line="639"/>
         <source>Multiproessing - Listener</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="403"/>
+        <location filename="../data/ui/rtoc.ui" line="411"/>
         <source>Sprache</source>
         <translation>Language</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="650"/>
+        <location filename="../data/ui/rtoc.ui" line="647"/>
         <source>Deutsch</source>
         <translation>German</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="658"/>
+        <location filename="../data/ui/rtoc.ui" line="655"/>
         <source>English</source>
         <translation>English</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="666"/>
+        <location filename="../data/ui/rtoc.ui" line="663"/>
         <source>Events</source>
         <translation>Events</translation>
     </message>
@@ -927,14 +976,29 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation>Telegram-Bot</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="671"/>
+        <location filename="../data/ui/rtoc.ui" line="668"/>
         <source>Bot-Token eingeben</source>
         <translation>Enter Bot-Token</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="679"/>
+        <location filename="../data/ui/rtoc.ui" line="676"/>
         <source>Aktiviert</source>
         <translation>Activated</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/rtoc.ui" line="684"/>
+        <source>RTOC - Web</source>
+        <translation>RTOC - Web</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/rtoc.ui" line="692"/>
+        <source>Aktivieren</source>
+        <translation>Activate</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/rtoc.ui" line="697"/>
+        <source>Passwort-Schutz</source>
+        <translation>Password-Protection</translation>
     </message>
 </context>
 <context>
@@ -950,7 +1014,7 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation>Connect</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="102"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="114"/>
         <source>Suchen</source>
         <translation>Search</translation>
     </message>
@@ -1015,7 +1079,7 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation type="obsolete">Delete signal</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="89"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="101"/>
         <source>RTOC-Netzwerksuche</source>
         <translation>Search RTOC-Servers</translation>
     </message>
@@ -1025,27 +1089,27 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation type="obsolete">Do you really want to search your local network for RTOC-Servers?</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="89"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="101"/>
         <source>Dieser Vorgang wird einige Zeit in Anspruch nehmen</source>
         <translation>This will take some time</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="93"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="105"/>
         <source>Sucht...</source>
         <translation>Searching...</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="101"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="113"/>
         <source>Fertig</source>
         <translation>Finished</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="101"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="113"/>
         <source>RTOC-Suche abgeschlossen</source>
         <translation>Searching for RTOC-Servers finished</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="101"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="113"/>
         <source> Server gefunden.</source>
         <translation> server found.</translation>
     </message>
@@ -1125,19 +1189,32 @@ Copyright (C) 2018 Sebastian Keller</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="95"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="107"/>
         <source>Bitte warten</source>
         <translation>Please wait</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="95"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="107"/>
         <source>NetWoRTOC sucht gerade nach RTOC-Servern</source>
         <translation>NetWoRTOC is searching for RTOC-Servers</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="95"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="107"/>
         <source>Bitte warten bis der Vorgang abgeschlossen ist.</source>
         <translation>Please wait.</translation>
+    </message>
+</context>
+<context>
+    <name>Plot</name>
+    <message>
+        <location filename="../data/RTPlotActions.py" line="31"/>
+        <source>Signale</source>
+        <translation>Signals</translation>
+    </message>
+    <message>
+        <location filename="../data/RTPlotActions.py" line="35"/>
+        <source>Vergangene Zeit</source>
+        <translation>Elapsed time</translation>
     </message>
 </context>
 <context>
@@ -1181,72 +1258,82 @@ Copyright (C) 2018 Sebastian Keller</source>
 <context>
     <name>RTOC</name>
     <message>
-        <location filename="../RTOC.py" line="192"/>
+        <location filename="../RTOC.py" line="207"/>
         <source>Anzeigen</source>
         <translation>Show</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="202"/>
+        <location filename="../RTOC.py" line="217"/>
         <source>Beenden</source>
         <translation>Close</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="194"/>
+        <location filename="../RTOC.py" line="209"/>
         <source>Im Hintergrund laufen</source>
         <translation>Run in background</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="198"/>
+        <location filename="../RTOC.py" line="213"/>
         <source>TCP Server</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="337"/>
+        <location filename="../RTOC.py" line="352"/>
         <source>Fehler</source>
         <translation>Failure</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="334"/>
+        <location filename="../RTOC.py" line="349"/>
         <source>Fehler beim Laden der GerÃ¤te GUI
 Bitte Code Ã¼berprÃ¼fen.</source>
         <translation>Loading device GUI failed.</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="337"/>
+        <location filename="../RTOC.py" line="352"/>
         <source>Fehler beim Laden des GerÃ¤ts
 Bitte stellen Sie sicher, dass das GerÃ¤t verbunden ist.</source>
         <translation>Loading device failed. Please make sure the device is connected.</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="379"/>
+        <location filename="../RTOC.py" line="394"/>
         <source>RealTime OpenControl</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="378"/>
+        <location filename="../RTOC.py" line="393"/>
         <source>lÃ¤uft im Hintergrund weiter und zeichnet Messwerte auf</source>
         <translation>is running in background and collecting data</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="388"/>
+        <location filename="../RTOC.py" line="403"/>
         <source>Speichern</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="388"/>
+        <location filename="../RTOC.py" line="403"/>
         <source>Wollen Sie die aktuelle Sitzung speichern?</source>
         <translation>Do you want to save the current session?</translation>
+    </message>
+    <message>
+        <location filename="../RTOC.py" line="169"/>
+        <source>Passwort-Schutz: Aus</source>
+        <translation>Password-Protection: Off</translation>
+    </message>
+    <message>
+        <location filename="../RTOC.py" line="171"/>
+        <source>Passwort-Schutz: An</source>
+        <translation>Password-Protection: On</translation>
     </message>
 </context>
 <context>
     <name>RTOC_TCP</name>
     <message>
-        <location filename="../RTOC.py" line="469"/>
+        <location filename="../RTOC.py" line="489"/>
         <source>Speichern</source>
         <translation>Save</translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="469"/>
+        <location filename="../RTOC.py" line="489"/>
         <source>Wollen Sie die aktuelle Sitzung speichern?</source>
         <translation>Do you want to save the current session?</translation>
     </message>
@@ -1256,18 +1343,18 @@ Bitte stellen Sie sicher, dass das GerÃ¤t verbunden ist.</source>
     <message>
         <location filename="../data/RTPlotActions.py" line="22"/>
         <source>Signale</source>
-        <translation>Signals</translation>
+        <translation type="obsolete">Signals</translation>
     </message>
     <message>
         <location filename="../data/RTPlotActions.py" line="25"/>
         <source>Vergangene Zeit</source>
-        <translation>Elapsed time</translation>
+        <translation type="obsolete">Elapsed time</translation>
     </message>
 </context>
 <context>
     <name>RTPlotWidget</name>
     <message>
-        <location filename="../data/RTPlotWidget.py" line="206"/>
+        <location filename="../data/RTPlotWidget.py" line="213"/>
         <source>Signale: </source>
         <translation>Signals: </translation>
     </message>
@@ -1275,37 +1362,37 @@ Bitte stellen Sie sicher, dass das GerÃ¤t verbunden ist.</source>
 <context>
     <name>ScriptWidget</name>
     <message>
-        <location filename="../data/scriptWidget.py" line="37"/>
+        <location filename="../data/scriptWidget.py" line="43"/>
         <source>Fehler beim laden der Datei </source>
         <translation>Loading file failed </translation>
     </message>
     <message>
-        <location filename="../data/scriptWidget.py" line="42"/>
+        <location filename="../data/scriptWidget.py" line="48"/>
         <source>Fehler</source>
         <translation>Failure</translation>
     </message>
     <message>
-        <location filename="../data/scriptWidget.py" line="42"/>
+        <location filename="../data/scriptWidget.py" line="48"/>
         <source>Datei </source>
         <translation>File </translation>
     </message>
     <message>
-        <location filename="../data/scriptWidget.py" line="42"/>
+        <location filename="../data/scriptWidget.py" line="48"/>
         <source> nicht gefunden</source>
         <translation> not found</translation>
     </message>
     <message>
-        <location filename="../data/scriptWidget.py" line="74"/>
+        <location filename="../data/scriptWidget.py" line="80"/>
         <source>Unbenannt</source>
         <translation>Unknown</translation>
     </message>
     <message>
-        <location filename="../data/scriptWidget.py" line="89"/>
+        <location filename="../data/scriptWidget.py" line="95"/>
         <source>Skript laden</source>
         <translation>Load script</translation>
     </message>
     <message>
-        <location filename="../data/scriptWidget.py" line="126"/>
+        <location filename="../data/scriptWidget.py" line="132"/>
         <source>SchlieÃen</source>
         <translation>Close</translation>
     </message>
@@ -1313,59 +1400,112 @@ Bitte stellen Sie sicher, dass das GerÃ¤t verbunden ist.</source>
 <context>
     <name>SignalEditWidget</name>
     <message>
-        <location filename="../data/signalEditWidget.py" line="104"/>
+        <location filename="../data/signalEditWidget.py" line="110"/>
         <source>Info</source>
         <translation>Info</translation>
     </message>
     <message>
-        <location filename="../data/signalEditWidget.py" line="104"/>
+        <location filename="../data/signalEditWidget.py" line="110"/>
         <source>WÃ¤hle zuerst das Schneide-Tool aus</source>
         <translation>Please select Cutting-Tool first</translation>
     </message>
     <message>
-        <location filename="../data/signalEditWidget.py" line="104"/>
+        <location filename="../data/signalEditWidget.py" line="110"/>
         <source>Du musst zuerst deine Schnittbereich festlegen</source>
         <translation>Please set your Cut-Area first</translation>
     </message>
     <message>
-        <location filename="../data/signalEditWidget.py" line="154"/>
+        <location filename="../data/signalEditWidget.py" line="160"/>
         <source>CSV-Datei (*.csv)</source>
         <translation>CSV-File (*.csv)</translation>
     </message>
     <message>
-        <location filename="../data/signalEditWidget.py" line="149"/>
+        <location filename="../data/signalEditWidget.py" line="155"/>
         <source>Export</source>
         <translation>Export</translation>
     </message>
     <message>
-        <location filename="../data/signalEditWidget.py" line="158"/>
+        <location filename="../data/signalEditWidget.py" line="164"/>
         <source>Umbenennen</source>
         <translation>Rename</translation>
     </message>
     <message>
-        <location filename="../data/signalEditWidget.py" line="158"/>
+        <location filename="../data/signalEditWidget.py" line="164"/>
         <source>Bitte gib einen neuen Namen an</source>
         <translation>Please enter a new signalname</translation>
     </message>
     <message>
-        <location filename="../data/signalEditWidget.py" line="210"/>
+        <location filename="../data/signalEditWidget.py" line="216"/>
         <source>Achtung</source>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../data/signalEditWidget.py" line="210"/>
+        <location filename="../data/signalEditWidget.py" line="216"/>
         <source>Daten werden dauerhaft geÃ¤ndert</source>
         <translation>Signal will be changed permanently</translation>
     </message>
     <message>
-        <location filename="../data/signalEditWidget.py" line="210"/>
+        <location filename="../data/signalEditWidget.py" line="216"/>
         <source>Ja</source>
         <translation>Yes</translation>
     </message>
     <message>
-        <location filename="../data/signalEditWidget.py" line="210"/>
+        <location filename="../data/signalEditWidget.py" line="216"/>
         <source>Nein</source>
         <translation>No</translation>
+    </message>
+</context>
+<context>
+    <name>Web</name>
+    <message>
+        <location filename="../RTOC_Web.py" line="29"/>
+        <source>Signal</source>
+        <translation>Signal</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_Web.py" line="30"/>
+        <source>Index</source>
+        <translation>Index</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_Web.py" line="31"/>
+        <source>Messwert</source>
+        <translation>Value</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_Web.py" line="32"/>
+        <source>Zeitpunkt</source>
+        <translation>Timepoint</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_Web.py" line="152"/>
+        <source>Verbindung fehlgeschlagen</source>
+        <translation>Connection failed</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_Web.py" line="159"/>
+        <source>Verbinden</source>
+        <translation>Connect</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_Web.py" line="100"/>
+        <source>Pause</source>
+        <translation>Pause</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_Web.py" line="102"/>
+        <source>(TCP-Server Passwort)</source>
+        <translation>(TCP-Server password)</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_Web.py" line="128"/>
+        <source>Vergangene Zeit [s]</source>
+        <translation>Elapsed time [s]</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_Web.py" line="149"/>
+        <source>Verbindung trennen</source>
+        <translation>Close connection</translation>
     </message>
 </context>
 <context>
@@ -1552,39 +1692,49 @@ Bitte stellen Sie sicher, dass das GerÃ¤t verbunden ist.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../data/ui/plotWidget.ui" line="56"/>
+        <location filename="../data/ui/plotWidget.ui" line="134"/>
         <source>Tools</source>
         <translation>Tools</translation>
     </message>
     <message>
-        <location filename="../data/ui/plotWidget.ui" line="78"/>
+        <location filename="../data/ui/plotWidget.ui" line="156"/>
         <source>Darstellung</source>
         <translation>View</translation>
     </message>
     <message>
-        <location filename="../data/ui/plotWidget.ui" line="101"/>
+        <location filename="../data/ui/plotWidget.ui" line="179"/>
         <source>Plot pausieren/fortsetzen</source>
         <translation>Pause plot</translation>
     </message>
     <message>
-        <location filename="../data/ui/plotWidget.ui" line="133"/>
+        <location filename="../data/ui/plotWidget.ui" line="211"/>
         <source>Suche Signal; ...</source>
         <translation>Search signal; ...</translation>
     </message>
     <message>
-        <location filename="../data/ui/plotWidget.ui" line="186"/>
+        <location filename="../data/ui/plotWidget.ui" line="264"/>
         <source>Signale</source>
         <translation>Signals</translation>
     </message>
     <message>
-        <location filename="../data/ui/plotWidget.ui" line="191"/>
+        <location filename="../data/ui/plotWidget.ui" line="269"/>
         <source>Wert</source>
         <translation>Value</translation>
     </message>
     <message>
-        <location filename="../data/ui/plotWidget.ui" line="199"/>
+        <location filename="../data/ui/plotWidget.ui" line="277"/>
         <source>Signale: 0</source>
         <translation>Signals: 0</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/plotWidget.ui" line="99"/>
+        <source>Zeige Crosshair</source>
+        <translation>Show Crosshair</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/plotWidget.ui" line="73"/>
+        <source>Öffne Mess-Rechteck in Plot</source>
+        <translation></translation>
     </message>
 </context>
 <context>

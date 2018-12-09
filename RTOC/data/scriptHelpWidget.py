@@ -1,12 +1,18 @@
 from PyQt5 import QtWidgets
 from PyQt5 import uic
 import os
+import sys
 
 
 class ScriptHelpWidget(QtWidgets.QWidget):
     def __init__(self, selfself):
         super(ScriptHelpWidget, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/scriptHelpWidget.ui", self)
         self.self = selfself
         self.logger = self.self.logger

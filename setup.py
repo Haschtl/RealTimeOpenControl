@@ -11,6 +11,7 @@
 
 # public:
 # python setup.py bdist_wheel
+# python -m twine upload dist/*
 
 DESCRIPTION = """\
 RealTime OpenControl is a universal measurement, plot and control-software.
@@ -70,9 +71,9 @@ except LookupError:
 path = os.path.split(__file__)[0]
 #sys.path.insert(0, os.path.join(path, 'tools'))
 
-version = 1.7
-forcedVersion = 1.7
-gitVersion =1.7
+version = 1.8
+forcedVersion = 1.8
+gitVersion =1.8
 initVersion=1.0
 
 
@@ -155,7 +156,9 @@ setup(
         'python-telegram-bot',
         'matplotlib',
         'requests',
-        'python-nmap'
+        'python-nmap',
+        'bokeh',
+        'pycryptodomex'
         ],
     **setupOpts
 )

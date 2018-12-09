@@ -9,3 +9,5 @@ python-telegram-bot
 matplotlib
 requests
 python-nmap
+bokeh
+pycryptodomex

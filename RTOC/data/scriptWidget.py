@@ -2,6 +2,7 @@ import os
 from PyQt5 import QtWidgets
 from PyQt5 import uic
 from PyQt5 import QtCore
+import sys
 
 from .scriptHelpWidget import ScriptHelpWidget
 from .scriptSubWidget import ScriptSubWidget
@@ -10,7 +11,12 @@ from .scriptSubWidget import ScriptSubWidget
 class ScriptWidget(QtWidgets.QWidget):
     def __init__(self, logger):
         super(ScriptWidget, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/scriptWidget.ui", self)
 
         self.logger = logger

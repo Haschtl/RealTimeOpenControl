@@ -53,7 +53,7 @@ class Plugin(LoggerPlugin):
 
     def loadGUI(self):
         self.widget = QtWidgets.QWidget()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        packagedir = self.getDir(__file__)
         uic.loadUi(packagedir+"/Octotouch/octotouch.ui", self.widget)
         # self.setCallbacks()
         self.widget.pushButton.clicked.connect(self.__openConnectionCallback)

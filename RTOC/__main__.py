@@ -56,7 +56,12 @@ def setLanguage(app):
         config={'language':'en'}
     if config['language'] == 'en':
         translator = QtCore.QTranslator()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         translator.load(packagedir+"/lang/en_en.qm")
         app.installTranslator(translator)
     # more info here: http://kuanyui.github.io/2014/09/03/pyqt-i18n/
@@ -83,7 +88,12 @@ def startRemoteRTOC(remotepath):
     if config['language'] == 'en':
         print("English language selected")
         translator = QtCore.QTranslator()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         translator.load(packagedir+"/lang/en_en.qm")
         app.installTranslator(translator)
     myapp = RTOC()
@@ -117,7 +127,12 @@ def startRTOC():
     if config['language'] == 'en':
         print("English language selected")
         translator = QtCore.QTranslator()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
         translator.load(packagedir+"/lang/en_en.qm")
         app.installTranslator(translator)
         # more info here: http://kuanyui.github.io/2014/09/03/pyqt-i18n/

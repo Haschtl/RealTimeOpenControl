@@ -7,8 +7,17 @@ import time
 from .lib import pyqt_customlib as pyqtlib
 from .styleMultiPlotGUI import plotMultiStyler
 import os
+import sys
+from PyQt5.QtCore import QCoreApplication
 
-packagedir, file = os.path.split(os.path.realpath(__file__))
+translate = QCoreApplication.translate
+
+if getattr(sys, 'frozen', False):
+    # frozen
+    packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+else:
+    # unfrozen
+    packagedir = os.path.dirname(os.path.realpath(__file__))
 
 
 class RTPlotActions:
@@ -19,10 +28,11 @@ class RTPlotActions:
     def initPlotWidget(self):
         self.plot = pg.PlotWidget()
         self.plot.setBackground(None)
-        self.plot.getPlotItem().setTitle(self.tr("Signale"))
+        self.plot.getPlotItem().setTitle(translate("Plot","Signale"))
+        self.plot.getPlotItem().ctrlMenu = None  # get rid of 'Plot Options'
         axis = pyqtlib.TimeAxisItem(orientation='bottom')
         axis.attachToPlotItem(self.plot.getPlotItem())  # THIS LINE CREATES A WARNING
-        self.plot.getPlotItem().setLabel("bottom", self.tr("Vergangene Zeit"), "")
+        self.plot.getPlotItem().setLabel("bottom", translate("Plot","Vergangene Zeit"), "")
 
         self.plotLayout.addWidget(self.plot)
         self.legend = pg.LegendItem()
@@ -32,7 +42,7 @@ class RTPlotActions:
 
         self.plotMouseLabel = pg.TextItem("", color=(
             200, 200, 200), fill=(200, 200, 200, 50), html=None)  # ,
-        self.plot.addItem(self.plotMouseLabel)
+        self.plot.addItem(self.plotMouseLabel, ignoreBounds = True)
 
     def initPlotViewWidget(self):
         self.plotViewWidget = QtWidgets.QWidget()
@@ -137,23 +147,23 @@ class RTPlotActions:
 
     def initPlotToolsWidget(self):
         self.plotToolsWidget = QtWidgets.QWidget()
-        uic.loadUi(packagedir+"/ui/plotToolsWidget.ui", self.plotToolsWidget)
-
-        sizePolicy = QtGui.QSizePolicy(
-            QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-        self.toolButton.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
-        self.toolButton.setMenu(QtWidgets.QMenu(self.toolButton))
-        action = QtWidgets.QWidgetAction(self.toolButton)
-        action.setDefaultWidget(self.plotToolsWidget)
-        self.toolButton.setStyleSheet(
-            "QToolButton:checked, QToolButton:pressed,QToolButton::menu-button:pressed { background-color: #76797C;border: 1px solid #76797C;padding: 5px;}")
-        self.toolButton.menu().addAction(action)
-        self.toolButton.clicked.connect(lambda: self.toolButton.menu().popup(
-            self.toolButton.mapToGlobal(QtCore.QPoint(0, 35))))
-
-        self.plotToolsWidget.measureButton.clicked.connect(self.toggleROIS)
-        self.plotToolsWidget.crosshairButton.clicked.connect(self.toggleCrosshair)
-        self.plotToolsWidget.cutButton.clicked.connect(self.toggleCutTool)
+        # uic.loadUi(packagedir+"/ui/plotToolsWidget.ui", self.plotToolsWidget)
+        #
+        # sizePolicy = QtGui.QSizePolicy(
+        #     QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+        # self.toolButton.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+        # self.toolButton.setMenu(QtWidgets.QMenu(self.toolButton))
+        # action = QtWidgets.QWidgetAction(self.toolButton)
+        # action.setDefaultWidget(self.plotToolsWidget)
+        # self.toolButton.setStyleSheet(
+        #     "QToolButton:checked, QToolButton:pressed,QToolButton::menu-button:pressed { background-color: #76797C;border: 1px solid #76797C;padding: 5px;}")
+        # self.toolButton.menu().addAction(action)
+        # self.toolButton.clicked.connect(lambda: self.toolButton.menu().popup(
+        #     self.toolButton.mapToGlobal(QtCore.QPoint(0, 35))))
+        self.toolButton.hide()
+        self.measureButton.clicked.connect(self.toggleROIS)
+        self.crosshairButton.clicked.connect(self.toggleCrosshair)
+        self.cutButton.clicked.connect(self.toggleCutTool)
 
     def initROIS(self):
         self.rois = []
@@ -185,7 +195,7 @@ class RTPlotActions:
             200, 200, 200), fill=(200, 200, 200, 50), html=None)  # ,
         self.plot.addItem(self.vLine, ignoreBounds=True)
         self.plot.addItem(self.hLine, ignoreBounds=True)
-        self.plot.addItem(self.CrossHairLabel)
+        self.plot.addItem(self.CrossHairLabel, ignoreBounds = True)
         self.plot.scene().sigMouseMoved.connect(self.mouseMoved)
         self.toggleCrosshair()
 
@@ -232,7 +242,7 @@ class RTPlotActions:
             self.plotMouseLabel.hide()
 
     def toggleCutTool(self):
-        if not self.plotToolsWidget.cutButton.isChecked():
+        if not self.cutButton.isChecked():
             self.cutVLine1.hide()
             self.cutVLine2.hide()
             self.pauseButton.setChecked(False)
@@ -283,7 +293,7 @@ class RTPlotActions:
             self.config["blinkingIdentifier"] = True
 
     def toggleCrosshair(self):
-        if not self.plotToolsWidget.crosshairButton.isChecked():
+        if not self.crosshairButton.isChecked():
             self.vLine.hide()
             self.hLine.hide()
             self.CrossHairLabel.hide()
@@ -303,7 +313,7 @@ class RTPlotActions:
             str(round(list(roi.pos())[1]+list(roi.size())[1], 4)))
 
     def toggleROIS(self):
-        if not self.plotToolsWidget.measureButton.isChecked():
+        if not self.measureButton.isChecked():
             self.rois[0].hide()
             self.measureWidget.hide()
         else:
@@ -339,7 +349,7 @@ class RTPlotActions:
         mousePoint = vb.mapSceneToView(evt)
         self.mouseX = mousePoint.x()
         self.mouseY = mousePoint.y()
-        if self.plotToolsWidget.crosshairButton.isChecked():
+        if self.crosshairButton.isChecked():
             self.CrossHairLabel.setText("X: "+str(round(mousePoint.x(), 2)) +
                                         "s\nY:"+str(round(mousePoint.y(), 2)))
             self.CrossHairLabel.setPos(mousePoint.x(), mousePoint.y())

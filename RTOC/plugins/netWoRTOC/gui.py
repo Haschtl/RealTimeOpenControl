@@ -5,6 +5,7 @@ from PyQt5 import QtGui
 from functools import partial
 import os
 from threading import Thread
+import sys
 
 import plugins.netWoRTOC.networkscan as networkscan
 import data.lib.pyqt_customlib as pyqtlib
@@ -22,7 +23,7 @@ class GUI(QtWidgets.QWidget):
 
     def __init__(self, selfself):
         super(GUI, self).__init__()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        packagedir = self.getDir(__file__)
         uic.loadUi(packagedir+"/networtoc.ui", self)
         # self.setCallbacks()
         self.self = selfself
@@ -41,6 +42,17 @@ class GUI(QtWidgets.QWidget):
         self.listWidget.customContextMenuRequested.connect(self.listItemRightClicked)
 
         self.checkBox.stateChanged.connect(self.toggleCheckAll)
+
+    def getDir(self, dir = None):
+        if dir == None:
+            dir = __file__
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/plugins/NetWoRTOC'
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(dir))
+        return packagedir
 
     def toggleCheckAll(self, state):
         for idx in range(self.listWidget.count()):

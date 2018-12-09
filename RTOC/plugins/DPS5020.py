@@ -84,7 +84,7 @@ class Plugin(LoggerPlugin):
 
     def loadGUI(self):
         self.widget = QtWidgets.QWidget()
-        packagedir, file = os.path.split(os.path.realpath(__file__))
+        packagedir = self.getDir(__file__)
         uic.loadUi(packagedir+"/DPS5020/dps5020.ui", self.widget)
         # self.setCallbacks()
         self.widget.pushButton.clicked.connect(self.__openPortCallback)

@@ -17,9 +17,11 @@ class Actions:
         self.saveSessionAction.triggered.connect(self.saveSessionTriggered)
         self.importDataAction.triggered.connect(self.importDataTriggered)
         self.exportDataAction.triggered.connect(self.exportDataTriggered)
-        self.TCPServerAction.triggered.connect(self.toggleTcpServer)
+        self.actionTCPServer.triggered.connect(self.toggleTcpServer)
+        self.HTMLServerAction.triggered.connect(self.toggleHtmlServer)
         self.actionTelegramBot.triggered.connect(self.toggleTelegramBot)
         self.actionBotToken.triggered.connect(self.setBotToken)
+        self.actionTCPPassword.triggered.connect(self.setTCPPassword)
 
         self.systemTrayAction.triggered.connect(self.toggleSystemTray)
 
@@ -49,7 +51,16 @@ class Actions:
         else:
             self.config["tcpserver"] = True
         self.logger.toggleTcpServer(self.config["tcpserver"])
-        self.TCPServerAction.setChecked(self.config["tcpserver"])
+        self.actionTCPServer.setChecked(self.config["tcpserver"])
+
+    def toggleHtmlServer(self):
+        if self.config["rtoc_web"]:
+            self.config["rtoc_web"] = False
+        else:
+            self.config["rtoc_web"] = True
+            pyqtlib.info_message(self.tr("RTOC - Web gestartet"), self.tr("RTOC - Web ist jetzt unter localhost:5006 erreichbar"), self.tr("Diese Seite kann im gesamten Netzwerk geöffnet werden"), stylesheet="")
+        self.logger.toggleHTMLPage(self.config["rtoc_web"])
+        self.HTMLServerAction.setChecked(self.config["rtoc_web"])
 
     def toggleTelegramBot(self):
         if self.config["telegram_bot"]:
@@ -61,10 +72,20 @@ class Actions:
 
     def setBotToken(self):
         ans, ok = pyqtlib.text_message(
-            self, "Bot Token eingeben", 'Bitte erzeugen sie in Telegram mit "Botfather" einen Bot,\n generiere einen Bot und füge dessen Token hier ein', self.config['telegram_token'])
+            self, self.tr("Bot Token eingeben"), self.tr('Bitte erzeugen sie in Telegram mit "Botfather" einen Bot,\n generiere einen Bot und füge dessen Token hier ein'), self.config['telegram_token'])
         if ok:
             self.logger.telegramBot.setToken(ans)
             self.actionBotToken.setText(self.config['telegram_token'])
+
+    def setTCPPassword(self):
+        ans, ok = pyqtlib.text_message(
+            self, self.tr("TCP Passwort eingeben"), self.tr('Schütze deine Übertragung vor unerwünschten Gästen\nLeer lassen, um Passwort zu deaktivieren'), self.config['tcppassword'])
+        if ok:
+            self.logger.setTCPPassword(ans)
+            if ans=='':
+                self.actionTCPPassword.setText(self.tr('Passwort-Schutz: Aus'))
+            else:
+                self.actionTCPPassword.setText(self.tr('Passwort-Schutz: An'))
 
     def toggleSystemTray(self):
         if self.config["systemTray"]:
@@ -199,11 +220,11 @@ class Actions:
                 self.importData(fileName)
 
     def showAboutMessage(self):
-        pyqtlib.info_message(self.tr("Über"), "RealTime OpenControl 1.7", self.tr(
+        pyqtlib.info_message(self.tr("Über"), "RealTime OpenControl 1.8", self.tr(
             "RealTime OpenControl (RTOC) ist eine freie OpenSource Software unter der BSD-3-Lizenz.\n\nAlle Symbole werden unter der 'Creative Commons Attribution-NoDerivs 3.0 Unported' Lizenz bereitgestellt von icons8 (https://icons8.de)\n\nCopyright (C) 2018 Sebastian Keller"))
 
     def showHelpWebsite(self):
-        url = "https://git.kellerbase.de/haschtl/kellerlogger/wikis/RealTime-OpenControl-(RTOC)"
+        url = "https://github.com/Haschtl/RealTimeOpenControl/wiki"
         import webbrowser
         webbrowser.open(url, new=0, autoraise=True)
 
