@@ -107,7 +107,7 @@ git@github.com:Haschtl/RealTimeOpenControl.git
 Now RTOC can be started:
 
 ```shell
-cd kellerlogger
+cd RTOC
 // local RTOC-instance including GUI
 python3 RTOC
 // local RTOC-instance without GUI (only TCP-Server, [HTTP-Server, Telegram-Bot])
