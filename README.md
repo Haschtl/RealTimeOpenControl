@@ -1,10 +1,10 @@
 # RealTime OpenControl (RTOC)
 
-### Version 1.8
+### Version 1.8.2
 
 [**This README is available in GERMAN here.**](misc/README_german.md)
 
-[Documentation](https://github.com/Haschtl/RealTimeOpenControl/wiki)
+[Documentation](https://git.kellerbase.de/haschtl/kellerlogger/wikis/RealTime-OpenControl-(RTOC))
 
 RealTime OpenControl enables simple real-time data recording, visualization and editing. The recording can be done with a local Python scripts or via TCP locally/from the network. Visualization and editing is available locally, in the network (TCP and HTML) and via Telegram on the smartphone.
 
@@ -92,22 +92,16 @@ The following packages should also be installed
 pip3 install python-telegram-bot matplotlib requests python-nmap bokeh pycryptdomex
 ```
 
-For the DPS5020 plugin the following dependency must be installed
-
-```python
-pip3 install minimalmodbus
-```
-
 The RTOC repository can then be cloned with
 
 ```shell
-git@github.com:Haschtl/RealTimeOpenControl.git
+git clone git@git.kellerbase.de:haschtl/kellerlogger
 ```
 
 Now RTOC can be started:
 
 ```shell
-cd RTOC
+cd kellerlogger
 // local RTOC-instance including GUI
 python3 RTOC
 // local RTOC-instance without GUI (only TCP-Server, [HTTP-Server, Telegram-Bot])
@@ -132,16 +126,20 @@ plotStyles.json // Custom plotstyles for signals are stored in this file
 ![Beispielschematik](screenshots/RTOC-schematik.png)
 
 ### Wiki
-[Read the Wiki for full documentation](https://github.com/Haschtl/RealTimeOpenControl/wiki)
+[Read the Wiki for full documentation](https://git.kellerbase.de/haschtl/kellerlogger/wikis/RealTime-OpenControl-(RTOC))
 
 ### Default/Example Plugins:
 
 - function generator: generates sine, square, sawtooth, random, AC, DC
+- NetWoRTOC: Control and data exchange between several RTOC-servers
+
+You can get more plugins from the [RTOC-plugin-repository](https://git.kellerbase.de/haschtl/rtoc-plugins):
 - System: For recording many system variables (CPU, Memory, Network,...)
 - Octoprint: Recording of 3D printers
 - DPS5020: power supply unit recording and control (possibly also DPS5005, ...)
 - HoldPeak VC820: Multimeter Measurement Recording (also other VC820)
-- NetWoRTOC: Control and data exchange between several RTOC-servers
+- ...
+
 
 ### First GUI-Run
 
@@ -161,7 +159,7 @@ The graphical user interface of RTOC offers a wealth of functions for data displ
     - Scaling, shifting of signals
     - Run multiple scripts in parallel
 
-[Complete GUI-tutorial here.]https://github.com/Haschtl/RealTimeOpenControl/wiki/GUI)
+[Complete GUI-tutorial here.](https://git.kellerbase.de/haschtl/kellerlogger/wikis/GUI)
 
 ### Write simple Python-Plugin
 
@@ -172,7 +170,7 @@ Python plugins are integrated into RTOC and can be used to
 
 Plugins can **not** access all measurements. This can be done with a TCP connection to RTOC.
 
-[Example-Plugins here.](https://github.com/Haschtl/RealTimeOpenControl/wiki/PlugIns)
+[Example-Plugins here.](https://git.kellerbase.de/haschtl/kellerlogger/wikis/PlugIns)
 
 ### Simple local TCP-Datastream
 
@@ -190,11 +188,11 @@ The client can
 
 The connection between RTOC server and client can be encrypted end-to-end (DES) with a password (min. 8 characters).
 
-[Example for TCP here.](https://github.com/Haschtl/RealTimeOpenControl/wiki/clientCommunication)
+[Example for TCP here.](https://git.kellerbase.de/haschtl/kellerlogger/wikis/clientCommunication)
 
 ### Include Telegram-messanger
 
-[Tutorial for Telegram here.](https://github.com/Haschtl/RealTimeOpenControl/wiki/telegram)
+[Tutorial for Telegram here.](https://git.kellerbase.de/haschtl/kellerlogger/wikis/telegram)
 
 ## Screenshots
 

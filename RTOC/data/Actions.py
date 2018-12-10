@@ -224,7 +224,7 @@ class Actions:
             "RealTime OpenControl (RTOC) ist eine freie OpenSource Software unter der BSD-3-Lizenz.\n\nAlle Symbole werden unter der 'Creative Commons Attribution-NoDerivs 3.0 Unported' Lizenz bereitgestellt von icons8 (https://icons8.de)\n\nCopyright (C) 2018 Sebastian Keller"))
 
     def showHelpWebsite(self):
-        url = "https://github.com/Haschtl/RealTimeOpenControl/wiki"
+        url = "https://git.kellerbase.de/haschtl/kellerlogger/wikis/RealTime-OpenControl-(RTOC)"
         import webbrowser
         webbrowser.open(url, new=0, autoraise=True)
 

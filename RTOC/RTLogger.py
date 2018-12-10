@@ -34,6 +34,9 @@ except ImportError:
     from LoggerPlugin import LoggerPlugin
     from telegramBot import telegramBot
 
+userpath = os.path.expanduser('~/Documents')
+if not os.path.exists(userpath):
+    os.mkdir(userpath)
 userpath = os.path.expanduser('~/Documents/RTOC')
 if not os.path.exists(userpath):
     os.mkdir(userpath)
@@ -128,6 +131,7 @@ class RTLogger(ScriptFunctions, QObject):
         self.telegramBot = telegramBot(self)
         self.toggleTelegramBot()
         self.toggleHTMLPage()
+        self.load_autorun_plugins()
 
     def getDir(self, dir = None):
         if dir == None:
@@ -1039,11 +1043,26 @@ class RTLogger(ScriptFunctions, QObject):
         with open(self.config['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
             json.dump(conf, fp,  sort_keys=False, indent=4, separators=(',', ': '))
 
-
-
     def save_config(self):
         with open(self.config['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
             json.dump(self.config, fp,  sort_keys=False, indent=4, separators=(',', ': '))
+
+    def load_autorun_plugins(self):
+        userpath = os.path.expanduser('~/Documents/RTOC/autorun_devices')
+        if not os.path.exists(userpath):
+            with open(userpath, 'w', encoding="UTF-8") as f:
+                f.write('')
+        else:
+            plugins = []
+            try:
+                with open(userpath, 'r', encoding="UTF-8") as f:
+                    content = f.readlines()
+                # you may also want to remove whitespace characters like `\n` at the end of each line
+                plugins = [x.strip() for x in content]
+            except:
+                print('error in '+userpath)
+            for p in plugins:
+                self.startPlugin(p)
 
     def getSignal(self, id):
         if id in self.signalIDs:
@@ -1064,14 +1083,14 @@ class RTLogger(ScriptFunctions, QObject):
             idx = self.signalIDs.index(id)
             return str(self.signalUnits[idx])
         else:
-            return []
+            return ''
 
     def getSignalNames(self, id):
         if id in self.signalIDs:
             idx = self.signalIDs.index(id)
             return self.signalNames[idx]
         else:
-            return [[], []]
+            return [[''], ['']]
 
 
 if __name__ == "__main__":

@@ -126,17 +126,26 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.tray_icon.setIcon(self.app_icon)
         self.tray_icon.activated.connect(self.systemTrayClickAction)
 
-        self.logger = RTLogger.RTLogger()
-        self.logger.tr = self.tr
         self.forceQuit = False
+        self.initPlotWidgets()
+
+        self.logger = RTLogger.RTLogger()
+        self.config = self.logger.config
+        self.loadPlotStyles()
+        self.initScriptWidget()
+        self.newPlotWidget()
+        self.logger.tr = self.tr
+
+        for id in self.logger.signalIDs:
+            name = self.logger.getSignalNames(id)
+            dataunit = self.logger.getSignalUnits(id)
+            self.addNewSignal(id, name[0], name[1], dataunit)
 
         self.logger.newSignalCallback = self.addNewSignal
         self.logger.callback = self.newDataCallback
         self.logger.clearCallback = self.clearData
         self.logger.stopDeviceCallback = self.remoteDeviceStop
         self.logger.startDeviceCallback = self.remoteDeviceStart
-        self.config = self.logger.config
-        self.loadPlotStyles()
 
         self.darkmode = self.config["darkmode"]
         self.signalTimeOut = self.config["signalInactivityTimeout"]
@@ -145,16 +154,14 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.connectButtons()
         self.initDeviceWidget()
         self.initPluginsWidget()
-        self.initPlotWidgets()
-        self.initScriptWidget()
         self.initTrayIcon()
         self.initEventsWidget()
 
         self.logger.scriptExecutedCallback = self.scriptWidget.executedCallback
         self.logger.handleScriptCallback = self.scriptWidget.triggeredScriptCallback
         self.logger.newEventCallback = self.eventWidget.update
-        if not self.config["pluginsWidget"]:
-            self.pluginsWidget.hide()
+        # if not self.config["pluginsWidget"]:
+        self.pluginsWidget.hide()
         if not self.config["scriptWidget"]:
             self.scriptDockWidget.hide()
         if not self.config["deviceWidget"]:
@@ -169,7 +176,6 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             self.actionTCPPassword.setText(self.tr('Passwort-Schutz: Aus'))
         else:
             self.actionTCPPassword.setText(self.tr('Passwort-Schutz: An'))
-        self.newPlotWidget()
 
         self.updateLabels()
         self.readSettings()
@@ -241,6 +247,9 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             button.clicked.connect(partial(self.toggleDevice, plugin, button))
             self.deviceLayout.addWidget(button)
 
+            if self.logger.pluginStatus[plugin] == True:
+                button.setChecked(True)
+
     def initPluginsWidget(self):
         self.pluginsBox.removeItem(0)
 
@@ -249,7 +258,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.scriptLayout.addWidget(self.scriptWidget)
 
     def initPlotWidgets(self):
-        self.activePlotWidgetIndex = -1
+        self.activePlotWidgetIndex = 0
         self.plotWidgets = []
 
     def initEventsWidget(self):
