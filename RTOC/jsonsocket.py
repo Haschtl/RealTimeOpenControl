@@ -25,7 +25,7 @@ class Server(object):
 
     def __init__(self, host, port, keyword = None):
         self.socket = socket.socket()
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        #self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.setblocking(0)
         self.socket.settimeout(5.0)
         self.socket.bind((host, port))
@@ -137,7 +137,6 @@ def _send(socket, data, key = None):
     nonce = b''
     tag = b''
     if key != None and key != '' and type(key) == str:
-        print('TCP: _send passwordprotected')
         # des = DES.new(key.encode(), DES.MODE_ECB)
         # padded_text = pad(serialized)
         # serialized = des.encrypt(padded_text.encode('utf-8'))
@@ -199,7 +198,7 @@ def _recv(socket, key = None):
     while total - next_offset > 0:
         recv_size = socket.recv_into(view[next_offset:], total - next_offset)
         next_offset += recv_size
-        view = view.tobytes()
+    view = view.tobytes()
     if key != None and key != '' and type(key) == str:
         if len(tagView)!=0 and len(nonceView)!=0:
             try:
@@ -209,7 +208,6 @@ def _recv(socket, key = None):
                 cipher = AES.new(hash_object.digest(), AES.MODE_EAX, nonceView)
                 decrypted = cipher.decrypt_and_verify(view, tagView)
                 deserialized = json.loads(decrypted.decode('utf-8'))
-                print('TCP: _recv with password! WUHUU')
                 return deserialized
             except:
                 tb = traceback.format_exc()

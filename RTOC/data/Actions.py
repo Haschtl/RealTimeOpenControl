@@ -22,6 +22,7 @@ class Actions:
         self.actionTelegramBot.triggered.connect(self.toggleTelegramBot)
         self.actionBotToken.triggered.connect(self.setBotToken)
         self.actionTCPPassword.triggered.connect(self.setTCPPassword)
+        self.actionTCPPort.triggered.connect(self.setTCPPort)
 
         self.systemTrayAction.triggered.connect(self.toggleSystemTray)
 
@@ -42,6 +43,7 @@ class Actions:
 
         self.helpAction.triggered.connect(self.showHelpWebsite)
         self.aboutAction.triggered.connect(self.showAboutMessage)
+        self.checkUpdatesAction.triggered.connect(self.checkUpdates)
 
         self.searchEdit.textChanged.connect(self.filterDevices)
 
@@ -58,7 +60,7 @@ class Actions:
             self.config["rtoc_web"] = False
         else:
             self.config["rtoc_web"] = True
-            pyqtlib.info_message(self.tr("RTOC - Web gestartet"), self.tr("RTOC - Web ist jetzt unter localhost:5006 erreichbar"), self.tr("Diese Seite kann im gesamten Netzwerk geöffnet werden"), stylesheet="")
+            pyqtlib.info_message(self.tr("RTOC - Web gestartet"), self.tr("RTOC - Web ist jetzt unter localhost:5006 erreichbar"), self.tr("Diese Seite kann im gesamten Netzwerk geöffnet werden"))
         self.logger.toggleHTMLPage(self.config["rtoc_web"])
         self.HTMLServerAction.setChecked(self.config["rtoc_web"])
 
@@ -86,6 +88,20 @@ class Actions:
                 self.actionTCPPassword.setText(self.tr('Passwort-Schutz: Aus'))
             else:
                 self.actionTCPPassword.setText(self.tr('Passwort-Schutz: An'))
+
+    def setTCPPort(self):
+        ans, ok = pyqtlib.text_message(
+            self, self.tr("TCP Passwort eingeben"), self.tr('Schütze deine Übertragung vor unerwünschten Gästen\nLeer lassen, um Passwort zu deaktivieren'), self.config['tcppassword'])
+        if ok:
+            try:
+                ans = int(ans)
+                if ans >= 0 and ans <= 65535:
+                    self.logger.setTCPPort(ans)
+                    self.actionTCPPort.setText(self.tr('Port: ')+str(ans))
+                else:
+                    pyqtlib.info_message(self.tr('Fehler'), self.tr('Bitte gib eine Zahl zwischen 0 und 65535 an'), '')
+            except:
+                pyqtlib.info_message(self.tr('Fehler'), self.tr('Bitte gib eine Zahl zwischen 0 und 65535 an'), self.tr('Ihre Eingabe war ungültig.'))
 
     def toggleSystemTray(self):
         if self.config["systemTray"]:
@@ -245,3 +261,21 @@ class Actions:
             if force == False:
                 pyqtlib.info_message(self.tr("Sprache geändert"),
                                      self.tr("Bitte Programm neustarten"), "")
+
+    def checkUpdates(self):
+        current, available = self.logger.check_for_updates()
+        if current != None:
+            text =self.tr( 'Installierte Version: ')+str(current)
+            if not available:
+                info = self.tr("Entschuldigung. Konnte RTOC bei PyPi nicht finden. Schau mal bei 'https://pypi.org/project/RTOC/'")
+            else:
+                text += self.tr(', Neuste Version: ')+str(available[0])
+                if current == available[0]:
+                    info = self.tr('RTOC ist auf dem neusten Stand.')
+                else:
+                    info = self.tr('Neue Version verfügbar. Update mit der Konsole:\n\n"pip3 install RTOC --upgrade"\n')
+        else:
+            text = self.tr('RTOC wurde nicht mit PyPi installiert.')
+            info = self.tr('Um die Version zu überprüfen, installiere RTOC mit "pip3 install RTOC"')
+
+        pyqtlib.info_message(self.tr('Version'), text, info)

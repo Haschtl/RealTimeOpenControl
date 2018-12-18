@@ -3,7 +3,9 @@ from PyQt5 import QtWidgets
 from PyQt5 import uic
 import time
 from functools import partial
+import sys
 
+from .lib import general_lib as lib
 from .RTPlotActions import RTPlotActions
 from .signalWidget import SignalWidget
 from . import define as define
@@ -100,6 +102,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
             for signal in self.signalObjects:
                 signal.updatePlot()
             self.lastUpdate = time.time()
+        self.updateCountLabel()
 
     def stop(self):
         self.clear()
@@ -132,7 +135,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
             self.deviceTreeWidgetItems.pop(self.devices.index(devicename))
             self.devices.pop(self.devices.index(devicename))
         self.signalTreeWidgetItems.pop(idx)
-        self.countLabel.setText(self.tr("Signale: ")+str(len(self.signalObjects)))
+        self.updateCountLabel()
 
     def addSignalRAW(self, signalObject):
         idx = len(self.signalObjects)
@@ -163,7 +166,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.treeWidget.setItemWidget(
             self.signalTreeWidgetItems[idx], 1, self.signalObjects[idx].label)
         self.deviceTreeWidgetItems[self.devices.index(devicename)].setExpanded(True)
-        self.countLabel.setText(self.tr("Signale: ")+str(len(self.signalObjects)))
+        self.updateCountLabel()
 
     def signalClickedAction(self, devicename, signalname):
         r = 0.001
@@ -210,7 +213,10 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.treeWidget.setItemWidget(
             self.signalTreeWidgetItems[idx], 1, self.signalObjects[idx].label)
         self.deviceTreeWidgetItems[self.devices.index(devicename)].setExpanded(True)
-        self.countLabel.setText(self.tr("Signale: ")+str(len(self.signalObjects)))
+        self.updateCountLabel()
+
+    def updateCountLabel(self):
+        self.countLabel.setText(self.tr("Signale: ")+str(len(self.signalObjects))+' ('+lib.bytes_to_str(self.logger.getSignalSize())+')')
 
     def startDragTreeWidget(self, actions):
         self.self._drag_info = {"oldWidget": "", "newWidget": "", "signalObjects": []}

@@ -371,6 +371,7 @@
      </property>
      <addaction name="actionTCPServer"/>
      <addaction name="actionTCPPassword"/>
+     <addaction name="actionTCPPort"/>
     </widget>
     <addaction name="loadSessionAction"/>
     <addaction name="saveSessionAction"/>
@@ -404,6 +405,7 @@
     </property>
     <addaction name="helpAction"/>
     <addaction name="separator"/>
+    <addaction name="checkUpdatesAction"/>
     <addaction name="aboutAction"/>
    </widget>
    <widget class="QMenu" name="menuSprache">
@@ -695,6 +697,16 @@
   <action name="actionTCPPassword">
    <property name="text">
     <string>Passwort-Schutz</string>
+   </property>
+  </action>
+  <action name="checkUpdatesAction">
+   <property name="text">
+    <string>Auf Updates prüfen</string>
+   </property>
+  </action>
+  <action name="actionTCPPort">
+   <property name="text">
+    <string>Port: 5050</string>
    </property>
   </action>
  </widget>

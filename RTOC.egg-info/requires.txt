@@ -4,7 +4,6 @@ pyqtgraph
 markdown2
 xlsxwriter
 scipy
-qtmodern
 python-telegram-bot
 matplotlib
 requests

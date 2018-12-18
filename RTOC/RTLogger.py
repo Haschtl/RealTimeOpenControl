@@ -68,7 +68,7 @@ defaultconfig = {
     "plotLegendEnabled": False,
     "blinkingIdentifier": False,
     "signalStyles": [],
-    "defaultRecordLength": 5000,
+    "defaultRecordLength": 500000,
     "plotRate": 8,
     "plotInverted": False,
     "xTimeBase": True,
@@ -90,7 +90,7 @@ defaultconfig = {
 }
 
 class RTLogger(ScriptFunctions, QObject):
-    def __init__(self, enableTCP=None):
+    def __init__(self, enableTCP=None, tcpport=None):
         self.run = True
         self.config = {}
         self.load_config()
@@ -114,6 +114,8 @@ class RTLogger(ScriptFunctions, QObject):
         self.tcp = None
         if enableTCP is not None:
             self.config['tcpserver'] = enableTCP
+        if tcpport is not None:
+            self.config["tcpPort"] = int(tcpport)
 
         self.toggleTcpServer(self.config['tcpserver'])
 
@@ -132,6 +134,7 @@ class RTLogger(ScriptFunctions, QObject):
         self.toggleTelegramBot()
         self.toggleHTMLPage()
         self.load_autorun_plugins()
+        #self.check_for_updates()
 
     def getDir(self, dir = None):
         if dir == None:
@@ -150,14 +153,14 @@ class RTLogger(ScriptFunctions, QObject):
         for finder, name, ispkg in loggerlib.iter_namespace(plugins):
             namesplit = name.split('.')
             print(namesplit[-1])
-            if namesplit[-1] not in ["Template", "LoggerPlugin"]:
+            if namesplit[-1] not in ["LoggerPlugin"]:
                 self.devicenames[namesplit[-1]] = name
                 self.pluginStatus[namesplit[-1]] = False
         print('User plugins:')
         for finder, name, ispkg in loggerlib.iter_namespace(devices):
             namesplit = name.split('.')
             print(namesplit[-1])
-            if namesplit[-1] not in ["Template", "LoggerPlugin"]:
+            if namesplit[-1] not in ["LoggerPlugin"]:
                 self.devicenames[namesplit[-1]] = name
                 self.pluginStatus[namesplit[-1]] = False
 
@@ -218,6 +221,10 @@ class RTLogger(ScriptFunctions, QObject):
                 self.tcp.setKeyword(None)
             elif type(strung) == str:
                 self.tcp.setKeyword(strung)
+
+    def setTCPPort(self, port):
+        self.config['tcpPort'] = port
+
 
     def sendTCP(self, hostname="localhost", *args, **kwargs):
         self.tcpclient.createTCPClient(hostname)
@@ -317,7 +324,8 @@ class RTLogger(ScriptFunctions, QObject):
                         ans['password'] = 'Wrong password'
                 self.tcp.send(ans)
             except OSError:
-                print("TCP Server idle")
+                #print("TCP Server idle")
+                pass
             except KeyboardInterrupt:
                 self.stop()
             except:
@@ -375,6 +383,7 @@ class RTLogger(ScriptFunctions, QObject):
                     loggerDict[call]['starttime'] = self.starttime
                     loggerDict[call]['telegram_token'] = self.config['telegram_token']
                     loggerDict[call]['telegram_bot'] = self.config['telegram_bot']
+                    loggerDict[call]['signal_memory'] = self.logger.getSignalSize()
         return loggerDict
 
     def getPluginDict(self):
@@ -589,38 +598,40 @@ class RTLogger(ScriptFunctions, QObject):
 
     def __addNewSignal(self, dataY, dataunit, devicename, dataname, dataX=None, createCallback=True):
         # Add a new signal-stream
-        print("LOGGER: Adding signal: "+devicename+", "+dataname)
-        newLength = self.maxLength
-        self.signalNames += [[devicename, dataname]]
-        newID = self.getNewID()
-        self.signalIDs.append(newID)
-        self.signals += [[deque([], newLength), deque([], newLength)]]
-        self.events += [[deque([], newLength), deque([], newLength), deque([], self.maxLength)]]
-        #self.signalUnits += [deque([], newLength)]
-        self.signalUnits += ['']
-        if self.newSignalCallback:
-            #self.newSignal = [len(self.signalNames)-1, devicename, dataname, dataunit]
-            self.newSignalCallback(newID, devicename, dataname, dataunit)
-        #self.addNewEvent(text=translate('RTLogger', "Signal-Stream hinzugefügt: ") +
-        #                 dataname+"."+devicename, sname="", dname="RTOC", priority=0)
-        self.__addNewData(dataY, dataunit, devicename, dataname, dataX, createCallback)
+        if dataY != None:
+            print("LOGGER: Adding signal: "+devicename+", "+dataname)
+            newLength = self.maxLength
+            self.signalNames += [[devicename, dataname]]
+            newID = self.getNewID()
+            self.signalIDs.append(newID)
+            self.signals += [[deque([], newLength), deque([], newLength)]]
+            self.events += [[deque([], newLength), deque([], newLength), deque([], self.maxLength)]]
+            #self.signalUnits += [deque([], newLength)]
+            self.signalUnits += ['']
+            if self.newSignalCallback:
+                #self.newSignal = [len(self.signalNames)-1, devicename, dataname, dataunit]
+                self.newSignalCallback(newID, devicename, dataname, dataunit)
+            #self.addNewEvent(text=translate('RTLogger', "Signal-Stream hinzugefügt: ") +
+            #                 dataname+"."+devicename, sname="", dname="RTOC", priority=0)
+            self.__addNewData(float(dataY), dataunit, devicename, dataname, dataX, createCallback)
 
     def __addNewData(self, dataY, dataunit, devicename, dataname, dataX=None, createCallback=True):
-        # Add new data to a signal-stream
-        # self.latestSignal.append([devicename,dataname])
-        self.latestSignal = [devicename, dataname]
-        idx = self.signalNames.index([devicename, dataname])
-        if dataX is None:
-            self.signals[idx][0].append(time.time())
-        else:
-            self.signals[idx][0].append(dataX)
-        self.signals[idx][1].append(dataY)
-        #self.signalUnits[idx].append(dataunit)
-        self.signalUnits[idx] = dataunit
-        if self.handleScriptCallback:
-            self.handleScriptCallback(devicename, dataname)
-        if self.callback and createCallback:
-            self.callback()
+        if dataY != None:
+            # Add new data to a signal-stream
+            # self.latestSignal.append([devicename,dataname])
+            self.latestSignal = [devicename, dataname]
+            idx = self.signalNames.index([devicename, dataname])
+            if dataX is None:
+                self.signals[idx][0].append(time.time())
+            else:
+                self.signals[idx][0].append(dataX)
+            self.signals[idx][1].append(float(dataY))
+            #self.signalUnits[idx].append(dataunit)
+            self.signalUnits[idx] = dataunit
+            if self.handleScriptCallback:
+                self.handleScriptCallback(devicename, dataname)
+            if self.callback and createCallback:
+                self.callback()
 
     def addNewEvent(self,  *args, **kwargs):
         strung = kwargs.get('text', "")
@@ -753,7 +764,7 @@ class RTLogger(ScriptFunctions, QObject):
     def addDataCallback(self, datasY=[], *args, **kwargs):
         datanames = kwargs.get('snames', [""])
         devicename = kwargs.get('dname', "noDevice")
-        callback = kwargs.get('unit', "")
+        units = kwargs.get('unit', "")
         datasX = kwargs.get('x', [None])
         createCallback = kwargs.get("c", True)
         for idx, arg in enumerate(args):
@@ -762,7 +773,7 @@ class RTLogger(ScriptFunctions, QObject):
             if idx == 1:
                 devicename = arg
             if idx == 2:
-                callback = arg
+                units = arg
             if idx == 3:
                 datasX = arg
             if idx == 4:
@@ -771,15 +782,19 @@ class RTLogger(ScriptFunctions, QObject):
         if type(datasY) == list:
             if datasX == [None]:
                 datasX = [None]*len(datasY)
-            if callback == [""] or callback is None:
-                callback = [""]*len(datasY)
+            if units == [""] or units is None or type(units)== str:
+                units = [""]*len(datasY)
+            if len(units) < len(datasY):
+                units += ['']*(len(datasY)-len(units))
+            elif len(units) > len(datasY):
+                units = units[0:len(datasY)]
             for idx, data in enumerate(datasY):
                 if [devicename, datanames[idx]] in self.signalNames:
-                    self.__addNewData(float(datasY[idx]),
-                                      callback[idx], devicename, datanames[idx], datasX[idx], createCallback)
+                    self.__addNewData(datasY[idx],
+                                      units[idx], devicename, datanames[idx], datasX[idx], createCallback)
                 else:
-                    self.__addNewSignal(float(datasY[idx]),
-                                        callback[idx], devicename, datanames[idx], datasX[idx], createCallback)
+                    self.__addNewSignal(datasY[idx],
+                                        units[idx], devicename, datanames[idx], datasX[idx], createCallback)
         elif type(datasY) == str:
             self.addNewEvent(datasY)
 
@@ -1037,13 +1052,15 @@ class RTLogger(ScriptFunctions, QObject):
             self.config = defaultconfig
 
         self.config['documentfolder'] = userpath
-        conf = dict(self.config)
-        conf['telegram_bot'] = False
-        conf['rtoc_web'] = False
-        with open(self.config['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
-            json.dump(conf, fp,  sort_keys=False, indent=4, separators=(',', ': '))
+        # conf = dict(self.config)
+        # conf['telegram_bot'] = False
+        # conf['rtoc_web'] = False
+        # with open(self.config['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
+        #     json.dump(conf, fp,  sort_keys=False, indent=4, separators=(',', ': '))
 
     def save_config(self):
+        self.config["deviceWidget"] = True
+        self.config["pluginsWidget"] = False
         with open(self.config['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
             json.dump(self.config, fp,  sort_keys=False, indent=4, separators=(',', ': '))
 
@@ -1091,6 +1108,47 @@ class RTLogger(ScriptFunctions, QObject):
             return self.signalNames[idx]
         else:
             return [[''], ['']]
+
+    def getSignalSize(self):
+        outerlayer = sys.getsizeof(self.signals)
+        innerlayer = 0
+        for sig in self.signals:
+            innerlayer += sys.getsizeof(sig)
+            innerlayer += sys.getsizeof(sig[0])*2
+            innerlayer += sys.getsizeof(list(sig[0]))*2
+        size = outerlayer + innerlayer
+        return size
+
+    def check_for_updates(self):
+        import xmlrpc.client
+        try:
+            from pip._internal.utils.misc import get_installed_distributions
+        except ImportError:  # pip<10
+            from pip import get_installed_distributions
+
+        pypi = xmlrpc.client.ServerProxy('http://pypi.python.org/pypi')
+        available = pypi.package_releases('RTOC')
+
+        current = None
+        for pack in get_installed_distributions():
+            if pack.project_name == 'RTOC':
+                current = pack.version
+                break
+        if current != None:
+            print('\nInstalled version: '+str(current))
+        else:
+            print('RTOC was not installed with PyPi. To enable version-checking, please install it with "pip3 install RTOC"')
+        if not available:
+            print("Sorry. Couldn't get version information from PyPi. Please visit 'https://pypi.org/project/RTOC/'")
+        else:
+            print('Newest version: '+str(available[0]))
+
+        if current != None and available:
+            if current == available[0]:
+                print('RTOC is up to date.')
+            else:
+                print('New version available! Please update\n\npip3 install RTOC --upgrade\n')
+        return current, available
 
 
 if __name__ == "__main__":

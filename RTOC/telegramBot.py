@@ -12,6 +12,10 @@ translate = QCoreApplication.translate
 
 messageIntervall = 1
 
+try:
+    from .data.lib import general_lib as lib
+except ImportError:
+    from data.lib import general_lib as lib
 
 def first_lower(s):
     if len(s) == 0:
@@ -50,9 +54,9 @@ class telegramBot(QObject):
         self.logger = logger
         self.config = self.logger.config
         self.menuCommands = [translate('telegram', 'Event-Benachrichtigung festlegen'), translate(
-            'telegram', 'Letzte Messwerte'), translate('telegram', 'Signale'), translate('telegram', 'Geräte')]
+            'telegram', 'Letzte Messwerte'), translate('telegram', 'Signale'), translate('telegram', 'Geräte'), translate('telegram', 'Event erzeugen')]
         self.mode = {}
-
+        self.selectedSignalForEvent = None
         self.servername = self.config['telegram_name']
         self.token = self.config['telegram_token']
         self.eventlevel = self.config['telegram_eventlevel']
@@ -146,6 +150,9 @@ class telegramBot(QObject):
             elif strung == translate('telegram', "Signale"):
                 self.mode[update.message.chat_id] = "signals"
                 self.signalsHandler(bot, update)
+            elif strung == translate('telegram', 'Event erzeugen'):
+                self.mode[update.message.chat_id] = "createEvent"
+                self.createEventHandler(bot, update)
             else:
                 self.menuHandler(bot, update)
         elif self.mode[update.message.chat_id] == 'signals':
@@ -180,6 +187,26 @@ class telegramBot(QObject):
                                      text=translate('telegram', 'Fehlerhafte Eingabe'))
                     self.mode[update.message.chat_id] = 'signals'
                     self.signalsHandler(bot, update)
+        elif self.mode[update.message.chat_id] == "createEvent":
+            if strung in ['.'.join(a) for a in self.logger.signalNames]:
+                self.mode[update.message.chat_id] = "createEvent"
+                self.createEventHandler(bot, update, strung)
+            elif strung == translate('telegram', '<-- Zurück'):
+                self.selectedSignalForEvent = None
+                self.menuHandler(bot, update)
+            else:
+                bot.send_message(chat_id=update.message.chat_id, text=translate(
+                    'telegram', 'Event gesendet.'))
+                if self.selectedSignalForEvent != None:
+                    signal = self.selectedSignalForEvent.split('.')
+                    device = signal[0]
+                    signal = signal[1]
+                    self.selectedSignalForEvent = None
+                else:
+                    device = 'Telegram'
+                    signal = str(update.message.chat_id)
+                self.logger.addNewEvent(strung,signal, device)
+                self.menuHandler(bot, update)
         elif self.mode[update.message.chat_id] == 'plugins':
             if strung in self.logger.devicenames.keys():
                 self.pluginHandler(bot, update, strung)
@@ -342,7 +369,8 @@ class telegramBot(QObject):
         button_list = [KeyboardButton(s) for s in commands]
         reply_markup = ReplyKeyboardMarkup(self.build_menu(button_list, n_cols=1))
         bot.send_message(update.message.chat_id, text=translate(
-            'telegram', "Derzeitige Aufzeichnungsdauer: ")+str(self.logger.maxLength), reply_markup=reply_markup)
+            'telegram', "Derzeitige Aufzeichnungsdauer: ")+str(self.logger.maxLength)+translate(
+                'telegram', '\nSignale verwenden ')+lib.bytes_to_str(self.logger.getSignalSize()), reply_markup=reply_markup)
 
     def pluginsHandler(self, bot, update):
         commands = list(self.logger.devicenames)
@@ -351,6 +379,19 @@ class telegramBot(QObject):
         reply_markup = ReplyKeyboardMarkup(self.build_menu(button_list, n_cols=1))
         bot.send_message(update.message.chat_id, text=translate(
             'telegram', "Geräte"), reply_markup=reply_markup)
+
+    def createEventHandler(self, bot, update, deviceselect=None):
+        if deviceselect == None:
+            commands = ['.'.join(a) for a in self.logger.signalNames]
+            commands += [translate('telegram', '<-- Zurück')]
+            button_list = [KeyboardButton(s) for s in commands]
+            reply_markup = ReplyKeyboardMarkup(self.build_menu(button_list, n_cols=1))
+            bot.send_message(update.message.chat_id, text=translate(
+                'telegram', "Neues Event erzeugen\nSende eine Nachricht, um ein Event zu erzeugen.\nWähle ein Signal aus, um das Event einem Signal zuzuordnen."), reply_markup=reply_markup)
+        else:
+            self.selectedSignalForEvent = deviceselect
+            bot.send_message(update.message.chat_id, text=translate(
+                'telegram', "Signal ausgewählt: ")+deviceselect)
 
     def signalsHandler(self, bot, update):
         commands = ['.'.join(a) for a in self.logger.signalNames]

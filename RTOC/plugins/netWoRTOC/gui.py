@@ -7,8 +7,14 @@ import os
 from threading import Thread
 import sys
 
-import plugins.netWoRTOC.networkscan as networkscan
-import data.lib.pyqt_customlib as pyqtlib
+try:
+    import plugins.netWoRTOC.networkscan as networkscan
+except ImportError:
+    import RTOC.plugins.netWoRTOC as networkscan
+try:
+    import data.lib.pyqt_customlib as pyqtlib
+except:
+    import RTOC.data.lib.pyqt_customlib as pyqtlib
 from PyQt5.QtCore import QCoreApplication
 
 import nmap
@@ -121,9 +127,9 @@ class GUI(QtWidgets.QWidget):
         ip_parts = ip.split('.')
         base_ip = ip_parts[0] + '.' + ip_parts[1] + '.' + ip_parts[2] + '.'
         nm = nmap.PortScanner()
-        ans = nm.scan(base_ip+'0-255','5050')
+        ans = nm.scan(base_ip+'0-255',self.portBox.value())
         for ip in ans['scan'].keys():
-            if ans['scan'][ip]['tcp'][5050]['state'] != 'closed':
+            if ans['scan'][ip]['tcp'][self.portBox.value()]['state'] != 'closed':
                 if len(ans['scan'][ip]['hostnames'])>0:
                     for hostname in ans['scan'][ip]['hostnames']:
                         if hostname['name'] != '':

@@ -25,6 +25,8 @@ class LoggerPlugin:
         self.run = False  # False -> stops thread
         self.smallGUI = False
         self.tcppassword = ''
+        self.tcpport=5050
+        self.tcpaddress=''
         self.xy = False
         self.widget = None
 
@@ -100,12 +102,13 @@ class LoggerPlugin:
         else:
             print("No event connected")
 
-    def createTCPClient(self, address="localhost", password=None):
+    def createTCPClient(self, address="localhost", password=None, tcpport=5050):
         self.tcpaddress = address
+        self.tcpport = tcpport
+        self.sock = jsonsocket.Client()
         if password != None:
             self.tcppassword = password
             self.sock.setKeyword(password)
-        self.sock = jsonsocket.Client()
 
     def sendTCP(self, *args, **kwargs):
         dataY = kwargs.get('y', None)
@@ -173,7 +176,7 @@ class LoggerPlugin:
             #dicti['password'] = hex_dig
         if self.sock:
             try:
-                self.sock.connect(self.tcpaddress, 5050, self.tcppassword)
+                self.sock.connect(self.tcpaddress, self.tcpport, self.tcppassword)
                 self.sock.send(dicti)
                 response = self.sock.recv()
                 self.sock.close()

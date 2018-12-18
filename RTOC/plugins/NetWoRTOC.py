@@ -1,14 +1,20 @@
 try:
     from LoggerPlugin import LoggerPlugin
 except ImportError:
-    from ..LoggerPlugin import LoggerPlugin
+    from RTOC.LoggerPlugin import LoggerPlugin
 
 import time
 from threading import Thread
 import traceback
 
-from plugins.netWoRTOC.gui import GUI
-import data.lib.pyqt_customlib as pyqtlib
+try:
+    from plugins.netWoRTOC.gui import GUI
+except ImportError:
+    from .netWoRTOC.gui import GUI
+try:
+    import data.lib.pyqt_customlib as pyqtlib
+except ImportError:
+    import RTOC.data.lib.pyqt_customlib as pyqtlib
 from PyQt5.QtCore import QCoreApplication
 
 translate = QCoreApplication.translate
@@ -33,6 +39,8 @@ class Plugin(LoggerPlugin):
         self.__pluglist = []
         self.__eventlist = {}
         self.maxLength = 0
+
+        self.tcppassword = None
 
     # THIS IS YOUR THREAD
     def updateT(self):
@@ -173,7 +181,8 @@ class Plugin(LoggerPlugin):
             self.__clearAll()
         else:
             address = self.widget.comboBox.currentText()
-            self.createTCPClient(address)
+            print(self.widget.portBox.value())
+            self.createTCPClient(address, self.tcppassword, self.widget.portBox.value())
             self.run = True
             try:
                 ok = self.sendTCP()
@@ -233,7 +242,7 @@ class Plugin(LoggerPlugin):
         if self.run:
             self.run = False
         else:
-            self.createTCPClient(address)
+            self.createTCPClient(address, self.tcppassword, self.widget.portBox.value())
             self.run = True
             try:
                 ok = self.sendTCP()

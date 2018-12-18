@@ -148,6 +148,9 @@ class RTOC_Web(LoggerPlugin):
 
     def connect(self, *args):
         if self.connectButton.active:
+            pw = self.passwordInput.value
+            if pw == '':
+                pw=None
             ok = self.checkConnection(self.hostInput.value, self.passwordInput.value)
             if ok is True:
                 self.connectButton.button_type = "success"

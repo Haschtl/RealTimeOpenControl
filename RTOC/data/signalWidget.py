@@ -122,7 +122,7 @@ class SignalWidget(QtWidgets.QToolButton):
         self.display_text = pg.TextItem(text='', color=(
             200, 200, 200), fill=(200, 200, 200, 50), anchor=(1, 1))
         self.display_text.hide()
-        self.plotWidget.plot.addItem(self.display_text)
+        self.plotWidget.plot.addItem(self.display_text,  ignoreBounds = True)
         self.plotWidget.plot.scene().sigMouseMoved.connect(self.onMove)
 
         self.plotWidget.legend.addItem(self.plot, self.legendName)
@@ -251,7 +251,7 @@ class SignalWidget(QtWidgets.QToolButton):
                     eventItem.vLine = pg.InfiniteLine(angle=90, movable=False)
 
                     self.eventItems.append(eventItem)
-                    self.plotWidget.plot.addItem(eventItem)
+                    self.plotWidget.plot.addItem(eventItem,  ignoreBounds = True)
                     self.plotWidget.plot.addItem(self.eventItems[idx].vLine, ignoreBounds=True)
                     if not self.showEvents:
                         self.eventItems[idx].hide()

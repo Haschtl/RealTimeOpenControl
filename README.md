@@ -78,7 +78,7 @@ devices/ 	 // Directory for user-plugins
 plotStyles.json // Custom plotstyles for signals are stored in this file
 ```
 
-### Manuelle Installation
+### Install manually
 
 To use RTOC, the following dependencies must be installed
 

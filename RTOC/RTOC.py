@@ -9,7 +9,7 @@ from functools import partial
 import traceback
 import json
 import getopt
-
+import time
 try:
     from . import RTLogger
     from .data.lib import pyqt_customlib as pyqtlib
@@ -111,7 +111,7 @@ class SubWindow(QtWidgets.QMainWindow):
 
 
 class RTOC(QtWidgets.QMainWindow, Actions):
-    def __init__(self):
+    def __init__(self, tcp=None, port=5050):
         super(RTOC, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
@@ -129,7 +129,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.forceQuit = False
         self.initPlotWidgets()
 
-        self.logger = RTLogger.RTLogger()
+        self.logger = RTLogger.RTLogger(tcp, port)
         self.config = self.logger.config
         self.loadPlotStyles()
         self.initScriptWidget()
@@ -161,7 +161,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.logger.handleScriptCallback = self.scriptWidget.triggeredScriptCallback
         self.logger.newEventCallback = self.eventWidget.update
         # if not self.config["pluginsWidget"]:
-        self.pluginsWidget.hide()
+
         if not self.config["scriptWidget"]:
             self.scriptDockWidget.hide()
         if not self.config["deviceWidget"]:
@@ -176,11 +176,12 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             self.actionTCPPassword.setText(self.tr('Passwort-Schutz: Aus'))
         else:
             self.actionTCPPassword.setText(self.tr('Passwort-Schutz: An'))
-
+        self.actionTCPPort.setText(self.tr('Port: ')+str(self.config['tcpPort']))
         self.updateLabels()
         self.readSettings()
 
         self.loadSession()
+        self.pluginsWidget.hide()
 
     def loadPlotStyles(self):
         filename = self.config['documentfolder']+"/plotStyles.json"
@@ -515,22 +516,50 @@ class RTOC_TCP(QtWidgets.QMainWindow):
 
 
 def setStyleSheet(app, myapp):
-    try:
-        import qtmodern.styles
-        import qtmodern.windows
-        qtmodern.styles.dark(app)
-        #mw = qtmodern.windows.ModernWindow(myapp)
-        mw = myapp
-        return app, mw
-    except ImportError:
-        tb = traceback.format_exc()
-        print(tb)
-        print("New Style not installed")
-        with open("/data/ui/darkmode.html", 'r') as myfile:
-            stylesheet = myfile.read().replace('\n', '')
-        app.setStyleSheet(stylesheet)
-        return app, myapp
+    type = 'QtModern'
 
+    if type == 'QtModern':
+        try:
+            import qtmodern.styles
+            import qtmodern.windows
+            with open("/data/ui/qtmodern.qss", 'r') as myfile:
+                stylesheet = myfile.read().replace('\n', '')
+            app.setStyleSheet(stylesheet)
+            qtmodern.styles.dark(app)
+            #mw = qtmodern.windows.ModernWindow(myapp)
+            mw = myapp
+            return app, mw
+        except ImportError:
+            tb = traceback.format_exc()
+            print(tb)
+            print("QtModern not installed")
+            type = 'QDarkStyle'
+    if type == 'QDarkStyle':
+        try:
+            import qdarkstyle
+            dark_stylesheet = qdarkstyle.load_stylesheet_pyqt5()
+            app.setStyleSheet(dark_stylesheet)
+            return app, myapp
+        except ImportError:
+            tb = traceback.format_exc()
+            print(tb)
+            print("QtModern not installed")
+            type == 'qdarkgraystyle'
+    if type == 'qdarkgraystyle':
+        try:
+            import qdarkgraystyle
+            dark_stylesheet = qdarkgraystyle.load_stylesheet()
+            app.setStyleSheet(dark_stylesheet)
+            return app, myapp
+        except ImportError:
+            tb = traceback.format_exc()
+            print(tb)
+            print("QtModern not installed")
+
+    with open("/data/ui/darkmode.html", 'r') as myfile:
+        stylesheet = myfile.read().replace('\n', '')
+    app.setStyleSheet(stylesheet)
+    return app, myapp
 
 def setLanguage(app):
     try:
@@ -556,21 +585,32 @@ def setLanguage(app):
 
 
 def main():
-    opts, args = getopt.getopt(sys.argv[1:], "hsr:", ["remote="])
+    opts, args = getopt.getopt(sys.argv[1:], "hspr:", ["remote="])
     if len(opts) == 0:
         startRTOC()
     else:
         for opt, arg in opts:
+            if opt == '-p':
+                port = int(arg)
+                break
+            else:
+                port = 5050
+        for opt, arg in opts:
             if opt == '-h':
                 print(
-                    'RTOC.py [-h, -s] [-r <Remoteadress>]\n -h: Hilfe\n-s: TCP-Server ohne GUI\n-r <Remoteadresse>: TCP-Client zu RTOC-Server')
+                    'RTOC.py [-h, -s] [-r <Remoteadress>]\n -h: Hilfe\n-s: TCP-Server ohne GUI\n-r <Remoteadresse>: TCP-Client zu RTOC-Server\n-p: Starte TCP-Server auf anderem Port (Standart: 5050)')
                 sys.exit()
             elif opt == '-s':
-                runInBackground()
+                logger = RTLogger.RTLogger(True, port)
+                #runInBackground()
+                while logger.run:
+                    time.sleep(1)
                 sys.exit(0)
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)
+                sys.exit(0)
+        startRTOC(None, port)
 
 
 def runInBackground():
@@ -622,7 +662,7 @@ def startRemoteRTOC(remotepath):
     app.exec_()
 
 
-def startRTOC():
+def startRTOC(tcp = None, port = None):
     app = QtWidgets.QApplication(sys.argv)
     try:
         userpath = os.path.expanduser('~/Documents/RTOC')
@@ -645,7 +685,7 @@ def startRTOC():
         # generate translationfile: % pylupdate5 RTOC.py -ts lang/de_de.ts
         # compile translationfile: % lrelease-qt5 lang/de_de.ts
         # use self.tr("TEXT TO TRANSLATE") in the code
-    myapp = RTOC()
+    myapp = RTOC(tcp, port)
     app, myapp = setStyleSheet(app, myapp)
 
     myapp.show()
