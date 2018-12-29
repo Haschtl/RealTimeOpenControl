@@ -10,6 +10,7 @@ from .lib import general_lib as lib
 from .signalEditWidget import SignalEditWidget
 from . import define as define
 from .stylePlotGUI import setStyle as setPlotStyle
+from .stylePlotGUI import getStyle as getPlotStyle
 
 
 def mouseClickEventPlotCurveItem(self, ev):
@@ -78,14 +79,29 @@ class AnimatedWidget(QtGui.QWidget):
     backColor = QtCore.pyqtProperty(QtGui.QColor, getBackColor, setBackColor)
 
 
-class SignalWidget(QtWidgets.QToolButton):
+#class SignalWidget(QtWidgets.QToolButton):
+class SignalWidget(QtWidgets.QWidget):
     def __init__(self, plotWidget, logger, devicename, signalname, id, unit):
         super(SignalWidget, self).__init__()
+        sizePolicy = QtGui.QSizePolicy(
+            QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        self.layout = QtWidgets.QHBoxLayout()
+        self.setLayout(self.layout)
+        self.legend = QtWidgets.QLabel('-')
+        self.legend.setSizePolicy(sizePolicy)
+        self.button = QtWidgets.QToolButton()
+        self.layout.addWidget(self.legend)
+        self.layout.addWidget(self.button)
+        self.clicked=self.button.clicked
+
         sizePolicy = QtGui.QSizePolicy(
             QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         self.setSizePolicy(sizePolicy)
+        self.button.setSizePolicy(sizePolicy)
         self.setCheckable(True)
 
         self.setText(signalname)
@@ -146,6 +162,81 @@ class SignalWidget(QtWidgets.QToolButton):
 
         self.signalModifications = [0, 0, 1, 1]
 
+        self.updateLegend()
+
+    def setCheckable(self, value):
+        self.button.setCheckable(value)
+
+    def setText(self, signalname):
+        self.button.setText(signalname)
+
+    def setChecked(self, value):
+        self.button.setChecked(value)
+
+    def isChecked(self):
+        return self.button.isChecked()
+    #def setSizePolicy(self, policy):
+    #    self.button.setSizePolicy(policy)
+
+    def menu(self):
+        return self.button.menu()
+
+    def setStyleSheet(self, stylesheet):
+        self.button.setStyleSheet(stylesheet)
+
+    def setMinimumHeight(self, height):
+        self.button.setMinimumHeight(height)
+
+    def setMaximumHeight(self, height):
+        self.button.setMaximumHeight(height)
+
+    def updateLegend(self):
+        symbol, brush = getPlotStyle(self.plot)
+        self.setLegendType(symbol['style'],brush['style'])
+        self.setLegendColor(symbol['color'])
+        self.legend.setFont(QtGui.QFont('SansSerif', 6+symbol['width']*3))
+
+    def setLegendType(self, line='-', symbol=''):
+        if line == 1 or line == 0:
+            line = '_'
+        elif line == 2:
+            line = '-'
+        elif line == 3:
+            line = '.'
+        elif line == 4:
+            line = '-.'
+        elif line == 5:
+            line = '-..'
+        else:
+            line =''
+
+        # if symbol == 0:
+        #     symbol = "d"
+        # elif symbol == 1:
+        #     symbol = "o"
+        # elif symbol == 2:
+        #     symbol = "x"
+        # elif symbol == 3:
+        #     symbol = "s"
+        # elif symbol == 4:
+        #     symbol = "t"
+        # elif symbol == 5:
+        #     symbol = "+"
+        # else:
+        #     symbol = ''
+        if symbol is None:
+            symbol = ""
+        #else:
+        #    symbol = ''
+        self.legend.setText(line+symbol+line)
+
+    def setLegendColor(self, color, bgcolor=None):
+        if bgcolor == None:
+            self.legend.setStyleSheet("QLabel { color : "+str(color)+"; }");
+        else:
+            self.legend.setStyleSheet("QLabel { background-color : red; color : blue; }");
+
+
     def onMove(self, pos):
         act_pos = self.plot.mapFromScene(pos)
         p1 = self.plot.scatter.pointsAt(act_pos)
@@ -174,12 +265,12 @@ class SignalWidget(QtWidgets.QToolButton):
             return symbol, brush
 
     def initMenu(self):
-        self.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
-        self.setMenu(QtWidgets.QMenu(self))
+        self.button.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+        self.button.setMenu(QtWidgets.QMenu(self.button))
         action = QtWidgets.QWidgetAction(self)
         self.editWidget = SignalEditWidget(self, self.id, self.plotWidget)
         action.setDefaultWidget(self.editWidget)
-        self.menu().addAction(action)
+        self.button.menu().addAction(action)
 
     def newDataIncoming(self):
         if self.plotWidget.plotViewWidget.blinkingButton.isChecked():
@@ -310,7 +401,8 @@ class SignalWidget(QtWidgets.QToolButton):
                         self.eventItems[idx].vLine.setPos(pos)
 
     def toggleSignal(self):
-
+        print(self.isChecked())
+        print(self.hidden)
         if self.isChecked() and not self.hidden:
             self.active = True
             self.plotWidget.legend.addItem(
@@ -336,7 +428,7 @@ class SignalWidget(QtWidgets.QToolButton):
         if total:
             idx = self.logger.removeSignal(self.id)
         self.labelItem.hide()
-        self.menu().hide()
+        self.button.menu().hide()
         self.hide()
         self.close()
 

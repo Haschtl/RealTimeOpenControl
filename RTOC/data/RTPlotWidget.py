@@ -165,6 +165,8 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.treeWidget.setItemWidget(self.signalTreeWidgetItems[idx], 0, self.signalObjects[idx])
         self.treeWidget.setItemWidget(
             self.signalTreeWidgetItems[idx], 1, self.signalObjects[idx].label)
+        #self.treeWidget.resizeColumnToContents(0)
+        #self.treeWidget.resizeColumnToContents(1)
         self.deviceTreeWidgetItems[self.devices.index(devicename)].setExpanded(True)
         self.updateCountLabel()
 
@@ -212,11 +214,15 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.treeWidget.setItemWidget(self.signalTreeWidgetItems[idx], 0, self.signalObjects[idx])
         self.treeWidget.setItemWidget(
             self.signalTreeWidgetItems[idx], 1, self.signalObjects[idx].label)
+
+        #self.treeWidget.resizeColumnToContents(0)
+        #self.treeWidget.resizeColumnToContents(1)
         self.deviceTreeWidgetItems[self.devices.index(devicename)].setExpanded(True)
         self.updateCountLabel()
 
     def updateCountLabel(self):
-        self.countLabel.setText(self.tr("Signale: ")+str(len(self.signalObjects))+' ('+lib.bytes_to_str(self.logger.getSignalSize())+')')
+        size, maxsize = self.logger.getSignalSize()
+        self.countLabel.setText(self.tr("Signale: ")+str(len(self.signalObjects))+' ('+lib.bytes_to_str(size)+'/'+lib.bytes_to_str(maxsize)+')')
 
     def startDragTreeWidget(self, actions):
         self.self._drag_info = {"oldWidget": "", "newWidget": "", "signalObjects": []}

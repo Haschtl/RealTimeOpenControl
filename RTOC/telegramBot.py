@@ -4,7 +4,11 @@ from telegram.ext import CommandHandler, MessageHandler, Filters, Updater
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ChatAction, Bot, ParseMode
 from threading import Thread
 from io import BytesIO
-import matplotlib.pyplot as plt
+try:
+    import matplotlib.pyplot as plt
+except ImportError:
+    print('Could not import matplotlib.pyplot\nThis happens if matplotlib or tkinker isn\'t installed. \nReceiving plots via telegram is disabled.')
+    plt = None
 
 from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtCore import QObject
@@ -319,15 +323,18 @@ class telegramBot(QObject):
         data = self.logger.getSignal(self.logger.getSignalId(a[0], a[1]))
 
         # Make a square figure and axes
-        plt.gcf().clear()
-        plt.plot(data[0], data[1])
-        plt.xlabel(translate('telegram', 'Zeit [s]'))
-        plt.savefig('telegram_export.png')
-        plt.title(signalname)
-        t = self.createToolTip(self.logger.getSignalId(a[0], a[1]))
-        print(t)
-        bot.send_photo(chat_id=update.message.chat_id, photo=open('telegram_export.png', 'rb'))
-        bot.send_message(chat_id=update.message.chat_id, text=t)
+        if plt != None:
+            plt.gcf().clear()
+            plt.plot(data[0], data[1])
+            plt.xlabel(translate('telegram', 'Zeit [s]'))
+            plt.savefig('telegram_export.png')
+            plt.title(signalname)
+            t = self.createToolTip(self.logger.getSignalId(a[0], a[1]))
+            print(t)
+            bot.send_photo(chat_id=update.message.chat_id, photo=open('telegram_export.png', 'rb'))
+            bot.send_message(chat_id=update.message.chat_id, text=t)
+        else:
+            bot.send_message(chat_id=update.message.chat_id, text='Could not send plot.\n This happens, if matplotlib or tkinker isn\'t installed. on the RTOC-Server\n')
 
     def createToolTip(self, id):
         maxduration = self.calcDuration(list(self.logger.getSignal(id)[0]))
@@ -368,9 +375,10 @@ class telegramBot(QObject):
         commands.append(translate('telegram', '<-- Zurück'))
         button_list = [KeyboardButton(s) for s in commands]
         reply_markup = ReplyKeyboardMarkup(self.build_menu(button_list, n_cols=1))
+        size, maxsize = self.logger.getSignalSize()
         bot.send_message(update.message.chat_id, text=translate(
             'telegram', "Derzeitige Aufzeichnungsdauer: ")+str(self.logger.maxLength)+translate(
-                'telegram', '\nSignale verwenden ')+lib.bytes_to_str(self.logger.getSignalSize()), reply_markup=reply_markup)
+                'telegram', '\nSignale verwenden ')+lib.bytes_to_str(size)+'/'+lib.bytes_to_str(maxsize), reply_markup=reply_markup)
 
     def pluginsHandler(self, bot, update):
         commands = list(self.logger.devicenames)

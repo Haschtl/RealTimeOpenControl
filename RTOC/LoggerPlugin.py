@@ -48,8 +48,13 @@ class LoggerPlugin:
             for idx, arg in enumerate(args):
                 if idx == 0:
                     y = arg
-            kwargs['x'] = [time.time()]*len(y)
+            if type(y) == list:
+                kwargs['x'] = [time.time()]*len(y)
+            else:
+                kwargs['x'] = [time.time()]
             self.__cb(*args, **kwargs)
+        else:
+            print('ERROR: cannot stream signals. No callback connected')
 
     def plot(self, x=[], y=[], *args, **kwargs):
         dataname = kwargs.get('sname', "noName")

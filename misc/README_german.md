@@ -1,10 +1,10 @@
 # RealTime OpenControl (RTOC)
 
-### Version 1.8
+### Version 1.8.7.5
 
 [**This README is available in ENGLISH here.**](README.md)
 
-[Dokumentation](https://github.com/Haschtl/RealTimeOpenControl/wiki/(GERMAN)-RealTime-OpenControl-(RTOC))
+[Dokumentation](https://git.kellerbase.de/haschtl/kellerlogger/wikis/(GERMAN)-RealTime-OpenControl-(RTOC))
 
 RealTime OpenControl ermöglicht die einfache Echtzeit-Datenaufzeichnung, -darstellung und Bearbeitung.  Die Aufzeichnung kann mit lokale Python-Skripten oder über TCP lokal oder aus dem Netzwerk erfolgen. Darstellung und Bearbeitung ist lokal, im Netzwerk (TCP und HTML) und über Telegram am Smartphone verfügbar.
 
@@ -83,7 +83,7 @@ plotStyles.json // Angepasste Plotstile werden gespeichert
 Um RTOC zu benutzen müssen folgende Abhängigkeiten vorhanden sein
 
 ```python
-pip3 install numpy pyqt5 pyqtgraph markdown2 xslxwriter scipy qtmodern
+pip3 install numpy pyqt5 pyqtgraph markdown2 xslxwriter scipy
 ```
 
 Folgende Pakete sollten ebenfalls installiert werden
@@ -92,22 +92,20 @@ Folgende Pakete sollten ebenfalls installiert werden
 pip3 install python-telegram-bot matplotlib requests python-nmap bokeh pycryptdomex
 ```
 
-Für das DPS5020-Plugin ist noch folgende Abhängigkeit zu installieren
+You can use different stylesheets if you want. Just install one of these with pip:
+'QDarkStyle', 'qtmodern', 'qdarkgraystyle'.
 
-```python
-pip3 install minimalmodbus
-```
 
 Dann kann die RTOC-Repository geklont werden mit
 
 ```shell
-git@github.com:Haschtl/RealTimeOpenControl.git
+git clone git@git.kellerbase.de:haschtl/kellerlogger
 ```
 
 Nun kann RTOC gestartet werden:
 
 ```shell
-cd RTOC
+cd kellerlogger
 // Für lokale RTOC-Instanz mit GUI
 python3 RTOC
 // Für lokale RTOC-Instanz ohne GUI (nur TCP-Server, [HTTP-Server, Telegram-Bot])
@@ -132,16 +130,20 @@ plotStyles.json // Angepasste Plotstile werden gespeichert
 ![Beispielschematik](screenshots/RTOC-schematik.png)
 
 ### Wiki
-[Lese die Dokumentation](https://github.com/Haschtl/RealTimeOpenControl/wiki/(GERMAN)-RealTime-OpenControl-(RTOC))
+[Lese die Dokumentation](https://git.kellerbase.de/haschtl/kellerlogger/wikis/(GERMAN)-RealTime-OpenControl-(RTOC))
 
 ### Standart/Beispiel Plugins:
 
 - Funktionsgenerator: Erzeugt Sinus, Square, Sawtooth, Random, AC, DC
+- NetWoRTOC: Steuerung und Datenaustausch zwischen mehreren RTOC's im Netzwerk
+
+Weitere Plugins gibt es in der [RTOC-Plugin-Repository](https://git.kellerbase.de/haschtl/rtoc-plugins):
 - System: Zur Aufzeichnung vieler Systemvariablen (CPU, Memory, Network,...)
 - Octoprint: Aufzeichnung für 3D-Drucker
 - DPS5020: Netzgerät-Aufzeichnung und Steuerung (evtl. auch DPS5005, ...)
 - HoldPeak VC820: Multimeter Messaufzeichnung (wahrsch. auch andere VC820)
-- NetWoRTOC: Steuerung und Datenaustausch zwischen mehreren RTOC's im Netzwerk
+- ...
+
 
 ### First GUI-Run
 
@@ -161,7 +163,7 @@ Die graphische Oberfläche von RTOC bietet eine Fülle an Funktionen zur Datenda
     - Skalieren, verschieben von Signalen
   - Mehrere Skripte parallel laufen lassen
 
-[Vollständige Anleitung zur GUI hier.](https://github.com/Haschtl/RealTimeOpenControl/wiki/GUI)
+[Vollständige Anleitung zur GUI hier.](https://git.kellerbase.de/haschtl/kellerlogger/wikis/GUI)
 
 ### Write simple Python-Plugin
 
@@ -172,7 +174,7 @@ Python-Plugins werden in RTOC integriert und können
 
 Aber **nicht** auf Messdaten zugreifen. Hierzu muss das Plugin per TCP auf RTOC zugreifen.
 
-[Beispiel-Plugins hier.](https://github.com/Haschtl/RealTimeOpenControl/wiki/PlugIns)
+[Beispiel-Plugins hier.](https://git.kellerbase.de/haschtl/kellerlogger/wikis/PlugIns)
 
 ### Einfacher lokaler TCP-Datensender
 
@@ -188,11 +190,11 @@ Die TCP-Kommunikation findet mit JSONs statt. Dadurch lässt sich die Kommunikat
 
 Die Verbindung zwischen RTOC-Server und Client kann mit einem Passwort Ende-zu-Ende verschlüsstelt werden (AES).
 
-[Beispiele für TCP hier.]https://github.com/Haschtl/RealTimeOpenControl/wiki/clientCommunication)
+[Beispiele für TCP hier.](https://git.kellerbase.de/haschtl/kellerlogger/wikis/clientCommunication)
 
 ### Telegram einbinden
 
-[Anleitung zu Telegram hier.](https://github.com/Haschtl/RealTimeOpenControl/wiki/telegram)
+[Anleitung zu Telegram hier.](https://git.kellerbase.de/haschtl/kellerlogger/wikis/telegram)
 
 ## Screenshots
 

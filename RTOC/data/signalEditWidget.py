@@ -100,6 +100,7 @@ class SignalEditWidget(QtWidgets.QWidget):
                                        "."+str(self.self.signalname)]["brush"] = brush
 
             self.self.labelItem.setColor(symbol["color"])
+            self.self.updateLegend()
 
     def deleteSignal(self):
         self.self.remove()

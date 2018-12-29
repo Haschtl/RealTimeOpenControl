@@ -18,7 +18,7 @@ executables = [
 
 setup(
     name='RealTimeOpenControl',
-    version = '1.8.2',
+    version = '1.8.7.5',
     description = 'RTOC',
     options = dict(build_exe = buildOptions),
     executables = executables

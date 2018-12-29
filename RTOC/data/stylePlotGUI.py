@@ -151,15 +151,15 @@ class plotStyler(QtWidgets.QDialog):
             style = symbol["shadowStyle"]
             idx = 0
             if style == QtCore.Qt.SolidLine:
-                idx = 0
-            elif style == QtCore.Qt.DotLine:
                 idx = 1
-            elif style == QtCore.Qt.DashLine:
+            elif style == QtCore.Qt.DotLine:
                 idx = 2
-            elif style == QtCore.Qt.DashDotLine:
+            elif style == QtCore.Qt.DashLine:
                 idx = 3
-            elif style == QtCore.Qt.DashDotDotLine:
+            elif style == QtCore.Qt.DashDotLine:
                 idx = 4
+            elif style == QtCore.Qt.DashDotDotLine:
+                idx = 5
             self.shadowStyleComboBox.setCurrentIndex(idx)
 
         if "alpha" in symbol.keys():
@@ -251,26 +251,30 @@ class plotStyler(QtWidgets.QDialog):
         style = self.lineStyleComboBox.currentText()
         if style in ["Linie", "Line"]:
             symbol["style"] = QtCore.Qt.SolidLine
-        elif style in ["Punkte (P)", "Dots"]:
+        elif style in ["Punkte (P)", "Dots (D)"]:
             symbol["style"] = QtCore.Qt.DotLine
-        elif style in ["Striche (S)", "Stroke"]:
+        elif style in ["Striche (S)", "Stroke (S)"]:
             symbol["style"] = QtCore.Qt.DashLine
-        elif style in ["P S", "Dot Stroke"]:
+        elif style in ["P S", "D S"]:
             symbol["style"] = QtCore.Qt.DashDotLine
-        elif style in ["P P S", 'Dot Dot Stroke']:
+        elif style in ["P P S", 'D D S']:
             symbol["style"] = QtCore.Qt.DashDotDotLine
+        else:
+            print('no style applied')
 
         style = self.shadowStyleComboBox.currentText()
         if style in ["Linie", "Line"]:
-            symbol["style"] = QtCore.Qt.SolidLine
-        elif style in ["Punkte (P)", "Dots"]:
-            symbol["style"] = QtCore.Qt.DotLine
-        elif style in ["Striche (S)", "Stroke"]:
-            symbol["style"] = QtCore.Qt.DashLine
-        elif style in ["P S", "Dot Stroke"]:
-            symbol["style"] = QtCore.Qt.DashDotLine
-        elif style in ["P P S", 'Dot Dot Stroke']:
-            symbol["style"] = QtCore.Qt.DashDotDotLine
+            symbol["shadowStyle"] = QtCore.Qt.SolidLine
+        elif style in ["Punkte (P)", "Dots (D)"]:
+            symbol["shadowStyle"] = QtCore.Qt.DotLine
+        elif style in ["Striche (S)", "Stroke (S)"]:
+            symbol["shadowStyle"] = QtCore.Qt.DashLine
+        elif style in ["P S", "D S"]:
+            symbol["shadowStyle"] = QtCore.Qt.DashDotLine
+        elif style in ["P P S", 'D D S']:
+            symbol["shadowStyle"] = QtCore.Qt.DashDotDotLine
+        else:
+            symbol["shadowStyle"] = 0
 
         symbol["alpha"] = self.alphaSpinBox.value()/100
         symbol["width"] = self.lineWidthSpinBox.value()
@@ -364,6 +368,7 @@ def setStyle(plot, symbol={}, brush={}):
         pen = pg.mkPen(color=symbol["color"], width=int(
             symbol["width"]), style=int(symbol["style"]))
         plot.setPen(pen)
+        print(symbol["style"])
         if symbol["shadowWidth"] is not None and symbol["shadowStyle"] is not None:
             plot.setShadowPen(color=symbol["shadowColor"], width=int(
                 symbol["shadowWidth"]), style=int(symbol["shadowStyle"]), cosmetic=True)

@@ -45,6 +45,8 @@ class Actions:
         self.aboutAction.triggered.connect(self.showAboutMessage)
         self.checkUpdatesAction.triggered.connect(self.checkUpdates)
 
+        self.clearCacheAction.triggered.connect(self.clearCache)
+
         self.searchEdit.textChanged.connect(self.filterDevices)
 
     def toggleTcpServer(self):
@@ -279,3 +281,9 @@ class Actions:
             info = self.tr('Um die Version zu überprüfen, installiere RTOC mit "pip3 install RTOC"')
 
         pyqtlib.info_message(self.tr('Version'), text, info)
+
+    def clearCache(self):
+        ok = pyqtlib.alert_message(self.tr('Cache leeren'), self.tr('Wollen Sie wirklich den Cache leeren?'), self.tr('Dadurch gehen gespeicherte Ploteinstellungen sowie Einstellungen verloren.'))
+        if ok:
+            self.plotStyles = {}
+            self.logger.clearCache()

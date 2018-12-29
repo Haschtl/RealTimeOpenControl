@@ -383,7 +383,9 @@ class RTLogger(ScriptFunctions, QObject):
                     loggerDict[call]['starttime'] = self.starttime
                     loggerDict[call]['telegram_token'] = self.config['telegram_token']
                     loggerDict[call]['telegram_bot'] = self.config['telegram_bot']
-                    loggerDict[call]['signal_memory'] = self.logger.getSignalSize()
+                    size, maxsize = self.getSignalSize()
+                    loggerDict[call]['signal_memory'] = size
+                    loggerDict[call]['signal_memory_limit'] = maxsize
         return loggerDict
 
     def getPluginDict(self):
@@ -410,12 +412,12 @@ class RTLogger(ScriptFunctions, QObject):
         try:
             if name in self.devicenames.keys():
                 fullname = self.devicenames[name]
-                if callback is None:
-                    self.pluginObjects[name] = importlib.import_module(
-                        fullname).Plugin(self.addDataCallback, self.plot, self.addNewEvent)
-                else:
-                    self.pluginObjects[name] = importlib.import_module(
-                        fullname).Plugin(callback, self.addNewEvent)
+                # if callback is None:
+                self.pluginObjects[name] = importlib.import_module(
+                    fullname).Plugin(self.addDataCallback, self.plot, self.addNewEvent)
+                # else:
+                #     self.pluginObjects[name] = importlib.import_module(
+                #         fullname).Plugin(callback, self.addNewEvent)
                 self.analysePlugin(self.pluginObjects[name], name)
                 self.pluginStatus[name] = True
                 print("PLUGIN: " + name+' connected\n')
@@ -779,6 +781,10 @@ class RTLogger(ScriptFunctions, QObject):
             if idx == 4:
                 createCallback = arg
 
+        if type(datasY) == float or type(datasY) == int:
+            datasY = [datasY]
+            print('Warning: You should stream a list of signals, not a single signal')
+
         if type(datasY) == list:
             if datasX == [None]:
                 datasX = [None]*len(datasY)
@@ -1058,6 +1064,13 @@ class RTLogger(ScriptFunctions, QObject):
         # with open(self.config['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
         #     json.dump(conf, fp,  sort_keys=False, indent=4, separators=(',', ': '))
 
+    def clearCache(self):
+        self.config = defaultconfig
+        self.save_config()
+        filename = self.config['documentfolder']+"/plotStyles.json"
+        if os.path.exists(filename):
+            os.remove(filename)
+
     def save_config(self):
         self.config["deviceWidget"] = True
         self.config["pluginsWidget"] = False
@@ -1110,6 +1123,7 @@ class RTLogger(ScriptFunctions, QObject):
             return [[''], ['']]
 
     def getSignalSize(self):
+        maxsize = len(self.signals)*(2*(self.maxLength*8+64)+16)
         outerlayer = sys.getsizeof(self.signals)
         innerlayer = 0
         for sig in self.signals:
@@ -1117,7 +1131,7 @@ class RTLogger(ScriptFunctions, QObject):
             innerlayer += sys.getsizeof(sig[0])*2
             innerlayer += sys.getsizeof(list(sig[0]))*2
         size = outerlayer + innerlayer
-        return size
+        return size, maxsize
 
     def check_for_updates(self):
         import xmlrpc.client

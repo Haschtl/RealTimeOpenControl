@@ -403,6 +403,8 @@
     <property name="title">
      <string>&amp;Hilfe</string>
     </property>
+    <addaction name="clearCacheAction"/>
+    <addaction name="separator"/>
     <addaction name="helpAction"/>
     <addaction name="separator"/>
     <addaction name="checkUpdatesAction"/>
@@ -707,6 +709,11 @@
   <action name="actionTCPPort">
    <property name="text">
     <string>Port: 5050</string>
+   </property>
+  </action>
+  <action name="clearCacheAction">
+   <property name="text">
+    <string>Cache leeren</string>
    </property>
   </action>
  </widget>

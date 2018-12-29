@@ -4,75 +4,6 @@
 <context>
     <name>Actions</name>
     <message>
-        <location filename="../data/Actions.py" line="63"/>
-        <source>RTOC - Web gestartet</source>
-        <translation>RTOC - Web started</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="63"/>
-        <source>RTOC - Web ist jetzt unter localhost:5006 erreichbar</source>
-        <translation>RTOC - Web is now available at localhost:5006</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="63"/>
-        <source>Diese Seite kann im gesamten Netzwerk geÃ¶ffnet werden</source>
-        <translation>This page can be opened in your local network</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="76"/>
-        <source>Bot Token eingeben</source>
-        <translation>Enter bot token</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="76"/>
-        <source>Bitte erzeugen sie in Telegram mit &quot;Botfather&quot; einen Bot,
- generiere einen Bot und fÃ¼ge dessen Token hier ein</source>
-        <translation>Please create a bot in telegram (using &quot;Botfather&quot;)
-Enter the bot-token here</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="93"/>
-        <source>TCP Passwort eingeben</source>
-        <translation>Enter tcp password</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="93"/>
-        <source>SchÃ¼tze deine Ãbertragung vor unerwÃ¼nschten GÃ¤sten
-Leer lassen, um Passwort zu deaktivieren</source>
-        <translation>Protect your communication
-Leave empty to deactivate protection</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="88"/>
-        <source>Passwort-Schutz: Aus</source>
-        <translation>Password-encrypted: No</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="90"/>
-        <source>Passwort-Schutz: An</source>
-        <translation>Password-encrypted: Yes</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="100"/>
-        <source>Port: </source>
-        <translation>Port: </translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="104"/>
-        <source>Fehler</source>
-        <translation>Error</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="104"/>
-        <source>Bitte gib eine Zahl zwischen 0 und 65535 an</source>
-        <translation>Please enter a valid port (0 - 65535)</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="104"/>
-        <source>Ihre Eingabe war ungÃ¼ltig.</source>
-        <translation>Your entry is invalid.</translation>
-    </message>
-    <message>
         <location filename="../data/Actions.py" line="127"/>
         <source>Warnung</source>
         <translation>Warning</translation>
@@ -80,12 +11,12 @@ Leave empty to deactivate protection</translation>
     <message>
         <location filename="../data/Actions.py" line="127"/>
         <source>Wollen Sie wirklich alle Daten lÃ¶schen?</source>
-        <translation>Do you really want to delete all signals?</translation>
+        <translation>Do you really want to delete all data?</translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="127"/>
         <source>(Unwiederrufbar)</source>
-        <translation></translation>
+        <translation>(Data will be lost)</translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="137"/>
@@ -100,12 +31,12 @@ Leave empty to deactivate protection</translation>
     <message>
         <location filename="../data/Actions.py" line="182"/>
         <source>Excel-Tabelle (*.xlsx)</source>
-        <translation>Excel (*.xlsx)</translation>
+        <translation>Excel-Table (*.xlsx)</translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="184"/>
         <source>CSV-Datei (*.csv)</source>
-        <translation>CSV (*.csv)</translation>
+        <translation>CSV-File (*.csv)</translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="177"/>
@@ -115,7 +46,7 @@ Leave empty to deactivate protection</translation>
     <message>
         <location filename="../data/Actions.py" line="177"/>
         <source>Excel-Tabelle (*.xlsx);;CSV-Datei (*.csv)</source>
-        <translation>Excel (*.xlsx);;CSV (*.csv)</translation>
+        <translation>Excel-Table (*.xlsx);;CSV-File (*.csv)</translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="239"/>
@@ -129,11 +60,7 @@ Leave empty to deactivate protection</translation>
 Alle Symbole werden unter der &apos;Creative Commons Attribution-NoDerivs 3.0 Unported&apos; Lizenz bereitgestellt von icons8 (https://icons8.de)
 
 Copyright (C) 2018 Sebastian Keller</source>
-        <translation>RealTime OpenControl (RTOC) is a free open source software under the BSD-3 license.
-
-All icons are provided under the Creative Commons Attribution-NoDerivs 3.0 Unported License by icons8 (https://icons8.de)
-
-Copyright (C) 2018 Sebastian Keller</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="262"/>
@@ -143,7 +70,63 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/Actions.py" line="262"/>
         <source>Bitte Programm neustarten</source>
-        <translation>Please restart RTOC</translation>
+        <translation>Please restart this software</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="63"/>
+        <source>RTOC - Web gestartet</source>
+        <translation>RTOC - Web started</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="76"/>
+        <source>Bot Token eingeben</source>
+        <translation>Enter Bot-Token</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="76"/>
+        <source>Bitte erzeugen sie in Telegram mit &quot;Botfather&quot; einen Bot,
+ generiere einen Bot und fÃ¼ge dessen Token hier ein</source>
+        <translation>Please generate a bot with &quot;Botfather&quot; in Telegram
+and enter it&apos;s bot-token here:</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="93"/>
+        <source>TCP Passwort eingeben</source>
+        <translation>Enter TCP-Passwort</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="81"/>
+        <source>SchÃ¼tze deine Ãbertragung ein bisschen (wirklich nur ein bisschen) vor unerwÃ¼nschten GÃ¤sten
+Leer lassen, um Passwort zu deaktivieren</source>
+        <translation type="obsolete">Protect your TCP-Connection a little bit (really just a little bit)
+Leave empty to deactivate password-protection</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="88"/>
+        <source>Passwort-Schutz: Aus</source>
+        <translation>Password-Protection: Off</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="90"/>
+        <source>Passwort-Schutz: An</source>
+        <translation>Passwort-Protection: On</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="63"/>
+        <source>RTOC - Web ist jetzt unter localhost:5006 erreichbar</source>
+        <translation>RTOC - Web is now reachable at &apos;localhost:5006&apos;</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="63"/>
+        <source>Diese Seite kann im gesamten Netzwerk geÃ¶ffnet werden</source>
+        <translation>This page can be opened in local network</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="93"/>
+        <source>SchÃ¼tze deine Ãbertragung vor unerwÃ¼nschten GÃ¤sten
+Leer lassen, um Passwort zu deaktivieren</source>
+        <translation>Protect your TCP connection with AES password encryption.
+Leave empty to deativate password.</translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="268"/>
@@ -153,12 +136,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/Actions.py" line="270"/>
         <source>Entschuldigung. Konnte RTOC bei PyPi nicht finden. Schau mal bei &apos;https://pypi.org/project/RTOC/&apos;</source>
-        <translation>Sorry, couldn&apos;t find RTOC at PyPi. Have a look at  &apos;https://pypi.org/project/RTOC/&apos; for the newest version</translation>
-    </message>
-    <message>
-        <location filename="../data/Actions.py" line="272"/>
-        <source>, Neuste Version: </source>
-        <translation>, newest version: </translation>
+        <translation>Sorry. Couldn&apos;t get version information from PyPi. Please visit &apos;https://pypi.org/project/RTOC/&apos;</translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="274"/>
@@ -171,25 +149,50 @@ Copyright (C) 2018 Sebastian Keller</translation>
 
 &quot;pip3 install RTOC --upgrade&quot;
 </source>
-        <translation>New version available. Update with:
+        <translation>New version available! Please update with:
 
-&quot;pip3 install RTOC --upgrade
+&quot;pip3 install RTOC --upgrade&quot;
 </translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="278"/>
         <source>RTOC wurde nicht mit PyPi installiert.</source>
-        <translation>RTOC wasn&apos;t installed with pip3.</translation>
+        <translation>RTOC was not installed with PyPi.</translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="279"/>
         <source>Um die Version zu Ã¼berprÃ¼fen, installiere RTOC mit &quot;pip3 install RTOC&quot;</source>
-        <translation>Please install RTOC with &quot;pip3 install RTOC&quot; to enable checking for updates.</translation>
+        <translation>To enable version-checking, please install it with &quot;pip3 install RTOC&quot;</translation>
     </message>
     <message>
         <location filename="../data/Actions.py" line="281"/>
         <source>Version</source>
-        <translation>Version</translation>
+        <translation>Version info</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="272"/>
+        <source>, Neuste Version: </source>
+        <translation>, newest version: </translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="100"/>
+        <source>Port: </source>
+        <translation>Port: </translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="104"/>
+        <source>Fehler</source>
+        <translation>Failure</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="104"/>
+        <source>Bitte gib eine Zahl zwischen 0 und 65535 an</source>
+        <translation>Please enter a free port (0 to 65535)</translation>
+    </message>
+    <message>
+        <location filename="../data/Actions.py" line="104"/>
+        <source>Ihre Eingabe war ungÃ¼ltig.</source>
+        <translation>Your entry is invalid</translation>
     </message>
 </context>
 <context>
@@ -197,7 +200,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/messtoolDialog.ui" line="14"/>
         <source>Dialog</source>
-        <translation>Dialog</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/messtoolDialog.ui" line="32"/>
@@ -207,52 +210,52 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/messtoolDialog.ui" line="64"/>
         <source>Minimum</source>
-        <translation>Min.</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/messtoolDialog.ui" line="74"/>
         <source>Y [ ]</source>
-        <translation>Y [ ]</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/messtoolDialog.ui" line="154"/>
         <source>1</source>
-        <translation>1</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/messtoolDialog.ui" line="91"/>
         <source>X [s]</source>
-        <translation>X [s]</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/messtoolDialog.ui" line="108"/>
         <source>Maximum</source>
-        <translation>Max.</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/messtoolDialog.ui" line="138"/>
         <source>Differenz</source>
-        <translation>Diff.</translation>
+        <translation>Difference</translation>
     </message>
     <message>
         <location filename="../data/ui/messtoolDialog.ui" line="164"/>
         <source>1s</source>
-        <translation>1s</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog.ui" line="14"/>
         <source>Stile anpassen</source>
-        <translation>Change plotstyle</translation>
+        <translation>Change style</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog.ui" line="32"/>
         <source>Signal 1</source>
-        <translation>Signal 1</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog.ui" line="37"/>
         <source>Signal 2</source>
-        <translation>Signal 2</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog.ui" line="52"/>
@@ -262,12 +265,12 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/stylePlotDialog.ui" line="59"/>
         <source>Auf alle anwenden</source>
-        <translation>Apply to all</translation>
+        <translation>Style all</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog.ui" line="66"/>
         <source>Auf Auswahl anwenden</source>
-        <translation>Apply to selection</translation>
+        <translation>Style selected</translation>
     </message>
 </context>
 <context>
@@ -275,7 +278,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/eventWidget.py" line="44"/>
         <source>%H:%M:%S %d.%m.%Y</source>
-        <translation></translation>
+        <translation>%H:%M:%S %Y.%m.%d</translation>
     </message>
 </context>
 <context>
@@ -288,22 +291,22 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/gridViewWidget.ui" line="20"/>
         <source>X-Linien</source>
-        <translation>X-Linien</translation>
+        <translation>Horizontal lines</translation>
     </message>
     <message>
         <location filename="../data/ui/gridViewWidget.ui" line="27"/>
         <source>Y-Linien</source>
-        <translation>Y-Linien</translation>
+        <translation>Vertical lines</translation>
     </message>
     <message>
         <location filename="../data/ui/gridViewWidget.ui" line="34"/>
         <source>Alpha:</source>
-        <translation>Alpha:</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/plotToolsWidget.ui" line="75"/>
         <source>Zeige Crosshair</source>
-        <translation>Show crosshair</translation>
+        <translation>Show Crosshair</translation>
     </message>
     <message>
         <location filename="../data/ui/plotToolsWidget.ui" line="26"/>
@@ -313,52 +316,52 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/plotToolsWidget.ui" line="49"/>
         <source>Öffne Mess-Rechteck in Plot</source>
-        <translation>Show measure-rectangle in graph</translation>
+        <translation type="obsolete">Open measure-rectangle in graph</translation>
     </message>
     <message>
         <location filename="../data/ui/plotToolsWidget.ui" line="52"/>
         <source>Rechteck-Messwerkzeug</source>
-        <translation>Rectangle-tool</translation>
+        <translation>Rectangle</translation>
     </message>
     <message>
         <location filename="../data/ui/plotToolsWidget.ui" line="78"/>
         <source>Schneide-Werkzeug</source>
-        <translation>Cutting-tool</translation>
+        <translation>Cutting-Tool</translation>
     </message>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="37"/>
         <source>Signal-Labels ein/ausblenden</source>
-        <translation>Show/hide signal-labels</translation>
+        <translation>Show/hide Signal-labels</translation>
     </message>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="40"/>
         <source>Signal-Labels</source>
-        <translation>Signal-labels</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/plotViewWidget.ui" line="75"/>
-        <source>Darstellung invertieren</source>
-        <translation>Invert colors</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/signalWidget2.ui" line="298"/>
-        <source>Aktivieren, X-Achse time.time()+x ist</source>
-        <translation>Activate, X-axis is time.time()+x</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/signalWidget2.ui" line="304"/>
-        <source>Zeitsignal</source>
-        <translation>Livesignal</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="142"/>
         <source>X-Achse als Zeit formatieren</source>
-        <translation>Format X-Axis for livesignals</translation>
+        <translation>Horizontal is timeaxis</translation>
     </message>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="145"/>
         <source>Zeitachse</source>
         <translation>Timeaxis</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/signalWidget2.ui" line="298"/>
+        <source>Aktivieren, X-Achse time.time()+x ist</source>
+        <translation>Activate x-axis time.time()+x</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/signalWidget2.ui" line="304"/>
+        <source>Zeitsignal</source>
+        <translation>Timesignal</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/plotViewWidget.ui" line="75"/>
+        <source>Darstellung invertieren</source>
+        <translation>Invert color</translation>
     </message>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="174"/>
@@ -378,27 +381,27 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="232"/>
         <source>Blinkender Indikator an/aus</source>
-        <translation>Enable/disable blinking indicator</translation>
+        <translation>Show/hide blinking indicators</translation>
     </message>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="235"/>
         <source>Blinkender Indikator</source>
-        <translation>Blinking indicator</translation>
+        <translation>Blinking indicators</translation>
     </message>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="267"/>
         <source>Mehrere Plotstile anpassen</source>
-        <translation>Change plotstyles</translation>
+        <translation>Style multiple plots</translation>
     </message>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="270"/>
         <source>Plotstile anpassen</source>
-        <translation>Change plotstyles</translation>
+        <translation>Style plots</translation>
     </message>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="297"/>
         <source>Global X-Offset:</source>
-        <translation>Global X-offset:</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="304"/>
@@ -408,7 +411,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/plotViewWidget.ui" line="330"/>
         <source>Plot-Rate:</source>
-        <translation>Plotrate:</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/triggerWidget.ui" line="81"/>
@@ -428,7 +431,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="44"/>
         <source>Automatisch importierte Libraries:</source>
-        <translation>Available libraries:</translation>
+        <translation>Automatically imported libraries:</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="51"/>
@@ -453,7 +456,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="84"/>
         <source>trig LOGIC_EXPRESSION: #Use like &quot;if&quot; but with only one execution on change</source>
-        <translation>trig LOGIC_EXPRESSION: #Use like &amp;quot;if&amp;quot; but with only one execution on change</translation>
+        <translation>trig LOGIC_EXPRESSION: #Use like &quot;if&quot; but with only one execution on change</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="94"/>
@@ -471,11 +474,6 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../data/ui/scriptHelpWidget.ui" line="109"/>
-        <source>event(text=&quot;&quot;, sname=&quot;noName&quot;, dname=&quot;noDevice&quot;, x=clock, priority=0) </source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="114"/>
         <source>{ans} = sendTCP(hostname = &quot;localhost&quot;, *args, **kwargs)</source>
         <translation></translation>
@@ -488,12 +486,12 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="124"/>
         <source>clearData() # löscht alle Daten</source>
-        <translation>clearData() # delete all signals</translation>
+        <translation type="obsolete">clearData() # delete all signals</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="129"/>
         <source>exportData(Filetype=&quot;json&quot;, filename=AUTO) # Exportiert alle Daten</source>
-        <translation>exportData(Filetype=&amp;quot;json&amp;quot;, filename=AUTO) # export all data</translation>
+        <translation>exportData(Filetype=&quot;json&quot;, filename=AUTO) # export all data</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="144"/>
@@ -518,18 +516,17 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="176"/>
         <source>[x], [y] = rtoc.mean([x], [y], n= 40) # Mittelwert über die letzten X Werte</source>
-        <translation>[x], [y] = rtoc.mean([x], [y], n= 40) # mean of latest n values</translation>
+        <translation type="obsolete">[x], [y] = rtoc.mean([x], [y], n= 40) # mean of latest n values</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="181"/>
         <source>[x], [y] = rtoc.runningMean([x], [y], n=40) # Laufender Mittelwert über Signal</source>
-        <translation>[x], [y] = rtoc.runningMean([x], [y], n=40) # running mean of signal</translation>
+        <translation type="obsolete">[x], [y] = rtoc.runningMean([x], [y], n=40) # running mean of signal</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="186"/>
         <source>[x], [y], [params] = rtoc.lsfit([x], [y] , DEF, x0, n) # LeastSquare fit auf benutzerdefinierte DEF, oder vordefinidert: DEF = &quot;linear&quot; oder &quot;quad&quot;</source>
-        <translation>[x], [y], [params] = rtoc.lsfit([x], [y] , DEF, x0, n) # LeastSquare fit auf benutzerdefinierte DEF, oder vordefinidert: DEF = &amp;quot;linear&amp;quot; oder &amp;quot;quad&amp;quot;&lt;/source&gt;
-        &lt;translation&gt;[x], [y], [params] = rtoc.lsfit([x], [y] , DEF, x0, n) # LeastSquare fit for user defined DEF, oder predefined: DEF = &amp;quot;linear&amp;quot; oder &amp;quot;quad&amp;quot;</translation>
+        <translation>[x], [y], [params] = rtoc.lsfit([x], [y] , DEF, x0, n) # LeastSquare fit for user defined DEF, oder predefined: DEF = &quot;linear&quot; oder &quot;quad&quot;</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="196"/>
@@ -554,7 +551,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="230"/>
         <source>Geräte</source>
-        <translation>Devices</translation>
+        <translation type="obsolete">Devices</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="261"/>
@@ -564,22 +561,22 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="271"/>
         <source>X-Werte : Gerät.Signal.x</source>
-        <translation>X-Values: Device.signal.x</translation>
+        <translation type="obsolete">X-Values : device.signal.x</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="278"/>
         <source>Aktuellster X-Wert: Gerät.Signal.latest</source>
-        <translation>Latest x-value: device.signal.latest</translation>
+        <translation type="obsolete">Latest X-Value: device.signal.latest</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptHelpWidget.ui" line="285"/>
         <source>Y-Werte : Gerät.Signal.y</source>
-        <translation>Y-value: device.signal.y</translation>
+        <translation type="obsolete">Y-Values : device.signal.y</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptSubWidget.ui" line="69"/>
         <source>Start</source>
-        <translation>Start</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/scriptSubWidget.ui" line="110"/>
@@ -590,15 +587,13 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <location filename="../data/ui/scriptSubWidget.ui" line="113"/>
         <source>trig Funktionsgenerator.Square.latest == 1:
 	print(&quot;one&quot;)</source>
-        <translation>trig Generator.Square.latest == 1:
-	print(&quot;one&quot;)</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/scriptSubWidget.ui" line="131"/>
         <source>Zuerst Script starten
 </source>
-        <translation>Start script first
-</translation>
+        <translation>Start script first</translation>
     </message>
     <message>
         <location filename="../data/ui/scriptWidget.ui" line="90"/>
@@ -608,7 +603,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/scriptWidget.ui" line="122"/>
         <source>+</source>
-        <translation>+</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="114"/>
@@ -616,19 +611,19 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation>Export signal to CSV</translation>
     </message>
     <message>
-        <location filename="../data/ui/signalWidget2.ui" line="53"/>
+        <location filename="../data/ui/signalWidget.ui" line="69"/>
         <source>Signal löschen</source>
-        <translation>Delete</translation>
+        <translation type="obsolete">Delete signal</translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="152"/>
         <source>Signal zuschneiden</source>
-        <translation>Cut</translation>
+        <translation>Cut signal</translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="184"/>
         <source>Signal duplizieren</source>
-        <translation>Duplicate</translation>
+        <translation>Duplicate signal</translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="201"/>
@@ -643,17 +638,12 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="336"/>
         <source>Plotstil anpassen</source>
-        <translation>Change plotstyle</translation>
+        <translation>Style plot</translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="263"/>
         <source>Label anzeigen/ausblenden</source>
         <translation>Show/hide label</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/signalWidget2.ui" line="362"/>
-        <source>Änderungen werden erst mit &quot;Anwenden&quot; in die Daten geschrieben</source>
-        <translation>Changes will be applied to signal after hitting &quot;Apply&quot;.</translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="365"/>
@@ -663,17 +653,17 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="397"/>
         <source>Scale</source>
-        <translation>Scale</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="407"/>
         <source>Offset</source>
-        <translation>Offset</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="471"/>
         <source> s</source>
-        <translation>s</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="579"/>
@@ -683,32 +673,62 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="605"/>
         <source>Signal umbenennen</source>
-        <translation>Rename</translation>
+        <translation>Rename signal</translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="608"/>
         <source>Signal umbenennen (neue Daten werden nicht umgeleitet!)</source>
-        <translation>Rename (new data will not be added to this signal anymore)</translation>
+        <translation>Rename signal (new data-streams will not be redirected!)</translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="611"/>
         <source>Rename</source>
-        <translation>Rename</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="630"/>
         <source>Modifikationen in Daten schreiben</source>
-        <translation>Apply modifications</translation>
+        <translation>Write modifications to signal</translation>
     </message>
     <message>
-        <location filename="../data/ui/signalWidget2.ui" line="633"/>
+        <location filename="../data/ui/signalWidget.ui" line="575"/>
         <source>Modifikationen in Daten schreiben, Daten werden überschrieben</source>
-        <translation>Apply modifications. signal will be rewritten</translation>
+        <translation type="obsolete">Write modifications to signal, signal will be overwritten</translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="636"/>
         <source>Anwenden</source>
         <translation>Apply</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/triggerWidget.ui" line="55"/>
+        <source>Samplerate-Triggered: Skript wird mit definierter Samplerate ausgefürt</source>
+        <translation type="obsolete">Samplerate-Triggered: Skript is executed in samplerate</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/triggerWidget.ui" line="58"/>
+        <source>Samplerate-Triggered</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../data/ui/triggerWidget.ui" line="68"/>
+        <source>Signal-Triggered: Script wird mit Geräte-Samplerate verknüpft und ausgeführt</source>
+        <translation type="obsolete">Signal-Triggered: Script is executed, if selected signal gets updated</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/triggerWidget.ui" line="74"/>
+        <source>Signal-Triggered</source>
+        <translation></translation>
+    </message>
+    <message>
+        <location filename="../data/ui/triggerWidget.ui" line="101"/>
+        <source>Keines</source>
+        <translation>None</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/signalWidget.ui" line="304"/>
+        <source>Änderungen werden erst mit &quot;Anwenden&quot; in die Daten geschrieben</source>
+        <translation type="obsolete">Changes will be applied to signal after hitting &quot;Apply&quot;</translation>
     </message>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="85"/>
@@ -733,47 +753,22 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/signalWidget2.ui" line="342"/>
         <source>Signalstil anpassen</source>
-        <translation>Change plotstyle</translation>
+        <translation>Style plot</translation>
     </message>
     <message>
-        <location filename="../data/ui/triggerWidget.ui" line="55"/>
-        <source>Samplerate-Triggered: Skript wird mit definierter Samplerate ausgefürt</source>
-        <translation>Samplerate-triggered: script is executed with defined samplerate</translation>
+        <location filename="../data/ui/eventWidget.ui" line="34"/>
+        <source>Von</source>
+        <translation type="obsolete">From</translation>
     </message>
     <message>
-        <location filename="../data/ui/triggerWidget.ui" line="58"/>
-        <source>Samplerate-Triggered</source>
-        <translation>Samplerate-triggered</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/triggerWidget.ui" line="68"/>
-        <source>Signal-Triggered: Script wird mit Geräte-Samplerate verknüpft und ausgeführt</source>
-        <translation>Signal-triggered: script is executed, if selected signals are getting new data</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/triggerWidget.ui" line="74"/>
-        <source>Signal-Triggered</source>
-        <translation>Signal-triggered</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/triggerWidget.ui" line="101"/>
-        <source>Keines</source>
-        <translation>Empty</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/eventWidget.ui" line="52"/>
-        <source>Filter</source>
-        <translation>Filter</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/eventWidget.ui" line="146"/>
-        <source>Lösche alle Signale</source>
-        <translation>Delete all signals</translation>
+        <location filename="../data/ui/eventWidget.ui" line="48"/>
+        <source>bis</source>
+        <translation type="obsolete">till</translation>
     </message>
     <message>
         <location filename="../data/ui/eventWidget.ui" line="201"/>
         <source>Zeitpunkt</source>
-        <translation>Timestamp</translation>
+        <translation>Timepoint</translation>
     </message>
     <message>
         <location filename="../data/ui/eventWidget.ui" line="206"/>
@@ -781,14 +776,29 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation>Content</translation>
     </message>
     <message>
-        <location filename="../data/ui/eventWidget.ui" line="211"/>
+        <location filename="../data/ui/eventWidget.ui" line="118"/>
         <source>Gerät</source>
-        <translation>Device</translation>
+        <translation type="obsolete">Device</translation>
     </message>
     <message>
         <location filename="../data/ui/eventWidget.ui" line="216"/>
         <source>Signal</source>
         <translation>Signal</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/eventWidget.ui" line="52"/>
+        <source>Filter</source>
+        <translation>Filter</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/eventWidget.ui" line="134"/>
+        <source>Lösche alle Signale</source>
+        <translation type="obsolete">Delete all Events</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/scriptHelpWidget.ui" line="109"/>
+        <source>event(text=&quot;&quot;, sname=&quot;noName&quot;, dname=&quot;noDevice&quot;, x=clock, priority=0) </source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -801,12 +811,12 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/rtoc.ui" line="57"/>
         <source>Aufzeichnungsdauer:</source>
-        <translation>Recording length:</translation>
+        <translation>Recordlength:</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="67"/>
         <source>Ändere die Aufzeichnungsdauer</source>
-        <translation>Change the recording-length</translation>
+        <translation type="obsolete">Change the recordlength</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="70"/>
@@ -816,27 +826,27 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/rtoc.ui" line="99"/>
         <source>Lösche alle Signale</source>
-        <translation>Delete all signals</translation>
+        <translation type="obsolete">Delete all signals</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="148"/>
         <source>Geräte, für die PlugIns vorhanden sind, erscheinen hier</source>
-        <translation>Available devices are shown here</translation>
+        <translation type="obsolete">Devices with plugins will be shown here</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="551"/>
+        <location filename="../data/ui/rtoc.ui" line="499"/>
         <source>&amp;Geräte</source>
-        <translation>Devices</translation>
+        <translation type="obsolete">Devices</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="188"/>
         <source>Suche Gerät</source>
-        <translation>Search device</translation>
+        <translation type="obsolete">Search device</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="282"/>
         <source>Falls ein Gerät ein GUI-PlugIn besitzt, erscheint dies hier</source>
-        <translation>Available devices with GUI are shown here</translation>
+        <translation type="obsolete">Devices with plugins will be shown here</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="562"/>
@@ -851,7 +861,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/rtoc.ui" line="356"/>
         <source>Öffnen, Speichern, Exportieren</source>
-        <translation>Open, save, export</translation>
+        <translation type="obsolete">Open, save, export</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="359"/>
@@ -859,34 +869,19 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation>File</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="363"/>
-        <source>Telegram-Bot</source>
-        <translation></translation>
-    </message>
-    <message>
-        <location filename="../data/ui/rtoc.ui" line="370"/>
-        <source>TCP - Server</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../data/ui/rtoc.ui" line="392"/>
         <source>Unterfenster-Darstellung verwalten</source>
-        <translation>Show/hide subwindows</translation>
+        <translation>Arrange View</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="395"/>
         <source>&amp;Fenster</source>
-        <translation>Subwindows</translation>
+        <translation>View</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="404"/>
         <source>&amp;Hilfe</source>
         <translation>Help</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/rtoc.ui" line="413"/>
-        <source>Sprache</source>
-        <translation>Language</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="425"/>
@@ -899,11 +894,6 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="665"/>
-        <source>Events</source>
-        <translation></translation>
-    </message>
-    <message>
         <location filename="../data/ui/rtoc.ui" line="497"/>
         <source>&amp;Daten exportieren</source>
         <translation>Export data</translation>
@@ -911,22 +901,22 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/rtoc.ui" line="521"/>
         <source>Bitte nutze RECHTSKLICK auf Plotbereich</source>
-        <translation>Please use RIGHT CLICK in graph</translation>
+        <translation>Please use RIGHTCLICK in plot</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="505"/>
         <source>&amp;Beenden</source>
-        <translation>Quit</translation>
+        <translation>Close</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="510"/>
         <source>&amp;Plot anpassen</source>
-        <translation>Change plotstyles</translation>
+        <translation>Style plot</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="513"/>
         <source>Plot-Darstellung</source>
-        <translation>Plotstyles</translation>
+        <translation>Plot-Style</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="518"/>
@@ -946,27 +936,27 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/rtoc.ui" line="540"/>
         <source>Signale-Unterfenster</source>
-        <translation>Signal-subwindow</translation>
+        <translation>Signal-Subwindow</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="554"/>
+        <location filename="../data/ui/rtoc.ui" line="502"/>
         <source>Geräte-Unterfenster</source>
-        <translation>Devices-subwindow</translation>
+        <translation type="obsolete">Devices-Subwindow</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="565"/>
         <source>Plugins-Unterfenster</source>
-        <translation>Plugins-subwindow</translation>
+        <translation>Plugin-Subwindow</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="573"/>
         <source>S&amp;kript</source>
-        <translation>Script</translation>
+        <translation>Scripts</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="576"/>
         <source>Skripte-Unterfenster</source>
-        <translation>Script-subwindow</translation>
+        <translation>Script-Subwindow</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="581"/>
@@ -996,7 +986,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/rtoc.ui" line="602"/>
         <source>Zuletzt geladen</source>
-        <translation>Recently edited</translation>
+        <translation>Latest sessions</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="607"/>
@@ -1006,12 +996,12 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/rtoc.ui" line="612"/>
         <source>&amp;Hilfe zu KellerLogger</source>
-        <translation>Read the docs</translation>
+        <translation>Help</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="617"/>
+        <location filename="../data/ui/rtoc.ui" line="565"/>
         <source>Über RTOC</source>
-        <translation>About RTOC</translation>
+        <translation type="obsolete">About RTOC</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="622"/>
@@ -1024,9 +1014,19 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation></translation>
     </message>
     <message>
+        <location filename="../data/ui/rtoc.ui" line="370"/>
+        <source>TCP - Server</source>
+        <translation></translation>
+    </message>
+    <message>
         <location filename="../data/ui/rtoc.ui" line="641"/>
         <source>Multiproessing - Listener</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../data/ui/rtoc.ui" line="413"/>
+        <source>Sprache</source>
+        <translation>Language</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="649"/>
@@ -1039,9 +1039,19 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation>English</translation>
     </message>
     <message>
+        <location filename="../data/ui/rtoc.ui" line="665"/>
+        <source>Events</source>
+        <translation>Events</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/rtoc.ui" line="363"/>
+        <source>Telegram-Bot</source>
+        <translation>Telegram-Bot</translation>
+    </message>
+    <message>
         <location filename="../data/ui/rtoc.ui" line="670"/>
         <source>Bot-Token eingeben</source>
-        <translation>Enter bot-token</translation>
+        <translation>Enter Bot-Token</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="678"/>
@@ -1051,7 +1061,7 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/rtoc.ui" line="686"/>
         <source>RTOC - Web</source>
-        <translation></translation>
+        <translation>RTOC - Web</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="694"/>
@@ -1061,17 +1071,17 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../data/ui/rtoc.ui" line="699"/>
         <source>Passwort-Schutz</source>
-        <translation>Password-protection</translation>
+        <translation>Password-Protection</translation>
     </message>
     <message>
-        <location filename="../data/ui/rtoc.ui" line="704"/>
+        <location filename="../data/ui/rtoc.ui" line="703"/>
         <source>Auf Updates prüfen</source>
-        <translation>Check for updates</translation>
+        <translation type="obsolete">Check for updates</translation>
     </message>
     <message>
         <location filename="../data/ui/rtoc.ui" line="709"/>
         <source>Port: 5050</source>
-        <translation></translation>
+        <translation>Port: 5050</translation>
     </message>
 </context>
 <context>
@@ -1082,14 +1092,14 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="120"/>
-        <source>Suchen</source>
-        <translation>Search</translation>
-    </message>
-    <message>
         <location filename="../plugins/netWoRTOC.py" line="180"/>
         <source>Verbinden</source>
         <translation>Connect</translation>
+    </message>
+    <message>
+        <location filename="../plugins/netWoRTOC/gui.py" line="120"/>
+        <source>Suchen</source>
+        <translation>Search</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC/networtoc.ui" line="43"/>
@@ -1104,12 +1114,12 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../plugins/netWoRTOC/networtoc.ui" line="96"/>
         <source>Aufzeichnungsdauer:</source>
-        <translation>Recording length:</translation>
+        <translation>Recordlength:</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/networtoc.ui" line="106"/>
+        <location filename="../plugins/netWoRTOC/networtoc.ui" line="92"/>
         <source>Ändere die Aufzeichnungsdauer</source>
-        <translation>Change recording-length</translation>
+        <translation type="obsolete">Change the recordlength of remote-RTOC-Server</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC/networtoc.ui" line="109"/>
@@ -1117,9 +1127,9 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation> Values</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/networtoc.ui" line="138"/>
+        <location filename="../plugins/netWoRTOC/networtoc.ui" line="124"/>
         <source>Lösche alle Signale</source>
-        <translation>Delete all signals</translation>
+        <translation type="obsolete">Delete all signals from remote RTOC-Server</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC/networtoc.ui" line="167"/>
@@ -1132,39 +1142,34 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/networtoc.ui" line="259"/>
+        <location filename="../plugins/netWoRTOC/networtoc.ui" line="245"/>
         <source>Alle auswählen</source>
-        <translation>Select all</translation>
+        <translation type="obsolete">Select all</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/networtoc.ui" line="270"/>
+        <location filename="../plugins/netWoRTOC/networtoc.ui" line="256"/>
         <source>Geräte</source>
-        <translation>Devices</translation>
+        <translation type="obsolete">Devices</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/networtoc.ui" line="346"/>
+        <location filename="../plugins/netWoRTOC/networtoc.ui" line="332"/>
         <source>Geräte Funktionen und Parameter</source>
-        <translation>Device-functions and parameters</translation>
+        <translation type="obsolete">Device functions and paramters</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="69"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="51"/>
         <source>Signal löschen</source>
-        <translation>Delete signal</translation>
-    </message>
-    <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="111"/>
-        <source>Sucht...</source>
-        <translation>Searching...</translation>
+        <translation type="obsolete">Delete signal</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC/gui.py" line="107"/>
         <source>RTOC-Netzwerksuche</source>
-        <translation>RTOC-Networkscan</translation>
+        <translation>Search RTOC-Servers</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="107"/>
+        <location filename="../plugins/netWoRTOC/gui.py" line="88"/>
         <source>Möchten Sie wirklich das Netzwerk nach RTOC-Servern durchsuchen?</source>
-        <translation>Do you really want to search the local network for RTOC-servers?</translation>
+        <translation type="obsolete">Do you really want to search your local network for RTOC-Servers?</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC/gui.py" line="107"/>
@@ -1172,34 +1177,24 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation>This will take some time</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="113"/>
-        <source>Bitte warten</source>
-        <translation>Please wait</translation>
-    </message>
-    <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="113"/>
-        <source>NetWoRTOC sucht gerade nach RTOC-Servern</source>
-        <translation>NetWoRTOC is searching for RTOC-servers</translation>
-    </message>
-    <message>
-        <location filename="../plugins/netWoRTOC/gui.py" line="113"/>
-        <source>Bitte warten bis der Vorgang abgeschlossen ist.</source>
-        <translation>Please wait until the process finished.</translation>
+        <location filename="../plugins/netWoRTOC/gui.py" line="111"/>
+        <source>Sucht...</source>
+        <translation>Searching...</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC/gui.py" line="119"/>
         <source>Fertig</source>
-        <translation>Completed</translation>
+        <translation>Finished</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC/gui.py" line="119"/>
         <source>RTOC-Suche abgeschlossen</source>
-        <translation>Networksearch completed</translation>
+        <translation>Searching for RTOC-Servers finished</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC/gui.py" line="119"/>
         <source> Server gefunden.</source>
-        <translation> servers found.</translation>
+        <translation> server found.</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC.py" line="135"/>
@@ -1207,29 +1202,29 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation>Warning</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="135"/>
+        <location filename="../plugins/netWoRTOC.py" line="127"/>
         <source>Möchten sie wirklich alle Daten am RTOC-Server löschen?</source>
-        <translation>Do you really want to delete all signals on this RTOC-server?</translation>
+        <translation type="obsolete">Do you really want to delete all data from this RTOC-Server?</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC.py" line="135"/>
         <source>(Unwiederrufbar)</source>
-        <translation> </translation>
+        <translation>(Data will be lost)</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="148"/>
+        <location filename="../plugins/netWoRTOC.py" line="140"/>
         <source>Remote-Funktion ausführen</source>
-        <translation>Call remote-function</translation>
+        <translation type="obsolete">Call remote function</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC.py" line="161"/>
         <source> an Host </source>
-        <translation> execution at </translation>
+        <translation> at host </translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="148"/>
+        <location filename="../plugins/netWoRTOC.py" line="140"/>
         <source> ausführen.</source>
-        <translation>.</translation>
+        <translation type="obsolete"> execution.</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC.py" line="148"/>
@@ -1239,37 +1234,57 @@ Copyright (C) 2018 Sebastian Keller</translation>
     <message>
         <location filename="../plugins/netWoRTOC.py" line="274"/>
         <source>Fehler</source>
-        <translation>Error</translation>
+        <translation>Failure</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="158"/>
+        <location filename="../plugins/netWoRTOC.py" line="150"/>
         <source>Funktionsparameter sind nicht gültig</source>
-        <translation>Functionparameter not valid</translation>
+        <translation type="obsolete">Submitted functionsparameters are not valid</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="158"/>
+        <location filename="../plugins/netWoRTOC.py" line="150"/>
         <source>Bitte geben Sie gültige Parameter an</source>
-        <translation>Please enter a valid parameter</translation>
+        <translation type="obsolete">Please enter valid parameters</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="161"/>
+        <location filename="../plugins/netWoRTOC.py" line="153"/>
         <source>Remote-Parameter ändern</source>
-        <translation>Change remote-parameter</translation>
+        <translation type="obsolete">change remote-parameter</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="161"/>
+        <location filename="../plugins/netWoRTOC.py" line="153"/>
         <source> ändern.</source>
-        <translation> will be modified.</translation>
+        <translation type="obsolete"> change.</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="171"/>
+        <location filename="../plugins/netWoRTOC.py" line="163"/>
         <source>Wert ungültig</source>
-        <translation>Not valid</translation>
+        <translation type="obsolete">Value not valid</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="171"/>
+        <location filename="../plugins/netWoRTOC.py" line="163"/>
         <source>Bitte geben Sie einen gültigen Wert an</source>
-        <translation>Please enter a valid parameter.</translation>
+        <translation type="obsolete">Please enter a valid value</translation>
+    </message>
+    <message>
+        <location filename="../plugins/netWoRTOC.py" line="269"/>
+        <source>Beenden</source>
+        <translation>Close</translation>
+    </message>
+    <message>
+        <location filename="../plugins/netWoRTOC/gui.py" line="113"/>
+        <source>Bitte warten</source>
+        <translation>Please wait</translation>
+    </message>
+    <message>
+        <location filename="../plugins/netWoRTOC/gui.py" line="113"/>
+        <source>NetWoRTOC sucht gerade nach RTOC-Servern</source>
+        <translation>NetWoRTOC is searching for RTOC-Servers</translation>
+    </message>
+    <message>
+        <location filename="../plugins/netWoRTOC/gui.py" line="113"/>
+        <source>Bitte warten bis der Vorgang abgeschlossen ist.</source>
+        <translation>Please wait.</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC.py" line="252"/>
@@ -1282,9 +1297,9 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation>The RTOC-Server </translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="252"/>
+        <location filename="../plugins/netWoRTOC.py" line="243"/>
         <source> ist passwortgeschützt. Bitte Passwort eintragen</source>
-        <translation> is password-protected. Please enter password</translation>
+        <translation type="obsolete"> is password protected. Please enter password</translation>
     </message>
     <message>
         <location filename="../plugins/netWoRTOC.py" line="252"/>
@@ -1292,14 +1307,9 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation>TCP-password</translation>
     </message>
     <message>
-        <location filename="../plugins/netWoRTOC.py" line="269"/>
-        <source>Beenden</source>
-        <translation>Disconnect</translation>
-    </message>
-    <message>
-        <location filename="../plugins/netWoRTOC.py" line="280"/>
+        <location filename="../plugins/netWoRTOC.py" line="271"/>
         <source>Geschützt</source>
-        <translation>Protected</translation>
+        <translation type="obsolete">Protected</translation>
     </message>
 </context>
 <context>
@@ -1316,26 +1326,54 @@ Copyright (C) 2018 Sebastian Keller</translation>
     </message>
 </context>
 <context>
+    <name>RTLogger</name>
+    <message>
+        <location filename="../RTLogger.py" line="341"/>
+        <source>Plugin gestartet: </source>
+        <translation type="obsolete">Plugin startet: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="231"/>
+        <source>Plugin gestoppt</source>
+        <translation type="obsolete">Plugin stopped: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="530"/>
+        <source>Signal-Stream hinzugefÃ¼gt: </source>
+        <translation type="obsolete">Signal-Stream added: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="427"/>
+        <source>Neues Signal geplottet: </source>
+        <translation type="obsolete">Signal-Plot added: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="416"/>
+        <source>Plugin gestoppt: </source>
+        <translation type="obsolete">Plugin stopped: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="621"/>
+        <source>Signal-Plot hinzugefÃ¼gt: </source>
+        <translation type="obsolete">Signal-Plot added: </translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="64"/>
+        <source>Signale</source>
+        <translation type="obsolete">Signals</translation>
+    </message>
+</context>
+<context>
     <name>RTOC</name>
-    <message>
-        <location filename="../RTOC.py" line="176"/>
-        <source>Passwort-Schutz: Aus</source>
-        <translation>Password-protection: Yes</translation>
-    </message>
-    <message>
-        <location filename="../RTOC.py" line="178"/>
-        <source>Passwort-Schutz: An</source>
-        <translation>Password-protection: No</translation>
-    </message>
-    <message>
-        <location filename="../RTOC.py" line="179"/>
-        <source>Port: </source>
-        <translation>Port: </translation>
-    </message>
     <message>
         <location filename="../RTOC.py" line="214"/>
         <source>Anzeigen</source>
         <translation>Show</translation>
+    </message>
+    <message>
+        <location filename="../RTOC.py" line="224"/>
+        <source>Beenden</source>
+        <translation>Close</translation>
     </message>
     <message>
         <location filename="../RTOC.py" line="216"/>
@@ -1348,38 +1386,31 @@ Copyright (C) 2018 Sebastian Keller</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC.py" line="224"/>
-        <source>Beenden</source>
-        <translation>Stop</translation>
-    </message>
-    <message>
         <location filename="../RTOC.py" line="362"/>
         <source>Fehler</source>
-        <translation>Error</translation>
+        <translation>Failure</translation>
     </message>
     <message>
         <location filename="../RTOC.py" line="359"/>
         <source>Fehler beim Laden der GerÃ¤te GUI
 Bitte Code Ã¼berprÃ¼fen.</source>
-        <translation>Error loading device-GUI
-Please check plugin-code.</translation>
+        <translation>Loading device GUI failed.</translation>
     </message>
     <message>
         <location filename="../RTOC.py" line="362"/>
         <source>Fehler beim Laden des GerÃ¤ts
 Bitte stellen Sie sicher, dass das GerÃ¤t verbunden ist.</source>
-        <translation>Error loading device
-Please make sure to be connected to the device.</translation>
-    </message>
-    <message>
-        <location filename="../RTOC.py" line="403"/>
-        <source>lÃ¤uft im Hintergrund weiter und zeichnet Messwerte auf</source>
-        <translation>is running in background.</translation>
+        <translation>Loading device failed. Please make sure the device is connected.</translation>
     </message>
     <message>
         <location filename="../RTOC.py" line="404"/>
         <source>RealTime OpenControl</source>
         <translation></translation>
+    </message>
+    <message>
+        <location filename="../RTOC.py" line="403"/>
+        <source>lÃ¤uft im Hintergrund weiter und zeichnet Messwerte auf</source>
+        <translation>is running in background and collecting data</translation>
     </message>
     <message>
         <location filename="../RTOC.py" line="413"/>
@@ -1390,6 +1421,21 @@ Please make sure to be connected to the device.</translation>
         <location filename="../RTOC.py" line="413"/>
         <source>Wollen Sie die aktuelle Sitzung speichern?</source>
         <translation>Do you want to save the current session?</translation>
+    </message>
+    <message>
+        <location filename="../RTOC.py" line="176"/>
+        <source>Passwort-Schutz: Aus</source>
+        <translation>Password-Protection: Off</translation>
+    </message>
+    <message>
+        <location filename="../RTOC.py" line="178"/>
+        <source>Passwort-Schutz: An</source>
+        <translation>Password-Protection: On</translation>
+    </message>
+    <message>
+        <location filename="../RTOC.py" line="179"/>
+        <source>Port: </source>
+        <translation>Port: </translation>
     </message>
 </context>
 <context>
@@ -1406,6 +1452,19 @@ Please make sure to be connected to the device.</translation>
     </message>
 </context>
 <context>
+    <name>RTPlotActions</name>
+    <message>
+        <location filename="../data/RTPlotActions.py" line="22"/>
+        <source>Signale</source>
+        <translation type="obsolete">Signals</translation>
+    </message>
+    <message>
+        <location filename="../data/RTPlotActions.py" line="25"/>
+        <source>Vergangene Zeit</source>
+        <translation type="obsolete">Elapsed time</translation>
+    </message>
+</context>
+<context>
     <name>RTPlotWidget</name>
     <message>
         <location filename="../data/RTPlotWidget.py" line="219"/>
@@ -1418,12 +1477,12 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/scriptWidget.py" line="43"/>
         <source>Fehler beim laden der Datei </source>
-        <translation>Error loading file </translation>
+        <translation>Loading file failed </translation>
     </message>
     <message>
         <location filename="../data/scriptWidget.py" line="48"/>
         <source>Fehler</source>
-        <translation>Error</translation>
+        <translation>Failure</translation>
     </message>
     <message>
         <location filename="../data/scriptWidget.py" line="48"/>
@@ -1461,17 +1520,17 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/signalEditWidget.py" line="110"/>
         <source>WÃ¤hle zuerst das Schneide-Tool aus</source>
-        <translation>Please select Cut-tool first</translation>
+        <translation>Please select Cutting-Tool first</translation>
     </message>
     <message>
         <location filename="../data/signalEditWidget.py" line="110"/>
         <source>Du musst zuerst deine Schnittbereich festlegen</source>
-        <translation>You need to define your cut-zone first</translation>
+        <translation>Please set your Cut-Area first</translation>
     </message>
     <message>
         <location filename="../data/signalEditWidget.py" line="160"/>
         <source>CSV-Datei (*.csv)</source>
-        <translation>CSV (*.csv)</translation>
+        <translation>CSV-File (*.csv)</translation>
     </message>
     <message>
         <location filename="../data/signalEditWidget.py" line="155"/>
@@ -1486,7 +1545,7 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/signalEditWidget.py" line="164"/>
         <source>Bitte gib einen neuen Namen an</source>
-        <translation>Please enter a new name</translation>
+        <translation>Please enter a new signalname</translation>
     </message>
     <message>
         <location filename="../data/signalEditWidget.py" line="216"/>
@@ -1496,7 +1555,7 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/signalEditWidget.py" line="216"/>
         <source>Daten werden dauerhaft geÃ¤ndert</source>
-        <translation>Data will be modified permanently</translation>
+        <translation>Signal will be changed permanently</translation>
     </message>
     <message>
         <location filename="../data/signalEditWidget.py" line="216"/>
@@ -1529,17 +1588,12 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../RTOC_Web.py" line="32"/>
         <source>Zeitpunkt</source>
-        <translation>Timestamp</translation>
+        <translation>Timepoint</translation>
     </message>
     <message>
         <location filename="../RTOC_Web.py" line="161"/>
         <source>Verbindung fehlgeschlagen</source>
         <translation>Connection failed</translation>
-    </message>
-    <message>
-        <location filename="../RTOC_Web.py" line="165"/>
-        <source>Passwort falsch</source>
-        <translation>Password wrong</translation>
     </message>
     <message>
         <location filename="../RTOC_Web.py" line="172"/>
@@ -1554,7 +1608,7 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../RTOC_Web.py" line="107"/>
         <source>(TCP-Server Passwort)</source>
-        <translation>(TCP-server password)</translation>
+        <translation>(TCP-Server password)</translation>
     </message>
     <message>
         <location filename="../RTOC_Web.py" line="133"/>
@@ -1564,7 +1618,20 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../RTOC_Web.py" line="158"/>
         <source>Verbindung trennen</source>
-        <translation>Disconnect</translation>
+        <translation>Close connection</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_Web.py" line="165"/>
+        <source>Passwort falsch</source>
+        <translation>Password wrong</translation>
+    </message>
+</context>
+<context>
+    <name>a</name>
+    <message>
+        <location filename="../RTLogger.py" line="557"/>
+        <source>Signal-Plot hinzugefügt: </source>
+        <translation type="obsolete">Signal-Plot added: </translation>
     </message>
 </context>
 <context>
@@ -1572,37 +1639,37 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="20"/>
         <source>Stile anpassen</source>
-        <translation>Change plotstyles</translation>
+        <translation>Style plots</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="59"/>
         <source>Füllung</source>
-        <translation>Fill</translation>
+        <translation type="obsolete">Fill</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="65"/>
         <source>Füllfarbe</source>
-        <translation>Fillcolor</translation>
+        <translation type="obsolete">Fillcolor</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="75"/>
         <source>y = </source>
-        <translation>y = </translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="91"/>
         <source>Füllen bis</source>
-        <translation>Fill until</translation>
+        <translation type="obsolete">Fill until</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="98"/>
         <source>Füllung löschen</source>
-        <translation>Delete fill</translation>
+        <translation type="obsolete">Remove fill</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="431"/>
         <source>Färben</source>
-        <translation>Set color</translation>
+        <translation type="obsolete">Colorize</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="115"/>
@@ -1612,7 +1679,7 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="121"/>
         <source>Schattenstil</source>
-        <translation>Shadowstyle</translation>
+        <translation>Shadow-Style</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="245"/>
@@ -1622,27 +1689,27 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="250"/>
         <source>Punkte (P)</source>
-        <translation>Dots (D)</translation>
+        <translation>Dots</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="255"/>
         <source>Striche (S)</source>
-        <translation>Stroke (S)</translation>
+        <translation>Stroke</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="260"/>
         <source>P S</source>
-        <translation>D S</translation>
+        <translation>Dot Stroke</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="265"/>
         <source>P P S</source>
-        <translation>D D S</translation>
+        <translation>Dot Dot Stroke</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="163"/>
         <source>Schattenbreite</source>
-        <translation>Shadow-width</translation>
+        <translation>Shadowwidth</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="186"/>
@@ -1662,12 +1729,12 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="273"/>
         <source>Linienstil</source>
-        <translation>Linestyle</translation>
+        <translation>Line-Style</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="299"/>
         <source>Opazität</source>
-        <translation>Opacity</translation>
+        <translation type="obsolete">Opacity</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="306"/>
@@ -1677,7 +1744,7 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="342"/>
         <source>Symbol</source>
-        <translation>Symbol</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="335"/>
@@ -1687,12 +1754,12 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="349"/>
         <source>Symbolrandfarbe</source>
-        <translation>Symbolborder-color</translation>
+        <translation>Symbolbrushcolor</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="372"/>
         <source>Symbolgröße</source>
-        <translation>Symbolsize</translation>
+        <translation type="obsolete">Symbolsize</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="391"/>
@@ -1702,7 +1769,7 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="396"/>
         <source>X</source>
-        <translation>X</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="401"/>
@@ -1712,17 +1779,17 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="406"/>
         <source>Dreieck</source>
-        <translation>Rectangle</translation>
+        <translation>Triangle</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="411"/>
         <source>Raute</source>
-        <translation>Diamond</translation>
+        <translation>Rectangle</translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="416"/>
         <source>Plus</source>
-        <translation>Plus</translation>
+        <translation></translation>
     </message>
     <message>
         <location filename="../data/ui/stylePlotDialog2.ui" line="461"/>
@@ -1743,16 +1810,6 @@ Please make sure to be connected to the device.</translation>
         <translation></translation>
     </message>
     <message>
-        <location filename="../data/ui/plotWidget.ui" line="99"/>
-        <source>Zeige Crosshair</source>
-        <translation>Show crosshair</translation>
-    </message>
-    <message>
-        <location filename="../data/ui/plotWidget.ui" line="73"/>
-        <source>Öffne Mess-Rechteck in Plot</source>
-        <translation>Open rectangle-tool in graph</translation>
-    </message>
-    <message>
         <location filename="../data/ui/plotWidget.ui" line="134"/>
         <source>Tools</source>
         <translation>Tools</translation>
@@ -1765,7 +1822,7 @@ Please make sure to be connected to the device.</translation>
     <message>
         <location filename="../data/ui/plotWidget.ui" line="179"/>
         <source>Plot pausieren/fortsetzen</source>
-        <translation>Pause/resume plot</translation>
+        <translation>Pause plot</translation>
     </message>
     <message>
         <location filename="../data/ui/plotWidget.ui" line="211"/>
@@ -1787,122 +1844,220 @@ Please make sure to be connected to the device.</translation>
         <source>Signale: 0</source>
         <translation>Signals: 0</translation>
     </message>
+    <message>
+        <location filename="../data/ui/plotWidget.ui" line="99"/>
+        <source>Zeige Crosshair</source>
+        <translation>Show Crosshair</translation>
+    </message>
+    <message>
+        <location filename="../data/ui/plotWidget.ui" line="73"/>
+        <source>Öffne Mess-Rechteck in Plot</source>
+        <translation type="obsolete">Open Measure-Rectangle in plot</translation>
+    </message>
+</context>
+<context>
+    <name>self.rtoc</name>
+    <message>
+        <location filename="../RTLogger.py" line="268"/>
+        <source>Plugin gestartet: </source>
+        <translation type="obsolete">Plugin startet: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="349"/>
+        <source>Plugin gestoppt: </source>
+        <translation type="obsolete">Plugin gestoppt: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="467"/>
+        <source>Signal-Stream hinzugefÃ¼gt: </source>
+        <translation type="obsolete">Signal-Stream added: </translation>
+    </message>
+    <message>
+        <location filename="../RTLogger.py" line="555"/>
+        <source>Signal-Plot hinzugefÃ¼gt: </source>
+        <translation type="obsolete">Signal-Plot added: </translation>
+    </message>
 </context>
 <context>
     <name>telegram</name>
     <message>
-        <location filename="../telegramBot.py" line="147"/>
+        <location filename="../telegramBot.py" line="143"/>
         <source>Event-Benachrichtigung festlegen</source>
         <translation>Event-Notifications</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="150"/>
+        <location filename="../telegramBot.py" line="146"/>
         <source>Letzte Messwerte</source>
-        <translation>Latest values</translation>
+        <translation>Latest Values</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="156"/>
+        <location filename="../telegramBot.py" line="152"/>
         <source>Signale</source>
         <translation>Signals</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="411"/>
+        <location filename="../telegramBot.py" line="366"/>
         <source>Geräte</source>
-        <translation>Devices</translation>
+        <translation type="obsolete">Devices</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="159"/>
-        <source>Event erzeugen</source>
-        <translation>Create event</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="141"/>
+        <location filename="../telegramBot.py" line="137"/>
         <source>Einstellung angepasst</source>
         <translation>Settings updated</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="407"/>
+        <location filename="../telegramBot.py" line="363"/>
         <source>Signale löschen</source>
-        <translation>Delete signals</translation>
+        <translation type="obsolete">Delete signals</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="407"/>
+        <location filename="../telegramBot.py" line="363"/>
         <source>Aufzeichnungsdauer ändern</source>
-        <translation>Recording length changed</translation>
+        <translation type="obsolete">Change recordlength</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="478"/>
+        <location filename="../telegramBot.py" line="409"/>
         <source>&lt;-- Zurück</source>
-        <translation>&lt;-- Back</translation>
+        <translation type="obsolete">&lt;-- Back</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="186"/>
+        <location filename="../telegramBot.py" line="180"/>
         <source>Aufzeichnungsdauer geändert</source>
-        <translation>Recording length changed</translation>
+        <translation type="obsolete">Recordlength was changed</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="192"/>
+        <location filename="../telegramBot.py" line="188"/>
         <source>Fehlerhafte Eingabe</source>
-        <translation>Wrong entry</translation>
+        <translation>No valid message</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="204"/>
-        <source>Event gesendet.</source>
-        <translation>Event sent.</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="417"/>
+        <location filename="../telegramBot.py" line="372"/>
         <source>Gerät beenden</source>
-        <translation>Stop device</translation>
+        <translation type="obsolete">Stop device</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="419"/>
+        <location filename="../telegramBot.py" line="374"/>
         <source>Gerät starten</source>
-        <translation>Start device</translation>
+        <translation type="obsolete">Start device</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="421"/>
+        <location filename="../telegramBot.py" line="376"/>
         <source>Gerätefehler</source>
-        <translation>Device-error</translation>
+        <translation type="obsolete">Device-failure</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="422"/>
+        <location filename="../telegramBot.py" line="415"/>
         <source>Funktionen</source>
         <translation>Functions</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="422"/>
+        <location filename="../telegramBot.py" line="415"/>
         <source>Parameter</source>
         <translation>Parameters</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="313"/>
+        <location filename="../telegramBot.py" line="286"/>
         <source>Wenn dein Text aussieht, wie eine JSON, dann kannst du damit später alles machen</source>
-        <translation>Not implemented</translation>
+        <translation type="obsolete">You reached the end of this telegram-bot. Well done. Lets get back to the menu ...</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="316"/>
+        <location filename="../telegramBot.py" line="312"/>
         <source>Was soll ich dazu sagen ...</source>
-        <translation>Whoops... this shouldn&apos;t happen...</translation>
+        <translation>Oh no ...</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="331"/>
+        <location filename="../telegramBot.py" line="326"/>
         <source>Zeit [s]</source>
         <translation>Time [s]</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="380"/>
+        <location filename="../telegramBot.py" line="373"/>
         <source>Derzeitige Aufzeichnungsdauer: </source>
-        <translation>Current recording length:</translation>
+        <translation>Current recordlength: </translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="380"/>
+        <location filename="../telegramBot.py" line="442"/>
+        <source> Funktionen</source>
+        <translation>Functions</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="411"/>
+        <source>Bitte gib Parameter an, falls benötigt</source>
+        <translation type="obsolete">Please enter parameters, if needed</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="453"/>
+        <source>Bitte gib einen neuen Wert an.
+Derzeitiger Wert: </source>
+        <translation>Please enter a new value.
+Current Value: </translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="456"/>
+        <source>Fehler</source>
+        <translation>Failure</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="426"/>
+        <source>Hauptmenü</source>
+        <translation type="obsolete">Mainmenu</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="470"/>
+        <source>Alle Benachrichtigungen</source>
+        <translation>All notifications</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="470"/>
+        <source>Warnungen</source>
+        <translation>Warnings</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="470"/>
+        <source>Nur Fehlermeldungen</source>
+        <translation>Only errors</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="471"/>
+        <source>Keine Benachrichtigung</source>
+        <translation>No notifications</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="430"/>
+        <source>&lt;- Zurück</source>
+        <translation type="obsolete">&lt;- Back</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="434"/>
+        <source>Wähle eine Benachrichtigungsstufe aus. Derzeitige Stufe:
+</source>
+        <translation type="obsolete">Select a notification level. Current level:
+</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="487"/>
+        <source>Keine Messwerte vorhanden</source>
+        <translation>No measurements recorded yet</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="155"/>
+        <source>Event erzeugen</source>
+        <translation>Create event</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="200"/>
+        <source>Event gesendet.</source>
+        <translation>Event sent.</translation>
+    </message>
+    <message>
+        <location filename="../telegramBot.py" line="373"/>
         <source>
 Signale verwenden </source>
-        <translation>Signals are using </translation>
+        <translation>
+Signals use </translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="398"/>
+        <location filename="../telegramBot.py" line="391"/>
         <source>Neues Event erzeugen
 Sende eine Nachricht, um ein Event zu erzeugen.
 Wähle ein Signal aus, um das Event einem Signal zuzuordnen.</source>
@@ -1911,67 +2066,9 @@ Send a message to create an event
 Select a signal before to asign a signal to this event</translation>
     </message>
     <message>
-        <location filename="../telegramBot.py" line="402"/>
+        <location filename="../telegramBot.py" line="395"/>
         <source>Signal ausgewählt: </source>
-        <translation>Selected signals</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="449"/>
-        <source> Funktionen</source>
-        <translation>Functions</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="456"/>
-        <source>Bitte gib Parameter an, falls benötigt</source>
-        <translation>Please send a parameter, if necessary</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="460"/>
-        <source>Bitte gib einen neuen Wert an.
-Derzeitiger Wert: </source>
-        <translation>Please enter a new value.
-Current value: </translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="463"/>
-        <source>Fehler</source>
-        <translation>Error</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="472"/>
-        <source>Hauptmenü</source>
-        <translation>Mainmenu</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="477"/>
-        <source>Alle Benachrichtigungen</source>
-        <translation>All notifications</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="477"/>
-        <source>Warnungen</source>
-        <translation>Warnings</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="477"/>
-        <source>Nur Fehlermeldungen</source>
-        <translation>Only errors</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="478"/>
-        <source>Keine Benachrichtigung</source>
-        <translation>No notifications</translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="481"/>
-        <source>Wähle eine Benachrichtigungsstufe aus. Derzeitige Stufe:
-</source>
-        <translation>Select notification-level. Current level: </translation>
-    </message>
-    <message>
-        <location filename="../telegramBot.py" line="494"/>
-        <source>Keine Messwerte vorhanden</source>
-        <translation>No measurements available</translation>
+        <translation>Selected signal: </translation>
     </message>
 </context>
 </TS>

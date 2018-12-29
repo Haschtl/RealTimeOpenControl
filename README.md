@@ -1,6 +1,6 @@
 # RealTime OpenControl (RTOC)
 
-### Version 1.8.2
+### Version 1.8.7.5
 
 [**This README is available in GERMAN here.**](misc/README_german.md)
 

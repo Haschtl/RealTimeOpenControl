@@ -1,8 +1,8 @@
 # Tutorial at https://blog.jetbrains.com/pycharm/2017/05/how-to-publish-your-package-on-pypi/
 # https://packaging.python.org/tutorials/packaging-projects/
 
-# python setup.py sdist bdist_wheel
-# python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+# python3 setup.py sdist bdist_wheel
+# python3 -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 # python.exe -m pip install --index-url https://test.pypi.org/simple/ RTOC
 
 # virtual env for testing:
@@ -10,16 +10,20 @@
 # move to directory and use python from There
 
 # public:
-# python setup.py bdist_wheel
-# python -m twine upload dist/*
+# python3 setup.py bdist_wheel
+# python3 -m twine upload dist/*
 
-DESCRIPTION = """\
-RealTime OpenControl is a universal measurement, plot and control-software.
-It's purpose is to put measurements from different devices (for example 3d-printers, multimeters, power supplies, microcontroller,...) into one tool.
-Its fully expandable for every device with Python-Plugins and a running TCP-server.
-You can also control the devices (if your plugin has this functionality) with python-scripts, which you can write and run at runtime! This makes it also possible to plot everything else.
-There are some example-plugins and example-scripts included.
-It also offers an extended plotting-GUI with multiple plots, measure-tools, style-adjustments.
+DESCRIPTION = """RealTime OpenControl enables simple real-time data recording, visualization and editing. The recording can be done with a local Python scripts or via TCP locally/from the network. Visualization and editing is available locally, in the network (TCP and HTML) and via Telegram on the smartphone.
+
+In addition to data recording, events can also be recorded. These can, for example, trigger a telegram message.
+
+Possible applications:
+
+- Central measurement data recording of laboratory instruments with PC connection (e.g. power supply unit, multimeter, sensors, microcontroller)
+- Central recording of measurement data from Internet devices (e.g. mobile weather stations, drones, smartphones)
+- Remote monitoring and control of processes and devices with PC and Smartphone (Telegram) (e.g. 3D printing, heating, Custom-SmartHome)
+- Controlling between several devices (e.g.: power regulation of a power supply unit on the temperature sensor of a multimeter)
+- Decentralized data recording (e.g. on Raspberry) and access via network connection (smart projects)
 """
 
 setupOpts = dict(
@@ -71,9 +75,9 @@ except LookupError:
 path = os.path.split(__file__)[0]
 #sys.path.insert(0, os.path.join(path, 'tools'))
 
-version = "1.8.2"
-forcedVersion = "1.8.2"
-gitVersion ="1.8.2"
+version = "1.8.7.5"
+forcedVersion = "1.8.7.5"
+gitVersion ="1.8.7.5"
 initVersion=1.0
 
 
@@ -152,7 +156,9 @@ setup(
         'markdown2',
         'xlsxwriter',
         'scipy',
-        'qtmodern',
+#        'QDarkStyle',
+#        'qtmodern',
+#        'qdarkgraystyle',
         'python-telegram-bot',
         'matplotlib',
         'requests',

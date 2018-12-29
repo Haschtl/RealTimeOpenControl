@@ -32,7 +32,7 @@ def main():
                     'RTOC.py [-h, -s] [-r <Remoteadress>]\n -h: Hilfe\n-s: TCP-Server ohne GUI\n-r <Remoteadresse>: TCP-Client zu RTOC-Server\n-p: Starte TCP-Server auf anderem Port (Standart: 5050)')
                 sys.exit()
             elif opt == '-s':
-                logger = RTLogger.RTLogger(True, port)
+                logger = RTLogger(True, port)
                 #runInBackground()
                 while logger.run:
                     time.sleep(1)

@@ -97,6 +97,8 @@ RTOC/data/ui/icons/icons8-stornieren-480.png
 RTOC/data/ui/icons/invert.png
 RTOC/data/ui/icons/labels.png
 RTOC/data/ui/icons/legend.png
+RTOC/data/ui/icons/list.png
+RTOC/data/ui/icons/list_dark.png
 RTOC/data/ui/icons/measure.png
 RTOC/data/ui/icons/mittlere_prioritaet.png
 RTOC/data/ui/icons/mittlere_prioritaet_grey.png
@@ -179,6 +181,7 @@ RTOC/data/ui/icons/dark/up_arrow.png
 RTOC/data/ui/icons/dark/up_arrow_disabled.png
 RTOC/lang/en_en.qm
 RTOC/lang/en_en.ts
+RTOC/lang/en_en_old.ts
 RTOC/plugins/Generator.py
 RTOC/plugins/NetWoRTOC.py
 RTOC/plugins/Funktionsgenerator/gen_function.ui

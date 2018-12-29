@@ -44,6 +44,8 @@ class RTPlotActions:
             200, 200, 200), fill=(200, 200, 200, 50), html=None)  # ,
         self.plot.addItem(self.plotMouseLabel, ignoreBounds = True)
 
+        self.hideSignalsButton.clicked.connect(self.hideSignalList)
+
     def initPlotViewWidget(self):
         self.plotViewWidget = QtWidgets.QWidget()
         uic.loadUi(packagedir+"/ui/plotViewWidget.ui", self.plotViewWidget)
@@ -83,6 +85,12 @@ class RTPlotActions:
         self.gridViewWidget.xCheckbox.clicked.connect(self.gridXAction)
         self.gridViewWidget.yCheckbox.clicked.connect(self.gridYAction)
         self.gridViewWidget.alphaSlider.valueChanged.connect(self.gridAlphaAction)
+
+    def hideSignalList(self):
+        if self.hideSignalsButton.isChecked():
+            self.widget_2.show()
+        else:
+            self.widget_2.hide()
 
     def gridXAction(self):
         value = self.gridViewWidget.xCheckbox.isChecked()
@@ -361,7 +369,7 @@ class RTPlotActions:
         tex = tex+';'
         tex = tex.replace('; ', ';')
         for item in self.signalTreeWidgetItems:
-            sig = self.treeWidget.itemWidget(item, 0)
+            sig = self.treeWidget.itemWidget(item, 1)
             found = False
             for text in tex.split(';'):
                 # print(text)
