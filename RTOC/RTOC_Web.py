@@ -208,7 +208,7 @@ class RTOC_Web(LoggerPlugin):
         return ok
 
 
-userpath = os.path.expanduser('~/Documents/RTOC')
+userpath = os.path.expanduser('~/.RTOC')
 if not os.path.exists(userpath):
     os.mkdir(userpath)
 

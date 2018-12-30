@@ -248,7 +248,12 @@ def list_duplicates(seq):
 
 def column(matrix, i):
     # Returns eevery i-th element in array [[i1,...],[i2,...]...]
-    return [row[i] for row in matrix]
+    ans = []
+    for row in matrix:
+        if i<len(row):
+            ans.append(row[i])
+    return ans
+#    return [row[i] for row in matrix]
 
 def indexes(list, element):
     return [i for i, e in enumerate(list) if e == element]

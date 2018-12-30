@@ -31,6 +31,21 @@ class ScriptWidget(QtWidgets.QWidget):
         self.helpButton.clicked.connect(self.toggleHelpAction)
         self.tabWidget.currentChanged.connect(self.changeActiveScript)
 
+        self.openScript("", self.tr("neu"))
+
+    def getSession(self):
+        ans = []
+        for script in self.scripts:
+            scriptstr=script.scriptEdit.toPlainText()
+            filepath=script.filepath
+            if filepath=='':
+                name=self.tr('neu')
+            else:
+                name=filepath
+            ans.append([scriptstr, name, filepath])
+        return ans
+
+
     def openFile(self, fileName):
         if os.path.exists(fileName):
             try:
@@ -38,14 +53,17 @@ class ScriptWidget(QtWidgets.QWidget):
                     text = file.read()
                 head, tail = os.path.split(fileName)
                 self.openScript(text, tail, fileName)
-                self.logger.config["lastScript"] = fileName
+                #self.logger.config["lastScript"] = fileName
+                return True
             except:
                 self.openScript(self.tr("Fehler beim laden der Datei ") +
-                                fileName, self.tr("Fehler"), "")
-                self.logger.config["lastScript"] = ""
+                                fileName, self.tr("Fehler"), fileName)
+                #self.logger.config["lastScript"] = ""
+                return False
         else:
             self.openScript(self.tr("Datei ")+fileName +
-                            self.tr(" nicht gefunden"), self.tr("Fehler"), "")
+                            self.tr(" nicht gefunden"), self.tr("Fehler"), fileName)
+            return False
 
     def openScript(self, scriptstr="", name="", filepath=""):
         self.scripts.append(ScriptSubWidget(self.logger, scriptstr, filepath))
@@ -85,8 +103,8 @@ class ScriptWidget(QtWidgets.QWidget):
         self.scripts[self.activeScript].saveScript()
 
     def loadScriptAction(self):
-        dir_path = self.config['documentfolder']
-        dir_path = self.config['documentfolder']
+        dir_path = self.logger.config['documentfolder']
+        dir_path = self.logger.config['documentfolder']
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
         fileBrowser.setNameFilters(["Python (*.py)"])
@@ -102,7 +120,7 @@ class ScriptWidget(QtWidgets.QWidget):
                     text = file.read()
                 head, tail = os.path.split(fileName)
                 self.openScript(text, tail, fileName)
-                self.logger.config["lastScript"] = fileName
+                #self.logger.config["lastScript"] = fileName
 
     def toggleHelpAction(self):
         if self.helpButton.isChecked():

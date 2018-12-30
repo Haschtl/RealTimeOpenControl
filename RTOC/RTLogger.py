@@ -14,6 +14,7 @@ from PyQt5.QtCore import QObject
 import sys
 import subprocess
 import hashlib
+import pkgutil
 
 try:
     from .data.lib import general_lib as lib
@@ -34,10 +35,10 @@ except ImportError:
     from LoggerPlugin import LoggerPlugin
     from telegramBot import telegramBot
 
-userpath = os.path.expanduser('~/Documents')
+userpath = os.path.expanduser('~')
 if not os.path.exists(userpath):
     os.mkdir(userpath)
-userpath = os.path.expanduser('~/Documents/RTOC')
+userpath = os.path.expanduser('~/.RTOC')
 if not os.path.exists(userpath):
     os.mkdir(userpath)
 if not os.path.exists(userpath+'/devices'):
@@ -128,6 +129,7 @@ class RTLogger(ScriptFunctions, QObject):
         self.newEventCallback = None
         self.startDeviceCallback = None
         self.stopDeviceCallback = None
+        self.recordingLengthChangedCallback = None
         self.tcpclient = LoggerPlugin(None, None, None)
         self.rtoc_web = None
         self.telegramBot = telegramBot(self)
@@ -157,12 +159,24 @@ class RTLogger(ScriptFunctions, QObject):
                 self.devicenames[namesplit[-1]] = name
                 self.pluginStatus[namesplit[-1]] = False
         print('User plugins:')
-        for finder, name, ispkg in loggerlib.iter_namespace(devices):
-            namesplit = name.split('.')
-            print(namesplit[-1])
-            if namesplit[-1] not in ["LoggerPlugin"]:
-                self.devicenames[namesplit[-1]] = name
-                self.pluginStatus[namesplit[-1]] = False
+        #print(loggerlib.list_submodules(devices))
+        subfolders = [f.name for f in os.scandir(list(devices.__path__)[0]) if f.is_dir()]
+        for folder in subfolders:
+            if folder not in ['', '__pycache__', '.git']:
+                a =__import__(devices.__name__+"."+ folder)
+                #for finder, name, ispkg in loggerlib.iter_namespace(devices):
+                #fullpath = pkgutil.extend_path(list(devices.__path__)[0], folder)
+                #print(fullpath)
+                #for finder, name, ispkg in pkgutil.iter_modules(fullpath,devices.__name__+'.'+folder+ "."):
+                #for root, dirs, files in os.walklevel(list(devices.__path__)[0], level=1):
+                for files in os.listdir(list(devices.__path__)[0]+"/"+folder):
+                    if files.endswith('.py'):
+                        name = devices.__name__+'.'+folder+"."+files.replace('.py','')
+                        namesplit = name.split('.')
+                        print(name)
+                        if namesplit[-1] not in ["LoggerPlugin"]:
+                            self.devicenames[namesplit[-1]] = name
+                            self.pluginStatus[namesplit[-1]] = False
 
     def toggleTelegramBot(self, value=None):
         if value is None:
@@ -413,7 +427,9 @@ class RTLogger(ScriptFunctions, QObject):
             if name in self.devicenames.keys():
                 fullname = self.devicenames[name]
                 # if callback is None:
-                self.pluginObjects[name] = importlib.import_module(
+                print(fullname)
+                self.pluginObjects[
+                name] = importlib.import_module(
                     fullname).Plugin(self.addDataCallback, self.plot, self.addNewEvent)
                 # else:
                 #     self.pluginObjects[name] = importlib.import_module(
@@ -694,7 +710,7 @@ class RTLogger(ScriptFunctions, QObject):
         print('not translated')
         return args
 
-    def __plotNewSignal(self, x, y, dataunit, devicename, dataname, createCallback=False):
+    def __plotNewSignal(self, x, y, dataunit, devicename, dataname, createCallback=False, autoResize = False):
         # Add a new signal-stream
         print("LOGGER: Adding signalplot: "+devicename+", "+dataname)
         newLength = self.maxLength
@@ -705,28 +721,75 @@ class RTLogger(ScriptFunctions, QObject):
         self.signals += [[deque([], newLength), deque([], newLength)]]
         #self.signalUnits += [deque([], newLength)]
         self.signalUnits += ['']
-        self.__plotNewData(x, y, dataunit, devicename, dataname, createCallback)
+        if autoResize and len(y)>=self.maxLength:
+            self.resizeSignals(len(y))
+            print('Your recording length was updated due to plotting a bigger signal')
+            if self.recordingLengthChangedCallback:
+                self.recordingLengthChangedCallback(devicename, dataname, len(y))
+        self.__plotNewData(x, y, dataunit, devicename, dataname, createCallback, 'off', autoResize)
         if self.newSignalCallback:
             self.newSignalCallback(self.signalIDs[-1], devicename, dataname, dataunit)
         #self.addNewEvent(text=translate('RTLogger', "Signal-Plot hinzugefügt: ") +
         #                 dataname+"."+devicename, sname="", dname="RTOC", priority=0)
 
-    def __plotNewData(self, x, y, dataunit, devicename, dataname, createCallback=False):
+    def __plotNewData(self, x, y, dataunit, devicename, dataname, createCallback=False, hold='off', autoResize=False):
         # Add new data to a signal-stream
         self.latestSignal = [devicename, dataname]
+        # get signal idx
         idx = self.signalNames.index([devicename, dataname])
-        self.signals[idx][0].clear()
-        self.signals[idx][1].clear()
-        self.signals[idx][0] = deque(x, self.maxLength)
-        self.signals[idx][1] = deque(y, self.maxLength)
+
+        if autoResize:
+            newsize = None
+            # check size and make signals longer, if needed.
+            if hold == 'on':
+                if len(y)+len(self.signals[idx][1])>=self.maxLength:
+                    newsize = len(y)+len(self.signals[idx][1])
+            else:
+                if len(y)>=self.maxLength:
+                    newsize = len(y)
+
+            if newsize:
+                self.resizeSignals(newsize)
+                print('Your recording length was updated due to plotting a bigger signal')
+                if self.recordingLengthChangedCallback:
+                    self.recordingLengthChangedCallback(devicename, dataname, newsize)
+
+        # handle different holds: 'on', 'off', ''
+        if hold == 'on':
+            self.signals[idx][0] += x
+            self.signals[idx][1] += y
+        elif hold == 'mergeX':
+            for val_idx, value in enumerate(x):
+                if value not in self.signals[idx][0]:
+                    if autoResize:
+                        if len(self.signals[idx][0])>=self.maxLength:
+                            self.resizeSignals(len(self.signals[idx][0])+50)
+                    self.signals[idx][0].append(x[val_idx])
+                    self.signals[idx][1].append(y[val_idx])
+        elif hold == 'mergeY':
+            for val_idx, value in enumerate(y):
+                if value not in self.signals[idx][1]:
+                    if autoResize:
+                        if len(self.signals[idx][0])>=self.maxLength:
+                            self.resizeSignals(len(self.signals[idx][0])+50)
+                    self.signals[idx][0].append(x[val_idx])
+                    self.signals[idx][1].append(y[val_idx])
+        else:
+            self.signals[idx][0].clear()
+            self.signals[idx][1].clear()
+            self.signals[idx][0] = deque(x, self.maxLength)
+            self.signals[idx][1] = deque(y, self.maxLength)
+
+        # data unit handling
         if type(dataunit) == str:
-            self.signalUnits[idx] = deque([dataunit]*len(x), self.maxLength)
+            # self.signalUnits[idx] = deque([dataunit]*len(x), self.maxLength)
             self.signalUnits[idx] = dataunit
         elif type(dataunit) == list:
             self.signalUnits[idx] = dataunit[-1]
         else:
             print("no unit specified")
             self.signalUnits[idx] = ''
+
         if self.handleScriptCallback:
             self.handleScriptCallback(devicename, dataname)
         if self.callback and createCallback:
@@ -842,6 +905,8 @@ class RTLogger(ScriptFunctions, QObject):
         dataname = kwargs.get('sname', "noName")
         devicename = kwargs.get('dname', "noDevice")
         dataunit = kwargs.get('unit', "")
+        hold = kwargs.get('hold', "off")
+        autoResize = kwargs.get('autoResize', False)
         createCallback = kwargs.get('c', False)
         for idx, arg in enumerate(args):
             if idx == 0:
@@ -859,11 +924,10 @@ class RTLogger(ScriptFunctions, QObject):
         if len(x) == len(y):
             if [devicename, dataname] in self.signalNames:
                 self.__plotNewData(x, y,
-                                   dataunit, devicename, dataname, createCallback)
-
+                                   dataunit, devicename, dataname, createCallback, hold, autoResize)
             else:
                 self.__plotNewSignal(x, y,
-                                     dataunit, devicename, dataname, createCallback)
+                                     dataunit, devicename, dataname, createCallback, autoResize)
         else:
             print("Plotting aborted. len(x)!=len(y)")
 
@@ -872,6 +936,7 @@ class RTLogger(ScriptFunctions, QObject):
     def exportData(self, *args, **kwargs):
         filename = kwargs.get('filename', None)
         filetype = kwargs.get('filetype', "json")
+        scripts = kwargs.get('scripts', None)
         for idx, arg in enumerate(args):
             if idx == 0:
                 filename = arg
@@ -883,7 +948,7 @@ class RTLogger(ScriptFunctions, QObject):
         if filetype == "xlsx":
             self.exportXLSX(filename)
         elif filetype == "json":
-            self.exportJSON(filename)
+            self.exportJSON(filename, scripts)
         else:
             self.exportCSV(filename)
 
@@ -954,7 +1019,7 @@ class RTLogger(ScriptFunctions, QObject):
 
         workbook.close()
 
-    def exportJSON(self, filename):
+    def exportJSON(self, filename, scripts=None):
         jsonfile = {}
         jsonfile["maxLength"] = self.maxLength
         jsonfile["data"] = {}
@@ -981,32 +1046,45 @@ class RTLogger(ScriptFunctions, QObject):
             jsonfile["events"][".".join(name)].append(list(self.events[idx][0]))
             jsonfile["events"][".".join(name)].append(list(self.events[idx][1]))
 
-        with open(filename+".json", 'w') as fp:
+        if scripts!=None:
+            jsonfile["scripts"]=scripts
+
+        with open(filename, 'w') as fp:
             json.dump(jsonfile, fp, sort_keys=False, indent=4, separators=(',', ': '))
 
-    def restoreJSON(self, filename=None):
+    def restoreJSON(self, filename=None, clear=True):
         # try:
         if filename == None:
             filename = self.config['documentfolder']+"/restore.json"
         if os.path.exists(filename):
-            with open(filename) as f:
-                data = json.load(f)
-            self.clear()
-            self.maxLength = data["maxLength"]
-            for signal in data["data"].keys():
-                name = signal.split(".")
-                if len(data["data"][signal][0]) != 0:
-                    self.plot(data["data"][signal][0], data["data"][signal][1],
-                              name[1], name[0], data["data"][signal][2], False)
-            for signal in data["events"].keys():
-                if signal != ".":
+            try:
+                with open(filename) as f:
+                    data = json.load(f)
+                if clear:
+                    self.clear()
+                    self.maxLength = data["maxLength"]
+                for signal in data["data"].keys():
                     name = signal.split(".")
-                    if len(name) == 1:
-                        name.append("")
-                    for idx, event in enumerate(data["events"][signal][0]):
-                        self.addNewEvent(data["events"][signal][0][idx], name[1],
-                                         name[0], event, data["events"][signal][1])
-            return True
+                    if len(data["data"][signal][0]) != 0:
+                        if clear == True:
+                            holde = "off"
+                        else:
+                            holde = "mergeX"
+                        self.plot(data["data"][signal][0], data["data"][signal][1],
+                                  name[1], name[0], data["data"][signal][2], False, hold=holde, autoResize=True)
+                for signal in data["events"].keys():
+                    if signal != ".":
+                        name = signal.split(".")
+                        if len(name) == 1:
+                            name.append("")
+                        for idx, event in enumerate(data["events"][signal][0]):
+                            self.addNewEvent(data["events"][signal][0][idx], name[1],
+                                             name[0], event, data["events"][signal][1])
+                if 'scripts' in data.keys():
+                    return data['scripts']
+                return True
+            except:
+                return False
         else:
             return False
 
@@ -1031,7 +1109,7 @@ class RTLogger(ScriptFunctions, QObject):
     def load_config(self):
         self.lastEditedList = []
 
-        userpath = os.path.expanduser('~/Documents/RTOC')
+        userpath = os.path.expanduser('~/.RTOC')
         if not os.path.exists(userpath):
             os.mkdir(userpath)
 
@@ -1078,7 +1156,7 @@ class RTLogger(ScriptFunctions, QObject):
             json.dump(self.config, fp,  sort_keys=False, indent=4, separators=(',', ': '))
 
     def load_autorun_plugins(self):
-        userpath = os.path.expanduser('~/Documents/RTOC/autorun_devices')
+        userpath = os.path.expanduser('~/.RTOC/autorun_devices')
         if not os.path.exists(userpath):
             with open(userpath, 'w', encoding="UTF-8") as f:
                 f.write('')

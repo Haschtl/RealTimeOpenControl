@@ -1,12 +1,12 @@
 # RealTime OpenControl (RTOC)
 
-### Version 1.8.7.5
+### Version 1.8.9
 
 [**This README is available in GERMAN here.**](misc/README_german.md)
 
 [Documentation](https://github.com/Haschtl/RealTimeOpenControl/wiki)
 
-RealTime OpenControl enables simple real-time data recording, visualization and editing. The recording can be done with a local Python scripts or via TCP locally/from the network. Visualization and editing is available locally, in the network (TCP and HTML) and via Telegram on the smartphone.
+RealTime OpenControl enables simple real-time data recording, visualization and editing. The recording can be done with a local Python scripts or via TCP locally/from the network. Visualization and editing is available locally, in the network (TCP and HTML) and via Telegram on the smartphone. You have full control over your python-plugins via TCP and Telegram.
 
 In addition to data recording, events can also be recorded. These can, for example, trigger a telegram message.
 
@@ -48,7 +48,7 @@ python3 -m RTOC -r <ADRESS>
 After the first start RTOC creates a directory for user plugins, temporary user data and settings.
 
 ```
-user@rtoc-server:~$ ls Documents/RTOC
+user@rtoc-server:~$ ls .RTOC
 config.json  // Settings for RTOC
 devices/ 	 // Directory for user-plugins
 plotStyles.json // Custom plotstyles for signals are stored in this file
@@ -72,7 +72,7 @@ Extract the .zip file into a directory. RTOC is started by double-clicking on "R
 After the first start RTOC creates a directory for user plugins, temporary user data and settings.
 
 ```
-user@rtoc-server:~$ ls Documents/RTOC
+user@rtoc-server:~$ ls .RTOC
 config.json  // Settings for RTOC
 devices/ 	 // Directory for user-plugins
 plotStyles.json // Custom plotstyles for signals are stored in this file
@@ -83,14 +83,18 @@ plotStyles.json // Custom plotstyles for signals are stored in this file
 To use RTOC, the following dependencies must be installed
 
 ```python
-pip3 install numpy pyqt5 pyqtgraph markdown2 xslxwriter scipy qtmodern
+pip3 install numpy pyqt5 pyqtgraph markdown2 xslxwriter scipy
 ```
 
 The following packages should also be installed
 
 ```
-pip3 install python-telegram-bot matplotlib requests python-nmap bokeh pycryptdomex
+pip3 install python-telegram-bot matplotlib requests python-nmap bokeh pycryptdomex pyGithub
 ```
+
+You can use different stylesheets if you want. Just install one of these with pip:
+'QDarkStyle', 'qtmodern', 'qdarkgraystyle'.
+
 
 The RTOC repository can then be cloned with
 
@@ -113,7 +117,7 @@ python3 RTOC -r <ADRESS>
 After the first start RTOC creates a directory for user plugins, temporary user data and settings.
 
 ```
-user@rtoc-server:~$ ls Documents/RTOC
+user@rtoc-server:~$ ls .RTOC
 config.json  // Settings for RTOC
 devices/ 	 // Directory for user-plugins
 plotStyles.json // Custom plotstyles for signals are stored in this file
@@ -133,7 +137,7 @@ plotStyles.json // Custom plotstyles for signals are stored in this file
 - function generator: generates sine, square, sawtooth, random, AC, DC
 - NetWoRTOC: Control and data exchange between several RTOC-servers
 
-You can get more plugins from the [RTOC-plugin-repository](https://github.com/haschtl/rtoc-plugins):
+You can get more plugins from the [RTOC-plugin-repository](https://github.com/Haschtl/rtoc-plugins). Simply follow the steps described in the [documentation](https://github.com/Haschtl/RealTimeOpenControl/wiki/RTOC-Repo):
 - System: For recording many system variables (CPU, Memory, Network,...)
 - Octoprint: Recording of 3D printers
 - DPS5020: power supply unit recording and control (possibly also DPS5005, ...)
@@ -242,6 +246,7 @@ The connection between RTOC server and client can be encrypted end-to-end (DES) 
 - [Taurus PyQtGraph](https://github.com/taurus-org/taurus_pyqtgraph.git)
 - [ImportCode script from avtivestate.com](http://code.activestate.com/recipes/82234-importing-a-dynamically-generated-module/)
 - [VC820Py from adnidor (for HoldPeak_VC820 plugin)](https://github.com/adnidor/vc820py)
+- [PyQt5 CSV-Editor](https://python-forum.io/Thread-Read-Write-CSV-Qt5)
 
 All icons used in this software (including plugins) are kindly provided by [Icons8](www.icons8.com)
 

@@ -12,6 +12,7 @@ import getopt
 import time
 try:
     from . import RTLogger
+    from .PluginDownloader import PluginDownloader
     from .data.lib import pyqt_customlib as pyqtlib
     from .data.scriptWidget import ScriptWidget
     from .data.eventWidget import EventWidget
@@ -19,6 +20,7 @@ try:
     from .data.Actions import Actions
 except ImportError:
     import RTLogger
+    from PluginDownloader import PluginDownloader
     from data.lib import pyqt_customlib as pyqtlib
     from data.scriptWidget import ScriptWidget
     from data.eventWidget import EventWidget
@@ -146,6 +148,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.logger.clearCallback = self.clearData
         self.logger.stopDeviceCallback = self.remoteDeviceStop
         self.logger.startDeviceCallback = self.remoteDeviceStart
+        self.logger.recordingLengthChangedCallback = self.loggerChangedAlert
 
         self.darkmode = self.config["darkmode"]
         self.signalTimeOut = self.config["signalInactivityTimeout"]
@@ -168,20 +171,24 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             self.deviceWidget.hide()
         if not self.config["eventWidget"]:
             self.eventWidgets.hide()
-        self.actionTCPServer.setChecked(self.config["tcpserver"])
-        self.HTMLServerAction.setChecked(self.config["rtoc_web"])
-        self.actionTelegramBot.setChecked(self.config["telegram_bot"])
-        self.actionBotToken.setText(self.config['telegram_token'])
+        self.actionTCPServer_2.setChecked(self.config["tcpserver"])
+        self.HTMLServerAction_2.setChecked(self.config["rtoc_web"])
+        self.actionTelegramBot_2.setChecked(self.config["telegram_bot"])
+        self.actionBotToken_2.setText(self.config['telegram_token'])
         if self.config['tcppassword']=='':
-            self.actionTCPPassword.setText(self.tr('Passwort-Schutz: Aus'))
+            self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: Aus'))
         else:
-            self.actionTCPPassword.setText(self.tr('Passwort-Schutz: An'))
-        self.actionTCPPort.setText(self.tr('Port: ')+str(self.config['tcpPort']))
+            self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: An'))
+        self.actionTCPPort_2.setText(self.tr('Port: ')+str(self.config['tcpPort']))
         self.updateLabels()
         self.readSettings()
 
-        self.loadSession()
+        self.loadSession('restore.json',True)
         self.pluginsWidget.hide()
+
+    def loggerChangedAlert(self, devicename, dataname, length):
+        self.maxLengthSpinBox.setValue(length)
+        pyqtlib.info_message(self.tr("Warning"), self.tr("Recording length was changed to ")+str(length), self.tr('Signal: '+devicename+'.'+dataname))
 
     def loadPlotStyles(self):
         filename = self.config['documentfolder']+"/plotStyles.json"
@@ -231,7 +238,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.systemTrayAction.setChecked(self.config["systemTray"])
-        self.actionTCPServer.setChecked(self.config["tcpserver"])
+        self.actionTCPServer_2.setChecked(self.config["tcpserver"])
 
     def initDeviceWidget(self):
         for plugin in self.logger.devicenames.keys():
@@ -383,13 +390,27 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         for p in self.plotWidgets:
             p.clear()
 
-    def loadSession(self, fileName="restore.json"):
-        self.clearData()
-        ok = self.logger.restoreJSON(fileName)
-        if ok:
-            self.scriptWidget.openFile(self.config["lastScript"])
-        else:
-            self.scriptWidget.openScript("", "neu")
+    def loadSession(self, fileName="restore.json", clear=None):
+        if clear is None:
+            clear = pyqtlib.alert_message(self.tr('Sitzungen zusammenführen'), self.tr('Möchtest du die bisherige Sitzung entfernen?'), self.tr('Nicht gespeicherte Messungen gehen verloren.'), '', self.tr('Ja'),self.tr('Nein'))
+        if clear:
+            self.clearData()
+        ok = self.logger.restoreJSON(fileName, clear)
+        if type(ok)==list:
+            self.openScripts(ok)
+            #self.scriptWidget.openFile(self.config["lastScript"])
+        #else:
+            #self.scriptWidget.openScript("", "neu")
+
+    def openScripts(self, scripts):
+        for script in scripts:
+            if type(script)==list:
+                if len(script)==2:
+                    self.scriptWidget.openScript(script[0],script[1])
+                elif len(script)==3:
+                    self.scriptWidget.openScript(script[0],script[1],script[2])
+            elif type(script)==str:
+                self.scriptWidget.openFile(script)
 
     def forceClose(self):
         self.forceQuit = True
@@ -416,7 +437,8 @@ class RTOC(QtWidgets.QMainWindow, Actions):
                 ok = False
             if ok is not None:
                 if ok == True:
-                    self.logger.exportJSON("restore")
+                    scripts = self.scriptWidget.getSession()
+                    self.logger.exportJSON("restore.json", scripts)
                 elif ok == False:
                     if os.path.exists(self.config['documentfolder']+"/restore.json"):
                         os.remove(self.config['documentfolder']+"/restore.json")
@@ -503,7 +525,7 @@ class RTOC_TCP(QtWidgets.QMainWindow):
             ok = False
         if ok is not None:
             if ok == True:
-                self.logger.exportJSON("restore")
+                self.logger.exportJSON("restore.json")
             elif ok == False:
                 if os.path.exists(self.config['documentfolder']+"/restore.json"):
                     os.remove(self.config['documentfolder']+"/restore.json")
@@ -516,7 +538,10 @@ class RTOC_TCP(QtWidgets.QMainWindow):
 
 
 def setStyleSheet(app, myapp):
-    type = 'QtModern'
+    if os.name == 'posix':
+        type = 'QDarkStyle'
+    else:
+        type = 'QtModern'
 
     if type == 'QtModern':
         try:
@@ -526,8 +551,8 @@ def setStyleSheet(app, myapp):
                 stylesheet = myfile.read().replace('\n', '')
             app.setStyleSheet(stylesheet)
             qtmodern.styles.dark(app)
-            #mw = qtmodern.windows.ModernWindow(myapp)
-            mw = myapp
+            mw = qtmodern.windows.ModernWindow(myapp)
+            #mw = myapp
             return app, mw
         except ImportError:
             tb = traceback.format_exc()
@@ -563,7 +588,7 @@ def setStyleSheet(app, myapp):
 
 def setLanguage(app):
     try:
-        userpath = os.path.expanduser('~/Documents/RTOC')
+        userpath = os.path.expanduser('~/.RTOC')
         with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
             config = json.load(jsonfile, encoding="UTF-8")
     except:
@@ -624,7 +649,7 @@ def runInBackground():
 def startRemoteRTOC(remotepath):
     app = QtWidgets.QApplication(sys.argv)
     try:
-        userpath = os.path.expanduser('~/Documents/RTOC')
+        userpath = os.path.expanduser('~/.RTOC')
         with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
             config = json.load(jsonfile, encoding="UTF-8")
     except:
@@ -665,7 +690,7 @@ def startRemoteRTOC(remotepath):
 def startRTOC(tcp = None, port = None):
     app = QtWidgets.QApplication(sys.argv)
     try:
-        userpath = os.path.expanduser('~/Documents/RTOC')
+        userpath = os.path.expanduser('~/.RTOC')
         with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
             config = json.load(jsonfile, encoding="UTF-8")
     except:

@@ -10,3 +10,4 @@ requests
 python-nmap
 bokeh
 pycryptodomex
+pyGithub

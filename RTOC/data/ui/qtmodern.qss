@@ -3,6 +3,9 @@
  * QGroupBox
  */
 
+* {
+background-color: transparent;
+}
 QGroupBox {
   background-color: palette(alternate-base);
   border: 1px solid palette(midlight);
@@ -49,7 +52,7 @@ QTabBar::tab:selected:disabled {
  */
 
 QScrollBar:vertical {
-  background: palette(base);
+  background: transparent;
   border-top-right-radius: 2px;
   border-bottom-right-radius: 2px;
   width: 16px;
@@ -82,7 +85,7 @@ QScrollBar::sub-line:vertical {
 }
 
 QScrollBar:horizontal{
-  background: palette(base);
+  background: transparent;
   height: 16px;
   margin: 0px;
 }
@@ -143,5 +146,5 @@ QSlider::sub-page:horizontal {
 }
 
 QSlider::sub-page:horizontal:disabled {
-  background-color: palette(light);
+  background-color: transparent;
 }

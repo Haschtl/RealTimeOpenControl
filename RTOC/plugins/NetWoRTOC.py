@@ -46,8 +46,9 @@ class Plugin(LoggerPlugin):
     def updateT(self):
         diff = 0
         while self.run:
-            if diff < 1/self.samplerate:
-                time.sleep(1/self.samplerate-diff)
+            if self.samplerate > 0:
+                if diff < 1/self.samplerate:
+                    time.sleep(1/self.samplerate-diff)
             start_time = time.time()
             ans = self.sendTCP(getSignalList= True, getPluginList = True, logger={'info': True}, getEventList= True)
             if ans:

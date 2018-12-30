@@ -4,6 +4,11 @@ from PyQt5 import QtWidgets
 from functools import partial
 
 from .lib import pyqt_customlib as pyqtlib
+from .lib import general_lib as lib
+try:
+    from ..PluginDownloader import PluginDownloader
+except (ImportError, ValueError):
+    from PluginDownloader import PluginDownloader
 
 
 class Actions:
@@ -17,12 +22,14 @@ class Actions:
         self.saveSessionAction.triggered.connect(self.saveSessionTriggered)
         self.importDataAction.triggered.connect(self.importDataTriggered)
         self.exportDataAction.triggered.connect(self.exportDataTriggered)
-        self.actionTCPServer.triggered.connect(self.toggleTcpServer)
-        self.HTMLServerAction.triggered.connect(self.toggleHtmlServer)
-        self.actionTelegramBot.triggered.connect(self.toggleTelegramBot)
-        self.actionBotToken.triggered.connect(self.setBotToken)
-        self.actionTCPPassword.triggered.connect(self.setTCPPassword)
-        self.actionTCPPort.triggered.connect(self.setTCPPort)
+        self.actionTCPServer_2.triggered.connect(self.toggleTcpServer)
+        self.HTMLServerAction_2.triggered.connect(self.toggleHtmlServer)
+        self.actionTelegramBot_2.triggered.connect(self.toggleTelegramBot)
+        self.actionBotToken_2.triggered.connect(self.setBotToken)
+        self.actionTCPPassword_2.triggered.connect(self.setTCPPassword)
+        self.actionTCPPort_2.triggered.connect(self.setTCPPort)
+
+        self.getPluginsButton.triggered.connect(self.openPluginDownloader)
 
         self.systemTrayAction.triggered.connect(self.toggleSystemTray)
 
@@ -44,6 +51,7 @@ class Actions:
         self.helpAction.triggered.connect(self.showHelpWebsite)
         self.aboutAction.triggered.connect(self.showAboutMessage)
         self.checkUpdatesAction.triggered.connect(self.checkUpdates)
+        self.pluginRepoAction.triggered.connect(self.showRepoWebsite)
 
         self.clearCacheAction.triggered.connect(self.clearCache)
 
@@ -55,7 +63,7 @@ class Actions:
         else:
             self.config["tcpserver"] = True
         self.logger.toggleTcpServer(self.config["tcpserver"])
-        self.actionTCPServer.setChecked(self.config["tcpserver"])
+        self.actionTCPServer_2.setChecked(self.config["tcpserver"])
 
     def toggleHtmlServer(self):
         if self.config["rtoc_web"]:
@@ -64,7 +72,7 @@ class Actions:
             self.config["rtoc_web"] = True
             pyqtlib.info_message(self.tr("RTOC - Web gestartet"), self.tr("RTOC - Web ist jetzt unter localhost:5006 erreichbar"), self.tr("Diese Seite kann im gesamten Netzwerk geöffnet werden"))
         self.logger.toggleHTMLPage(self.config["rtoc_web"])
-        self.HTMLServerAction.setChecked(self.config["rtoc_web"])
+        self.HTMLServerAction_2.setChecked(self.config["rtoc_web"])
 
     def toggleTelegramBot(self):
         if self.config["telegram_bot"]:
@@ -72,14 +80,14 @@ class Actions:
         else:
             self.config["telegram_bot"] = True
         self.logger.toggleTelegramBot(self.config["telegram_bot"])
-        self.actionTelegramBot.setChecked(self.config["telegram_bot"])
+        self.actionTelegramBot_2.setChecked(self.config["telegram_bot"])
 
     def setBotToken(self):
         ans, ok = pyqtlib.text_message(
             self, self.tr("Bot Token eingeben"), self.tr('Bitte erzeugen sie in Telegram mit "Botfather" einen Bot,\n generiere einen Bot und füge dessen Token hier ein'), self.config['telegram_token'])
         if ok:
             self.logger.telegramBot.setToken(ans)
-            self.actionBotToken.setText(self.config['telegram_token'])
+            self.actionBotToken_2.setText(self.config['telegram_token'])
 
     def setTCPPassword(self):
         ans, ok = pyqtlib.text_message(
@@ -87,9 +95,9 @@ class Actions:
         if ok:
             self.logger.setTCPPassword(ans)
             if ans=='':
-                self.actionTCPPassword.setText(self.tr('Passwort-Schutz: Aus'))
+                self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: Aus'))
             else:
-                self.actionTCPPassword.setText(self.tr('Passwort-Schutz: An'))
+                self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: An'))
 
     def setTCPPort(self):
         ans, ok = pyqtlib.text_message(
@@ -99,7 +107,7 @@ class Actions:
                 ans = int(ans)
                 if ans >= 0 and ans <= 65535:
                     self.logger.setTCPPort(ans)
-                    self.actionTCPPort.setText(self.tr('Port: ')+str(ans))
+                    self.actionTCPPort_2.setText(self.tr('Port: ')+str(ans))
                 else:
                     pyqtlib.info_message(self.tr('Fehler'), self.tr('Bitte gib eine Zahl zwischen 0 und 65535 an'), '')
             except:
@@ -156,18 +164,66 @@ class Actions:
         if fname:
             fileName = fname
             if mask == 'JSON-Datei (*.json)':
-                self.logger.exportData(fileName, "json")
+                s = self.scriptWidget.getSession()
+                self.logger.exportData(fileName, "json", scripts=s)
 
     def importData(self, filename):
+        ff = open(filename, 'r')
+        mytext = ff.read()
+#            print(mytext)
+        ff.close()
+
         with open(filename, 'r') as f:
-            reader = csv.reader(f)
-            data = list(reader)
-        if len(data) % 2 == 0:
-            for idx, values in enumerate(data):
-                if idx % 2 == 0:
-                    if len(values) == len(data[idx+1]):
-                        self.logger.plot([float(i) for i in values], [float(
-                            i) for i in data[idx+1]], "data"+str(int(idx/2)), filename.split(".")[0].split("/")[-1], "")
+            if mytext.count(';') <= mytext.count('\t'):
+                reader = csv.reader(f, delimiter = '\t')
+            else:
+                reader = csv.reader(f, delimiter = ';')
+            reader = [list(r) for r in reader]
+            reader2 = []
+            print(len(reader))
+            for idx, r in enumerate(reader[0]):
+                reader2.append(lib.column(reader,idx))
+            reader = reader2
+            print(len(reader))
+            for idx, row in enumerate(reader):
+                if idx<len(reader)-2 and idx % 2 == 0:
+                    if len(reader[idx])==len(reader[idx+1]):
+                        x=[]
+                        y=[]
+                        for idx2, data in enumerate(reader[idx]):
+                            xdat = self.str2float(reader[idx][idx2])
+                            ydat = self.str2float(reader[idx+1][idx2])
+                            if xdat != None and ydat != None:
+                                x.append(xdat)
+                                y.append(ydat)
+
+                        self.logger.plot(x, y, "data"+str(int(idx/2)), filename.split(".")[0].split("/")[-1], "")
+                    else:
+                        y=[]
+                        for idx2, data in enumerate(reader[idx]):
+                            y.append(self.str2float(reader[idx][idx2]))
+
+                        #self.logger.plot(y=y, sname="data"+str(int(idx/2)), dname=filename.split(".")[0].split("/")[-1], unit="")
+                # elif idx==len(reader)-1:
+                #     y=[]
+                #     for idx2, data in enumerate(reader[idx]):
+                #         y.append(self.str2float(reader[idx][idx2]))
+                #     self.logger.plot(y=y, sname="data"+str(int(idx/2)), dname=filename.split(".")[0].split("/")[-1], unit="")
+
+        # if len(data) % 2 == 0:
+        #     for idx, values in enumerate(data):
+        #         if idx % 2 == 0:
+        #             if len(values) == len(data[idx+1]):
+        #                 self.logger.plot([float(i) for i in values], [float(
+        #                     i) for i in data[idx+1]], "data"+str(int(idx/2)), filename.split(".")[0].split("/")[-1], "")
+
+    def str2float(self, strung):
+        #print(strung)
+        strung = str(strung)
+        strung = strung.replace(',','.')
+        if strung == '':
+            return None
+        return float(strung)
 
     def exportDataTriggered(self):
         dir_path = self.config['documentfolder']
@@ -242,7 +298,12 @@ class Actions:
             "RealTime OpenControl (RTOC) ist eine freie OpenSource Software unter der BSD-3-Lizenz.\n\nAlle Symbole werden unter der 'Creative Commons Attribution-NoDerivs 3.0 Unported' Lizenz bereitgestellt von icons8 (https://icons8.de)\n\nCopyright (C) 2018 Sebastian Keller"))
 
     def showHelpWebsite(self):
-        url = "https://git.kellerbase.de/haschtl/kellerlogger/wikis/RealTime-OpenControl-(RTOC)"
+        url = "https://github.com/Haschtl/RealTimeOpenControl/wiki"
+        import webbrowser
+        webbrowser.open(url, new=0, autoraise=True)
+
+    def showRepoWebsite(self):
+        url = "https://github.com/Haschtl/RTOC-Plugins"
         import webbrowser
         webbrowser.open(url, new=0, autoraise=True)
 
@@ -287,3 +348,7 @@ class Actions:
         if ok:
             self.plotStyles = {}
             self.logger.clearCache()
+
+    def openPluginDownloader(self):
+        self.pluginDownloader = PluginDownloader(self.config['documentfolder'])
+        self.pluginDownloader.show()

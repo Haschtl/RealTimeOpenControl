@@ -75,9 +75,9 @@ except LookupError:
 path = os.path.split(__file__)[0]
 #sys.path.insert(0, os.path.join(path, 'tools'))
 
-version = "1.8.7.5"
-forcedVersion = "1.8.7.5"
-gitVersion ="1.8.7.5"
+version = "1.8.9"
+forcedVersion = "1.8.9"
+gitVersion ="1.8.9"
 initVersion=1.0
 
 
@@ -164,7 +164,8 @@ setup(
         'requests',
         'python-nmap',
         'bokeh',
-        'pycryptodomex'
+        'pycryptodomex',
+        'pyGithub'
         ],
     **setupOpts
 )

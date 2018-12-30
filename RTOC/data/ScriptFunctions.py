@@ -16,7 +16,7 @@ class ScriptFunctions:
         s = self.generateTriggerCode(s)
         s = self.printfunction() + s
         s = self.createFunction(s)
-        s = "import math\nimport numpy as np\nimport sys\nimport scipy as sp\nimport data.scriptLibrary as rtoc\n\n" + init + "\n"+s
+        s = "import math\nimport numpy as np\nimport sys\nimport scipy as sp\ntry:\n\timport RTOC.data.scriptLibrary as rtoc\nexcept ImportError:\n\timport data.scriptLibrary as rtoc\n\n" + init + "\n"+s
         return s
 
     def replacePluginParameters(self, s):

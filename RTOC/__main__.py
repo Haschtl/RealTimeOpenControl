@@ -44,7 +44,10 @@ def main():
         startRTOC(None, port)
 
 def setStyleSheet(app, myapp):
-    type = 'QtModern'
+    if os.name == 'posix':
+        type = 'QDarkStyle'
+    else:
+        type = 'QtModern'
 
     if type == 'QtModern':
         try:
@@ -56,6 +59,7 @@ def setStyleSheet(app, myapp):
             app.setStyleSheet(stylesheet)
             qtmodern.styles.dark(app)
             #mw = qtmodern.windows.ModernWindow(myapp)
+
             mw = myapp
             return app, mw
         except ImportError:
@@ -93,7 +97,7 @@ def setStyleSheet(app, myapp):
 
 def setLanguage(app):
     try:
-        userpath = os.path.expanduser('~/Documents/RTOC')
+        userpath = os.path.expanduser('~/.RTOC')
         with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
             config = json.load(jsonfile, encoding="UTF-8")
     except:
@@ -124,7 +128,7 @@ def runInBackground():
 def startRemoteRTOC(remotepath):
     app = QtWidgets.QApplication(sys.argv)
     try:
-        userpath = os.path.expanduser('~/Documents/RTOC')
+        userpath = os.path.expanduser('~/.RTOC')
         with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
             config = json.load(jsonfile, encoding="UTF-8")
     except:
@@ -163,7 +167,7 @@ def startRemoteRTOC(remotepath):
 def startRTOC(tcp = None, port = None):
     app = QtWidgets.QApplication(sys.argv)
     try:
-        userpath = os.path.expanduser('~/Documents/RTOC')
+        userpath = os.path.expanduser('~/.RTOC')
         with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
             config = json.load(jsonfile, encoding="UTF-8")
     except:

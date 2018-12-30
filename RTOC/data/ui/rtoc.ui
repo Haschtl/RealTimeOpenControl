@@ -246,7 +246,7 @@
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>40</height>
+             <height>0</height>
             </size>
            </property>
           </spacer>
@@ -259,7 +259,7 @@
            <property name="sizeHint" stdset="0">
             <size>
              <width>20</width>
-             <height>68</height>
+             <height>0</height>
             </size>
            </property>
           </spacer>
@@ -358,30 +358,11 @@
     <property name="title">
      <string>&amp;Datei</string>
     </property>
-    <widget class="QMenu" name="menuTelegram_Bot">
-     <property name="title">
-      <string>Telegram-Bot</string>
-     </property>
-     <addaction name="actionTelegramBot"/>
-     <addaction name="actionBotToken"/>
-    </widget>
-    <widget class="QMenu" name="menuTCP_Server">
-     <property name="title">
-      <string>TCP - Server</string>
-     </property>
-     <addaction name="actionTCPServer"/>
-     <addaction name="actionTCPPassword"/>
-     <addaction name="actionTCPPort"/>
-    </widget>
     <addaction name="loadSessionAction"/>
     <addaction name="saveSessionAction"/>
     <addaction name="separator"/>
     <addaction name="importDataAction"/>
     <addaction name="exportDataAction"/>
-    <addaction name="separator"/>
-    <addaction name="menuTCP_Server"/>
-    <addaction name="HTMLServerAction"/>
-    <addaction name="menuTelegram_Bot"/>
     <addaction name="separator"/>
     <addaction name="systemTrayAction"/>
     <addaction name="separator"/>
@@ -406,6 +387,7 @@
     <addaction name="clearCacheAction"/>
     <addaction name="separator"/>
     <addaction name="helpAction"/>
+    <addaction name="pluginRepoAction"/>
     <addaction name="separator"/>
     <addaction name="checkUpdatesAction"/>
     <addaction name="aboutAction"/>
@@ -417,7 +399,38 @@
     <addaction name="actionDeutsch"/>
     <addaction name="actionEnglish"/>
    </widget>
+   <widget class="QMenu" name="menuGer_te">
+    <property name="title">
+     <string>Geräte</string>
+    </property>
+    <addaction name="getPluginsButton"/>
+   </widget>
+   <widget class="QMenu" name="menuNetzwerk">
+    <property name="title">
+     <string>Netzwerk</string>
+    </property>
+    <widget class="QMenu" name="menuTCP_Server_2">
+     <property name="title">
+      <string>TCP - Server</string>
+     </property>
+     <addaction name="actionTCPServer_2"/>
+     <addaction name="actionTCPPassword_2"/>
+     <addaction name="actionTCPPort_2"/>
+    </widget>
+    <widget class="QMenu" name="MeniuTelegramBot">
+     <property name="title">
+      <string>Telegram-Bot</string>
+     </property>
+     <addaction name="actionTelegramBot_2"/>
+     <addaction name="actionBotToken_2"/>
+    </widget>
+    <addaction name="menuTCP_Server_2"/>
+    <addaction name="HTMLServerAction_2"/>
+    <addaction name="MeniuTelegramBot"/>
+   </widget>
    <addaction name="menuDatei"/>
+   <addaction name="menuGer_te"/>
+   <addaction name="menuNetzwerk"/>
    <addaction name="menuFenster"/>
    <addaction name="menuSprache"/>
    <addaction name="menuHilfe"/>
@@ -611,7 +624,7 @@
   </action>
   <action name="helpAction">
    <property name="text">
-    <string>&amp;Hilfe zu KellerLogger</string>
+    <string>&amp;Hilfe zu RTOC</string>
    </property>
   </action>
   <action name="aboutAction">
@@ -714,6 +727,55 @@
   <action name="clearCacheAction">
    <property name="text">
     <string>Cache leeren</string>
+   </property>
+  </action>
+  <action name="pluginRepoAction">
+   <property name="text">
+    <string>Plugin-Repository</string>
+   </property>
+  </action>
+  <action name="getPluginsButton">
+   <property name="text">
+    <string>Geräte hinzufügen/entfernen</string>
+   </property>
+  </action>
+  <action name="actionTCPServer_2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Aktivieren</string>
+   </property>
+  </action>
+  <action name="actionTCPPassword_2">
+   <property name="text">
+    <string>Passwort-Schutz</string>
+   </property>
+  </action>
+  <action name="actionTCPPort_2">
+   <property name="text">
+    <string>Port: 5050</string>
+   </property>
+  </action>
+  <action name="HTMLServerAction_2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>RTOC - Web</string>
+   </property>
+  </action>
+  <action name="actionTelegramBot_2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Aktiviert</string>
+   </property>
+  </action>
+  <action name="actionBotToken_2">
+   <property name="text">
+    <string>Bot-Token eingeben</string>
    </property>
   </action>
  </widget>

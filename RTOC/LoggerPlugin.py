@@ -60,6 +60,8 @@ class LoggerPlugin:
         dataname = kwargs.get('sname', "noName")
         devicename = kwargs.get('dname', "noDevice")
         dataunit = kwargs.get('unit', "")
+        hold = kwargs.get('hold', "off")
+        autoResize = kwargs.get('autoResize', False)
         for idx, arg in enumerate(args):
             if idx == 0:
                 dataname = arg
@@ -73,7 +75,7 @@ class LoggerPlugin:
             x = list(range(len(x)))
 
         if self.__plt:
-            self.__plt(x, y, dataname, devicename, dataunit)
+            self.__plt(x, y, dataname, devicename, dataunit, hold=hold, autoResize=autoResize)
         else:
             print("No event connected")
 

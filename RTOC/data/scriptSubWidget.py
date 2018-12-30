@@ -171,7 +171,7 @@ class ScriptSubWidget(QtWidgets.QWidget):
                 text = file.write(text)
                 self.scriptEdit.document().setModified(False)
                 self.saved = True
-                self.logger.config["lastScript"] = fileName
+                #self.logger.config["lastScript"] = fileName
                 if self.modifiedCallback:
                     head, tail = os.path.split(fileName)
                     self.modifiedCallback(False, tail)
