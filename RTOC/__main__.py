@@ -10,9 +10,21 @@ import time
 try:
     from .RTOC import RTOC, RTOC_TCP
     from .RTLogger import RTLogger
+    from .data.Daemon import Daemon
 except:
     from RTOC import RTOC, RTOC_TCP
     from RTLogger import RTLogger
+    from data.Daemon import Daemon
+
+
+class RTOCDaemon(Daemon):
+    def __init__(self, pidfile, port=5050):
+        self.pidfile = pidfile
+        self.port = 5050
+
+    def run(self):
+        # Or simply merge your code with MyDaemon.
+        logger = RTLogger(True, self.port)
 
 
 def main():
@@ -21,7 +33,7 @@ def main():
         startRTOC()
     else:
         for opt, arg in opts:
-            if opt == '-p':
+            if opt in ('-p', '--port'):
                 port = int(arg)
                 break
             else:
@@ -32,16 +44,23 @@ def main():
                     'RTOC.py [-h, -s] [-r <Remoteadress>]\n -h: Hilfe\n-s: TCP-Server ohne GUI\n-r <Remoteadresse>: TCP-Client zu RTOC-Server\n-p: Starte TCP-Server auf anderem Port (Standart: 5050)')
                 sys.exit()
             elif opt == '-s':
-                logger = RTLogger(True, port)
-                #runInBackground()
-                while logger.run:
-                    time.sleep(1)
-                sys.exit(0)
+                command = arg
+                daemon = RTOCDaemon('/tmp/RTOCDaemon.pid')
+                if command == 'stop':
+                    daemon.stop()
+                elif command == 'restart':
+                    daemon.restart()
+                elif command == 'start':
+                    daemon.start()
+                else:
+                    print('Unknown server command: '+str(command)+'\nUse "start", "stop" or "restart"')
+
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)
                 sys.exit(0)
         startRTOC(None, port)
+
 
 def setStyleSheet(app, myapp):
     if os.name == 'posix':

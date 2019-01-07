@@ -1,0 +1,14 @@
+[Unit]
+Description=RTOC Daemon
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/python3 -m RTOC -s start
+WorkingDirectory=/opt/project/
+Environment=API_KEY=123456789
+Environment=API_PASS=password
+Restart=always
+RestartSec=2
+
+[Install]
+WantedBy=sysinit.target

@@ -245,8 +245,8 @@ The connection between RTOC server and client can be encrypted end-to-end (DES) 
 - [Jsonsocket from mdebbar](https://github.com/mdebbar/jsonsocket)
 - [Taurus PyQtGraph](https://github.com/taurus-org/taurus_pyqtgraph.git)
 - [ImportCode script from avtivestate.com](http://code.activestate.com/recipes/82234-importing-a-dynamically-generated-module/)
-- [VC820Py from adnidor (for HoldPeak_VC820 plugin)](https://github.com/adnidor/vc820py)
 - [PyQt5 CSV-Editor](https://python-forum.io/Thread-Read-Write-CSV-Qt5)
+- [Python Daemon](https://web.archive.org/web/20160320091458/http://www.jejik.com/files/examples/daemon3x.py)
 
 All icons used in this software (including plugins) are kindly provided by [Icons8](www.icons8.com)
 

@@ -20,6 +20,8 @@ try:
     from .data.RTPlotWidget import RTPlotWidget
     from .data.Actions import Actions
     from . import RTOC_Import
+    from .data.Daemon import Daemon
+
 except ImportError:
     import RTLogger
     import RTOC_Import
@@ -30,10 +32,11 @@ except ImportError:
     from data.eventWidget import EventWidget
     from data.RTPlotWidget import RTPlotWidget
     from data.Actions import Actions
+    from data.Daemon import Daemon
 
 if os.name == 'nt':
     import ctypes
-    myappid = 'mycompany.myproduct.subproduct.version'  # arbitrary string
+    myappid = 'RTOC.1.9.7.3'  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 try:
@@ -586,6 +589,16 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             self.drag_content.hide()
 
 
+class RTOCDaemon(Daemon):
+    def __init__(self, pidfile, port=5050):
+        self.pidfile = pidfile
+        self.port = 5050
+
+    def run(self):
+        # Or simply merge your code with MyDaemon.
+        logger = RTLogger(True, self.port)
+
+
 class RTOC_TCP(QtWidgets.QMainWindow):
     def __init__(self):
         super(RTOC_TCP, self).__init__()
@@ -735,11 +748,21 @@ def main():
                     'RTOC.py [-h, -s] [-r <Remoteadress>]\n -h: Hilfe\n-s: TCP-Server ohne GUI\n-r <Remoteadresse>: TCP-Client zu RTOC-Server\n-p: Starte TCP-Server auf anderem Port (Standart: 5050)')
                 sys.exit()
             elif opt == '-s':
-                logger = RTLogger.RTLogger(True, port)
-                #runInBackground()
-                while logger.run:
-                    time.sleep(1)
-                sys.exit(0)
+                # logger = RTLogger.RTLogger(True, port)
+                # #runInBackground()
+                # while logger.run:
+                #     time.sleep(1)
+                # sys.exit(0)
+                command = arg
+                daemon = RTOCDaemon('/tmp/RTOCDaemon.pid')
+                if command == 'stop':
+                    daemon.stop()
+                elif command == 'restart':
+                    daemon.restart()
+                elif command == 'start':
+                    daemon.start()
+                else:
+                    print('Unknown server command: '+str(command)+'\nUse "start", "stop" or "restart"')
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)
