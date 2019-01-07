@@ -732,12 +732,12 @@ def setLanguage(app):
 
 
 def main():
-    opts, args = getopt.getopt(sys.argv[1:], "hspr:", ["remote="])
+    opts, args = getopt.getopt(sys.argv[1:], "hs:p:r:c:", ["server=","remote=","port=",'config='])
     if len(opts) == 0:
         startRTOC()
     else:
         for opt, arg in opts:
-            if opt == '-p':
+            if opt in ('-p', '--port'):
                 port = int(arg)
                 break
             else:
@@ -745,9 +745,9 @@ def main():
         for opt, arg in opts:
             if opt == '-h':
                 print(
-                    'RTOC.py [-h, -s] [-r <Remoteadress>]\n -h: Hilfe\n-s: TCP-Server ohne GUI\n-r <Remoteadresse>: TCP-Client zu RTOC-Server\n-p: Starte TCP-Server auf anderem Port (Standart: 5050)')
-                sys.exit()
-            elif opt == '-s':
+                    'RTOC.py [-h, -s] [-r <Remoteadress>]\n -h: Hilfe\n-s (--server) [COMMAND]: TCP-Server ohne GUI\n\t- start: Starts the RTOC-daemon\n\t- stop: Stops the RTOC-daemon\n\t- restart: Restarts the RTOC-daemon\n-r (--remote) <Remoteadresse>: TCP-Client zu RTOC-Server\n-p (--port): Starte TCP-Server auf anderem Port (Standart: 5050)\n-c (--config): Configure RTOC')
+                sys.exit(0)
+            elif opt in ('-s','--server'):
                 # logger = RTLogger.RTLogger(True, port)
                 # #runInBackground()
                 # while logger.run:
@@ -763,19 +763,25 @@ def main():
                     daemon.start()
                 else:
                     print('Unknown server command: '+str(command)+'\nUse "start", "stop" or "restart"')
+                    sys.exit(1)
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)
                 sys.exit(0)
-        startRTOC(None, port)
+            elif opt in ('-c','--config'):
+                configureRTOC(arg)
+        #startRTOC(None, port)
 
 
-def runInBackground():
-    app = QtWidgets.QApplication(sys.argv)
-    myapp = RTOC_TCP()
-    app, myapp = setStyleSheet(app, myapp)
+def configureRTOC(arg):
+    pass
 
-    app.exec_()
+# def runInBackground():
+#     app = QtWidgets.QApplication(sys.argv)
+#     myapp = RTOC_TCP()
+#     app, myapp = setStyleSheet(app, myapp)
+#
+#     app.exec_()
 
 
 def startRemoteRTOC(remotepath):
