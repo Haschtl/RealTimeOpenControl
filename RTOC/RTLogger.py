@@ -15,6 +15,7 @@ import sys
 import subprocess
 import hashlib
 import pkgutil
+from threading import Timer
 
 try:
     from .data.lib import general_lib as lib
@@ -87,7 +88,10 @@ defaultconfig = {
     "telegram_chat_ids": [],
     "documentfolder": "",
     "rtoc_web": False,
-    "tcppassword": ''
+    "tcppassword": '',
+    "backupFile": '',
+    "backupIntervall": 0,
+    "csv_profiles":{}
 }
 
 class RTLogger(ScriptFunctions, QObject):
@@ -130,8 +134,13 @@ class RTLogger(ScriptFunctions, QObject):
         self.startDeviceCallback = None
         self.stopDeviceCallback = None
         self.recordingLengthChangedCallback = None
+
+        self.backupThread = None
         self.tcpclient = LoggerPlugin(None, None, None)
         self.rtoc_web = None
+
+        if self.config['backupIntervall']>0:
+            self.backupThread = Timer( self.config['backupIntervall'], self.exportJSON,  args=[self.config['backupFile']])
         self.telegramBot = telegramBot(self)
         self.toggleTelegramBot()
         self.toggleHTMLPage()
@@ -467,7 +476,7 @@ class RTLogger(ScriptFunctions, QObject):
 
     def getPluginParameter(self, plugin, parameter, *args):
         try:
-            print(args)
+            #print(args)
             if parameter == "get" and type(parameter) == str:
                 if type(args[0]) == list:
                     rets = []
@@ -535,6 +544,8 @@ class RTLogger(ScriptFunctions, QObject):
             if self.config['telegram_eventlevel'] <= 1:
                 self.telegramBot.sendMessage(self.config['telegram_name'] + " wird beendet.")
         self.telegramBot.stop()
+        if self.backupThread:
+            self.backupThread.cancel()
         self.toggleHTMLPage(False)
         for name in self.devicenames.keys():
             self.stopPlugin(name)
@@ -937,6 +948,7 @@ class RTLogger(ScriptFunctions, QObject):
         filename = kwargs.get('filename', None)
         filetype = kwargs.get('filetype', "json")
         scripts = kwargs.get('scripts', None)
+        overwrite = kwargs.get('overwrite', False)
         for idx, arg in enumerate(args):
             if idx == 0:
                 filename = arg
@@ -948,7 +960,7 @@ class RTLogger(ScriptFunctions, QObject):
         if filetype == "xlsx":
             self.exportXLSX(filename)
         elif filetype == "json":
-            self.exportJSON(filename, scripts)
+            self.exportJSON(filename, scripts, overwrite)
         else:
             self.exportCSV(filename)
 
@@ -1019,7 +1031,7 @@ class RTLogger(ScriptFunctions, QObject):
 
         workbook.close()
 
-    def exportJSON(self, filename, scripts=None):
+    def exportJSON(self, filename, scripts=None, overwrite=False):
         jsonfile = {}
         jsonfile["maxLength"] = self.maxLength
         jsonfile["data"] = {}
@@ -1049,8 +1061,48 @@ class RTLogger(ScriptFunctions, QObject):
         if scripts!=None:
             jsonfile["scripts"]=scripts
 
-        with open(filename, 'w') as fp:
-            json.dump(jsonfile, fp, sort_keys=False, indent=4, separators=(',', ': '))
+        if overwrite or not os.path.exists(filename):
+            with open(filename, 'w') as fp:
+                json.dump(jsonfile, fp, sort_keys=False, indent=4, separators=(',', ': '))
+
+            return True
+        else:
+            try:
+                with open(filename) as f:
+                    data = json.load(f)
+
+                for signal in jsonfile["data"].keys():
+                    name = signal.split(".")
+                    if len(jsonfile["data"][signal][0]) != 0:
+                        if signal in data['data'].keys():
+                            for idx, xvalue in enumerate(jsonfile["data"][signal][0]):
+                                if xvalue not in data['data'][signal][0]:
+                                    data['data'][signal][0].append(jsonfile['data'][signal][0][idx])
+                                    data['data'][signal][1].append(jsonfile['data'][signal][1][idx])
+                        else:
+                            data['data'][signal] = jsonfile['data'][signal]
+                for signal in jsonfile["events"].keys():
+                    if signal != ".":
+                        name = signal.split(".")
+                        if signal in data['data'].keys():
+                            if len(name) == 1:
+                                name.append("")
+                            for idx, event in enumerate(jsonfile["events"][signal][0]):
+                                if xvalue not in data['events'][signal][0]:
+                                    data['events'][signal][0].append(jsonfile['events'][signal][0][idx])
+                                    data['events'][signal][1].append(jsonfile['events'][signal][1][idx])
+                        else:
+                            data['events'] = jsonfile['events']
+                if 'scripts' in jsonfile.keys():
+                    if 'scripts' not in data.keys():
+                        data['scripts'] = None
+                    data['scripts'] += jsonfile['scripts']
+                with open(filename, 'w') as fp:
+                    json.dump(data, fp, sort_keys=False, indent=4, separators=(',', ': '))
+
+                return True
+            except:
+                return False
 
     def restoreJSON(self, filename=None, clear=True):
         # try:
@@ -1241,6 +1293,17 @@ class RTLogger(ScriptFunctions, QObject):
             else:
                 print('New version available! Please update\n\npip3 install RTOC --upgrade\n')
         return current, available
+
+    def setBackupIntervall(self, intervall):
+        if self.backupThread:
+            self.backupThread.cancel()
+        if intervall>=0:
+            self.config['backupIntervall']=intervall
+            if intervall>0:
+                self.backupThread = Timer(intervall, self.exportJSON,  args=[self.config['backupFile']])
+            return True
+        else:
+            return False
 
 
 if __name__ == "__main__":

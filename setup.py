@@ -11,7 +11,7 @@
 
 # public:
 # python3 setup.py bdist_wheel
-# python3 -m twine upload dist/*
+# python3 -m twine upload dist\*
 
 DESCRIPTION = """RealTime OpenControl enables simple real-time data recording, visualization and editing. The recording can be done with a local Python scripts or via TCP locally/from the network. Visualization and editing is available locally, in the network (TCP and HTML) and via Telegram on the smartphone.
 
@@ -75,9 +75,9 @@ except LookupError:
 path = os.path.split(__file__)[0]
 #sys.path.insert(0, os.path.join(path, 'tools'))
 
-version = "1.8.9"
-forcedVersion = "1.8.9"
-gitVersion ="1.8.9"
+version = "1.9.7.3"
+forcedVersion = "1.9.7.3"
+gitVersion ="1.9.7.3"
 initVersion=1.0
 
 
@@ -165,7 +165,9 @@ setup(
         'python-nmap',
         'bokeh',
         'pycryptodomex',
-        'pyGithub'
+        'pyGithub',
+        'pandas',
+        'ezodf'
         ],
     **setupOpts
 )

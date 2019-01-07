@@ -10,6 +10,7 @@ from PyQt5.QtCore import QCoreApplication
 import json
 import traceback
 import markdown2
+import urllib.request
 #import urllib.request
 # import requests
 import base64
@@ -77,9 +78,13 @@ class PluginDownloader(QtWidgets.QWidget):
         for plug in self.localPlugins.keys():
             #localPluginInfos
             if os.path.exists(self.localPlugins[plug]+"/info.json"):
-                with open(self.localPlugins[plug]+"/info.json") as f:
-                    data = json.load(f)
-                    self.localPluginInfos[plug] = data
+                try:
+                    with open(self.localPlugins[plug]+"/info.json") as f:
+                        data = json.load(f)
+                        self.localPluginInfos[plug] = data
+                except:
+                    print('Error loading local plugin info: '+str(plug))
+                    self.localPluginInfos[plug] = ''
             else:
                 print('Plugin '+plug+' was not installed from any repository')
                 self.localPluginInfos[plug] = False
@@ -113,7 +118,7 @@ class PluginDownloader(QtWidgets.QWidget):
         self.uptodate = False
         try:
             info = self.pluginInfos[strung]
-            print(strung)
+            #print(strung)
             strung = "#"+strung+"\n\n"
             strung += "### Version: "+info['version']
             if self.currentname in self.localPluginInfos.keys():
@@ -202,11 +207,16 @@ class PluginDownloader(QtWidgets.QWidget):
             elif '__pycache__' not in content.path:
                 try:
                     path = content.path
-                    file_content = self.repo.get_contents(path)
-                    file_data = base64.b64decode(file_content.content)
-                    file_out = open(self.userpath+"/devices/"+content.path, "w")
-                    file_out.write(file_data.decode('utf-8'))
-                    file_out.close()
+                    # file_content = self.repo.get_contents(path)
+                    # file_data = base64.b64decode(file_content.content)
+                    # file_out = open(self.userpath+"/devices/"+content.path, "w")
+                    # try:
+                    #     file_out.write(file_data.decode('utf-8'))
+                    # except:
+                    #     file_out.write(file_data)
+                    # file_out.close()
+                    url = content.download_url
+                    urllib.request.urlretrieve (url, self.userpath+"/devices/"+path)
                 except IOError as exc:
                     print('Error processing %s: %s', content.path, exc)
 

@@ -204,7 +204,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
             treeWidgetItem = QtWidgets.QTreeWidgetItem()
             button = QtWidgets.QPushButton(devicename)
             button.setCheckable(True)
-            button.setChecked(True)
+            button.setChecked(False)
             self.deviceTreeWidgetItems.append(treeWidgetItem)
             self.treeWidget.addTopLevelItem(treeWidgetItem)
             self.treeWidget.setItemWidget(treeWidgetItem, 0, button)

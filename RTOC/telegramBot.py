@@ -254,7 +254,7 @@ class telegramBot(QObject):
                     commands += [fun.replace(name+".", '')+'()']
 
             if strung in commands:
-                print(strung)
+                #print(strung)
                 self.current_call[update.message.chat_id] = strung
                 self.mode[update.message.chat_id] = "call"
                 self.plugincallHandler(bot, update)
@@ -272,7 +272,7 @@ class telegramBot(QObject):
                     commands += [fun.replace(name+".", '')]
 
             if strung in commands:
-                print(strung)
+                #print(strung)
                 self.current_call[update.message.chat_id] = strung
                 self.mode[update.message.chat_id] = "call"
                 self.plugincallHandler(bot, update)
@@ -330,7 +330,7 @@ class telegramBot(QObject):
             plt.savefig('telegram_export.png')
             plt.title(signalname)
             t = self.createToolTip(self.logger.getSignalId(a[0], a[1]))
-            print(t)
+            #print(t)
             bot.send_photo(chat_id=update.message.chat_id, photo=open('telegram_export.png', 'rb'))
             bot.send_message(chat_id=update.message.chat_id, text=t)
         else:

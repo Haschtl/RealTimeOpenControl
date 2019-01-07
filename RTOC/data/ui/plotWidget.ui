@@ -206,7 +206,7 @@
             </property>
             <property name="icon">
              <iconset>
-              <normaloff>icons/list.png</normaloff>icons/list.png</iconset>
+              <normaloff>icons/sidebar.png</normaloff>icons/sidebar.png</iconset>
             </property>
             <property name="iconSize">
              <size>

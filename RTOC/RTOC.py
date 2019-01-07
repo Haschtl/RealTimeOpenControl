@@ -14,14 +14,18 @@ try:
     from . import RTLogger
     from .PluginDownloader import PluginDownloader
     from .data.lib import pyqt_customlib as pyqtlib
+    from .data.lib import general_lib as lib
     from .data.scriptWidget import ScriptWidget
     from .data.eventWidget import EventWidget
     from .data.RTPlotWidget import RTPlotWidget
     from .data.Actions import Actions
+    from . import RTOC_Import
 except ImportError:
     import RTLogger
+    import RTOC_Import
     from PluginDownloader import PluginDownloader
     from data.lib import pyqt_customlib as pyqtlib
+    from data.lib import general_lib as lib
     from data.scriptWidget import ScriptWidget
     from data.eventWidget import EventWidget
     from data.RTPlotWidget import RTPlotWidget
@@ -53,6 +57,8 @@ LINECOLORS = ['r', 'g', 'b', 'c', 'm', 'y', 'w']
 
 
 class SubWindow(QtWidgets.QMainWindow):
+    addSignal2 = QtCore.pyqtSignal(str, str, int, str)
+
     def __init__(self, logger, selfself, idx, title="SubWindow"):
         super(SubWindow, self).__init__()  # logger, selfself, idx)
         self.widget = RTPlotWidget(logger, selfself, idx)
@@ -74,6 +80,9 @@ class SubWindow(QtWidgets.QMainWindow):
         self.show()
         self.signalObjects = self.widget.signalObjects
         self.treeWidget = self.widget.treeWidget
+
+        self.addSignal2.connect(self.widget.addSignal, QtCore.Qt.QueuedConnection)
+        #self.importer = None
 
     def closeEvent(self, event, *args, **kwargs):
         if self.widget.id == 0:
@@ -122,6 +131,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/data/ui/rtoc.ui", self)
+        self.setAcceptDrops(True)
         self.app_icon = QtGui.QIcon(packagedir+"/data/icon.png")
         self.setWindowIcon(self.app_icon)
         self.tray_icon = QtWidgets.QSystemTrayIcon(self)
@@ -171,6 +181,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             self.deviceWidget.hide()
         if not self.config["eventWidget"]:
             self.eventWidgets.hide()
+        self.deviceRAWWidget.hide()
         self.actionTCPServer_2.setChecked(self.config["tcpserver"])
         self.HTMLServerAction_2.setChecked(self.config["rtoc_web"])
         self.actionTelegramBot_2.setChecked(self.config["telegram_bot"])
@@ -186,6 +197,24 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.loadSession('restore.json',True)
         self.pluginsWidget.hide()
 
+        self.importer = RTOC_Import.RTOC_Import('', self, self.importCallback)
+
+        item = self.config['backupIntervall']
+        if item == 60*60:
+            intervall=self.tr('stündlich')
+        elif item == 60*60*24:
+            intervall=self.tr('täglich')
+        elif item == 60*60*12:
+            intervall=self.tr('2x täglich')
+        elif item == 60*60*24*7:
+            intervall=self.tr('wöchentlich')
+        elif item == 60*60*24*30.5:
+            intervall=self.tr('Monatlich')
+        if item == 0:
+            self.actionSetBackupIntervall.setText(self.tr('Backup deaktiviert'))
+        else:
+            self.actionSetBackupIntervall.setText(self.tr('Intervall: ')+intervall)
+
     def loggerChangedAlert(self, devicename, dataname, length):
         self.maxLengthSpinBox.setValue(length)
         pyqtlib.info_message(self.tr("Warning"), self.tr("Recording length was changed to ")+str(length), self.tr('Signal: '+devicename+'.'+dataname))
@@ -198,6 +227,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
                     self.plotStyles = json.load(jsonfile, encoding="UTF-8")
             except:
                 self.plotStyles = {}
+
         else:
             self.plotStyles = {}
 
@@ -309,9 +339,12 @@ class RTOC(QtWidgets.QMainWindow, Actions):
     def deletePlotWidget(self, id):
         if self.activePlotWidgetIndex == id:
             self.activePlotWidgetIndex = 0
-        self.plotWidgets.pop(id)
-        for idx, widget in enumerate(self.plotWidgets):
-            widget.id = idx
+        for idx, p in enumerate(self.plotWidgets):
+            if idx != 0:
+                if p.widget.id == id:
+                    self.plotWidgets.pop(idx)
+        # for idx, widget in enumerate(self.plotWidgets):
+        #     widget.id = idx
 
     def updateLabels(self):
         self.maxLengthSpinBox.setValue(self.logger.maxLength)
@@ -370,6 +403,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
                     "Fehler beim Laden des Geräts\nBitte stellen Sie sicher, dass das Gerät verbunden ist."), errors)
                 button.setChecked(False)
         self.scriptWidget.updateListWidget()
+        self.updateDeviceRAW()
 
     def addNewSignal(self, id, devicename, signalname, dataunit):
         self.plotWidgets[self.activePlotWidgetIndex].addSignal2.emit(
@@ -438,7 +472,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             if ok is not None:
                 if ok == True:
                     scripts = self.scriptWidget.getSession()
-                    self.logger.exportJSON("restore.json", scripts)
+                    self.logger.exportJSON("restore.json", scripts, True)
                 elif ok == False:
                     if os.path.exists(self.config['documentfolder']+"/restore.json"):
                         os.remove(self.config['documentfolder']+"/restore.json")
@@ -450,6 +484,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
                     plot.close()
                 self.logger.save_config()
                 self.logger.stop()
+                self.importer.close()
                 super(RTOC, self).closeEvent(event)
             else:
                 event.ignore()
@@ -479,6 +514,76 @@ class RTOC(QtWidgets.QMainWindow, Actions):
     def mousePressEvent(self, event):
         self.activePlotWidgetIndex = 0
         super(RTOC, self).mousePressEvent(event)
+
+    def dragEnterEvent(self, e):
+        self.toggleDragView(True)
+        if e.mimeData().hasUrls or e.mimeData().hasText:
+            e.accept()
+            elementType, elementContent = lib.identifyElementTypeFromString(e.mimeData().text())
+            if elementContent == '':
+                text = "Dateityp nicht erkannt"
+                e.ignore()
+            else:
+                text = "Datentyp erkannt: "+elementType#+": "+str(elementContent)
+            self.drag_content.setText(text)
+        else:
+            e.ignore()
+            self.drag_content.setText("Unbekannter Inhalt")
+
+    def dragLeaveEvent(self, e):
+        self.toggleDragView(False)
+
+    def dragMoveEvent(self, e):
+        if e.mimeData().hasUrls or e.mimeData().hasImage or e.mimeData().hasText:
+            e.accept()
+        else:
+            e.ignore()
+
+    def loadWav(self, filename):
+        try:
+            from scipy.io import wavfile
+            fs, data = wavfile.read(filename)
+            text, ok = pyqtlib.text_message(self, self.tr("Signalname angeben"), self.tr("Gib einen Namen für das zu importierende Signal an"), os.path.splitext(str(filename))[0].split("/")[-1]+'.Signal')
+            if ok:
+                y = list(data)
+                #x = list(range(y))/fs
+                x = [v/fs for v in list(range(len(y)))]
+                names = text.split('.')
+                if len(names)<2:
+                    names.append('Signal')
+                self.logger.plot(x, y, sname=names[1], dname=names[0])
+        except:
+            tb = traceback.format_exc()
+            print(tb)
+            pyqtlib.info_message(self.tr("Fehler"), self.tr("Datei ")+filename+self.tr(" konnte nicht geöffnet werden."), self.tr("Die Datei ist möglicherweise beschädigt."))
+
+    def dropEvent(self, e):
+        if e.mimeData().hasText:
+            elementType, elementContent = lib.identifyElementTypeFromString(e.mimeData().text())
+            if os.name != 'nt':
+                elementContent = '/'+elementContent
+            if elementType == 'pfad':
+                if elementContent.endswith('.json'):
+                    self.loadSession(elementContent)
+                elif elementContent.endswith('.wav') or elementContent.endswith('.wave'):
+                    self.loadWav(elementContent)
+                else:
+                    self.importer.loadCsv(elementContent)
+                    self.importer.show()
+            else:
+                self.importer.loadCsvStr(e.mimeData().text())
+                self.importer.show()
+        else:
+            e.ignore()
+        self.toggleDragView(False)
+
+    def toggleDragView(self, status=True):
+        if status:
+            #print('Drag enabled')
+            self.drag_content.show()
+        else:
+            #print('Drag disabled')
+            self.drag_content.hide()
 
 
 class RTOC_TCP(QtWidgets.QMainWindow):
@@ -514,8 +619,9 @@ class RTOC_TCP(QtWidgets.QMainWindow):
         )
 
     def systemTrayClickAction(self, reason):
-        if reason == QtWidgets.QSystemTrayIcon.Context:
-            print('clicked')
+        # if reason == QtWidgets.QSystemTrayIcon.Context:
+        #     print('clicked')
+        pass
 
     def closeEvent(self, event):
         if len(self.logger.signals) != 0:
@@ -525,7 +631,7 @@ class RTOC_TCP(QtWidgets.QMainWindow):
             ok = False
         if ok is not None:
             if ok == True:
-                self.logger.exportJSON("restore.json")
+                self.logger.exportJSON("restore.json", None, True)
             elif ok == False:
                 if os.path.exists(self.config['documentfolder']+"/restore.json"):
                     os.remove(self.config['documentfolder']+"/restore.json")
@@ -556,7 +662,7 @@ def setStyleSheet(app, myapp):
             return app, mw
         except ImportError:
             tb = traceback.format_exc()
-            print(tb)
+            #print(tb)
             print("QtModern not installed")
             type = 'QDarkStyle'
     if type == 'QDarkStyle':
@@ -567,7 +673,7 @@ def setStyleSheet(app, myapp):
             return app, myapp
         except ImportError:
             tb = traceback.format_exc()
-            print(tb)
+            #print(tb)
             print("QtModern not installed")
             type == 'qdarkgraystyle'
     if type == 'qdarkgraystyle':
@@ -578,11 +684,14 @@ def setStyleSheet(app, myapp):
             return app, myapp
         except ImportError:
             tb = traceback.format_exc()
-            print(tb)
+            #print(tb)
             print("QtModern not installed")
 
     with open("/data/ui/darkmode.html", 'r') as myfile:
         stylesheet = myfile.read().replace('\n', '')
+    packagedir = os.path.dirname(os.path.realpath(__file__))
+    stylesheet = stylesheet.replace('/data/ui/icons',os.path.join(packagedir,'data','ui','icons').replace('\\','/'))
+    #stylesheet = stylesheet.replace('/data/ui/icons','./data/ui/icons')
     app.setStyleSheet(stylesheet)
     return app, myapp
 

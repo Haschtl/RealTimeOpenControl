@@ -2,13 +2,20 @@ import os
 import csv
 from PyQt5 import QtWidgets
 from functools import partial
+from PyQt5.QtCore import QCoreApplication
+import traceback
 
 from .lib import pyqt_customlib as pyqtlib
 from .lib import general_lib as lib
 try:
     from ..PluginDownloader import PluginDownloader
+    from .. import RTOC_Import
 except (ImportError, ValueError):
     from PluginDownloader import PluginDownloader
+    import RTOC_Import
+
+
+translate = QCoreApplication.translate
 
 
 class Actions:
@@ -38,6 +45,10 @@ class Actions:
         self.pluginsWidgetToggle.triggered.connect(self.togglePluginsWidget)
         self.scriptWidgetToggle.triggered.connect(self.toggleScriptWidget)
         self.eventWidgetToggle.triggered.connect(self.toggleEventWidget)
+        self.deviceRAWWidgetToggle.triggered.connect(self.toggleRAWWidget)
+
+        self.actionSetBackupFile.triggered.connect(self.setBackupFile)
+        self.actionSetBackupIntervall.triggered.connect(self.setBackupIntervall)
 
         self.actionDeutsch.triggered.connect(
             partial(self.toggleLanguage, "de", self.actionDeutsch, [self.actionEnglish], False))
@@ -56,6 +67,10 @@ class Actions:
         self.clearCacheAction.triggered.connect(self.clearCache)
 
         self.searchEdit.textChanged.connect(self.filterDevices)
+
+        self.pluginSearchInput.textChanged.connect(self.filterDeviceRAW)
+
+        self.pluginCallWidget.itemClicked.connect(self.deviceRAWCallback)
 
     def toggleTcpServer(self):
         if self.config["tcpserver"]:
@@ -164,10 +179,21 @@ class Actions:
         if fname:
             fileName = fname
             if mask == 'JSON-Datei (*.json)':
+                overwrite = False
+                if os.path.exists(fileName):
+                    overwrite = pyqtlib.alert_message(self.tr('Überschreiben'), self.tr('Wollen Sie die Datei überschreiben oder beide Dateien zusammenführen?'), self.tr('Bei "Überschreiben" gehen die gespeicherten Daten verloren.'), "", self.tr('Überschreiben'), self.tr('Zusammenführen'))
                 s = self.scriptWidget.getSession()
-                self.logger.exportData(fileName, "json", scripts=s)
+                self.logger.exportData(fileName, "json", scripts=s, overwrite = overwrite)
 
     def importData(self, filename):
+        self.importer.loadCsv(filename)
+        self.importer.show()
+
+    def importCallback(self, signals):
+        for sig in signals:
+            self.logger.plot(*sig)
+
+    def importDataDeprecated(self, filename):
         ff = open(filename, 'r')
         mytext = ff.read()
 #            print(mytext)
@@ -180,11 +206,11 @@ class Actions:
                 reader = csv.reader(f, delimiter = ';')
             reader = [list(r) for r in reader]
             reader2 = []
-            print(len(reader))
+            #print(len(reader))
             for idx, r in enumerate(reader[0]):
                 reader2.append(lib.column(reader,idx))
             reader = reader2
-            print(len(reader))
+            #print(len(reader))
             for idx, row in enumerate(reader):
                 if idx<len(reader)-2 and idx % 2 == 0:
                     if len(reader[idx])==len(reader[idx+1]):
@@ -256,6 +282,12 @@ class Actions:
             self.deviceWidget.hide()
             self.config["deviceWidget"] = False
 
+    def toggleRAWWidget(self):
+        if self.deviceRAWWidgetToggle.isChecked():
+            self.deviceRAWWidget.show()
+        else:
+            self.deviceRAWWidget.hide()
+
     def toggleEventWidget(self):
         if self.eventWidgetToggle.isChecked():
             self.eventWidgets.show()
@@ -284,14 +316,17 @@ class Actions:
         dir_path = self.config['documentfolder']
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
-        fileBrowser.setNameFilters(["CSV (*.csv)"])
+        fileBrowser.setNameFilters(["Tabelle (*.csv *.tsv, *.xls, *.xlsx, *.txt, *.mat, *.wav, *.wave, *)"])
         fileBrowser.selectNameFilter("")
         fname, mask = fileBrowser.getOpenFileName(
-            self, "Export", dir_path, "CSV (*.csv)")
+            self, "Export", dir_path, "Tabelle (*.csv *.tsv, *.xls, *.xlsx, *.txt, *.mat, *.wav, *.wave, *)")
         if fname:
             fileName = fname
-            if mask == "CSV (*.csv)":
-                self.importData(fileName)
+            if mask == "Tabelle (*.csv *.tsv, *.xls, *.xlsx, *.txt, *.mat, *.wav, *.wave, *)":
+                if fileName.endswith('.wav') or fileName.endswith('.wave'):
+                    self.loadWav(fileName)
+                else:
+                    self.importData(fileName)
 
     def showAboutMessage(self):
         pyqtlib.info_message(self.tr("Über"), "RealTime OpenControl 1.8", self.tr(
@@ -314,6 +349,21 @@ class Actions:
                 child.show()
             else:
                 child.hide()
+
+    def filterDeviceRAW(self, tex):
+        tex = tex+';'
+        tex = tex.replace('; ', ';')
+        for i in range(self.pluginCallWidget.count()):
+            item = self.pluginCallWidget.item(i)
+            found = False
+            for text in tex.split(';'):
+                # print(text)
+                if (text != "" or tex == ';') and found == False:
+                    if text.lower() in item.text().lower() or tex == ";":
+                        item.setHidden(False)
+                        found = True
+                    else:
+                        item.setHidden(True)
 
     def toggleLanguage(self, newlang, button, otherbuttons, force=False):
         button.setChecked(True)
@@ -352,3 +402,86 @@ class Actions:
     def openPluginDownloader(self):
         self.pluginDownloader = PluginDownloader(self.config['documentfolder'])
         self.pluginDownloader.show()
+
+
+    def setBackupIntervall(self):
+        intervall = 0
+        items = [self.tr('Aus'), self.tr('stündlich'), self.tr('täglich'), self.tr('2x täglich'), self.tr('wöchentlich'), self.tr('Monatlich')]
+        item, ok = pyqtlib.item_message(self, self.tr('Backup Intervall setzen'), self.tr('Wähle den Zeitabstände zwischen den Backups'), items)
+        if ok:
+            if item == self.tr('stündlich'):
+                intervall=60*60
+            elif item == self.tr('täglich'):
+                intervall=60*60*24
+            elif item == self.tr('2x täglich'):
+                intervall=60*60*12
+            elif item == self.tr('wöchentlich'):
+                intervall=60*60*24*7
+            elif item == self.tr('Monatlich'):
+                intervall=60*60*24*30.5
+
+            if intervall == 0:
+                self.actionSetBackupIntervall.setText(self.tr('Backup deaktiviert'))
+            else:
+                self.actionSetBackupIntervall.setText(self.tr('Intervall: ')+item)
+            self.logger.setBackupIntervall(intervall)
+
+    def setBackupFile(self):
+        dir_path = self.config['documentfolder']
+        fileBrowser = QtWidgets.QFileDialog(self)
+        fileBrowser.setDirectory(dir_path)
+        fileBrowser.setNameFilters(
+            ["JSON-Datei (*.json)"])
+        fileBrowser.selectNameFilter("")
+        fname, mask = fileBrowser.getSaveFileName(
+            self, self.tr("Backupdatei erstellen"), dir_path, "JSON-Datei (*.json)")
+        if fname:
+            self.config['backupFile'] = fname
+            self.logger.setBackupIntervall(self.config['backupIntervall'])
+
+    def updateDeviceRAW(self):
+        self.pluginCallWidget.clear()
+        dict = self.logger.getPluginDict()
+        for sig in dict.keys():
+            for element in dict[sig]['functions']:
+                self.pluginCallWidget.addItem(sig+"."+element+'()')
+            for element in dict[sig]['parameters']:
+                self.pluginCallWidget.addItem(sig+"."+element)
+
+    def deviceRAWCallback(self, strung):
+        dict = {}
+
+        strung = strung.text()
+        a = strung.split('.')
+        if len(a) == 2:
+            plugin = a[0]
+            function = a[1]
+
+            if function.endswith('()'):
+                text, ok = pyqtlib.text_message(self, self.tr('Geräte-Funktion ausführen'), strung, self.tr('Funktionsparameter'))
+                if ok:
+                    self.par = []
+                    try:
+                        exec('self.par = ['+text+"]")
+                        dict={plugin: {function:self.par}}
+                        self.logger.handleTcpPlugins(dict)
+                    except:
+                        tb = traceback.format_exc()
+                        print(tb)
+                        pyqtlib.info_message(self.tr('Fehler'), translate('NetWoRTOC','Funktionsparameter sind nicht gültig'), translate('NetWoRTOC',"Bitte geben Sie gültige Parameter an"))
+            else:
+                ans = self.logger.handleTcpPlugins({plugin: {'get':[function]}})
+                text, ok = pyqtlib.text_message(self, self.tr('Geräte-Parameter ändern'), strung, str(ans[plugin]['get'][0]))
+                if ok:
+                    self.par = []
+                    try:
+                        exec('self.par = '+text)
+                        dict = {plugin: {function:self.par}}
+                        self.logger.handleTcpPlugins(dict)
+                    except:
+                        tb = traceback.format_exc()
+                        print(tb)
+                        pyqtlib.info_message(self.tr('Fehler'), translate('NetWoRTOC','Wert ungültig'), translate('NetWoRTOC',"Bitte geben Sie einen gültigen Wert an"))
+        # else:
+        #     print(a)
+        #self.logger.handleTcpPlugins(dict)

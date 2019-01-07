@@ -5,6 +5,7 @@ import pyqtgraph as pg
 import random
 import time
 from functools import partial
+from datetime import timedelta
 
 from .lib import general_lib as lib
 from .signalEditWidget import SignalEditWidget
@@ -105,7 +106,7 @@ class SignalWidget(QtWidgets.QWidget):
         self.setCheckable(True)
 
         self.setText(signalname)
-        self.setChecked(True)
+        self.setChecked(False)
         self.clicked.connect(self.toggleSignal)
         self.setStyleSheet("QToolButton{background-color: rgb(44, 114, 29)}")
 
@@ -163,6 +164,7 @@ class SignalWidget(QtWidgets.QWidget):
         self.signalModifications = [0, 0, 1, 1]
 
         self.updateLegend()
+        self.toggleSignal()
 
     def setCheckable(self, value):
         self.button.setCheckable(value)
@@ -242,7 +244,7 @@ class SignalWidget(QtWidgets.QWidget):
         p1 = self.plot.scatter.pointsAt(act_pos)
         if len(p1) != 0:
             x, y = p1[0].pos()
-            print(x)
+            #print(x)
             self.display_text.setText(self.devicename+'.'+self.signalname+'\nx=%f\ny=%f' % (x, y))
             self.display_text.setPos(x, y)
             self.display_text.show()
@@ -262,6 +264,13 @@ class SignalWidget(QtWidgets.QWidget):
             def r(): return random.randint(0, 255)
             symbol["color"] = '#%02X%02X%02X' % (r(), r(), r())
             symbol["width"] = define.defaultLineWidth
+
+            self.plotWidget.plotStyles[str(self.devicename)+"."+str(self.signalname)] = {}
+            self.plotWidget.plotStyles[str(self.devicename) +
+                                       "."+str(self.signalname)]["symbol"] = symbol
+            self.plotWidget.plotStyles[str(self.devicename) +
+                                       "."+str(self.signalname)]["brush"] = {}
+
             return symbol, brush
 
     def initMenu(self):
@@ -297,30 +306,35 @@ class SignalWidget(QtWidgets.QWidget):
         self.labelItem.setText(name)
 
     def createToolTip(self, id):
-        maxduration = self.calcDuration(list(self.logger.getSignal(id)[0]))
-        duration = self.logger.getSignal(id)[0][-1]-self.logger.getSignal(id)[0][0]
-        try:
-            line1 = time.strftime("%H:%M:%S", time.gmtime(int(duration))) + \
-                "/~"+time.strftime("%H:%M:%S", time.gmtime(int(maxduration)))
-            line2 = str(
-                len(list(self.logger.getSignal(id)[0])))+"/"+str(self.logger.maxLength)
-            count = 20
-            if len(self.logger.getSignal(id)[0]) <= count:
-                count = len(self.logger.getSignal(id)[0])
-            if count > 1:
-                meaner = list(self.logger.getSignal(id)[0])[-count:]
-                diff = 0
-                for idx, m in enumerate(meaner[:-1]):
-                    diff += meaner[idx+1]-m
-                if diff != 0:
-                    line3 = str(round((len(meaner)-1)/diff, 2))+" Hz"
+        xdata = list(self.logger.getSignal(id)[0])
+        if len(xdata)>0:
+            maxduration = self.calcDuration(list(xdata))
+            duration = xdata[-1]-xdata[0]
+            try:
+                #line1 = time.strftime("%H:%M:%S", time.gmtime(int(duration))) + \
+                #    "/~"+time.strftime("%H:%M:%S", time.gmtime(int(maxduration)))
+                line1 = str(timedelta(seconds=duration)) + '/ ~ '+str(timedelta(seconds=maxduration))
+                line2 = str(
+                    len(list(xdata)))+"/"+str(self.logger.maxLength)
+                count = 20
+                if len(xdata) <= count:
+                    count = len(xdata)
+                if count > 1:
+                    meaner = list(xdata)[-count:]
+                    diff = 0
+                    for idx, m in enumerate(meaner[:-1]):
+                        diff += meaner[idx+1]-m
+                    if diff != 0:
+                        line3 = str(round((len(meaner)-1)/diff, 2))+" Hz"
+                    else:
+                        line3 = "? Hz"
                 else:
                     line3 = "? Hz"
-            else:
-                line3 = "? Hz"
-            return line1+"\n"+line2 + "\n" + line3
-        except:
-            return "Tooltip failed"
+                return line1+"\n"+line2 + "\n" + line3
+            except:
+                return "Tooltip failed"
+        else:
+            return "Signal empty"
 
     def updatePlot(self):
         current_time = time.time()
@@ -349,7 +363,7 @@ class SignalWidget(QtWidgets.QWidget):
                         self.eventItems[idx].vLine.hide()
 
             clock = list(self.logger.getSignal(self.id)[0])
-            if len(clock) > 0:
+            if len(clock) > 0 and len(list(self.logger.getSignal(self.id)[1]))>0:
                 lastTimestamp = self.plotWidget.lastUpdate - clock[-1]
                 if lastTimestamp >= self.signalTimeOut and self.label.styleSheet() != "background-color: rgb(113, 100, 29)":
                     self.label.setStyleSheet("background-color: rgb(113, 100, 29)")
@@ -388,12 +402,12 @@ class SignalWidget(QtWidgets.QWidget):
                         if len(clock) == len(data):
                             if self.editWidget.xySwapButton.isChecked():
                                 temp = data
-                                data = clock
-                                clock = temp
+                                data = clockx
+                                clockx = temp
                             self.plot.setData(x=clockx, y=data)
+                            self.labelItem.setPos(clockx[-1], data[-1])
                         else:
                             print(self.devicename+"."+self.signalname+": len(x) != len(y)")
-                        self.labelItem.setPos(clockx[-1], data[-1])
 
                     for idx, eventItem in enumerate(self.eventItems):
                         pos = scaleX*(self.events[idx][0]-ctime+offsetX)
@@ -401,8 +415,8 @@ class SignalWidget(QtWidgets.QWidget):
                         self.eventItems[idx].vLine.setPos(pos)
 
     def toggleSignal(self):
-        print(self.isChecked())
-        print(self.hidden)
+        #print(self.isChecked())
+        #print(self.hidden)
         if self.isChecked() and not self.hidden:
             self.active = True
             self.plotWidget.legend.addItem(

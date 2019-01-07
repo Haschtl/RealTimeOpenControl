@@ -94,7 +94,7 @@ class Plugin(LoggerPlugin):
     def toggleDevice(self, plugin, button):
         state = button.isChecked()
         ans = self.sendTCP(plugin={plugin: {'start':state}})
-        print(ans)
+        #print(ans)
 
     def updateList(self):
         t = []
@@ -136,7 +136,7 @@ class Plugin(LoggerPlugin):
         ok = pyqtlib.alert_message(translate('NetWoRTOC','Warnung'), translate('NetWoRTOC','Möchten sie wirklich alle Daten am RTOC-Server löschen?'), translate('NetWoRTOC',"(Unwiederrufbar)"))
         if ok:
             ans = self.sendTCP(logger={'clear': 'all'})
-            print(ans)
+            #print(ans)
 
     def __callPluginFunction(self, strung):
         strung = strung.text()

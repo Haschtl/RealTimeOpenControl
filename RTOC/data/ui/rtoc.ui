@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>643</width>
+    <width>883</width>
     <height>424</height>
    </rect>
   </property>
@@ -70,10 +70,10 @@
          <string> Messwerte</string>
         </property>
         <property name="maximum">
-         <number>10000000</number>
+         <number>1000000000</number>
         </property>
         <property name="value">
-         <number>1000</number>
+         <number>500000</number>
         </property>
        </widget>
       </item>
@@ -127,6 +127,38 @@
           <width>25</width>
           <height>25</height>
          </size>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer_3">
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="sizeHint" stdset="0">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+       </spacer>
+      </item>
+      <item>
+       <widget class="QLabel" name="drag_content">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="acceptDrops">
+         <bool>true</bool>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="alignment">
+         <set>Qt::AlignCenter</set>
         </property>
        </widget>
       </item>
@@ -347,7 +379,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>643</width>
+     <width>883</width>
      <height>26</height>
     </rect>
    </property>
@@ -355,8 +387,21 @@
     <property name="statusTip">
      <string>Öffnen, Speichern, Exportieren</string>
     </property>
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>&amp;Datei</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icons/menu.png</normaloff>icons/menu.png</iconset>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
     </property>
     <addaction name="loadSessionAction"/>
     <addaction name="saveSessionAction"/>
@@ -372,17 +417,44 @@
     <property name="statusTip">
      <string>Unterfenster-Darstellung verwalten</string>
     </property>
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>&amp;Fenster</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icons/view.png</normaloff>icons/view.png</iconset>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
     </property>
     <addaction name="deviceWidgetToggle"/>
     <addaction name="pluginsWidgetToggle"/>
     <addaction name="scriptWidgetToggle"/>
     <addaction name="eventWidgetToggle"/>
+    <addaction name="deviceRAWWidgetToggle"/>
    </widget>
    <widget class="QMenu" name="menuHilfe">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>&amp;Hilfe</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icons/help.png</normaloff>icons/help.png</iconset>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
     </property>
     <addaction name="clearCacheAction"/>
     <addaction name="separator"/>
@@ -393,23 +465,70 @@
     <addaction name="aboutAction"/>
    </widget>
    <widget class="QMenu" name="menuSprache">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>Sprache</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icons/network.png</normaloff>icons/network.png</iconset>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
     </property>
     <addaction name="actionDeutsch"/>
     <addaction name="actionEnglish"/>
    </widget>
    <widget class="QMenu" name="menuGer_te">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>Geräte</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icons/plugins.png</normaloff>icons/plugins.png</iconset>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
     </property>
     <addaction name="getPluginsButton"/>
    </widget>
    <widget class="QMenu" name="menuNetzwerk">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
     <property name="title">
      <string>Netzwerk</string>
     </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icons/internet.png</normaloff>icons/internet.png</iconset>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
     <widget class="QMenu" name="menuTCP_Server_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>188</width>
+       <height>126</height>
+      </rect>
+     </property>
      <property name="title">
       <string>TCP - Server</string>
      </property>
@@ -424,13 +543,52 @@
      <addaction name="actionTelegramBot_2"/>
      <addaction name="actionBotToken_2"/>
     </widget>
+    <widget class="QMenu" name="menuMit_Remotehost_verbinden">
+     <property name="title">
+      <string>Mit Remotehost verbinden</string>
+     </property>
+     <addaction name="actionNeuer_HOst"/>
+    </widget>
+    <widget class="QMenu" name="menuAktive_Verbindungen">
+     <property name="title">
+      <string>Aktive Verbindungen</string>
+     </property>
+     <addaction name="actionkeine_3"/>
+    </widget>
     <addaction name="menuTCP_Server_2"/>
     <addaction name="HTMLServerAction_2"/>
     <addaction name="MeniuTelegramBot"/>
+    <addaction name="separator"/>
+    <addaction name="menuMit_Remotehost_verbinden"/>
+    <addaction name="menuAktive_Verbindungen"/>
+    <addaction name="actionUpdate_Rate_1Hz_2"/>
+    <addaction name="separator"/>
+    <addaction name="actionRTOC_Server_suchen_3"/>
+   </widget>
+   <widget class="QMenu" name="menuBackup">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Backup</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icons/backup.png</normaloff>icons/backup.png</iconset>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="actionSetBackupFile"/>
+    <addaction name="actionSetBackupIntervall"/>
    </widget>
    <addaction name="menuDatei"/>
    <addaction name="menuGer_te"/>
    <addaction name="menuNetzwerk"/>
+   <addaction name="menuBackup"/>
    <addaction name="menuFenster"/>
    <addaction name="menuSprache"/>
    <addaction name="menuHilfe"/>
@@ -503,6 +661,56 @@
         <number>0</number>
        </property>
       </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="deviceRAWWidget">
+   <property name="windowTitle">
+    <string>Geräte RAW</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4">
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLineEdit" name="pluginSearchInput">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="placeholderText">
+        <string>Suche</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="pluginCallWidget">
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::NoSelection</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
@@ -776,6 +984,109 @@
   <action name="actionBotToken_2">
    <property name="text">
     <string>Bot-Token eingeben</string>
+   </property>
+  </action>
+  <action name="action0_St_ndlich">
+   <property name="text">
+    <string>Backup-Intervall einstellen</string>
+   </property>
+  </action>
+  <action name="action0_T_glich">
+   <property name="text">
+    <string>Täglich</string>
+   </property>
+  </action>
+  <action name="actionSetBackupFile">
+   <property name="text">
+    <string>Backup-Datei festlegen</string>
+   </property>
+  </action>
+  <action name="actionDeleteBackups">
+   <property name="text">
+    <string>Backups löschen</string>
+   </property>
+  </action>
+  <action name="actionBackup_1">
+   <property name="text">
+    <string>Backup 1</string>
+   </property>
+  </action>
+  <action name="actionBackupSettings">
+   <property name="text">
+    <string>Einstellungen</string>
+   </property>
+  </action>
+  <action name="actionNeuer_Host">
+   <property name="text">
+    <string>Neuer Host</string>
+   </property>
+  </action>
+  <action name="actionkeine">
+   <property name="text">
+    <string>keine</string>
+   </property>
+  </action>
+  <action name="actionUpdate_Rate_1_Hz">
+   <property name="text">
+    <string>Update-Rate: 1 Hz</string>
+   </property>
+  </action>
+  <action name="actionRTOC_Server_suchen">
+   <property name="text">
+    <string>RTOC-Server suchen</string>
+   </property>
+  </action>
+  <action name="actionSetBackupIntervall">
+   <property name="text">
+    <string>Backout-Intervall: täglich</string>
+   </property>
+  </action>
+  <action name="deviceRAWWidgetToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Geräte RAW</string>
+   </property>
+  </action>
+  <action name="actionUpdate_Rate_1Hz">
+   <property name="text">
+    <string>Update-Rate: 1Hz</string>
+   </property>
+  </action>
+  <action name="actionRTOC_Server_suchen_2">
+   <property name="text">
+    <string>RTOC-Server suchen</string>
+   </property>
+  </action>
+  <action name="actionNeuer_Host_2">
+   <property name="text">
+    <string>Neuer Host</string>
+   </property>
+  </action>
+  <action name="actionkeine_2">
+   <property name="text">
+    <string>keine</string>
+   </property>
+  </action>
+  <action name="actionUpdate_Rate_1Hz_2">
+   <property name="text">
+    <string>Update-Rate: 1Hz</string>
+   </property>
+  </action>
+  <action name="actionNeuer_HOst">
+   <property name="text">
+    <string>Neuer Host</string>
+   </property>
+  </action>
+  <action name="actionkeine_3">
+   <property name="text">
+    <string>keine</string>
+   </property>
+  </action>
+  <action name="actionRTOC_Server_suchen_3">
+   <property name="text">
+    <string>RTOC-Server suchen</string>
    </property>
   </action>
  </widget>

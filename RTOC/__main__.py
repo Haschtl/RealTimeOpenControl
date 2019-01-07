@@ -64,7 +64,7 @@ def setStyleSheet(app, myapp):
             return app, mw
         except ImportError:
             tb = traceback.format_exc()
-            print(tb)
+            #print(tb)
             print("QtModern not installed")
             type = 'QDarkStyle'
     if type == 'QDarkStyle':
@@ -75,7 +75,7 @@ def setStyleSheet(app, myapp):
             return app, myapp
         except ImportError:
             tb = traceback.format_exc()
-            print(tb)
+            #print(tb)
             print("QtModern not installed")
             type == 'qdarkgraystyle'
     if type == 'qdarkgraystyle':
@@ -86,11 +86,13 @@ def setStyleSheet(app, myapp):
             return app, myapp
         except ImportError:
             tb = traceback.format_exc()
-            print(tb)
+            #print(tb)
             print("QtModern not installed")
     packagedir = os.path.dirname(os.path.realpath(__file__))
     with open(packagedir+"/data/ui/darkmode.html", 'r') as myfile:
         stylesheet = myfile.read().replace('\n', '')
+    stylesheet = stylesheet.replace('/data/ui/icons',os.path.join(packagedir,'data','ui','icons').replace('\\','/'))
+    #stylesheet = stylesheet.replace('/data/ui/icons','./data/ui/icons')
     app.setStyleSheet(stylesheet)
     return app, myapp
 

@@ -368,7 +368,7 @@ def setStyle(plot, symbol={}, brush={}):
         pen = pg.mkPen(color=symbol["color"], width=int(
             symbol["width"]), style=int(symbol["style"]))
         plot.setPen(pen)
-        print(symbol["style"])
+        #print(symbol["style"])
         if symbol["shadowWidth"] is not None and symbol["shadowStyle"] is not None:
             plot.setShadowPen(color=symbol["shadowColor"], width=int(
                 symbol["shadowWidth"]), style=int(symbol["shadowStyle"]), cosmetic=True)

@@ -1,6 +1,6 @@
 # RealTime OpenControl (RTOC)
 
-### Version 1.8.9
+### Version 1.9.7.3
 
 [**This README is available in GERMAN here.**](misc/README_german.md)
 
@@ -83,7 +83,7 @@ plotStyles.json // Custom plotstyles for signals are stored in this file
 To use RTOC, the following dependencies must be installed
 
 ```python
-pip3 install numpy pyqt5 pyqtgraph markdown2 xslxwriter scipy
+pip3 install numpy pyqt5 pyqtgraph markdown2 xslxwriter scipy pandas ezodf
 ```
 
 The following packages should also be installed
