@@ -4,8 +4,14 @@ import json
 import socket
 import traceback
 # from Cryptodome.Cipher import DES
-from Cryptodome.Cipher import AES
-import hashlib
+
+try:
+    from Cryptodome.Cipher import AES
+    import hashlib
+except ImportError:
+    AES = None
+    print('CryptodomeX or hashlib not installed! Install with "pip3 install pycryptodomex"')
+
 
 class Server(object):
     """
@@ -23,9 +29,10 @@ class Server(object):
     backlog = 5
     client = None
 
-    def __init__(self, host, port, keyword = None):
+    def __init__(self, host, port, keyword=None, reuse_port=True):
         self.socket = socket.socket()
-        #self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        if reuse_port:
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.setblocking(0)
         self.socket.settimeout(5.0)
         self.socket.bind((host, port))
@@ -33,7 +40,7 @@ class Server(object):
 
         self.keyword = keyword
 
-    def setKeyword(self, keyword = None):
+    def setKeyword(self, keyword=None):
         self.keyword = keyword
 
     def __del__(self):
@@ -88,15 +95,16 @@ class Client(object):
     socket = None
     keyword = None
 
-    def setKeyword(self, keyword = None):
+    def setKeyword(self, keyword=None):
         self.keyword = keyword
 
     def __del__(self):
         self.close()
 
-    def connect(self, host, port, keyword = None):
+    def connect(self, host, port, keyword=None, reuse_port=True):
         self.socket = socket.socket()
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        if reuse_port:
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.setblocking(0)
         self.socket.settimeout(5.0)
         self.socket.connect((host, port))
@@ -127,7 +135,7 @@ class Client(object):
 # helper functions ##
 
 
-def _send(socket, data, key = None):
+def _send(socket, data, key=None):
     try:
         serialized = json.dumps(data)
         # serialized=pickle.dumps(list(data))
@@ -136,7 +144,7 @@ def _send(socket, data, key = None):
     # send the length of the serialized data first
     nonce = b''
     tag = b''
-    if key != None and key != '' and type(key) == str:
+    if key != None and key != '' and type(key) == str and AES is not None:
         # des = DES.new(key.encode(), DES.MODE_ECB)
         # padded_text = pad(serialized)
         # serialized = des.encrypt(padded_text.encode('utf-8'))
@@ -155,7 +163,7 @@ def _send(socket, data, key = None):
     socket.sendall(tag+nonce+serialized)
 
 
-def _recv(socket, key = None):
+def _recv(socket, key=None):
     # read the length of the data, letter by letter until we reach EOL
     length_str = ''
     char = socket.recv(1).decode()
@@ -175,7 +183,7 @@ def _recv(socket, key = None):
             nonceTotal = int(lens[l])
 
     # use a memoryview to receive the data chunk by chunk efficiently
-    if tagTotal>0:
+    if tagTotal > 0:
         tagView = memoryview(bytearray(tagTotal))
         next_offset = 0
         while tagTotal - next_offset > 0:
@@ -184,7 +192,7 @@ def _recv(socket, key = None):
         tagView = tagView.tobytes()
     else:
         tagView = b''
-    if nonceTotal>0:
+    if nonceTotal > 0:
         nonceView = memoryview(bytearray(nonceTotal))
         next_offset = 0
         while nonceTotal - next_offset > 0:
@@ -200,7 +208,7 @@ def _recv(socket, key = None):
         next_offset += recv_size
     view = view.tobytes()
     if key != None and key != '' and type(key) == str:
-        if len(tagView)!=0 and len(nonceView)!=0:
+        if len(tagView) != 0 and len(nonceView) != 0 and AES is not None:
             try:
                 # des = DES.new(key.encode(), DES.MODE_ECB)
                 # decrypted = des.decrypt(view.tobytes())
@@ -218,7 +226,7 @@ def _recv(socket, key = None):
             print("SOCKET PASSWORD ERROR, No password provided!\nCannot receive data")
             return None
     else:
-        if len(tagView)==0 and len(nonceView)==0:
+        if len(tagView) == 0 and len(nonceView) == 0:
             try:
                 deserialized = json.loads(view.decode('utf-8'))
                 return deserialized
@@ -229,7 +237,7 @@ def _recv(socket, key = None):
                 print(tb)
                 return {}
         else:
-            print("SOCKET PASSWORD ERROR, No password provided!\nCannot receive data")
+            print("SOCKET ERROR, No password protection found!\nUnknown error")
             return None
 
     # try:
@@ -246,7 +254,8 @@ def _recv(socket, key = None):
     #         print(tb)
     #         return {}
 
-def pad(text, padding = 16):
+
+def pad(text, padding=16):
     while len(text) % padding != 0:
         text += ' '
     return text

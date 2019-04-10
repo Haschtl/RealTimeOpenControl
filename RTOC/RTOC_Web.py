@@ -1,28 +1,29 @@
 # bokeh serve --show test.py
 from bokeh.plotting import figure, curdoc
 from bokeh.driving import linear
-from PyQt5.QtCore import QCoreApplication
 
 from bokeh.models import ColumnDataSource
 from bokeh.models.widgets import TextInput, PasswordInput
 from bokeh.layouts import column, layout
 from bokeh.models.widgets import Toggle
 from bokeh.models import WheelZoomTool
+from bokeh.palettes import Category20 as palette
 
 import os
 import time
 
-try:
-    from LoggerPlugin import LoggerPlugin
-except ImportError:
-    from ..LoggerPlugin import LoggerPlugin
+from .LoggerPlugin import LoggerPlugin
 
-translate = QCoreApplication.translate
+try:
+    from PyQt5.QtCore import QCoreApplication
+    translate = QCoreApplication.translate
+except ImportError:
+    def translate(id, text):
+        return text
 
 HOST = "127.0.0.1"
 
 # select a palette
-from bokeh.palettes import Category20 as palette
 colors = palette[20]
 
 TOOLTIPS = [
@@ -41,7 +42,7 @@ now = time.time()
 def update(step):
     global signalNames
     global now
-    ans = rtoc_web.sendTCP(getSignalList=True, getSignal='all')
+    ans = rtoc_web._sendTCP(getSignalList=True, getSignal='all')
     if ans != False and ans != None:
         if ans['signalList'] != signalNames:
             for i, name in enumerate(ans['signalList']):
@@ -64,7 +65,7 @@ def update(step):
                     newdata['unit'] = [s.data['unit'][-1] for i in sig[1]]
                     s.data = newdata
                     s.trigger('data', s.data, s.data)
-    elif ans == False:
+    elif ans is False:
         rtoc_web.connectButton.button_type = "danger"
         rtoc_web.connectButton.label = translate('Web', "Verbindung fehlgeschlagen")
         curdoc().remove_periodic_callback(rtoc_web.updater)
@@ -93,18 +94,20 @@ class RTOC_Web(LoggerPlugin):
             # self.connect()
 
     def runHTMLServer(self):
-        curdoc().add_root(column(self.p, sizing_mode='stretch_both')) # 'stretch_both'))
+        curdoc().add_root(column(self.p, sizing_mode='stretch_both'))  # 'stretch_both'))
         curdoc().add_root(column(self.bottom_gui))
         curdoc().title = "RTOC-Web"
         curdoc().theme = 'dark_minimal'
 
     def createGUI(self):
         self.hostInput = TextInput(value=HOST, placeholder=HOST, sizing_mode='scale_width')
-        self.connectButton = Toggle(label=translate('Web', "Verbinden"), sizing_mode='scale_width', name=' ')
+        self.connectButton = Toggle(label=translate('Web', "Verbinden"),
+                                    sizing_mode='scale_width', name=' ')
         self.connectButton.on_click(self.connect)
         self.pauseButton = Toggle(label=translate('Web', "Pause"), sizing_mode='scale_width')
         self.pauseButton.on_click(self.pausePlot)
-        self.passwordInput = PasswordInput(value='', placeholder=translate('Web', '(TCP-Server Passwort)'), sizing_mode='scale_width')
+        self.passwordInput = PasswordInput(value='', placeholder=translate(
+            'Web', '(TCP-Server Passwort)'), sizing_mode='scale_width')
 
         # self.top_gui = layout([[self.pauseButton]], sizing_mode='scale_width')
         self.bottom_gui = layout(
@@ -150,7 +153,7 @@ class RTOC_Web(LoggerPlugin):
         if self.connectButton.active:
             pw = self.passwordInput.value
             if pw == '':
-                pw=None
+                pw = None
             ok = self.checkConnection(self.hostInput.value, self.passwordInput.value)
             if ok is True:
                 self.connectButton.button_type = "success"
@@ -198,13 +201,13 @@ class RTOC_Web(LoggerPlugin):
 
     def checkConnection(self, hostname, password):
         self.createTCPClient(hostname, password)
-        try:
-            print("Trying to connect to "+hostname)
-            ok = self.sendTCP()
-            if ok != False and ok != None:
-                ok = True
-        except:
-            ok = False
+        # try:
+        print("Trying to connect to "+hostname)
+        ok = self.sendTCP()
+        if ok != False and ok != None:
+            ok = True
+        # except:
+        #     ok = False
         return ok
 
 

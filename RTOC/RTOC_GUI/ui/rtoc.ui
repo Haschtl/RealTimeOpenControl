@@ -1,0 +1,1156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>883</width>
+    <height>664</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>RealTime OpenControl</string>
+  </property>
+  <property name="dockOptions">
+   <set>QMainWindow::AllowNestedDocks|QMainWindow::AllowTabbedDocks|QMainWindow::AnimatedDocks|QMainWindow::GroupedDragging</set>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="maximumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+  </widget>
+  <widget class="QDockWidget" name="deviceWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="statusTip">
+    <string>Geräte, für die PlugIns vorhanden sind, erscheinen hier</string>
+   </property>
+   <property name="inputMethodHints">
+    <set>Qt::ImhNone</set>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
+   </property>
+   <property name="windowTitle">
+    <string>&amp;Geräte</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_2">
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLineEdit" name="searchEdit">
+       <property name="placeholderText">
+        <string>Suche Gerät</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QScrollArea" name="scrollArea_2">
+       <property name="minimumSize">
+        <size>
+         <width>180</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="widgetResizable">
+        <bool>true</bool>
+       </property>
+       <widget class="QWidget" name="scrollAreaWidgetContents_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>435</width>
+          <height>85</height>
+         </rect>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>0</height>
+         </size>
+        </property>
+        <layout class="QVBoxLayout" name="verticalLayout_13">
+         <property name="spacing">
+          <number>0</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <layout class="QVBoxLayout" name="deviceLayout">
+           <property name="spacing">
+            <number>0</number>
+           </property>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>0</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="pluginsWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="statusTip">
+    <string>Falls ein Gerät ein GUI-PlugIn besitzt, erscheint dies hier</string>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="allowedAreas">
+    <set>Qt::AllDockWidgetAreas</set>
+   </property>
+   <property name="windowTitle">
+    <string>&amp;Plugins</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_3">
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QToolBox" name="pluginsBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="page_2">
+        <property name="geometry">
+         <rect>
+          <x>0</x>
+          <y>0</y>
+          <width>437</width>
+          <height>85</height>
+         </rect>
+        </property>
+        <attribute name="label">
+         <string>Page 2</string>
+        </attribute>
+       </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>883</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuDatei">
+    <property name="statusTip">
+     <string>Öffnen, Speichern, Exportieren</string>
+    </property>
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Datei</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="loadSessionAction"/>
+    <addaction name="saveSessionAction"/>
+    <addaction name="separator"/>
+    <addaction name="importDataAction"/>
+    <addaction name="exportDataAction"/>
+    <addaction name="separator"/>
+    <addaction name="systemTrayAction"/>
+    <addaction name="separator"/>
+    <addaction name="settingsAction"/>
+    <addaction name="separator"/>
+    <addaction name="actionBeenden"/>
+   </widget>
+   <widget class="QMenu" name="menuFenster">
+    <property name="statusTip">
+     <string>Unterfenster-Darstellung verwalten</string>
+    </property>
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Fenster</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="deviceWidgetToggle"/>
+    <addaction name="pluginsWidgetToggle"/>
+    <addaction name="scriptWidgetToggle"/>
+    <addaction name="eventWidgetToggle"/>
+    <addaction name="deviceRAWWidgetToggle"/>
+   </widget>
+   <widget class="QMenu" name="menuHilfe">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Hilfe</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icons/help.png</normaloff>icons/help.png</iconset>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="clearCacheAction"/>
+    <addaction name="separator"/>
+    <addaction name="helpAction"/>
+    <addaction name="pluginRepoAction"/>
+    <addaction name="separator"/>
+    <addaction name="checkUpdatesAction"/>
+    <addaction name="aboutAction"/>
+   </widget>
+   <widget class="QMenu" name="menuSprache">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Sprache</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="actionDeutsch"/>
+    <addaction name="actionEnglish"/>
+   </widget>
+   <widget class="QMenu" name="menuGer_te">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Geräte</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="getPluginsButton"/>
+   </widget>
+   <widget class="QMenu" name="menuNetzwerk">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Netzwerk</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <widget class="QMenu" name="menuTCP_Server_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>188</width>
+       <height>126</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>TCP - Server</string>
+     </property>
+     <addaction name="actionTCPServer_2"/>
+     <addaction name="actionTCPPassword_2"/>
+     <addaction name="actionTCPPort_2"/>
+    </widget>
+    <widget class="QMenu" name="MeniuTelegramBot">
+     <property name="title">
+      <string>Telegram-Bot</string>
+     </property>
+     <addaction name="actionTelegramBot_2"/>
+     <addaction name="actionBotToken_2"/>
+    </widget>
+    <widget class="QMenu" name="menuMit_Remotehost_verbinden">
+     <property name="title">
+      <string>Mit Remotehost verbinden</string>
+     </property>
+     <addaction name="actionNeuer_HOst"/>
+     <addaction name="separator"/>
+    </widget>
+    <widget class="QMenu" name="menuAktive_Verbindungen">
+     <property name="title">
+      <string>Aktive Verbindungen</string>
+     </property>
+     <addaction name="actionkeine_3"/>
+    </widget>
+    <addaction name="menuTCP_Server_2"/>
+    <addaction name="HTMLServerAction_2"/>
+    <addaction name="MeniuTelegramBot"/>
+    <addaction name="separator"/>
+    <addaction name="menuMit_Remotehost_verbinden"/>
+    <addaction name="menuAktive_Verbindungen"/>
+    <addaction name="actionUpdate_Rate_1Hz_2"/>
+    <addaction name="separator"/>
+    <addaction name="actionSearchRTOCServer"/>
+   </widget>
+   <widget class="QMenu" name="menuBackup">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Backup</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="actionSetBackupFile"/>
+    <addaction name="actionSetBackupIntervall"/>
+   </widget>
+   <addaction name="menuDatei"/>
+   <addaction name="menuGer_te"/>
+   <addaction name="menuNetzwerk"/>
+   <addaction name="menuBackup"/>
+   <addaction name="menuFenster"/>
+   <addaction name="menuSprache"/>
+   <addaction name="menuHilfe"/>
+  </widget>
+  <widget class="QDockWidget" name="scriptDockWidget">
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="windowTitle">
+    <string>Skripte</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_6">
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <layout class="QHBoxLayout" name="scriptLayout"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QToolBar" name="toolBar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="windowTitle">
+    <string>toolBar</string>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>TopToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+  </widget>
+  <widget class="QDockWidget" name="eventWidgets">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="windowTitle">
+    <string>Events</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>8</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents">
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <item>
+      <layout class="QHBoxLayout" name="eventLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+      </layout>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="graphWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::DockWidgetFloatable|QDockWidget::DockWidgetMovable</set>
+   </property>
+   <property name="windowTitle">
+    <string>Graph</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>2</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_5">
+    <layout class="QVBoxLayout" name="verticalLayout_6">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <layout class="QHBoxLayout" name="horizontalLayout">
+       <property name="spacing">
+        <number>0</number>
+       </property>
+       <item>
+        <spacer name="horizontalSpacer_2">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="label_2">
+         <property name="text">
+          <string>Aufzeichnungsdauer:</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QSpinBox" name="maxLengthSpinBox">
+         <property name="toolTip">
+          <string>Ändere die Aufzeichnungsdauer</string>
+         </property>
+         <property name="statusTip">
+          <string>Ändere die Aufzeichnungsdauer</string>
+         </property>
+         <property name="suffix">
+          <string> Messwerte</string>
+         </property>
+         <property name="maximum">
+          <number>1000000000</number>
+         </property>
+         <property name="value">
+          <number>500000</number>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QPushButton" name="clearButton">
+         <property name="toolTip">
+          <string>Lösche alle Signale</string>
+         </property>
+         <property name="statusTip">
+          <string>Lösche alle Signale</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/clear.png</normaloff>icons/clear.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="createGraphButton">
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/graph.png</normaloff>icons/graph.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>25</width>
+           <height>25</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <spacer name="horizontalSpacer_3">
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+         <property name="sizeHint" stdset="0">
+          <size>
+           <width>0</width>
+           <height>20</height>
+          </size>
+         </property>
+        </spacer>
+       </item>
+       <item>
+        <widget class="QLabel" name="drag_content">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="acceptDrops">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </item>
+     <item>
+      <layout class="QVBoxLayout" name="plotLayout"/>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QDockWidget" name="deviceRAWWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="floating">
+    <bool>false</bool>
+   </property>
+   <property name="features">
+    <set>QDockWidget::AllDockWidgetFeatures</set>
+   </property>
+   <property name="windowTitle">
+    <string>Geräte RAW</string>
+   </property>
+   <attribute name="dockWidgetArea">
+    <number>1</number>
+   </attribute>
+   <widget class="QWidget" name="dockWidgetContents_4">
+    <layout class="QVBoxLayout" name="verticalLayout_5">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <property name="leftMargin">
+      <number>0</number>
+     </property>
+     <property name="topMargin">
+      <number>0</number>
+     </property>
+     <property name="rightMargin">
+      <number>0</number>
+     </property>
+     <property name="bottomMargin">
+      <number>0</number>
+     </property>
+     <item>
+      <widget class="QLineEdit" name="pluginSearchInput">
+       <property name="text">
+        <string/>
+       </property>
+       <property name="placeholderText">
+        <string>Suche</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QListWidget" name="pluginCallWidget">
+       <property name="alternatingRowColors">
+        <bool>true</bool>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::NoSelection</enum>
+       </property>
+       <property name="sortingEnabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <action name="exportDataAction">
+   <property name="text">
+    <string>&amp;Daten exportieren</string>
+   </property>
+   <property name="statusTip">
+    <string>Bitte nutze RECHTSKLICK auf Plotbereich</string>
+   </property>
+  </action>
+  <action name="actionBeenden">
+   <property name="text">
+    <string>&amp;Beenden</string>
+   </property>
+  </action>
+  <action name="stylePlotsAction">
+   <property name="text">
+    <string>&amp;Plot anpassen</string>
+   </property>
+   <property name="statusTip">
+    <string>Plot-Darstellung</string>
+   </property>
+  </action>
+  <action name="actionPlot_exportieren">
+   <property name="text">
+    <string>&amp;Plot exportieren</string>
+   </property>
+   <property name="statusTip">
+    <string>Bitte nutze RECHTSKLICK auf Plotbereich</string>
+   </property>
+  </action>
+  <action name="actionFenster">
+   <property name="text">
+    <string>Fenster</string>
+   </property>
+  </action>
+  <action name="signalWidgetToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Signale</string>
+   </property>
+   <property name="statusTip">
+    <string>Signale-Unterfenster</string>
+   </property>
+  </action>
+  <action name="deviceWidgetToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Geräte</string>
+   </property>
+   <property name="statusTip">
+    <string>Geräte-Unterfenster</string>
+   </property>
+  </action>
+  <action name="pluginsWidgetToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>&amp;Plugins</string>
+   </property>
+   <property name="statusTip">
+    <string>Plugins-Unterfenster</string>
+   </property>
+  </action>
+  <action name="scriptWidgetToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>S&amp;kript</string>
+   </property>
+   <property name="statusTip">
+    <string>Skripte-Unterfenster</string>
+   </property>
+  </action>
+  <action name="loadScriptAction">
+   <property name="text">
+    <string>&amp;Skript laden</string>
+   </property>
+   <property name="statusTip">
+    <string>Skript aus Datei laden</string>
+   </property>
+  </action>
+  <action name="saveScriptAction">
+   <property name="text">
+    <string>S&amp;kript speichern</string>
+   </property>
+   <property name="statusTip">
+    <string>Skript in Datei speichern</string>
+   </property>
+  </action>
+  <action name="saveSessionAction">
+   <property name="text">
+    <string>S&amp;ession speichern</string>
+   </property>
+  </action>
+  <action name="actionZuletzt_geladen">
+   <property name="text">
+    <string>Zuletzt geladen</string>
+   </property>
+  </action>
+  <action name="loadSessionAction">
+   <property name="text">
+    <string>Session &amp;laden</string>
+   </property>
+  </action>
+  <action name="helpAction">
+   <property name="text">
+    <string>&amp;Hilfe zu RTOC</string>
+   </property>
+  </action>
+  <action name="aboutAction">
+   <property name="text">
+    <string>Über RTOC</string>
+   </property>
+  </action>
+  <action name="importDataAction">
+   <property name="text">
+    <string>Daten &amp;importieren</string>
+   </property>
+  </action>
+  <action name="systemTrayAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="checked">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Minimize to SystemTray</string>
+   </property>
+  </action>
+  <action name="multiprocessingListenerAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Multiproessing - Listener</string>
+   </property>
+  </action>
+  <action name="actionDeutsch">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Deutsch</string>
+   </property>
+  </action>
+  <action name="actionEnglish">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="eventWidgetToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Events</string>
+   </property>
+  </action>
+  <action name="actionBotToken">
+   <property name="text">
+    <string>Bot-Token eingeben</string>
+   </property>
+  </action>
+  <action name="actionTelegramBot">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Aktiviert</string>
+   </property>
+  </action>
+  <action name="HTMLServerAction">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>RTOC - Web</string>
+   </property>
+  </action>
+  <action name="actionTCPServer">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Aktivieren</string>
+   </property>
+  </action>
+  <action name="actionTCPPassword">
+   <property name="text">
+    <string>Passwort-Schutz</string>
+   </property>
+  </action>
+  <action name="checkUpdatesAction">
+   <property name="text">
+    <string>Auf Updates prüfen</string>
+   </property>
+  </action>
+  <action name="actionTCPPort">
+   <property name="text">
+    <string>Port: 5050</string>
+   </property>
+  </action>
+  <action name="clearCacheAction">
+   <property name="text">
+    <string>Cache leeren</string>
+   </property>
+  </action>
+  <action name="pluginRepoAction">
+   <property name="text">
+    <string>Plugin-Repository</string>
+   </property>
+  </action>
+  <action name="getPluginsButton">
+   <property name="text">
+    <string>Geräte hinzufügen/entfernen</string>
+   </property>
+  </action>
+  <action name="actionTCPServer_2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Aktivieren</string>
+   </property>
+  </action>
+  <action name="actionTCPPassword_2">
+   <property name="text">
+    <string>Passwort-Schutz</string>
+   </property>
+  </action>
+  <action name="actionTCPPort_2">
+   <property name="text">
+    <string>Port: 5050</string>
+   </property>
+  </action>
+  <action name="HTMLServerAction_2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>RTOC - Web</string>
+   </property>
+  </action>
+  <action name="actionTelegramBot_2">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Aktiviert</string>
+   </property>
+  </action>
+  <action name="actionBotToken_2">
+   <property name="text">
+    <string>Bot-Token eingeben</string>
+   </property>
+  </action>
+  <action name="action0_St_ndlich">
+   <property name="text">
+    <string>Backup-Intervall einstellen</string>
+   </property>
+  </action>
+  <action name="action0_T_glich">
+   <property name="text">
+    <string>Täglich</string>
+   </property>
+  </action>
+  <action name="actionSetBackupFile">
+   <property name="text">
+    <string>Backup-Datei festlegen</string>
+   </property>
+  </action>
+  <action name="actionDeleteBackups">
+   <property name="text">
+    <string>Backups löschen</string>
+   </property>
+  </action>
+  <action name="actionBackup_1">
+   <property name="text">
+    <string>Backup 1</string>
+   </property>
+  </action>
+  <action name="actionBackupSettings">
+   <property name="text">
+    <string>Einstellungen</string>
+   </property>
+  </action>
+  <action name="actionNeuer_Host">
+   <property name="text">
+    <string>Neuer Host</string>
+   </property>
+  </action>
+  <action name="actionkeine">
+   <property name="text">
+    <string>keine</string>
+   </property>
+  </action>
+  <action name="actionUpdate_Rate_1_Hz">
+   <property name="text">
+    <string>Update-Rate: 1 Hz</string>
+   </property>
+  </action>
+  <action name="actionRTOC_Server_suchen">
+   <property name="text">
+    <string>RTOC-Server suchen</string>
+   </property>
+  </action>
+  <action name="actionSetBackupIntervall">
+   <property name="text">
+    <string>Backout-Intervall: täglich</string>
+   </property>
+  </action>
+  <action name="deviceRAWWidgetToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Geräte RAW</string>
+   </property>
+  </action>
+  <action name="actionUpdate_Rate_1Hz">
+   <property name="text">
+    <string>Update-Rate: 1Hz</string>
+   </property>
+  </action>
+  <action name="actionRTOC_Server_suchen_2">
+   <property name="text">
+    <string>RTOC-Server suchen</string>
+   </property>
+  </action>
+  <action name="actionNeuer_Host_2">
+   <property name="text">
+    <string>Neuer Host</string>
+   </property>
+  </action>
+  <action name="actionkeine_2">
+   <property name="text">
+    <string>keine</string>
+   </property>
+  </action>
+  <action name="actionUpdate_Rate_1Hz_2">
+   <property name="text">
+    <string>Update-Rate: 1Hz</string>
+   </property>
+  </action>
+  <action name="actionNeuer_HOst">
+   <property name="text">
+    <string>Neuer Host</string>
+   </property>
+  </action>
+  <action name="actionkeine_3">
+   <property name="text">
+    <string>keine</string>
+   </property>
+  </action>
+  <action name="actionSearchRTOCServer">
+   <property name="text">
+    <string>RTOC-Server suchen</string>
+   </property>
+  </action>
+  <action name="ConsoleWidgetToggle">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Console</string>
+   </property>
+  </action>
+  <action name="settingsAction">
+   <property name="text">
+    <string>Einstellungen</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>actionBeenden</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>463</x>
+     <y>398</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

@@ -1,8 +1,8 @@
 include RTOC/*
 include RTOC/data/*
-include RTOC/data/ui/*
+include RTOC/RTOC_GUI/ui/*
 include RTOC/data/lib/*
-include RTOC/data/ui/icons/*
-include RTOC/data/ui/icons/dark/*
+include RTOC/RTOC_GUI/ui/icons/*
+include RTOC/RTOC_GUI/ui/icons/dark/*
 include RTOC/lang/*
 recursive-include RTOC *

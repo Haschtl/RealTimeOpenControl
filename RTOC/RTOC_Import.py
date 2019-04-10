@@ -4,30 +4,33 @@
 # Source: https://python-forum.io/Thread-Read-Write-CSV-Qt5
 
 import csv
-import codecs
 import os
 from io import StringIO
 import sys
 from PyQt5 import QtCore, QtGui, QtWidgets, QtPrintSupport
-from PyQt5.QtGui import QImage, QPainter
 from PyQt5.QtCore import QCoreApplication
-from PyQt5.QtCore import QFile
-import pandas as pd
-import traceback
-import scipy.io as sio
-import ezodf
-
 from PyQt5 import uic
+import traceback
 import re
 
 try:
-    from .data.lib import general_lib as lib
-    from .data.lib import pyqt_customlib as pyqtlib
-    from .data import csvSignalWidget
+    import pandas as pd
 except ImportError:
-    from data.lib import general_lib as lib
-    from data.lib import pyqt_customlib as pyqtlib
-    from data import csvSignalWidget
+    print('pandas not installed! Please install with "pip3 install pandas"')
+    pd = None
+try:
+    import scipy.io as sio
+except ImportError:
+    sio = None
+
+try:
+    import ezodf
+except ImportError:
+    print('ezodf not installed! Please install with "pip3 install ezodf"')
+    ezodf = None
+
+from .lib import pyqt_customlib as pyqtlib
+from .RTOC_GUI import csvSignalWidget
 
 
 translate = QCoreApplication.translate
@@ -42,12 +45,12 @@ class RTOC_Import(QtWidgets.QMainWindow):
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
-        uic.loadUi(packagedir+"/data/ui/csveditor.ui", self)
+        uic.loadUi(packagedir+"/RTOC_GUI/ui/csveditor.ui", self)
 
         self.self = parent
         if parent:
             self.config = parent.config
-        self.sendSignals=sendSignals
+        self.sendSignals = sendSignals
 
         self.fileName = ""
         self.path = ''
@@ -60,10 +63,10 @@ class RTOC_Import(QtWidgets.QMainWindow):
 
         self.signals = []
         if parent:
-            self.profiles= self.config['csv_profiles']
+            self.profiles = self.config['csv_profiles']
             self.loadProfiles()
         else:
-            self.profiles= {}
+            self.profiles = {}
 
         item = QtGui.QStandardItem()
         self.model.appendRow(item)
@@ -114,7 +117,7 @@ class RTOC_Import(QtWidgets.QMainWindow):
 
     def getColumn(self, column):
         if column < self.model.columnCount():
-            columnItems = [self.model.item(row,column) for row in range(self.model.rowCount())]
+            columnItems = [self.model.item(row, column) for row in range(self.model.rowCount())]
         else:
             columnItems = None
         return columnItems
@@ -125,8 +128,8 @@ class RTOC_Import(QtWidgets.QMainWindow):
         if fileName:
             self.loadCsv(fileName)
 
-    def loadCsv(self, fileName, manualDelimiter = False):
-        self.path=fileName
+    def loadCsv(self, fileName, manualDelimiter=False):
+        self.path = fileName
         try:
             ff = open(fileName, 'r')
             mytext = ff.read()
@@ -142,31 +145,33 @@ class RTOC_Import(QtWidgets.QMainWindow):
                     # Load a sheet into a DataFrame by name: df1
                     df1 = xl.parse(xl.sheet_names[0])
                 except:
-                    doc = ezodf.opendoc(fileName)
+                    if ezodf is not None:
+                        doc = ezodf.opendoc(fileName)
 
-                    print("Spreadsheet contains %d sheet(s)." % len(doc.sheets))
-                    for sheet in doc.sheets:
-                        print("-"*40)
-                        print("   Sheet name : '%s'" % sheet.name)
-                        print("Size of Sheet : (rows=%d, cols=%d)" % (sheet.nrows(), sheet.ncols()) )
+                        print("Spreadsheet contains %d sheet(s)." % len(doc.sheets))
+                        for sheet in doc.sheets:
+                            print("-"*40)
+                            print("   Sheet name : '%s'" % sheet.name)
+                            print("Size of Sheet : (rows=%d, cols=%d)" %
+                                  (sheet.nrows(), sheet.ncols()))
 
-                    # convert the first sheet to a pandas.DataFrame
-                    sheet = doc.sheets[0]
-                    df_dict = {}
-                    for i, row in enumerate(sheet.rows()):
-                        # row is a list of cells
-                        # assume the header is on the first row
-                        if i == 0:
-                            # columns as lists in a dictionary
-                            df_dict = {cell.value:[] for cell in row}
-                            # create index for the column headers
-                            col_index = {j:cell.value for j, cell in enumerate(row)}
-                            continue
-                        for j, cell in enumerate(row):
-                            # use header instead of column index
-                            df_dict[col_index[j]].append(cell.value)
-                    # and convert to a DataFrame
-                    df1 = pd.DataFrame(df_dict)
+                        # convert the first sheet to a pandas.DataFrame
+                        sheet = doc.sheets[0]
+                        df_dict = {}
+                        for i, row in enumerate(sheet.rows()):
+                            # row is a list of cells
+                            # assume the header is on the first row
+                            if i == 0:
+                                # columns as lists in a dictionary
+                                df_dict = {cell.value: [] for cell in row}
+                                # create index for the column headers
+                                col_index = {j: cell.value for j, cell in enumerate(row)}
+                                continue
+                            for j, cell in enumerate(row):
+                                # use header instead of column index
+                                df_dict[col_index[j]].append(cell.value)
+                        # and convert to a DataFrame
+                        df1 = pd.DataFrame(df_dict)
                 mytext = df1.to_csv(sep='\t')
                 self.loadCsvStr(mytext)
             except:
@@ -175,11 +180,12 @@ class RTOC_Import(QtWidgets.QMainWindow):
                     data = []
                     print(matlabfile)
                     for k in matlabfile.keys():
-                        if k not in ['__version__','__header__','__globals__']:
+                        if k not in ['__version__', '__header__', '__globals__']:
                             data.append(k)
-                    item, ok = pyqtlib.item_message(self, translate('csveditor','Matlab Import'), translate('csveditor','Bitte wähle einen Datensatz aus der Datei aus.')+'\n'+ matlabfile['__header__'].decode('utf8'), data)
+                    item, ok = pyqtlib.item_message(self, translate('csveditor', 'Matlab Import'), translate(
+                        'csveditor', 'Bitte wähle einen Datensatz aus der Datei aus.')+'\n' + matlabfile['__header__'].decode('utf8'), data)
                     if ok:
-                        self.path=os.path.splitext(str(self.path))[0].split("/")[-1]+".csv"
+                        self.path = os.path.splitext(str(self.path))[0].split("/")[-1]+".csv"
                         with open(self.path, 'w', newline='') as myfile:
                             wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
                             for idx, sig in enumerate(matlabfile[item]):
@@ -191,12 +197,13 @@ class RTOC_Import(QtWidgets.QMainWindow):
                 except:
                     tb = traceback.format_exc()
                     print(tb)
-                    pyqtlib.info_message(translate('csveditor', "Fehler"), translate('csveditor', "Datei ")+fileName+translate('csveditor', " konnte nicht geöffnet werden."), translate('csveditor', "Die Datei ist möglicherweise beschädigt."))
+                    pyqtlib.info_message(translate('csveditor', "Fehler"), translate('csveditor', "Datei ")+fileName+translate(
+                        'csveditor', " konnte nicht geöffnet werden."), translate('csveditor', "Die Datei ist möglicherweise beschädigt."))
 
     def loadCsvStr(self, mytext, manualDelimiter=False):
-        self.csvInfoLabel.setText(translate('csveditor',''))
+        self.csvInfoLabel.setText(translate('csveditor', ''))
         #f = open(fileName, 'r')
-        f=StringIO(mytext)
+        f = StringIO(mytext)
         self.fname = os.path.splitext(str(self.path))[0].split("/")[-1]
         self.setWindowTitle(self.fname)
         if not manualDelimiter:
@@ -211,7 +218,7 @@ class RTOC_Import(QtWidgets.QMainWindow):
                     #print(re.sub(' +', ' ', mytext).strip())
                     reader = csv.reader(f, delimiter=' ')
                     #reader = pd.read_csv(f, sep=' ')
-                elif semicolon <=tabs:
+                elif semicolon <= tabs:
                     #reader = csv.reader(f, delimiter='\t')
                     reader = pd.read_csv(f, sep='\t')
                 else:
@@ -222,7 +229,7 @@ class RTOC_Import(QtWidgets.QMainWindow):
                 for row in reader:
                     items = []
                     for field in row:
-                        if field not in [" ",""]:
+                        if field not in [" ", ""]:
                             items.append(QtGui.QStandardItem(field))
                     #items = [QtGui.QStandardItem(field) for field in row]
                     self.model.appendRow(items)
@@ -230,11 +237,12 @@ class RTOC_Import(QtWidgets.QMainWindow):
             except:
                 tb = traceback.format_exc()
                 print(tb)
-                self.csvInfoLabel.setText(translate('csveditor','Fehler in CSV-Datei ->'))
-                pyqtlib.info_message(translate('csveditor', "Fehler"), translate('csveditor', "Datei ")+self.fname+translate('csveditor', " konnte nicht gelesen werden."), translate('csveditor', "Stellen Sie sicher, dass die CSV-Datei korrekt ist und die Trennzeichen korrekt sind"))
+                self.csvInfoLabel.setText(translate('csveditor', 'Fehler in CSV-Datei ->'))
+                pyqtlib.info_message(translate('csveditor', "Fehler"), translate('csveditor', "Datei ")+self.fname+translate(
+                    'csveditor', " konnte nicht gelesen werden."), translate('csveditor', "Stellen Sie sicher, dass die CSV-Datei korrekt ist und die Trennzeichen korrekt sind"))
         else:
             try:
-                if self.columnDivComboBox.currentText()==' ':
+                if self.columnDivComboBox.currentText() == ' ':
                     #f=StringIO(' '.join(mytext.split()))
                     f = StringIO(re.sub(' +', ' ', mytext).strip())
                 #reader = csv.reader(f, delimiter=self.columnDivComboBox.currentText())
@@ -243,14 +251,15 @@ class RTOC_Import(QtWidgets.QMainWindow):
                 for row in reader:
                     items = []
                     for field in row:
-                        if field not in [" ",""]:
+                        if field not in [" ", ""]:
                             items.append(QtGui.QStandardItem(field))
                     #items = [QtGui.QStandardItem(field) for field in row]
                     self.model.appendRow(items)
                 self.tableView.resizeColumnsToContents()
             except:
-                self.csvInfoLabel.setText(translate('csveditor','Fehler in CSV-Datei ->'))
-                pyqtlib.info_message(translate('csveditor', "Fehler"), translate('csveditor', "Datei ")+self.fname+translate('csveditor', " konnte nicht gelesen werden."), translate('csveditor', "Stellen Sie sicher, dass die CSV-Datei korrekt ist und die Trennzeichen korrekt sind"))
+                self.csvInfoLabel.setText(translate('csveditor', 'Fehler in CSV-Datei ->'))
+                pyqtlib.info_message(translate('csveditor', "Fehler"), translate('csveditor', "Datei ")+self.fname+translate(
+                    'csveditor', " konnte nicht gelesen werden."), translate('csveditor', "Stellen Sie sicher, dass die CSV-Datei korrekt ist und die Trennzeichen korrekt sind"))
 
     def writeCsv(self, fileName):
         # find empty cells
@@ -476,7 +485,8 @@ class RTOC_Import(QtWidgets.QMainWindow):
 
     def loadProfile(self):
         if self.profileComboBox.currentText() in self.profiles.keys():
-            ok = pyqtlib.alert_message(translate('csveditor', 'Profil laden'), translate('csveditor', 'Wollen Sie das Profil ')+self.profileComboBox.currentText()+translate('csveditor', ' wirklich laden?'), translate('csveditor',"Dabei geht die aktuelle Konfiguration verloren."), "", translate('csveditor', "Ja"), translate('csveditor', "Nein"))
+            ok = pyqtlib.alert_message(translate('csveditor', 'Profil laden'), translate('csveditor', 'Wollen Sie das Profil ')+self.profileComboBox.currentText()+translate(
+                'csveditor', ' wirklich laden?'), translate('csveditor', "Dabei geht die aktuelle Konfiguration verloren."), "", translate('csveditor', "Ja"), translate('csveditor', "Nein"))
             if ok:
                 self.clearSignals()
                 profile = self.profiles[self.profileComboBox.currentText()]
@@ -486,24 +496,26 @@ class RTOC_Import(QtWidgets.QMainWindow):
                 self.updateSignalNames()
 
     def addProfile(self):
-        idx =len(self.profiles)
-        text, ok = pyqtlib.text_message(self, translate('csveditor', "Profil speichern"), translate('csveditor', "Speichere die aktuelle Einstellung als Profil\nBitte geben Sie einen Profilnamen an"), translate('csveditor', "Profil ")+str(idx))
+        idx = len(self.profiles)
+        text, ok = pyqtlib.text_message(self, translate('csveditor', "Profil speichern"), translate(
+            'csveditor', "Speichere die aktuelle Einstellung als Profil\nBitte geben Sie einen Profilnamen an"), translate('csveditor', "Profil ")+str(idx))
         if ok:
             profile = []
             for s in self.signals:
                 profile.append(s.read())
-            self.profiles[text]=profile
+            self.profiles[text] = profile
             self.loadProfiles()
 
     def removeProfile(self):
-        ok = pyqtlib.alert_message(translate('csveditor', 'Profil löschen'), translate('csveditor', 'Wollen Sie das Profil ')+self.profileComboBox.currentText()+translate('csveditor', ' wirklich löschen?'), "", "", translate('csveditor', "Ja"), translate('csveditor', "Nein"))
+        ok = pyqtlib.alert_message(translate('csveditor', 'Profil löschen'), translate('csveditor', 'Wollen Sie das Profil ')+self.profileComboBox.currentText(
+        )+translate('csveditor', ' wirklich löschen?'), "", "", translate('csveditor', "Ja"), translate('csveditor', "Nein"))
         if ok:
             self.profiles.pop(self.profileComboBox.currentText())
             self.loadProfiles()
 
     def removeCurrentSignal(self):
         idx = self.signalListWidget.currentRow()
-        if idx <self.signalListWidget.count()-1 and self.signalListWidget.count()>=1:
+        if idx < self.signalListWidget.count()-1 and self.signalListWidget.count() >= 1:
             self.signalListWidget.takeItem(idx)
             self.signals.pop(idx)
 
@@ -513,16 +525,16 @@ class RTOC_Import(QtWidgets.QMainWindow):
 
         self.updateSignalNames()
 
-    def addSignal(self, setup=['','',0,0,'']):
+    def addSignal(self, setup=['', '', 0, 0, '']):
         self.signalListWidget.takeItem(self.signalListWidget.count()-1)
         self.signals.append(csvSignalWidget.CsvSignalWidget(self, setup))
         itemN = QtGui.QListWidgetItem()
         s = self.signals[-1].sizeHint()
         s.setHeight(40)
         itemN.setSizeHint(s)
-        #itemN.setMinimumHeight(50)
+        # itemN.setMinimumHeight(50)
 
-        #Add widget to QListWidget funList
+        # Add widget to QListWidget funList
         self.signalListWidget.addItem(itemN)
         self.signalListWidget.setItemWidget(itemN, self.signals[-1])
         self.signalListWidget.addItem('+')
@@ -556,6 +568,7 @@ class RTOC_Import(QtWidgets.QMainWindow):
 
     def closeEvent(self, event, *args, **kwargs):
         super(RTOC_Import, self).closeEvent(event)
+
 
 if __name__ == "__main__":
     import sys

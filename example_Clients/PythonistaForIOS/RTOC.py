@@ -1,6 +1,6 @@
 try:
     from LoggerPlugin import LoggerPlugin
-except ImportError:
+except (ImportError,SystemError):
     from ..LoggerPlugin import LoggerPlugin
 
 import time

@@ -13,6 +13,14 @@
 # python3 setup.py bdist_wheel
 # python3 -m twine upload dist\*
 
+
+# select different dependencie-levels:
+# pip install 'RTOC'
+# pip install 'RTOC[Telegram]'
+# pip install 'RTOC[GUI]'
+# pip install 'RTOC[Webserver]'
+# pip install 'RTOC[ALL]'
+
 DESCRIPTION = """RealTime OpenControl enables simple real-time data recording, visualization and editing. The recording can be done with a local Python scripts or via TCP locally/from the network. Visualization and editing is available locally, in the network (TCP and HTML) and via Telegram on the smartphone.
 
 In addition to data recording, events can also be recorded. These can, for example, trigger a telegram message.
@@ -55,7 +63,7 @@ try:
     import setuptools
     from setuptools import setup
     from setuptools.command import install
-except ImportError:
+except (ImportError,SystemError):
     sys.stderr.write("Warning: could not import setuptools; falling back to distutils.\n")
     from distutils.core import setup
     from distutils.command import install
@@ -75,9 +83,9 @@ except LookupError:
 path = os.path.split(__file__)[0]
 #sys.path.insert(0, os.path.join(path, 'tools'))
 
-version = "1.9.7.3"
-forcedVersion = "1.9.7.3"
-gitVersion ="1.9.7.3"
+version = "1.9.9"
+forcedVersion = "1.9.9"
+gitVersion ="1.9.9"
 initVersion=1.0
 
 
@@ -141,6 +149,11 @@ class Install(install.install):
 
 setup(
     version=version,
+    entry_points={
+        'console_scripts': [
+            'RTOC = RTOC:main',
+        ],
+    },
     packages=setuptools.find_packages(),
     #package_dir={'RTOC': 'RTOC', 'RTOC.plugins':'plugins', 'RTOC.example_scripts':'example_scripts'},  ## install examples along with the rest of the source
     package_data={
@@ -151,23 +164,30 @@ setup(
     include_package_data=True,
     install_requires = [
         'numpy',
-        'pyqt5',
-        'pyqtgraph',
-        'markdown2',
-        'xlsxwriter',
-        'scipy',
+        'requests',
+        #'scipy',
+        #'pyqt5',
+        #'pyqtgraph',
+        # 'markdown2',
+        # 'xlsxwriter',
 #        'QDarkStyle',
 #        'qtmodern',
 #        'qdarkgraystyle',
-        'python-telegram-bot',
-        'matplotlib',
-        'requests',
+        # 'python-telegram-bot',
+        # 'matplotlib',
         'python-nmap',
-        'bokeh',
+        'whaaaaat',
+        # 'bokeh',
         'pycryptodomex',
-        'pyGithub',
-        'pandas',
-        'ezodf'
+        # 'pyGithub',
+        # 'pandas',
+        # 'ezodf'
         ],
+    extras_require={
+        'GUI':  ["pyqt5", "pyqtgraph","markdown2","pyGithub","pandas","scipy","ezodf","xlsxwriter"],
+        'Webserver': ["bokeh"],
+        'Telegram': ["matplotlib","python-telegram-bot",],
+        'ALL': ["pyqt5", "pyqtgraph","markdown2","pyGithub","pandas","scipy","ezodf","xlsxwriter","bokeh","matplotlib","python-telegram-bot"]
+    },
     **setupOpts
 )

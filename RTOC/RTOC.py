@@ -10,33 +10,20 @@ import traceback
 import json
 import getopt
 import time
-try:
-    from . import RTLogger
-    from .PluginDownloader import PluginDownloader
-    from .data.lib import pyqt_customlib as pyqtlib
-    from .data.lib import general_lib as lib
-    from .data.scriptWidget import ScriptWidget
-    from .data.eventWidget import EventWidget
-    from .data.RTPlotWidget import RTPlotWidget
-    from .data.Actions import Actions
-    from . import RTOC_Import
-    from .data.Daemon import Daemon
 
-except ImportError:
-    import RTLogger
-    import RTOC_Import
-    from PluginDownloader import PluginDownloader
-    from data.lib import pyqt_customlib as pyqtlib
-    from data.lib import general_lib as lib
-    from data.scriptWidget import ScriptWidget
-    from data.eventWidget import EventWidget
-    from data.RTPlotWidget import RTPlotWidget
-    from data.Actions import Actions
-    from data.Daemon import Daemon
+from .RTLogger import RTLogger
+from .lib import pyqt_customlib as pyqtlib
+from .lib import general_lib as lib
+from .RTOC_GUI.scriptWidget import ScriptWidget
+from .RTOC_GUI.eventWidget import EventWidget
+from .RTOC_GUI.RTPlotWidget import RTPlotWidget
+from .RTOC_GUI.Actions import Actions
+from . import RTOC_Import
+from .lib.Daemon import Daemon
 
 if os.name == 'nt':
     import ctypes
-    myappid = 'RTOC.1.9.7.3'  # arbitrary string
+    myappid = 'RTOC.1.9.9'  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 try:
@@ -125,6 +112,8 @@ class SubWindow(QtWidgets.QMainWindow):
 
 
 class RTOC(QtWidgets.QMainWindow, Actions):
+    foundRTOCServerCallback = QtCore.pyqtSignal(list)
+
     def __init__(self, tcp=None, port=5050):
         super(RTOC, self).__init__()
         if getattr(sys, 'frozen', False):
@@ -133,14 +122,13 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
-        uic.loadUi(packagedir+"/data/ui/rtoc.ui", self)
+        uic.loadUi(packagedir+"/RTOC_GUI/ui/rtoc.ui", self)
         self.setAcceptDrops(True)
         self.app_icon = QtGui.QIcon(packagedir+"/data/icon.png")
         self.setWindowIcon(self.app_icon)
         self.tray_icon = QtWidgets.QSystemTrayIcon(self)
         self.tray_icon.setIcon(self.app_icon)
         self.tray_icon.activated.connect(self.systemTrayClickAction)
-
         self.forceQuit = False
         self.initPlotWidgets()
 
@@ -162,6 +150,8 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.logger.stopDeviceCallback = self.remoteDeviceStop
         self.logger.startDeviceCallback = self.remoteDeviceStart
         self.logger.recordingLengthChangedCallback = self.loggerChangedAlert
+        self.logger.reloadDevicesCallback = self.reloadDevices
+        self.logger.reloadDevicesRAWCallback = self.reloadDevicesRAW
 
         self.darkmode = self.config["darkmode"]
         self.signalTimeOut = self.config["signalInactivityTimeout"]
@@ -182,14 +172,16 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             self.scriptDockWidget.hide()
         if not self.config["deviceWidget"]:
             self.deviceWidget.hide()
+        if not self.config["deviceRAWWidget"]:
+            self.deviceRAWWidget.hide()
         if not self.config["eventWidget"]:
             self.eventWidgets.hide()
-        self.deviceRAWWidget.hide()
+        # self.deviceRAWWidget.hide()
         self.actionTCPServer_2.setChecked(self.config["tcpserver"])
         self.HTMLServerAction_2.setChecked(self.config["rtoc_web"])
         self.actionTelegramBot_2.setChecked(self.config["telegram_bot"])
         self.actionBotToken_2.setText(self.config['telegram_token'])
-        if self.config['tcppassword']=='':
+        if self.config['tcppassword'] == '':
             self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: Aus'))
         else:
             self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: An'))
@@ -197,30 +189,42 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.updateLabels()
         self.readSettings()
 
-        self.loadSession('restore.json',True)
+        self.loadSession(self.config['documentfolder']+'/restore.json', True)
         self.pluginsWidget.hide()
 
         self.importer = RTOC_Import.RTOC_Import('', self, self.importCallback)
 
         item = self.config['backupIntervall']
         if item == 60*60:
-            intervall=self.tr('stündlich')
+            intervall = self.tr('stündlich')
         elif item == 60*60*24:
-            intervall=self.tr('täglich')
+            intervall = self.tr('täglich')
         elif item == 60*60*12:
-            intervall=self.tr('2x täglich')
+            intervall = self.tr('2x täglich')
         elif item == 60*60*24*7:
-            intervall=self.tr('wöchentlich')
+            intervall = self.tr('wöchentlich')
         elif item == 60*60*24*30.5:
-            intervall=self.tr('Monatlich')
+            intervall = self.tr('Monatlich')
         if item == 0:
             self.actionSetBackupIntervall.setText(self.tr('Backup deaktiviert'))
         else:
             self.actionSetBackupIntervall.setText(self.tr('Intervall: ')+intervall)
 
+        self.remoteHostWidgets = []
+
+        if not self.config['restoreWidgetPosition']:
+            self.tabifyDockWidget(self.graphWidget, self.eventWidgets)
+            self.tabifyDockWidget(self.graphWidget, self.scriptDockWidget)
+            self.tabifyDockWidget(self.deviceWidget, self.deviceRAWWidget)
+            self.graphWidget.show()
+            self.graphWidget.raise_()
+            self.deviceWidget.show()
+            self.deviceWidget.raise_()
+
     def loggerChangedAlert(self, devicename, dataname, length):
         self.maxLengthSpinBox.setValue(length)
-        pyqtlib.info_message(self.tr("Warning"), self.tr("Recording length was changed to ")+str(length), self.tr('Signal: '+devicename+'.'+dataname))
+        pyqtlib.info_message(self.tr("Warning"), self.tr(
+            "Recording length was changed to ")+str(length), self.tr('Signal: '+devicename+'.'+dataname))
 
     def loadPlotStyles(self):
         filename = self.config['documentfolder']+"/plotStyles.json"
@@ -273,23 +277,60 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.systemTrayAction.setChecked(self.config["systemTray"])
         self.actionTCPServer_2.setChecked(self.config["tcpserver"])
 
+    def reloadDevicesRAW(self):
+        self.updateDeviceRAW()
+
+    def reloadDevices(self):
+        self.logger.getDeviceList()
+        self.initDeviceWidget()
+        self.updateDeviceRAW()
+
     def initDeviceWidget(self):
+        donotreloadplugins = []
+        for i in reversed(range(self.deviceLayout.count())):
+            if not self.deviceLayout.itemAt(i).widget().isChecked() or ':' in self.deviceLayout.itemAt(i).widget().text():
+                self.deviceLayout.itemAt(i).widget().setParent(None)
+            else:
+                donotreloadplugins.append(self.deviceLayout.itemAt(i).widget().text())
+
         for plugin in self.logger.devicenames.keys():
-            button = QtWidgets.QToolButton()
-            button.setText(plugin)
-            button.setCheckable(True)
+            if plugin not in donotreloadplugins:
+                button = QtWidgets.QToolButton()
+                button.setText(plugin)
+                button.setCheckable(True)
 
-            sizePolicy = QtGui.QSizePolicy(
-                QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
-            sizePolicy.setHorizontalStretch(0)
-            sizePolicy.setVerticalStretch(0)
-            button.setSizePolicy(sizePolicy)
+                sizePolicy = QtGui.QSizePolicy(
+                    QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                button.setSizePolicy(sizePolicy)
 
-            button.clicked.connect(partial(self.toggleDevice, plugin, button))
-            self.deviceLayout.addWidget(button)
+                button.clicked.connect(partial(self.toggleDevice, plugin, button))
+                self.deviceLayout.addWidget(button)
 
-            if self.logger.pluginStatus[plugin] == True:
-                button.setChecked(True)
+                if self.logger.pluginStatus[plugin] == True:
+                    button.setChecked(True)
+
+        for plugin in self.logger.remote.devicenames.keys():
+            if plugin not in donotreloadplugins:
+                button = QtWidgets.QToolButton()
+                button.setText(plugin)
+                button.setCheckable(True)
+
+                sizePolicy = QtGui.QSizePolicy(
+                    QtGui.QSizePolicy.Expanding, QtGui.QSizePolicy.Fixed)
+                sizePolicy.setHorizontalStretch(0)
+                sizePolicy.setVerticalStretch(0)
+                button.setSizePolicy(sizePolicy)
+                button.setStyleSheet("background-color: rgb(13, 71, 97);")
+
+                if self.logger.remote.pluginStatus[plugin] == True:
+                    button.setChecked(True)
+
+                name = plugin.split(':')
+                button.clicked.connect(
+                    partial(self.logger.remote.toggleDevice, name[0], name[1], button))
+                self.deviceLayout.addWidget(button)
 
     def initPluginsWidget(self):
         self.pluginsBox.removeItem(0)
@@ -429,24 +470,25 @@ class RTOC(QtWidgets.QMainWindow, Actions):
 
     def loadSession(self, fileName="restore.json", clear=None):
         if clear is None:
-            clear = pyqtlib.alert_message(self.tr('Sitzungen zusammenführen'), self.tr('Möchtest du die bisherige Sitzung entfernen?'), self.tr('Nicht gespeicherte Messungen gehen verloren.'), '', self.tr('Ja'),self.tr('Nein'))
+            clear = pyqtlib.alert_message(self.tr('Sitzungen zusammenführen'), self.tr('Möchtest du die bisherige Sitzung entfernen?'), self.tr(
+                'Nicht gespeicherte Messungen gehen verloren.'), '', self.tr('Ja'), self.tr('Nein'))
         if clear:
             self.clearData()
         ok = self.logger.restoreJSON(fileName, clear)
-        if type(ok)==list:
+        if type(ok) == list:
             self.openScripts(ok)
-            #self.scriptWidget.openFile(self.config["lastScript"])
-        #else:
+            # self.scriptWidget.openFile(self.config["lastScript"])
+        # else:
             #self.scriptWidget.openScript("", "neu")
 
     def openScripts(self, scripts):
         for script in scripts:
-            if type(script)==list:
-                if len(script)==2:
-                    self.scriptWidget.openScript(script[0],script[1])
-                elif len(script)==3:
-                    self.scriptWidget.openScript(script[0],script[1],script[2])
-            elif type(script)==str:
+            if type(script) == list:
+                if len(script) == 2:
+                    self.scriptWidget.openScript(script[0], script[1])
+                elif len(script) == 3:
+                    self.scriptWidget.openScript(script[0], script[1], script[2])
+            elif type(script) == str:
                 self.scriptWidget.openFile(script)
 
     def forceClose(self):
@@ -467,7 +509,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             )
         else:
             self.savePlotStyles()
-            if len(self.logger.signals) >= 0 and self.logger.signalNames != [['RTOC', '']]:
+            if len(self.logger.signals) > 0:
                 ok = pyqtlib.tri_message(
                     self.tr("Speichern"), self.tr("Wollen Sie die aktuelle Sitzung speichern?"), "")
             else:
@@ -475,7 +517,8 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             if ok is not None:
                 if ok == True:
                     scripts = self.scriptWidget.getSession()
-                    self.logger.exportJSON("restore.json", scripts, True)
+                    self.logger.exportJSON(
+                        self.config['documentfolder']+"/restore.json", scripts, True)
                 elif ok == False:
                     if os.path.exists(self.config['documentfolder']+"/restore.json"):
                         os.remove(self.config['documentfolder']+"/restore.json")
@@ -527,7 +570,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
                 text = "Dateityp nicht erkannt"
                 e.ignore()
             else:
-                text = "Datentyp erkannt: "+elementType#+": "+str(elementContent)
+                text = "Datentyp erkannt: "+elementType  # +": "+str(elementContent)
             self.drag_content.setText(text)
         else:
             e.ignore()
@@ -546,19 +589,21 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         try:
             from scipy.io import wavfile
             fs, data = wavfile.read(filename)
-            text, ok = pyqtlib.text_message(self, self.tr("Signalname angeben"), self.tr("Gib einen Namen für das zu importierende Signal an"), os.path.splitext(str(filename))[0].split("/")[-1]+'.Signal')
+            text, ok = pyqtlib.text_message(self, self.tr("Signalname angeben"), self.tr(
+                "Gib einen Namen für das zu importierende Signal an"), os.path.splitext(str(filename))[0].split("/")[-1]+'.Signal')
             if ok:
                 y = list(data)
                 #x = list(range(y))/fs
                 x = [v/fs for v in list(range(len(y)))]
                 names = text.split('.')
-                if len(names)<2:
+                if len(names) < 2:
                     names.append('Signal')
                 self.logger.plot(x, y, sname=names[1], dname=names[0])
         except:
             tb = traceback.format_exc()
             print(tb)
-            pyqtlib.info_message(self.tr("Fehler"), self.tr("Datei ")+filename+self.tr(" konnte nicht geöffnet werden."), self.tr("Die Datei ist möglicherweise beschädigt."))
+            pyqtlib.info_message(self.tr("Fehler"), self.tr("Datei ")+filename+self.tr(
+                " konnte nicht geöffnet werden."), self.tr("Die Datei ist möglicherweise beschädigt."))
 
     def dropEvent(self, e):
         if e.mimeData().hasText:
@@ -596,7 +641,7 @@ class RTOCDaemon(Daemon):
 
     def run(self):
         # Or simply merge your code with MyDaemon.
-        logger = RTLogger(True, self.port)
+        logger = RTLogger.RTLogger(True, self.port)
 
 
 class RTOC_TCP(QtWidgets.QMainWindow):
@@ -666,16 +711,16 @@ def setStyleSheet(app, myapp):
         try:
             import qtmodern.styles
             import qtmodern.windows
-            with open("/data/ui/qtmodern.qss", 'r') as myfile:
+            with open("/RTOC_GUI/ui/qtmodern.qss", 'r') as myfile:
                 stylesheet = myfile.read().replace('\n', '')
             app.setStyleSheet(stylesheet)
             qtmodern.styles.dark(app)
             mw = qtmodern.windows.ModernWindow(myapp)
             #mw = myapp
             return app, mw
-        except ImportError:
+        except (ImportError, SystemError):
             tb = traceback.format_exc()
-            #print(tb)
+            # print(tb)
             print("QtModern not installed")
             type = 'QDarkStyle'
     if type == 'QDarkStyle':
@@ -684,9 +729,9 @@ def setStyleSheet(app, myapp):
             dark_stylesheet = qdarkstyle.load_stylesheet_pyqt5()
             app.setStyleSheet(dark_stylesheet)
             return app, myapp
-        except ImportError:
+        except (ImportError, SystemError):
             tb = traceback.format_exc()
-            #print(tb)
+            # print(tb)
             print("QtModern not installed")
             type == 'qdarkgraystyle'
     if type == 'qdarkgraystyle':
@@ -695,26 +740,28 @@ def setStyleSheet(app, myapp):
             dark_stylesheet = qdarkgraystyle.load_stylesheet()
             app.setStyleSheet(dark_stylesheet)
             return app, myapp
-        except ImportError:
+        except (ImportError, SystemError):
             tb = traceback.format_exc()
-            #print(tb)
+            # print(tb)
             print("QtModern not installed")
 
-    with open("/data/ui/darkmode.html", 'r') as myfile:
+    with open("/RTOC_GUI/ui/darkmode.html", 'r') as myfile:
         stylesheet = myfile.read().replace('\n', '')
     packagedir = os.path.dirname(os.path.realpath(__file__))
-    stylesheet = stylesheet.replace('/data/ui/icons',os.path.join(packagedir,'data','ui','icons').replace('\\','/'))
-    #stylesheet = stylesheet.replace('/data/ui/icons','./data/ui/icons')
+    stylesheet = stylesheet.replace(
+        '/RTOC_GUI/ui/icons', os.path.join(packagedir, 'data', 'ui', 'icons').replace('\\', '/'))
+    #stylesheet = stylesheet.replace('/RTOC_GUI/ui/icons','./RTOC_GUI/ui/icons')
     app.setStyleSheet(stylesheet)
     return app, myapp
 
+
 def setLanguage(app):
-    try:
-        userpath = os.path.expanduser('~/.RTOC')
+    userpath = os.path.expanduser('~/.RTOC')
+    if os.path.exists(userpath+"/config.json"):
         with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
             config = json.load(jsonfile, encoding="UTF-8")
-    except:
-        config={'language':'en'}
+    else:
+        config = {'language': 'en'}
     if config['language'] == 'en':
         translator = QtCore.QTranslator()
         if getattr(sys, 'frozen', False):
@@ -732,7 +779,8 @@ def setLanguage(app):
 
 
 def main():
-    opts, args = getopt.getopt(sys.argv[1:], "hs:p:r:c:", ["server=","remote=","port=",'config='])
+    opts, args = getopt.getopt(sys.argv[1:], "hs:p:r:c:", [
+                               "server=", "remote=", "port=", 'config='])
     if len(opts) == 0:
         startRTOC()
     else:
@@ -747,12 +795,17 @@ def main():
                 print(
                     'RTOC.py [-h, -s] [-r <Remoteadress>]\n -h: Hilfe\n-s (--server) [COMMAND]: TCP-Server ohne GUI\n\t- start: Starts the RTOC-daemon\n\t- stop: Stops the RTOC-daemon\n\t- restart: Restarts the RTOC-daemon\n-r (--remote) <Remoteadresse>: TCP-Client zu RTOC-Server\n-p (--port): Starte TCP-Server auf anderem Port (Standart: 5050)\n-c (--config): Configure RTOC')
                 sys.exit(0)
-            elif opt in ('-s','--server'):
-                # logger = RTLogger.RTLogger(True, port)
-                # #runInBackground()
-                # while logger.run:
-                #     time.sleep(1)
-                # sys.exit(0)
+            elif opt in ('-s', '--server'):
+                if os.name == 'nt':
+                    print('Running RTOC as a service is not supported on windows. Running just in background')
+                    logger = RTLogger.RTLogger(True, port)
+                    # runInBackground()
+                    try:
+                        while logger.run:
+                            time.sleep(1)
+                    finally:
+                        logger.stop()
+                    sys.exit(0)
                 command = arg
                 daemon = RTOCDaemon('/tmp/RTOCDaemon.pid')
                 if command == 'stop':
@@ -762,19 +815,60 @@ def main():
                 elif command == 'start':
                     daemon.start()
                 else:
-                    print('Unknown server command: '+str(command)+'\nUse "start", "stop" or "restart"')
+                    print('Unknown server command: '+str(command) +
+                          '\nUse "start", "stop" or "restart"')
                     sys.exit(1)
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)
                 sys.exit(0)
-            elif opt in ('-c','--config'):
+            elif opt in ('-c', '--config'):
                 configureRTOC(arg)
         #startRTOC(None, port)
 
 
 def configureRTOC(arg):
-    pass
+    userpath = os.path.expanduser('~/.RTOC')
+
+    if os.path.exists(userpath+"/config.json"):
+        with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
+            config = json.load(jsonfile, encoding="UTF-8")
+    else:
+        print('No config-file found in ~/.RTOC/\nPlease start RTOC at least once.')
+        sys.exit(1)
+    if arg == 'list':
+        print('This is your current configuration:')
+        for key in config.keys():
+            if key not in ['csv_profiles', 'telegram_chat_ids', 'lastSessions', 'grid', 'plotLegendEnabled', 'blinkingIdentifier', 'scriptWidget', 'deviceWidget', 'signalsWidget', 'pluginsWidget', 'eventWidget', 'newSignalSymbols', 'plotLabelsEnabled', 'plotGridEnabled', 'plotLegendEnabled', 'signalStyles', 'plotInverted', 'plotRate', 'xTimeBase', 'timeAxis', 'systemTray', 'documentfolder', 'language']:
+                print(key+"\t"+str(config[key]))
+
+    else:
+        splitted = arg.split('=')
+        if len(splitted) != 2:
+            print('Please provide options like this: "python3 -m RTOC -c tcpserver=False\nYour entry didn\'t include a "="')
+            sys.exit(1)
+        else:
+            if splitted[0] not in config.keys():
+                print('The config file has no option '+splitted[0])
+                sys.exit(1)
+            t = type(config[splitted[0]])
+            try:
+                if t != bool:
+                    newValue = t(splitted[1])
+                elif splitted[1].lower() in ['true', '1', 't', 'y', 'yes', 'yeah', 'yup', 'certainly', 'uh-huh', 'ja', 'j', 'jupp', 'jawohl']:
+                    newValue = True
+                else:
+                    newValue = False
+
+                oldValue = config[splitted[0]]
+                config[splitted[0]] = newValue
+                with open(userpath+"/config.json", 'w', encoding="utf-8") as fp:
+                    json.dump(config, fp,  sort_keys=False, indent=4, separators=(',', ': '))
+                print('Option "'+splitted[0]+'" was changed from "' +
+                      str(oldValue)+'" to "'+str(newValue)+'"')
+            except:
+                print('Your entered value "'+splitted[1]+'" is not of the correct type.')
+                sys.exit(1)
 
 # def runInBackground():
 #     app = QtWidgets.QApplication(sys.argv)
@@ -786,12 +880,13 @@ def configureRTOC(arg):
 
 def startRemoteRTOC(remotepath):
     app = QtWidgets.QApplication(sys.argv)
-    try:
-        userpath = os.path.expanduser('~/.RTOC')
+
+    userpath = os.path.expanduser('~/.RTOC')
+    if os.path.exists(userpath+"/config.json"):
         with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
             config = json.load(jsonfile, encoding="UTF-8")
-    except:
-        config={'language':'en'}
+    else:
+        config = {'language': 'en'}
     if config['language'] == 'en':
         print("English language selected")
         translator = QtCore.QTranslator()
@@ -809,30 +904,19 @@ def startRemoteRTOC(remotepath):
     app, myapp = setStyleSheet(app, myapp)
     print(remotepath)
     myapp.show()
-    myapp.pluginsWidget.show()
-    myapp.scriptDockWidget.hide()
-    myapp.deviceWidget.hide()
-    myapp.eventWidgets.show()
-    button = QtWidgets.QPushButton()
-    button.setCheckable(True)
-    button.setChecked(True)
-    myapp.toggleDevice('NetWoRTOC', button)
-    myapp.logger.getPlugin('NetWoRTOC').start(remotepath)
-    myapp.logger.getPlugin('NetWoRTOC').widget.comboBox.setCurrentText(remotepath)
-    myapp.logger.getPlugin('NetWoRTOC').run = False
-    myapp.logger.getPlugin('NetWoRTOC').__openConnectionCallback()
-    #myapp.logger.getPlugin('NetWoRTOC').widget.streamButton.setChecked(True)
+    myapp.logger.remote.connect(hostname=remotepath, port=5050)
     app.exec_()
 
 
-def startRTOC(tcp = None, port = None):
+def startRTOC(tcp=None, port=None):
     app = QtWidgets.QApplication(sys.argv)
-    try:
-        userpath = os.path.expanduser('~/.RTOC')
+
+    userpath = os.path.expanduser('~/.RTOC')
+    if os.path.exists(userpath+"/config.json"):
         with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
             config = json.load(jsonfile, encoding="UTF-8")
-    except:
-        config={'language':'en'}
+    else:
+        config = {'language': 'en'}
     if config['language'] == 'en':
         print("English language selected")
         translator = QtCore.QTranslator()

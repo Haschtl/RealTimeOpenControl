@@ -1,15 +1,14 @@
-# LoggerPlugin v1.6
+# LoggerPlugin v1.6.2
 import traceback
 import time
 import sys
 import os
+from threading import Thread, Lock
 
-try:
-    from . import jsonsocket
-except:
-    import jsonsocket
+from . import jsonsocket
 
-import hashlib
+lock = Lock()
+
 
 class LoggerPlugin:
     def __init__(self, stream=None, plot=None, event=None):
@@ -25,13 +24,14 @@ class LoggerPlugin:
         self.run = False  # False -> stops thread
         self.smallGUI = False
         self.tcppassword = ''
-        self.tcpport=5050
-        self.tcpaddress=''
+        self.tcpport = 5050
+        self.tcpaddress = ''
+        self.tcpthread = True
         self.xy = False
         self.widget = None
 
-    def getDir(self, dir = None):
-        if dir == None:
+    def getDir(self, dir=None):
+        if dir is None:
             dir = __file__
         if getattr(sys, 'frozen', False):
             # frozen
@@ -52,13 +52,17 @@ class LoggerPlugin:
                 kwargs['x'] = [time.time()]*len(y)
             else:
                 kwargs['x'] = [time.time()]
+
+            if 'dname' not in kwargs:
+                kwargs['dname'] = self.deviceName
+
             self.__cb(*args, **kwargs)
         else:
             print('ERROR: cannot stream signals. No callback connected')
 
     def plot(self, x=[], y=[], *args, **kwargs):
         dataname = kwargs.get('sname', "noName")
-        devicename = kwargs.get('dname', "noDevice")
+        devicename = kwargs.get('dname', self.deviceName)
         dataunit = kwargs.get('unit', "")
         hold = kwargs.get('hold', "off")
         autoResize = kwargs.get('autoResize', False)
@@ -82,7 +86,9 @@ class LoggerPlugin:
     def event(self, *args, **kwargs):
         text = kwargs.get('text', "")
         dataname = kwargs.get('sname', None)
-        devicename = kwargs.get('dname', None)
+        devicename = kwargs.get('dname', self.deviceName)
+        value = kwargs.get('value', None)
+        id = kwargs.get('id', None)
         xpos = kwargs.get('x', None)
         priority = kwargs.get('priority', 0)
         for idx, arg in enumerate(args):
@@ -105,7 +111,7 @@ class LoggerPlugin:
         if devicename is None:
             devicename = self.deviceName
         if self.__ev:
-            self.__ev(text, dataname, devicename, xpos, priority)
+            self.__ev(text, dataname, devicename, xpos, priority, value=value, id=id)
         else:
             print("No event connected")
 
@@ -118,102 +124,113 @@ class LoggerPlugin:
             self.sock.setKeyword(password)
 
     def sendTCP(self, *args, **kwargs):
-        dataY = kwargs.get('y', None)
-        datanames = kwargs.get('sname', None)
-        devicename = kwargs.get('dname', self.devicename)
-        dataunits = kwargs.get('unit', None)
-        dataX = kwargs.get('x', None)
-        signals = kwargs.get('getSignal', None)
-        latest = kwargs.get('getLatest', None)
-        events = kwargs.get('getEvent', None)
-        signallist = kwargs.get('getSignalList', False)
-        eventlist = kwargs.get('getEventList', False)
-        pluginlist = kwargs.get('getPluginList', False)
-        plot = kwargs.get('plot', False)
-        event = kwargs.get('event', None)
-        remove = kwargs.get('remove', None)
-        plugin = kwargs.get('plugin', None)
-        logger = kwargs.get('logger', None)
-
-        for idx, arg in enumerate(args):
-            if idx == 0:
-                dataY = arg
-            if idx == 1:
-                datanames = arg
-            if idx == 2:
-                devicename = arg
-            if idx == 3:
-                dataunits = arg
-            if idx == 4:
-                dataX = arg
-
-        if dataX is None and dataY is not None and not plot:
-            dataX = [time.time()]*len(dataY)
-        dicti = {}
-        if dataY is not None:
-            dicti['plot'] = plot
-            dicti['y'] = dataY
-            dicti['x'] = dataX
-            dicti['sname'] = datanames
-            dicti['dname'] = devicename
-            dicti['unit'] = dataunits
-        if signallist:
-            dicti['getSignalList'] = True
-        if eventlist:
-            dicti['getEventList'] = True
-        if event is not None:
-            dicti['event'] = event
-        if events is not None:
-            dicti['getEvent'] = events
-        if signals is not None:
-            dicti['getSignal'] = signals
-        if latest is not None:
-            dicti['getLatest'] = latest
-        if remove is not None:
-            dicti['remove'] = remove
-        if plugin is not None:
-            dicti['plugin'] = plugin
-        if logger is not None:
-            dicti['logger'] = logger
-        if pluginlist:
-            dicti['getPluginList'] = True
-        #if self.tcppassword != '' and self.tcppassword != None:
-            #hash_object = hashlib.sha256(self.tcppassword.encode('utf-8'))
-            #hex_dig = hash_object.hexdigest()
-            #dicti['password'] = hex_dig
-        if self.sock:
-            try:
-                self.sock.connect(self.tcpaddress, self.tcpport, self.tcppassword)
-                self.sock.send(dicti)
-                response = self.sock.recv()
-                self.sock.close()
-                if response == None:
-                #if 'password' in response.keys():
-                    print('passwordprotected')
-                    return None
-                else:
-                    return response
-            except ConnectionRefusedError:
-                print('TCP Connection refused')
-                try:
-                    self.sock.close()
-                except:
-                    pass
-                return False
-            except:
-                tb = traceback.format_exc()
-                print(tb)
-                print("Error sending over TCP")
-                try:
-                    self.sock.close()
-                except:
-                    pass
-                self.sock = jsonsocket.Client()
-                return False
+        if self.tcpthread:
+            t = Thread(target=self._sendTCP, args=(args, kwargs,))
+            t.start()
         else:
-            print("Please createTCPClient first")
-            self.createTCPClient()
-            return False
+            self._sendTCP(*args, **kwargs)
+
+    def _sendTCP(self, *args, **kwargs):
+        with lock:
+            dataY = kwargs.get('y', None)
+            datanames = kwargs.get('sname', None)
+            devicename = kwargs.get('dname', self.devicename)
+            dataunits = kwargs.get('unit', None)
+            dataX = kwargs.get('x', None)
+            signals = kwargs.get('getSignal', None)
+            latest = kwargs.get('getLatest', None)
+            events = kwargs.get('getEvent', None)
+            signallist = kwargs.get('getSignalList', False)
+            eventlist = kwargs.get('getEventList', False)
+            pluginlist = kwargs.get('getPluginList', False)
+            session = kwargs.get('getSession', False)
+            plot = kwargs.get('plot', False)
+            event = kwargs.get('event', None)
+            remove = kwargs.get('remove', None)
+            plugin = kwargs.get('plugin', None)
+            logger = kwargs.get('logger', None)
+
+            for idx, arg in enumerate(args):
+                if idx == 0:
+                    dataY = arg
+                if idx == 1:
+                    datanames = arg
+                if idx == 2:
+                    devicename = arg
+                if idx == 3:
+                    dataunits = arg
+                if idx == 4:
+                    dataX = arg
+
+            if dataX is None and dataY is not None and not plot:
+                dataX = [time.time()]*len(dataY)
+            dicti = {}
+            if dataY is not None:
+                dicti['plot'] = plot
+                dicti['y'] = dataY
+                dicti['x'] = dataX
+                dicti['sname'] = datanames
+                dicti['dname'] = devicename
+                dicti['unit'] = dataunits
+            if signallist:
+                dicti['getSignalList'] = True
+            if eventlist:
+                dicti['getEventList'] = True
+            if event is not None:
+                dicti['event'] = event
+            if events is not None:
+                dicti['getEvent'] = events
+            if signals is not None:
+                dicti['getSignal'] = signals
+            if latest is not None:
+                dicti['getLatest'] = latest
+            if remove is not None:
+                dicti['remove'] = remove
+            if plugin is not None:
+                dicti['plugin'] = plugin
+            if logger is not None:
+                dicti['logger'] = logger
+            if pluginlist:
+                dicti['getPluginList'] = True
+            if session:
+                dicti['getSession'] = True
+            # if self.tcppassword != '' and self.tcppassword != None:
+                # hash_object = hashlib.sha256(self.tcppassword.encode('utf-8'))
+                # hex_dig = hash_object.hexdigest()
+                # dicti['password'] = hex_dig
+            if self.sock:
+                try:
+                    self.sock.connect(self.tcpaddress, self.tcpport, self.tcppassword)
+                    self.sock.send(dicti)
+                    response = self.sock.recv()
+                    self.sock.close()
+                    if response is None:
+                        # if 'password' in response.keys():
+                        print('passwordprotected')
+                        return None
+                    else:
+                        return response
+                except ConnectionRefusedError:
+                    print('TCP Connection refused')
+                    try:
+                        self.sock.close()
+                    except:
+                        pass
+                    return False
+                except:
+                    tb = traceback.format_exc()
+                    print(tb)
+                    print("Error sending over TCP")
+                    try:
+                        self.sock.close()
+                    except:
+                        pass
+                    self.sock = jsonsocket.Client()
+                    return False
+            else:
+                print("Please createTCPClient first")
+                self.createTCPClient()
+                return False
 
     def setDeviceName(self, devicename="noDevice"):
         self.devicename = devicename    # Is shown in GUI
