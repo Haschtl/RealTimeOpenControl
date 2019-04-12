@@ -1,3 +1,5 @@
+## Important: If you installed RTOC with `pip3`, you can now choose between different levels. If you need the graphical user interface, you need to install `pip3 install RTOC[ALL]`. Now you can install RTOC on a RaspberryPi with pip. Installation failed due to missing python3-qt5 package in pip. If you need the GUI on a RaspberryPi, you need to install PyQt5 with `apt install python3-qt5`.
+
 # RealTime OpenControl (RTOC)
 
 ### Version 1.9.9
