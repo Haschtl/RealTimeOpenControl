@@ -1,10 +1,18 @@
 import traceback
+import time
 
 from .importCode import importCode
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 
 class ScriptFunctions:
-    def generateCode(self, s):
+    """
+    This class contains all script-execution-specific functions of RTLogger
+    """
+    
+    def generateCode(self, s, condition=False):
         s = self.replacePluginParameters(s)
         s = self.replacePluginMethods(s)
         s = self.replaceSignalNames(s)
@@ -12,16 +20,16 @@ class ScriptFunctions:
         s, init = self.replaceGlobalVariables(s)
         s = s.replace('global.', 'self.')
         s = self.replaceLibraryFunctions(s)
-
-        s = self.generateTriggerCode(s)
-        s = self.printfunction() + s
-        s = self.createFunction(s)
+        if condition:
+            s = self.createConditionFunction(s)
+        else:
+            s = self.generateTriggerCode(s)
+            s = self.printfunction() + s
+            s = self.createFunction(s)
         s = "import math\nimport numpy as np\nimport sys\nimport scipy as sp\ntry:\n\timport RTOC.RTLogger.scriptLibrary as rtoc\nexcept (ImportError,SystemError):\n\tfrom .RTLogger import scriptLibrary as rtoc\n\n" + init + "\n"+s
         return s
 
     def replacePluginParameters(self, s):
-        for parameter in self.pluginParameters.keys():
-            s = s.replace(parameter, self.pluginParameters[parameter])
         for host in self.remote.devices.keys():
             for device in self.remote.devices[host].keys():
                 for parameter in self.remote.devices[host][device]['parameters']:
@@ -32,11 +40,11 @@ class ScriptFunctions:
 
                     # wenn Parameter verändert werden soll
                     # self.remote.callFuncOrParam(self, host, device, parameter[], value)
+        for parameter in self.pluginParameters.keys():
+            s = s.replace(parameter, self.pluginParameters[parameter])
         return s
 
     def replacePluginMethods(self, s):
-        for function in self.pluginFunctions.keys():
-            s = s.replace(function, self.pluginFunctions[function])
         for host in self.remote.devices.keys():
             for device in self.remote.devices[host].keys():
                 for function in self.remote.devices[host][device]['functions']:
@@ -45,21 +53,22 @@ class ScriptFunctions:
                     s = s.replace(host+':'+device+'.'+function+"()", strung)
                     strung = "self.remote.callFuncOrParam2('"+host+"','"+device+"','"+function+"','"
                     s = s.replace(host+':'+device+'.'+function+"(", strung)
+        for function in self.pluginFunctions.keys():
+            s = s.replace(function, self.pluginFunctions[function])
         return s
 
     def replaceSignalNames(self, s):
-        for signal in self.signalNames:
-            sigIdx = self.getSignalId(signal[0], signal[1])
-            sigIdx = self.signalIDs.index(sigIdx)
-            if sigIdx != -1:
+        for name in self.database.signalNames():
+            sigId = self.database.getSignalID(name[0], name[1])
+            if sigId != -1:
                 s = s.replace(
-                    signal[0]+"."+signal[1]+".x", "np.array(self.signals["+str(sigIdx)+"][0])")
+                    name[0]+"."+name[1]+".x", "np.array(self.database.signals()["+str(sigId)+"][2])")
                 s = s.replace(
-                    signal[0]+"."+signal[1]+".y", "np.array(self.signals["+str(sigIdx)+"][1])")
+                    name[0]+"."+name[1]+".y", "np.array(self.database.signals()["+str(sigId)+"][3])")
                 s = s.replace(
-                    signal[0]+"."+signal[1]+".latest", "self.signals["+str(sigIdx)+"][1][-1]")
+                    name[0]+"."+name[1]+".latest", "self.database.signals()["+str(sigId)+"][3][-1]")
                 s = s.replace(
-                    signal[0]+"."+signal[1], "np.array(self.signals["+str(sigIdx)+"][0]), np.array(self.signals["+str(sigIdx)+"][1])")
+                    name[0]+"."+name[1], "np.array(self.database.signals()["+str(sigId)+"][2]), np.array(self.database.signals()["+str(sigId)+"][3])")
         return s
 
     def replaceLibraryFunctions(self, s):
@@ -70,10 +79,10 @@ class ScriptFunctions:
         return s
 
     def replaceLoggerFunctions(self, s):
-        s = s.replace("stream(", "self.addData(")
+        s = s.replace("stream(", "self.database.addData(")
 
-        s = s.replace("event(", "self.addNewEvent(")
-        s = s.replace("plot(", "self.plot(")
+        s = s.replace("event(", "self.database.addNewEvent(")
+        s = s.replace("plot(", "self.database.plot(")
 
         s = s.replace("print(", "prints += print(")
 
@@ -111,6 +120,11 @@ class ScriptFunctions:
             "\n".join(["\t"+scriptline for scriptline in s.split("\n")]) + "\n\treturn prints\n"
         return s
 
+    def createConditionFunction(self, s):
+        s = "def test(self, clock):\n" + \
+            "\n"+"\treturn "+s + "\n"
+        return s
+
     def generateTriggerCode(self, scriptStr):
         triggered = False
         for item in scriptStr.split("\n"):
@@ -139,7 +153,95 @@ class ScriptFunctions:
                     self.triggerValues[idx] = result
                     return result
 
-        except:
+        except Exception:
             tb = traceback.format_exc()
-            print(tb)
+            logging.debug(tb)
             return False
+
+    def checkCondition(self, conditionStr):
+        try:
+            code = self.generateCode(conditionStr, True)
+        except Exception:
+            tb = traceback.format_exc()
+            tb = tb+'\n'+code+"\nERROR in code generation"
+            logging.error(tb)
+            if self.executedCallback:
+                self.executedCallback(False, tb)
+            return False, tb
+        try:
+            self.condition = importCode(code, "condition")
+            #print(dir(self.condition))
+        except Exception:
+            tb = traceback.format_exc()
+            tb = tb+'\n'+code+"\nSYNTAX ERROR in condition"
+            logging.error(tb)
+            if self.executedCallback:
+                self.executedCallback(False, tb)
+            return False, tb
+        try:
+            self.condition.init(self)
+            # return True
+        except Exception:
+            tb = traceback.format_exc()
+            tb = tb+'\n'+code+"\nERROR in code initialization"
+            logging.error(tb)
+            if self.executedCallback:
+                self.executedCallback(False, tb)
+            return False, tb
+        try:
+            clock = time.time()
+            prints = self.condition.test(self, clock)
+            if self.executedCallback:
+                self.executedCallback(True, prints)
+            return True, prints
+        except Exception:
+            tb = traceback.format_exc()
+            tb = tb+'\n'+code+"\nERROR in code execution"
+            logging.error(tb)
+            if self.executedCallback:
+                self.executedCallback(False, tb)
+            return False, tb
+
+    def executeScript(self, scriptStr):
+        try:
+            code = self.generateCode(scriptStr, False)
+        except Exception:
+            tb = traceback.format_exc()
+            tb = tb+'\n'+code+"\nERROR in code generation"
+            logging.error(tb)
+            if self.executedCallback:
+                self.executedCallback(False, tb)
+            return False, tb
+        try:
+            self.script = importCode(code, "script")
+            #print(dir(self.script))
+        except Exception:
+            tb = traceback.format_exc()
+            tb = tb+'\n'+code+"\nSYNTAX ERROR in script"
+            logging.error(tb)
+            if self.executedCallback:
+                self.executedCallback(False, tb)
+            return False, tb
+        try:
+            self.script.init(self)
+            # return True
+        except Exception:
+            tb = traceback.format_exc()
+            tb = tb+'\n'+code+"\nERROR in code initialization"
+            logging.error(tb)
+            if self.executedCallback:
+                self.executedCallback(False, tb)
+            return False, tb
+        try:
+            clock = time.time()
+            prints = self.script.test(self, clock)
+            if self.executedCallback:
+                self.executedCallback(True, prints)
+            return True, prints
+        except Exception:
+            tb = traceback.format_exc()
+            tb = tb+'\n'+code+"\nERROR in code execution"
+            logging.error(tb)
+            if self.executedCallback:
+                self.executedCallback(False, tb)
+            return False, tb

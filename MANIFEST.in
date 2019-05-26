@@ -1,8 +1,9 @@
 include RTOC/*
-include RTOC/data/*
+include RTOC/RTOC_GUI/*
 include RTOC/RTOC_GUI/ui/*
-include RTOC/data/lib/*
+include RTOC/lib/*
 include RTOC/RTOC_GUI/ui/icons/*
 include RTOC/RTOC_GUI/ui/icons/dark/*
 include RTOC/lang/*
+include RTOC/RTLogger/*
 recursive-include RTOC *

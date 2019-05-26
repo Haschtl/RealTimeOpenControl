@@ -2,12 +2,15 @@ from PyQt5 import QtWidgets
 from PyQt5 import uic
 import time
 import os
-from collections import deque
+# from collections import deque
 import numpy as np
 import sys
 
 from ..lib import pyqt_customlib as pyqtlib
 from .stylePlotGUI import plotStyler
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 
 class SignalEditWidget(QtWidgets.QWidget):
@@ -15,7 +18,7 @@ class SignalEditWidget(QtWidgets.QWidget):
         super(SignalEditWidget, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
-            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
@@ -32,6 +35,8 @@ class SignalEditWidget(QtWidgets.QWidget):
         self.exportButton.clicked.connect(self.exportSignal)
         self.xTimeBaseButton.clicked.connect(self.toggleXTimeBase)
         self.eventButton.clicked.connect(self.toggleEvents)
+
+        self.sendRemoteButton.clicked.connect(self.sendRemote)
         self.offsetXSpinBox.valueChanged.connect(self.setXOffset)
         self.offsetYSpinBox.valueChanged.connect(self.setYOffset)
         self.scaleYSpinBox.valueChanged.connect(self.setYScale)
@@ -68,7 +73,7 @@ class SignalEditWidget(QtWidgets.QWidget):
             self.self.xTimeBase = False
 
     def toggleEvents(self):
-        if self.eventButton.isChecked():
+        if self.eventButton.isChecked() and self.self.config['GUI']['showEvents']:
             self.self.showEvents = True
             for event in self.self.eventItems:
                 event.show()
@@ -80,8 +85,7 @@ class SignalEditWidget(QtWidgets.QWidget):
                 event.vLine.hide()
 
     def editPlotStyle(self):
-        dialog = plotStyler(self.self.plot, "Stil von "+self.self.devicename +
-                            "."+self.self.signalname+" anpassen")
+        dialog = plotStyler(self.self.plot, "Stil von "+self.self.devicename + "."+self.self.signalname+" anpassen")
         if dialog.exec_():
             symbol = dialog.symbol
             brush = dialog.brush
@@ -94,16 +98,14 @@ class SignalEditWidget(QtWidgets.QWidget):
                 elif type(brush[key]) not in [int, float, str]:
                     brush[key] = str(brush[key])
             self.plotWidget.plotStyles[str(self.self.devicename)+"."+str(self.self.signalname)] = {}
-            self.plotWidget.plotStyles[str(self.self.devicename) +
-                                       "."+str(self.self.signalname)]["symbol"] = symbol
-            self.plotWidget.plotStyles[str(self.self.devicename) +
-                                       "."+str(self.self.signalname)]["brush"] = brush
+            self.plotWidget.plotStyles[str(self.self.devicename) + "."+str(self.self.signalname)]["symbol"] = symbol
+            self.plotWidget.plotStyles[str(self.self.devicename) + "."+str(self.self.signalname)]["brush"] = brush
 
             self.self.labelItem.setColor(symbol["color"])
             self.self.updateLegend()
 
     def deleteSignal(self):
-        self.self.remove()
+        self.self.remove(True, True, False)
         self.close()
 
     def cutSignal(self):
@@ -130,24 +132,25 @@ class SignalEditWidget(QtWidgets.QWidget):
                 minIdx = -1
                 maxIdx = -1
 
-                for idx, value in enumerate(self.self.logger.getSignal(self.id)[0]):
+                signal = self.self.logger.database.getSignal(self.id)
+                for idx, value in enumerate(signal[0]):
                     if value > xmin and minIdx == -1:
                         minIdx = idx
                     elif value > xmax and maxIdx == -1:
                         maxIdx = idx
                         break
                 if maxIdx > minIdx:
-                    signalname = self.self.logger.getSignalNames(self.id)[1] + \
-                        "_cut"+str(len(self.self.logger.signals))
-                    devicename = self.self.logger.getSignalNames(self.id)[0]
-                    unit = self.self.logger.getSignalUnits(self.id)
-                    x = list(self.self.logger.getSignal(self.id)[0])[minIdx:maxIdx]
-                    y = list(self.self.logger.getSignal(self.id)[1])[minIdx:maxIdx]
-                    self.self.logger.plot(x, y, signalname, devicename, unit)
+                    signalname = self.self.logger.database.getSignalName(self.id)[1] + \
+                        "_cut"+str(len(self.self.logger.database.signals()[2]))
+                    devicename = self.self.logger.database.getSignalName(self.id)[0]
+                    unit = signal[4]
+                    x = list(signal[2])[minIdx:maxIdx]
+                    y = list(signal[3])[minIdx:maxIdx]
+                    self.self.logger.database.plot(x, y, signalname, devicename, unit)
                     self.self.updatePlot()
 
     def exportSignal(self):
-        dir_path = self.config['documentfolder']
+        dir_path = self.config['global']['documentfolder']
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
         fileBrowser.setNameFilters(
@@ -159,25 +162,26 @@ class SignalEditWidget(QtWidgets.QWidget):
         if fname:
             fileName = fname
             if mask == self.tr('CSV-Datei (*.csv)'):
-                self.self.logger.exportSignal(fileName, self.self.logger.getSignal(self.id))
+                self.self.logger.database.exportSignal(fileName, self.self.logger.database.getSignal(self.id))
 
     def renameSignal(self):
         name, ok = pyqtlib.text_message(
-            self, self.tr("Umbenennen"), self.tr("Bitte gib einen neuen Namen an"), self.self.logger.getSignalNames(self.id)[1])
+            self, self.tr("Umbenennen"), self.tr("Bitte gib einen neuen Namen an"), self.self.logger.database.getSignalName(self.id)[1])
         if name != "" and ok:
-            self.self.logger.getSignalNames(self.id)[1] = name
+            self.self.logger.renameSignal(self.id, name)
         self.self.updatePlot()
         self.self.rename(name)
 
     def duplicateSignal(self):
-        signalname = self.self.logger.getSignalNames(self.id)[1]
-        devicename = self.self.logger.getSignalNames(self.id)[0]
-        x, y = self.self.logger.getSignal(self.id)
-        unit = self.self.logger.getSignalUnits(self.id)
-        self.self.logger.plot(x, y, signalname+"_2", devicename, unit)
+        name = self.self.logger.database.getSignalName(self.id)
+        signal = self.self.logger.database.getSignal(self.id)
+        x = list(signal[2])
+        y = list(signal[3])
+        unit = signal[4]
+        self.self.logger.database.plot(x, y, name[1]+"_2", name[0], unit)
 
     def zeroXOffset(self):
-        value = self.self.logger.getSignal(self.id)[0][-1]
+        value = self.self.logger.database.getSignal(self.id)[2][-1]
         if self.self.xTimeBase:
             self.self.signalModifications[0] = time.time()-value
         else:
@@ -186,7 +190,7 @@ class SignalEditWidget(QtWidgets.QWidget):
         self.self.updatePlot()
 
     def zeroYOffset(self):
-        value = np.mean(self.self.logger.getSignal(self.id)[1])
+        value = np.mean(self.self.logger.database.getSignal(self.id)[3])
         self.self.signalModifications[1] = -value
         self.offsetYSpinBox.setValue(-value)
         self.self.updatePlot()
@@ -213,7 +217,7 @@ class SignalEditWidget(QtWidgets.QWidget):
         self.self.signalModifications[2] = value
         self.self.updatePlot()
 
-    def submitModification(self):
+    def submitModification(self):  # !!!
         ok = pyqtlib.alert_message(
             self.tr("Achtung"), self.tr("Daten werden dauerhaft geändert"), "", "", self.tr("Ja"), self.tr("Nein"))
         if ok:
@@ -222,8 +226,9 @@ class SignalEditWidget(QtWidgets.QWidget):
             scaleX = self.self.signalModifications[2]
             scaleY = self.self.signalModifications[3]
 
-            x = list(self.self.logger.getSignal(self.id)[0])
-            y = list(self.self.logger.getSignal(self.id)[1])
+            signal = self.self.logger.database.getSignal(self.id)
+            x = list(signal[2])
+            y = list(signal[3])
             y = [scaleY*(y+offsetY) for y in y]
             x = [scaleX*(x+offsetX) for x in x]
             if self.xySwapButton.isChecked():
@@ -231,8 +236,7 @@ class SignalEditWidget(QtWidgets.QWidget):
                 x = y
                 y = temp
                 self.xySwapButton.setChecked(False)
-            self.self.logger.getSignal(self.id)[0] = deque(x, self.self.logger.maxLength)
-            self.self.logger.getSignal(self.id)[1] = deque(y, self.self.logger.maxLength)
+            self.self.logger.database.plot(x, y, sname=self.self.signalname, dname=self.self.devicename)
 
             self.scaleXSpinBox.setValue(1)
             self.scaleYSpinBox.setValue(1)
@@ -240,3 +244,27 @@ class SignalEditWidget(QtWidgets.QWidget):
             self.offsetYSpinBox.setValue(0)
 
             self.self.updatePlot()
+
+    def sendRemote(self):
+        signal = self.self.logger.database.getSignal(self.id)
+        name = self.self.logger.database.getSignalName(self.id)
+        textlist = []
+        for s in self.self.logger.config['tcp']['knownHosts'].keys():
+            textlist.append(self.self.logger.config['tcp']['knownHosts'][s][0]+' ('+s+')')
+        item, ok = pyqtlib.item_message(None, self.tr(
+            'Host auswählen'), "Bitte wähle einen bekannten Remote-Host aus", textlist, stylesheet="")
+        if ok:
+            idx = textlist.index(item)
+            for idx2, s in enumerate(self.self.logger.config['tcp']['knownHosts'].keys()):
+                if idx == idx2:
+                    twoname = s.split(':')
+                    host = twoname[0]
+                    port = int(twoname[1])
+                    password = self.self.logger.config['tcp']['knownHosts'][s][1]
+                    self.self.logger.tcpclient.createTCPClient(host, password, port)
+                    ans = self.self.logger.tcpclient._sendTCP(x=list(signal[2]), y=list(
+                        signal[3]), dname=self.self.logger.config['global']['name']+":"+name[0], sname=name[1], unit=signal[4])
+                    if ans:
+                        return
+        pyqtlib.info_message(self.tr("Fehler"), self.tr(
+            'Signal konnte nicht gesendet werden.'), self.tr('Fehler beim Herstellen der Verbindung'))

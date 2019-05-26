@@ -1,19 +1,42 @@
+"""
+This is a collection of functions, which can be used in scripts and global events/actions
+
+To use any of these functions, call them with 'RTOC.<function>(...)' in scripts, events or actions.
+"""
+
 import scipy as sp
 from scipy import signal as scipysignal
 import numpy as np
 
 
-def lsfit(self, x, y, func="linear", *args, **kwargs):
-    x0 = kwargs.get('x0', None)
-    num = kwargs.get('n', None)
-    for idx, arg in enumerate(args):
-        if idx == 0:
-            x0 = arg
-        if idx == 1:
-            num = arg
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
-    if num is None:
-        num = self.maxLength
+
+def lsfit(self, x, y, func="linear", x0=None, n=None):
+    """
+    Use non-linear least squares to fit a function, func, to data.
+
+    This functions calls :func:`scipy.optimize.curve_fit`.
+
+    There are two predefined functions. Set func to 'linear' to perform a linear lsqfit.
+    Set func to 'quad' to perform a quadratic lsqfit.
+
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+        func (function): Least-square function or 'linear' or 'quad'
+        x0 (:func:`np.array`): List of initial parameters for fitting
+        n (int): Length of returned data. If None, default is config['global']['recordLength']
+
+    Returns:
+        x (list): x-values (a linspace)
+        y (list): Fitted y-values
+        params (list): Identified parameters
+    """
+    if n is None:
+        n = self.config['global']['recordLength']
     # Initial guess.
     if type(func) == str:  # automatic mode
         if func == "linear":
@@ -30,49 +53,74 @@ def lsfit(self, x, y, func="linear", *args, **kwargs):
         function = func
 
     params, matrix = sp.optimize.curve_fit(function, x, y, x0)
-    x = np.linspace(min(x), max(x), num)
+    x = np.linspace(min(x), max(x), n)
     y = []
     for value in x:
         y.append(function(value, *params))
     return x, y, params
 
 
-def resample(self, x, y, *args, **kwargs):
-    num = kwargs.get('n', None)
-    for idx, arg in enumerate(args):
-        if idx == 0:
-            num = arg
+def resample(self, x, y, n=None):
+    """
+    One-dimensional linear interpolation.
 
-    if num is None:
-        num = self.maxLength
+    This functions calls :func:`numpy.interp`.
+
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+        n (int): Length of returned data. If None, default is config['global']['recordLength']
+
+    Returns:
+        x (list): x-values (a linspace)
+        y (list): Interpolated y-values
+    """
+    if n is None:
+        n = self.config['global']['recordLength']
     if len(x) == len(y):
-        x2 = np.linspace(x[0], x[-1], num)
+        x2 = np.linspace(x[0], x[-1], n)
         y = np.interp(x2, x, y)
         return np.array(x2), np.array(y)
 
 
-def resampleFourier(self, x, y, *args, **kwargs):
-    num = kwargs.get('n', None)
-    for idx, arg in enumerate(args):
-        if idx == 0:
-            num = arg
+def resampleFourier(self, x, y, n=None):
+    """
+    Resample x to n samples using Fourier method along the given axis.
 
-    if num is None:
-        num = self.maxLength
+    This functions calls :func:`scipy.signal.resample`.
+
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+        n (int): Length of returned data. If None, default is config['global']['recordLength']
+
+    Returns:
+        x (list): x-values (a linspace)
+        y (list): Resampled y-values
+    """
+    if n is None:
+        n = self.config['global']['recordLength']
     if len(x) == len(y):
-        x = np.linspace(x[0], x[-1], num)
-        y, x2 = scipysignal.resample(y, num, x)
+        x = np.linspace(x[0], x[-1], n)
+        y, x2 = scipysignal.resample(y, n, x)
         # y = np.interp(x,signalX,signalY)
         return np.array(x), np.array(y)
 
 
-def combine(self, signalsU, *args, **kwargs):
-    for arg in args:
-        pass  # optionale parameter ohne
-    num = kwargs.get('n', None)
-    # FALSCH, da signals jetzt = [x,y, x,y, x,y]
-    if num is None:
-        num = self.maxLength
+def combine(self, signalsU, n=None):
+    """
+    Combines multiple signals to have the same x-values (uses :meth:`.resample`).
+
+    Args:
+        signalsU (list): List of signals: [[x,y],[x,y],...]
+        n (int): Length of returned data. If None, default is config['global']['recordLength']
+
+    Returns:
+        x (list): x-values (a linspace)
+        y (list[lists]): List of new y-values for each signal
+    """
+    if n is None:
+        n = self.config['global']['recordLength']
     signals = []
     for idx, sig in enumerate(signalsU):
         if idx % 2 != 0:
@@ -84,7 +132,7 @@ def combine(self, signalsU, *args, **kwargs):
         maxx.append(max(list(signal[0])))
     minx = max(minx)
     maxx = min(maxx)
-    newX = np.linspace(minx, maxx, num)
+    newX = np.linspace(minx, maxx, n)
     retSignals = []
     for signal in signals:
         retSignal = []
@@ -99,51 +147,70 @@ def combine(self, signalsU, *args, **kwargs):
     return newX, retSignals
 
 
-def runningMean(x, y, *args, **kwargs):
-    N = kwargs.get('n', 5)
-    for idx, arg in enumerate(args):
-        if idx == 0:
-            N = arg
+def runningMean(x, y, n=5):
+    """
+    Returns moving average of signal
 
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+        n (int): Number of values for moving average
+
+    Returns:
+        x (list): x-values (a linspace)
+        y (list): meaned y-values
+    """
     y2 = np.zeros((len(y),))
     for ctr in range(len(y)):
-        y2[ctr] = np.sum(y[ctr:(ctr+N)])
-    y2 = y2[:-N]
-    n = int(N/2)
-    m = N-n
-    x = x[m:-n]
-    return x, y2/N
+        y2[ctr] = np.sum(y[ctr:(ctr+n)])
+    y2 = y2[:-n]
+    n_2 = int(n/2)
+    m = n-n_2
+    x = x[m:-n_2]
+    return x, y2/n
 
 
-def mean(x, y, *args, **kwargs):
-    N = kwargs.get('n', None)
-    for idx, arg in enumerate(args):
-        if idx == 0:
-            N = arg
+def mean(x, y, n=None):
+    """
+    Returns mean-value of signal
 
-    if len(x) > N:
-        m = y[-N:-1]
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+        n (int): Number of latest values beeing meaned. If None, default is len(x)
+
+    Returns:
+        x (list): x-values (a linspace)
+        y (list): meaned y-values
+    """
+    if n is None:
+        n = len(x)
+    if len(x) > n:
+        m = y[-n:-1]
         n = sum(m)/len(m)
     else:
         n = sum(y)/len(y)
     return n
 
 
-def PID(x, y, desvalue, *args, **kwargs):
-    kp = kwargs.get('kp', 1)
-    ki = kwargs.get('ki', 0)
-    kd = kwargs.get('kd', 0)
-    initI = kwargs.get('initI', None)
-    for idx, arg in enumerate(args):
-        if idx == 0:
-            kp = arg
-        if idx == 1:
-            ki = arg
-        if idx == 2:
-            kd = arg
-        if idx == 3:
-            initI = arg
+def PID(x, y, desvalue, kp=1, ki=0, kd=0, initI=None):
+    """
+    PID-controller.
 
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+        desvalue (float): Desired value
+        kp (float): proportional control parameter
+        ki (float): integrative control parameter
+        kd (float): derived control parameter
+        initI(float): Use this, if 'ki!=0'. You need to pass the initI value from last call of :meth:`.PID`.
+
+    Returns:
+        float: control vlaue
+
+        float (optional): The last integrated value from integrative controller
+    """
     value = y[-1]
     error = value-desvalue
     regelung = kp*error+d(x, y)*kd
@@ -156,6 +223,16 @@ def PID(x, y, desvalue, *args, **kwargs):
 
 
 def d(x, y):
+    """
+    Returns derivative of latest signal-values
+
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+
+    Returns:
+        dy/dx (float): Derivative of latest signal-values
+    """
     if len(y) >= 2:
         dy = y[-2]-y[-1]
         dx = x[-2]-x[-1]
@@ -173,6 +250,16 @@ def d(x, y):
 
 
 def diff(x, y):
+    """
+    Returns derivative of whole signal
+
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+
+    Returns:
+        dy/dx (list): Derivative of whole signal
+    """
     if len(y) >= 2 and len(x) == len(y):
         dx = np.diff(x)
         dy = np.diff(y)
@@ -181,25 +268,25 @@ def diff(x, y):
         return [0], [0]
 
 
-def norm(x, y, *args, **kwargs):
-    normGain = kwargs.get('max', 1)
-    normOffset = kwargs.get('min', 0)
-    min = kwargs.get('oldMin', None)
-    max = kwargs.get('oldMax', None)
-    for idx, arg in enumerate(args):
-        if idx == 0:
-            normGain = arg
-        if idx == 1:
-            normOffset = arg
-        if idx == 2:
-            min = arg
-        if idx == 3:
-            max = arg
+def norm(x, y, max=1, min=0, oldMin=None, oldMax=None):
+    """
+    Normalizes signal to be inbetween 'min' and 'max'.
 
-    if min is None:
-        min = min(y)
-    if max is None:
-        max = max(y)
-    y = (y-min)/max
-    y = y*normGain+normOffset
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+        max (float): The maximum value of output-signal
+        min (float): The minimum value of output-signal
+        oldMin (float): The minimum value of original-signal. If None, this will be min(y)
+        oldMax (float): The maximum value of original-signal. If None, this will be max(y)
+
+    Returns:
+        dy/dx (list): Derivative of whole signal
+    """
+    if oldMin is None:
+        oldMin = min(y)
+    if oldMax is None:
+        oldMax = max(y)
+    y = (y-oldMin)/oldMax
+    y = y*max+min
     return x, y

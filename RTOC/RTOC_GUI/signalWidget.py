@@ -6,12 +6,21 @@ import random
 import time
 from functools import partial
 from datetime import timedelta
+import traceback
+import datetime
+from PyQt5.QtCore import QCoreApplication
 
 from ..lib import general_lib as lib
 from .signalEditWidget import SignalEditWidget
 from . import define as define
+from ..lib import pyqt_customlib as pyqtlib
 from .stylePlotGUI import setStyle as setPlotStyle
 from .stylePlotGUI import getStyle as getPlotStyle
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
+
+translate = QCoreApplication.translate
 
 
 def mouseClickEventPlotCurveItem(self, ev):
@@ -133,7 +142,7 @@ class SignalWidget(QtWidgets.QWidget):
         sizePolicy.setVerticalStretch(0)
         self.layout = QtWidgets.QHBoxLayout()
         self.setLayout(self.layout)
-        #self.legend = QtWidgets.QLabel('-')
+        # self.legend = QtWidgets.QLabel('-')
     #    self.legend.setSizePolicy(sizePolicy)
         self.legend2 = QLine()
         self.button = QtWidgets.QToolButton()
@@ -151,7 +160,7 @@ class SignalWidget(QtWidgets.QWidget):
         self.setCheckable(True)
 
         self.setText(signalname)
-        self.setChecked(logger.config['autoShowGraph'])
+        self.setChecked(logger.config['GUI']['autoShowGraph'])
         self.clicked.connect(self.toggleSignal)
         self.setStyleSheet("QToolButton{background-color: rgb(44, 114, 29)}")
 
@@ -164,7 +173,8 @@ class SignalWidget(QtWidgets.QWidget):
         self.id = id
         self.active = True
         self.showEvents = True
-        self.signalTimeOut = define.signalTimeOut
+        # self.signalTimeOut = define.signalTimeOut
+        self.signalTimeOut = self.logger.config['GUI']['signalInactivityTimeout']
         self.style = {}
         self.xTimeBase = self.plotWidget.xTimeBase
         self.events = []
@@ -174,7 +184,7 @@ class SignalWidget(QtWidgets.QWidget):
         self.animation_thread.window_update_request.connect(self.blinkLabel)
 
         self.initLabel()
-        if self.signalname in lib.column(self.logger.signalNames, 1) and False:
+        if self.signalname in lib.column(self.logger.database.signalNames(), 1) and False:
             self.legendName = signalname+" ["+unit+"]"
         else:
             self.legendName = devicename+"."+signalname+" ["+unit+"]"
@@ -202,7 +212,8 @@ class SignalWidget(QtWidgets.QWidget):
         self.editWidget.xTimeBaseButton.setChecked(self.xTimeBase)
         self.editWidget.labelButton.setChecked(
             self.plotWidget.plotViewWidget.labelButton.isChecked())
-        if self.plotWidget.plotViewWidget.labelButton.isChecked():
+        # if self.plotWidget.plotViewWidget.labelButton.isChecked():
+        if self.logger.config['GUI']['plotLabelsEnabled']:
             self.labelItem.hide()
         self.editWidget.toggleLabel()
 
@@ -212,7 +223,7 @@ class SignalWidget(QtWidgets.QWidget):
         self.toggleSignal()
         self.remoteHost = None
 
-        if remotehost != None:
+        if remotehost is not None:
             self.remoteHost = remotehost
 
     def setCheckable(self, value):
@@ -265,7 +276,7 @@ class SignalWidget(QtWidgets.QWidget):
         self.legend.setText(line+symbol+line)
 
     def setLegendColor(self, color, bgcolor=None):
-        if bgcolor == None:
+        if bgcolor is None:
             self.legend.setStyleSheet(
                 "QLabel { background-color : "+str(color)+"; color : "+str(color)+"; }")
         else:
@@ -277,7 +288,7 @@ class SignalWidget(QtWidgets.QWidget):
         p1 = self.plot.scatter.pointsAt(act_pos)
         if len(p1) != 0:
             x, y = p1[0].pos()
-            # print(x)
+            # logging.debug(x)
             self.display_text.setText(self.devicename+'.'+self.signalname+'\nx=%f\ny=%f' % (x, y))
             self.display_text.setPos(x, y)
             self.display_text.show()
@@ -299,10 +310,8 @@ class SignalWidget(QtWidgets.QWidget):
             symbol["width"] = define.defaultLineWidth
 
             self.plotWidget.plotStyles[str(self.devicename)+"."+str(self.signalname)] = {}
-            self.plotWidget.plotStyles[str(self.devicename) +
-                                       "."+str(self.signalname)]["symbol"] = symbol
-            self.plotWidget.plotStyles[str(self.devicename) +
-                                       "."+str(self.signalname)]["brush"] = {}
+            self.plotWidget.plotStyles[str(self.devicename) + "."+str(self.signalname)]["symbol"] = symbol
+            self.plotWidget.plotStyles[str(self.devicename) + "."+str(self.signalname)]["brush"] = {}
 
             return symbol, brush
 
@@ -338,16 +347,19 @@ class SignalWidget(QtWidgets.QWidget):
         self.signalname = name
         self.labelItem.setText(name)
 
-    def createToolTip(self, id):
-        xdata = list(self.logger.getSignal(id)[0])
+    def createToolTip(self, id, xdata):
         if len(xdata) > 0:
             maxduration = self.calcDuration(list(xdata))
             duration = xdata[-1]-xdata[0]
             try:
-                line1 = str(timedelta(seconds=duration)) + '/ ~ ' + \
-                    str(timedelta(seconds=maxduration))
-                line2 = str(
-                    len(list(xdata)))+"/"+str(self.logger.maxLength)
+                if self.logger.config['postgresql']['active']:
+                    line1 = str(timedelta(seconds=duration))
+                    line2 = str(len(list(xdata)))
+                else:
+                    line1 = str(timedelta(seconds=duration)) + '/ ~ ' + \
+                        str(timedelta(seconds=maxduration))
+                    line2 = str(
+                        len(list(xdata)))+"/"+str(self.logger.config['global']['recordLength'])
                 count = 20
                 if len(xdata) <= count:
                     count = len(xdata)
@@ -363,72 +375,124 @@ class SignalWidget(QtWidgets.QWidget):
                 else:
                     line3 = "? Hz"
                 return line1+"\n"+line2 + "\n" + line3
-            except:
+            except Exception:
+                logging.debug(traceback.format_exc())
+                print(traceback.format_exc())
                 return "Tooltip failed"
         else:
             return "Signal empty"
 
-    def updatePlot(self):
-        current_time = time.time()
-        if len(self.logger.signals) > 0:
-            if len(self.logger.getSignal(self.id)[1]) > 0:
-                current_signal = self.logger.getSignal(self.id)[1][-1]
-                current_unit = self.logger.getSignalUnits(self.id)
-                self.setText(self.signalname)
-                self.label.setText(str(round(current_signal, 5))+" "+str(current_unit))
+    def updateLabel(self, x, y, current_unit):
+        if len(y) > 0:
+            current_signal = y[-1]
+            self.setText(self.signalname)
+            self.label.setText(str(round(current_signal, 5))+" "+str(current_unit))
 
-                self.setToolTip(self.createToolTip(self.id))
-            for idx, event in enumerate(self.logger.getEvents(self.id)[0]):
-                evtext = self.logger.getEvents(self.id)[1][idx]
-                if [event, evtext] not in self.events:
-                    self.events.append([event, evtext])
-                    eventItem = pg.TextItem(str(evtext), color=(
+            self.setToolTip(self.createToolTip(self.id, x))
+
+        lastTimestamp = self.plotWidget.lastUpdate - x[-1]
+        if lastTimestamp >= self.signalTimeOut and self.label.styleSheet() != "background-color: rgb(113, 100, 29)":
+            self.label.setStyleSheet("background-color: rgb(113, 100, 29)")
+        elif lastTimestamp < self.signalTimeOut and self.label.styleSheet() == "background-color: rgb(113, 100, 29)":
+            self.label.setStyleSheet("background-color: #232629")
+
+    def updateEvents(self, offsetX, offsetY, scaleX, scaleY, ctime, current_time):
+        found_ids = []
+        for idx0, e in enumerate(self.plotWidget.self.eventWidget.events):
+        # priority, time("%H:%M:%S %d.%m.%Y", text, devicename, signalname, value, id
+            event = [e[1], e[2], e[0], e[5], e[6], e[3], e[4], e[7]]
+            event[0] = float(datetime.datetime.strptime(event[0], '%H:%M:%S %d.%m.%Y').timestamp())
+            oldEvent = False
+            if event[6] == self.signalname and event[5] == self.devicename:
+                for idx, eventItem in enumerate(self.eventItems):
+                    if eventItem.id == event[7]:
+                        # wenn schon geplottet, dann position anpassen
+                        pos = scaleX*(event[0]-ctime+offsetX)
+                        eventItem.setPos(pos, 0)
+                        self.eventItems[idx].vLine.setPos(pos)
+                        oldEvent = True
+                        found_ids.append(event[7])
+                        break
+                if not oldEvent:
+                    eventItem = pg.TextItem(str(event[1]), color=(
                         200, 200, 200), html=None, anchor=(0, 0.5))
-                    eventItem.setPos(event-current_time, 0)
+                    eventItem.setPos(event[0]-current_time, 0)
                     eventItem.vLine = pg.InfiniteLine(angle=90, movable=False)
-
+                    eventItem.id = event[7]
                     self.eventItems.append(eventItem)
+                    idx = len(self.eventItems)-1
                     self.plotWidget.plot.addItem(eventItem,  ignoreBounds=True)
-                    self.plotWidget.plot.addItem(self.eventItems[idx].vLine, ignoreBounds=True)
-                    if not self.showEvents:
+                    self.plotWidget.plot.addItem(
+                        self.eventItems[idx].vLine, ignoreBounds=True)
+                    if self.showEvents and self.logger.config['GUI']['showEvents']:
+                        pass
+                        logging.debug('NOT HIDDEN')
+                    else:
                         self.eventItems[idx].hide()
                         self.eventItems[idx].vLine.hide()
+                        logging.debug('HIDDEN')
 
-            clock = list(self.logger.getSignal(self.id)[0])
-            if len(clock) > 0 and len(list(self.logger.getSignal(self.id)[1])) > 0:
-                lastTimestamp = self.plotWidget.lastUpdate - clock[-1]
-                if lastTimestamp >= self.signalTimeOut and self.label.styleSheet() != "background-color: rgb(113, 100, 29)":
-                    self.label.setStyleSheet("background-color: rgb(113, 100, 29)")
-                elif lastTimestamp < self.signalTimeOut and self.label.styleSheet() == "background-color: rgb(113, 100, 29)":
-                    self.label.setStyleSheet("background-color: #232629")
+        for idx, eventItem in enumerate(self.eventItems):
+            if eventItem.id not in found_ids:
+                # wenn nicht in datenbank löschen
+                self.eventItems[idx].hide()
+                self.eventItems[idx].vLine.hide()
+                logging.debug('Not deleted, but hidden')
+
+    def updatePlot(self):
+        current_time = time.time()
+        if self.active:
+            offsetX = self.signalModifications[0]
+            offsetY = self.signalModifications[1]
+            scaleX = self.signalModifications[2]
+            scaleY = self.signalModifications[3]
+        # else:
+        #     offsetX = 0
+        #     offsetY = 0
+        #     scaleX = 1
+        #     scaleY = 1
+
+            if self.plotWidget.active and self.xTimeBase:
+                ctime = current_time - self.plotWidget.globalXOffset
+            elif self.xTimeBase:
+                ctime = self.plotWidget.lastActive - self.plotWidget.globalXOffset
+            else:
+                ctime = 0 - self.plotWidget.globalXOffset
+
+            signal = self.logger.database.getSignal(self.id)
+            if signal is None or signal == []:
+                return
+            clock = list(signal[2])
+            y = list(signal[3])
+            # if self.logger.getEvents(self.id) == []:
+            #     # logging.error('COULD NOT DELETE EVENTS FOR SIGNAL ID: '+str(self.id))
+            #     # logging.info('')
+            #     pass
+            # else:
+            if len(clock) > 0 and len(y) > 0:
+                self.updateLabel(clock, y, signal[4])
+                self.updateEvents(offsetX, offsetY, scaleX, scaleY, ctime, current_time)
                 if self.active:
-                    offsetX = self.signalModifications[0]
-                    offsetY = self.signalModifications[1]
-                    scaleX = self.signalModifications[2]
-                    scaleY = self.signalModifications[3]
-                    if self.plotWidget.active and self.xTimeBase:
-                        ctime = current_time - self.plotWidget.globalXOffset
-                    elif self.xTimeBase:
-                        ctime = self.plotWidget.lastActive - self.plotWidget.globalXOffset
-                    else:
-                        ctime = 0 - self.plotWidget.globalXOffset
                     if clock[len(clock)-1] <= current_time+10000 and clock[len(clock)-1] > current_time-10000:
                         for idx2 in range(len(clock)):
                             clock[idx2] = scaleX*(clock[idx2]-ctime+offsetX)
-                        data = list(self.logger.getSignal(self.id)[1])
+                        data = y
                         data = [scaleY*(y+offsetY) for y in data]
-                        signalname = self.logger.getSignalNames(self.id)
                         if len(clock) == len(data):
                             if self.editWidget.xySwapButton.isChecked():
                                 temp = data
                                 data = clock
                                 clock = temp
-                            self.plot.setData(x=clock, y=data)
+                            # if self.logger.config['postgresql']['active'] and len(data) > self.logger.config['global']['recordLength']:
+                            #     start = len(data) - self.logger.config['global']['recordLength']
+                            #     clock = clock[start:-1]
+                            #     data = data[start:-1]
+                            self.plot.setData(x=list(clock), y=list(data))
                             self.labelItem.setPos(clock[-1], data[-1])
                         else:
-                            print(self.devicename+"."+self.signalname+": len(x) != len(y)")
+                            logging.error(self.devicename+"."+self.signalname+": len(x) != len(y)")
                     else:
-                        data = list(self.logger.getSignal(self.id)[1])
+                        data = y
                         data = [scaleY*(y+offsetY) for y in data]
                         clockx = [scaleX*(x+offsetX)-self.plotWidget.globalXOffset for x in clock]
                         if len(clock) == len(data):
@@ -436,15 +500,14 @@ class SignalWidget(QtWidgets.QWidget):
                                 temp = data
                                 data = clockx
                                 clockx = temp
+                            # if self.logger.config['postgresql']['active'] and len(data) > self.logger.config['global']['recordLength']:
+                            #     start = len(data) - self.logger.config['global']['recordLength']
+                            #     clockx = clock[start:-1]
+                            #     data = data[start:-1]
                             self.plot.setData(x=clockx, y=data)
                             self.labelItem.setPos(clockx[-1], data[-1])
                         else:
-                            print(self.devicename+"."+self.signalname+": len(x) != len(y)")
-
-                    for idx, eventItem in enumerate(self.eventItems):
-                        pos = scaleX*(self.events[idx][0]-ctime+offsetX)
-                        eventItem.setPos(pos, 0)
-                        self.eventItems[idx].vLine.setPos(pos)
+                            logging.error(self.devicename+"."+self.signalname+": len(x) != len(y)")
 
     def toggleSignal(self):
         if self.isChecked() and not self.hidden:
@@ -454,9 +517,10 @@ class SignalWidget(QtWidgets.QWidget):
             self.setStyleSheet("QToolButton{background-color: rgb(44, 114, 29)}")
             self.labelItem.show()
             self.updatePlot()
-            for event in self.eventItems:
-                event.show()
-                event.vLine.show()
+            if self.showEvents and self.logger.config['GUI']['showEvents']:
+                for event in self.eventItems:
+                    event.show()
+                    event.vLine.show()
         else:
             self.active = False
             self.plot.clear()
@@ -467,10 +531,13 @@ class SignalWidget(QtWidgets.QWidget):
                 event.hide()
                 event.vLine.hide()
 
-    def remove(self, cb=True, total=True):
+    def remove(self, cb=True, total=True, force = True):
+        database = False
+        if self.logger.config['postgresql']['active'] and not force:
+            database = pyqtlib.alert_message(translate('SignalWidget', 'Aus Datenbank entfernen'), translate('SignalWidget', 'Möchtest du dieses Signal auch aus der Datenbank entfernen?'), translate('SignalWidget', 'Dabei werden auch die Events gelöscht, die dem Signal zugeordnet sind'), "", translate('SignalWidget', "Ja"), translate('SignalWidget', "Nein"))
         self.plotWidget.legend.removeItem(self.legendName)
         if total:
-            idx = self.logger.removeSignal(self.id)
+            self.logger.database.removeSignal(self.id, None, None, database)
         self.labelItem.hide()
         self.button.menu().hide()
         self.hide()
@@ -492,8 +559,20 @@ class SignalWidget(QtWidgets.QWidget):
     def calcDuration(self, x):
         if len(x) > 2:
             dt = x[-1]-x[0]
-            l = len(x)
-            maxlen = self.logger.maxLength
-            return dt/l*maxlen
+            length = len(x)
+            maxlen = self.logger.config['global']['recordLength']
+            return dt/length*maxlen
         else:
             return -1
+
+    def toggleEvents(self, value):
+        if value:
+            self.showEvents = True
+            for event in self.eventItems:
+                event.show()
+                event.vLine.show()
+        else:
+            self.showEvents = False
+            for event in self.eventItems:
+                event.hide()
+                event.vLine.hide()

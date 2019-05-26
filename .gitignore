@@ -1,6 +1,9 @@
 __pycache__/
-RTOC/data/__pycache__/
-RTOC/data/lib/__pycache__/
+RTOC/__pycache__/
+RTOC/RTLogger/__pycache__/
+RTOC/RTLogger/plugins/__pycache__/
+RTOC/RTOC_GUI/__pycache__/
+RTOC/lib/__pycache__/
 RTOC/ProFiler.log
 RTOC/config.json
 build/
@@ -8,3 +11,4 @@ dist/
 bokeh-master/
 RTOC.egg-info/
 test/
+src/

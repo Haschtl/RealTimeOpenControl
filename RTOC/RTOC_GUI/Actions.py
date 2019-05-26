@@ -1,5 +1,5 @@
 import os
-import csv
+# import csv
 from PyQt5 import QtWidgets, QtGui, QtCore
 from functools import partial
 from PyQt5.QtCore import QCoreApplication
@@ -7,13 +7,16 @@ import traceback
 from threading import Thread
 
 from ..lib import pyqt_customlib as pyqtlib
-from ..lib import general_lib as lib
+# from ..lib import general_lib as lib
 from .remoteWidget import RemoteWidget
 from . import settingsWidget
-from ..PluginDownloader import PluginDownloader
+from .PluginDownloader import PluginDownloader
 from ..RTLogger import RTLogger
+import logging as log
 
 translate = QCoreApplication.translate
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 
 class Actions:
@@ -36,7 +39,7 @@ class Actions:
         self.actionTCPPort_2.triggered.connect(self.setTCPPort)
         self.actionUpdate_Rate_1Hz_2.triggered.connect(self.setRemoteSamplerate)
         self.actionUpdate_Rate_1Hz_2.setText(
-            'Update-Rate: '+str(self.config["remoteRefreshRate"])+" Hz")
+            'Update-Rate: '+str(self.config['tcp']['remoteRefreshRate'])+" Hz")
         self.actionSearchRTOCServer.triggered.connect(self.searchRTOCServer)
         self.foundRTOCServerCallback.connect(self.foundRTOCServer, QtCore.Qt.QueuedConnection)
 
@@ -52,14 +55,11 @@ class Actions:
         self.eventWidgetToggle.triggered.connect(self.toggleEventWidget)
         self.deviceRAWWidgetToggle.triggered.connect(self.toggleRAWWidget)
 
-        self.actionSetBackupFile.triggered.connect(self.setBackupFile)
-        self.actionSetBackupIntervall.triggered.connect(self.setBackupIntervall)
-
         self.actionDeutsch.triggered.connect(
             partial(self.toggleLanguage, "de", self.actionDeutsch, [self.actionEnglish], False))
         self.actionEnglish.triggered.connect(
             partial(self.toggleLanguage, "en", self.actionEnglish, [self.actionDeutsch], False))
-        if self.config['language'] == 'de':
+        if self.config['global']['language'] == 'de':
             self.toggleLanguage("de", self.actionDeutsch, [self.actionEnglish], True)
         else:
             self.toggleLanguage("en", self.actionEnglish, [self.actionDeutsch], True)
@@ -77,44 +77,76 @@ class Actions:
 
         self.pluginCallWidget.itemClicked.connect(self.deviceRAWCallback)
 
+        self.pullFromDatabaseAction.triggered.connect(self.pushToDatabase)
+        self.pushToDatabaseAction.triggered.connect(self.pullFromDatabase)
+        self.exportDatabaseAction.triggered.connect(self.exportDatabase)
+
+    def pullFromDatabase(self):
+        self.clearData()
+        self.logger.clear(False)
+        self.logger.database.pullFromDatabase(True, True, True, True)
+        for sigID in self.logger.database.signals().keys():
+            name = self.logger.database.getSignalName(sigID)
+            dataunit = self.logger.database.signals()[sigID][4]
+            self.addNewSignal(sigID, name[0], name[1], dataunit)
+        self.eventWidget.updateAllEvents()
+
+    def pushToDatabase(self):
+        self.logger.database.pushToDatabase()
+
+    def exportDatabase(self):
+        dir_path = self.config['global']['documentfolder']
+        fileBrowser = QtWidgets.QFileDialog(self)
+        fileBrowser.setDirectory(dir_path)
+        fileBrowser.setNameFilters(
+            ["Datei (*)"])
+        fileBrowser.selectNameFilter("")
+        fname, mask = fileBrowser.getSaveFileName(
+            self, self.tr("Datenbank exportieren"), dir_path, "Datei (*)")
+        if fname:
+            fileName = fname
+            if mask == 'Datei (*)':
+                overwrite = False
+                if os.path.exists(fileName):
+                    overwrite = pyqtlib.alert_message(self.tr('Überschreiben'), self.tr('Wollen Sie die Datei überschreiben?'))
+                self.logger.database.exportCSV(fileName, True)
+
     def toggleTcpServer(self):
-        if self.config["tcpserver"]:
-            self.config["tcpserver"] = False
+        if self.config['tcp']['active']:
+            self.config['tcp']['active'] = False
         else:
-            self.config["tcpserver"] = True
-        self.logger.toggleTcpServer(self.config["tcpserver"])
-        self.actionTCPServer_2.setChecked(self.config["tcpserver"])
+            self.config['tcp']['active'] = True
+        self.logger.toggleTcpServer(self.config['tcp']['active'])
+        self.actionTCPServer_2.setChecked(self.config['tcp']['active'])
 
     def toggleHtmlServer(self):
-        if self.config["rtoc_web"]:
-            self.config["rtoc_web"] = False
-        else:
-            self.config["rtoc_web"] = True
-            pyqtlib.info_message(self.tr("RTOC - Web gestartet"), self.tr("RTOC - Web ist jetzt unter localhost:5006 erreichbar"),
-                                 self.tr("Diese Seite kann im gesamten Netzwerk geöffnet werden"))
-        self.logger.toggleHTMLPage(self.config["rtoc_web"])
-        self.HTMLServerAction_2.setChecked(self.config["rtoc_web"])
+        # if self.config["rtoc_web"]:
+        #     self.config["rtoc_web"] = False
+        # else:
+        #     self.config["rtoc_web"] = True
+        pyqtlib.info_message(self.tr("RTOC_Web Fehler"), self.tr("RTOC_Web kann nicht mehr parallel mit der Benutzeroberfläche gestartet werden. Bitte beende RTOC und starte RTOC_Web mit 'python3 -m RTOC.RTLogger -w'"),
+                             self.tr("Wenn du die GUI benötigst, starte danach eine lokale Remote-Verbindung mit 'python3 -m RTOC -r 127.0.0.1'"))
+        # self.HTMLServerAction_2.setChecked(self.config["rtoc_web"])
 
     def toggleTelegramBot(self):
-        if self.config["telegram_bot"]:
-            self.config["telegram_bot"] = False
+        if self.config['telegram']['active']:
+            self.config['telegram']['active'] = False
         else:
-            self.config["telegram_bot"] = True
-        self.logger.toggleTelegramBot(self.config["telegram_bot"])
-        self.actionTelegramBot_2.setChecked(self.config["telegram_bot"])
+            self.config['telegram']['active'] = True
+        self.logger.toggleTelegramBot(self.config['telegram']['active'])
+        self.actionTelegramBot_2.setChecked(self.config['telegram']['active'])
 
     def setBotToken(self):
         ans, ok = pyqtlib.text_message(
-            self, self.tr("Bot Token eingeben"), self.tr('Bitte erzeugen sie in Telegram mit "Botfather" einen Bot,\n generiere einen Bot und füge dessen Token hier ein'), self.config['telegram_token'])
-        if ok:
+            self, self.tr("Bot Token eingeben"), self.tr('Bitte erzeugen sie in Telegram mit "Botfather" einen Bot,\n generiere einen Bot und füge dessen Token hier ein'), self.config['telegram']['token'])
+        if ok and self.logger.telegramBot is not None:
             self.logger.telegramBot.setToken(ans)
-            self.actionBotToken_2.setText(self.config['telegram_token'])
+            self.actionBotToken_2.setText(self.config['telegram']['token'])
 
     def setTCPPassword(self):
         ans, ok = pyqtlib.text_message(
-            self, self.tr("TCP Passwort eingeben"), self.tr('Schütze deine Übertragung vor unerwünschten Gästen\nLeer lassen, um Passwort zu deaktivieren'), self.config['tcppassword'])
+            self, self.tr("TCP Passwort eingeben"), self.tr('Schütze deine Übertragung vor unerwünschten Gästen\nLeer lassen, um Passwort zu deaktivieren'), self.config['tcp']['password'])
         if ok:
-            print(ans)
             self.logger.setTCPPassword(ans)
             if ans == '':
                 self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: Aus'))
@@ -123,7 +155,7 @@ class Actions:
 
     def setTCPPort(self):
         ans, ok = pyqtlib.text_message(
-            self, self.tr("TCP Passwort eingeben"), self.tr('Schütze deine Übertragung vor unerwünschten Gästen\nLeer lassen, um Passwort zu deaktivieren'), self.config['tcppassword'])
+            self, self.tr("TCP Port eingeben"), self.tr('Gib den Port an, an welchem dein Rechner für RTOC erreichbar ist.'), self.config['tcp']['port'])
         if ok:
             try:
                 ans = int(ans)
@@ -133,37 +165,43 @@ class Actions:
                 else:
                     pyqtlib.info_message(self.tr('Fehler'), self.tr(
                         'Bitte gib eine Zahl zwischen 0 und 65535 an'), '')
-            except:
+            except Exception:
+                logging.debug(traceback.format_exc())
                 pyqtlib.info_message(self.tr('Fehler'), self.tr(
                     'Bitte gib eine Zahl zwischen 0 und 65535 an'), self.tr('Ihre Eingabe war ungültig.'))
 
     def toggleSystemTray(self):
-        if self.config["systemTray"]:
-            self.config["systemTray"] = False
+        if self.config['GUI']['systemTray']:
+            self.config['GUI']['systemTray'] = False
         else:
-            self.config["systemTray"] = True
-        self.systemTrayAction.setChecked(self.config["systemTray"])
+            self.config['GUI']['systemTray'] = True
+        self.systemTrayAction.setChecked(self.config['GUI']['systemTray'])
 
     def systemTrayClickAction(self, reason):
         if reason == QtWidgets.QSystemTrayIcon.Context:
-            self.tcp_action.setChecked(self.config['tcpserver'])
-            self.hide_action.setChecked(self.config['systemTray'])
+            self.tcp_action.setChecked(self.config['tcp']['active'])
+            self.hide_action.setChecked(self.config['GUI']['systemTray'])
         elif reason == QtWidgets.QSystemTrayIcon.DoubleClick:
             self.tray_icon.hide()
             self.show()
 
     def resizeLogger(self):
         newLength = self.maxLengthSpinBox.value()
-        self.logger.resizeSignals(newLength)
+        self.logger.database.resizeSignals(newLength)
 
     def clearDataAction(self):
-        #print("deleting plot")
+        logging.info("deleting plot")
         if pyqtlib.alert_message(self.tr("Warnung"), self.tr("Wollen Sie wirklich alle Daten löschen?"), self.tr("(Unwiederrufbar)")):
+
+            if pyqtlib.alert_message(self.tr("Warnung"), self.tr("Wollen Sie auch die Daten in der Datenbank löschen?"), self.tr("(Unwiederrufbar!!)")):
+                database=True
+            else:
+                database = False
             self.clearData()
-            self.logger.clear()
+            self.logger.clear(database)
 
     def loadSessionTriggered(self):
-        dir_path = self.config['documentfolder']
+        dir_path = self.config['global']['documentfolder']
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
         fileBrowser.setNameFilters(["Json (*.json)"])
@@ -177,7 +215,7 @@ class Actions:
                 self.loadSession(fileName)
 
     def saveSessionTriggered(self):
-        dir_path = self.config['documentfolder']
+        dir_path = self.config['global']['documentfolder']
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
         fileBrowser.setNameFilters(
@@ -201,10 +239,10 @@ class Actions:
 
     def importCallback(self, signals):
         for sig in signals:
-            self.logger.plot(*sig)
+            self.logger.database.plot(*sig)
 
     def str2float(self, strung):
-        # print(strung)
+        # logging.debug(strung)
         strung = str(strung)
         strung = strung.replace(',', '.')
         if strung == '':
@@ -212,7 +250,7 @@ class Actions:
         return float(strung)
 
     def exportDataTriggered(self):
-        dir_path = self.config['documentfolder']
+        dir_path = self.config['global']['documentfolder']
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
         fileBrowser.setNameFilters(
@@ -238,45 +276,45 @@ class Actions:
     def toggleDeviceWidget(self):
         if self.deviceWidgetToggle.isChecked():
             self.deviceWidget.show()
-            self.config["deviceWidget"] = True
+            self.config['GUI']['deviceWidget'] = True
         else:
             self.deviceWidget.hide()
-            self.config["deviceWidget"] = False
+            self.config['GUI']['deviceWidget'] = False
 
     def toggleRAWWidget(self):
         if self.deviceRAWWidgetToggle.isChecked():
             self.deviceRAWWidget.show()
-            self.config["deviceRAWWidget"] = True
+            self.config['GUI']['deviceRAWWidget'] = True
         else:
             self.deviceRAWWidget.hide()
-            self.config["deviceRAWWidget"] = False
+            self.config['GUI']['deviceRAWWidget'] = False
 
     def toggleEventWidget(self):
         if self.eventWidgetToggle.isChecked():
             self.eventWidgets.show()
-            self.config["eventWidget"] = True
+            self.config['GUI']['eventWidget'] = True
         else:
             self.eventWidgets.hide()
-            self.config["eventWidget"] = False
+            self.config['GUI']['eventWidget'] = False
 
     def togglePluginsWidget(self):
         if self.pluginsWidgetToggle.isChecked():
             self.pluginsWidget.show()
-            self.config["pluginsWidget"] = True
+            self.config['GUI']['pluginsWidget'] = True
         else:
             self.pluginsWidget.hide()
-            self.config["pluginsWidget"] = False
+            self.config['GUI']['pluginsWidget'] = False
 
     def toggleScriptWidget(self):
         if self.scriptWidgetToggle.isChecked():
             self.scriptDockWidget.show()
-            self.config["scriptWidget"] = True
+            self.config['GUI']['scriptWidget'] = True
         else:
             self.scriptDockWidget.hide()
-            self.config["scriptWidget"] = False
+            self.config['GUI']['scriptWidget'] = False
 
     def importDataTriggered(self):
-        dir_path = self.config['documentfolder']
+        dir_path = self.config['global']['documentfolder']
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
         fileBrowser.setNameFilters(
@@ -321,8 +359,8 @@ class Actions:
             item = self.pluginCallWidget.item(i)
             found = False
             for text in tex.split(';'):
-                # print(text)
-                if (text != "" or tex == ';') and found == False:
+                # logging.debug(text)
+                if (text != "" or tex == ';') and found is False:
                     if text.lower() in item.text().lower() or tex == ";":
                         item.setHidden(False)
                         found = True
@@ -331,17 +369,17 @@ class Actions:
 
     def toggleLanguage(self, newlang, button, otherbuttons, force=False):
         button.setChecked(True)
-        if newlang != self.config["language"] or force == True:
+        if newlang != self.config['global']['language'] or force is True:
             for b in otherbuttons:
                 b.setChecked(False)
-            self.config["language"] = newlang
-            if force == False:
+            self.config['global']['language'] = newlang
+            if force is False:
                 pyqtlib.info_message(self.tr("Sprache geändert"),
                                      self.tr("Bitte Programm neustarten"), "")
 
     def checkUpdates(self):
         current, available = self.logger.check_for_updates()
-        if current != None:
+        if current is not None:
             text = self.tr('Installierte Version: ')+str(current)
             if not available:
                 info = self.tr(
@@ -368,45 +406,8 @@ class Actions:
 
     def openPluginDownloader(self):
         self.pluginDownloader = PluginDownloader(
-            self.config['documentfolder'], 'Haschtl/RTOC-Plugins', self)
+            self.config['global']['documentfolder'], 'Haschtl/RTOC-Plugins', self)
         self.pluginDownloader.show()
-
-    def setBackupIntervall(self):
-        intervall = 0
-        items = [self.tr('Aus'), self.tr('stündlich'), self.tr('täglich'), self.tr(
-            '2x täglich'), self.tr('wöchentlich'), self.tr('Monatlich')]
-        item, ok = pyqtlib.item_message(self, self.tr('Backup Intervall setzen'), self.tr(
-            'Wähle den Zeitabstände zwischen den Backups'), items)
-        if ok:
-            if item == self.tr('stündlich'):
-                intervall = 60*60
-            elif item == self.tr('täglich'):
-                intervall = 60*60*24
-            elif item == self.tr('2x täglich'):
-                intervall = 60*60*12
-            elif item == self.tr('wöchentlich'):
-                intervall = 60*60*24*7
-            elif item == self.tr('Monatlich'):
-                intervall = 60*60*24*30.5
-
-            if intervall == 0:
-                self.actionSetBackupIntervall.setText(self.tr('Backup deaktiviert'))
-            else:
-                self.actionSetBackupIntervall.setText(self.tr('Intervall: ')+item)
-            self.logger.setBackupIntervall(intervall)
-
-    def setBackupFile(self):
-        dir_path = self.config['documentfolder']
-        fileBrowser = QtWidgets.QFileDialog(self)
-        fileBrowser.setDirectory(dir_path)
-        fileBrowser.setNameFilters(
-            ["JSON-Datei (*.json)"])
-        fileBrowser.selectNameFilter("")
-        fname, mask = fileBrowser.getSaveFileName(
-            self, self.tr("Backupdatei erstellen"), dir_path, "JSON-Datei (*.json)")
-        if fname:
-            self.config['backupFile'] = fname
-            self.logger.setBackupIntervall(self.config['backupIntervall'])
 
     def updateDeviceRAW(self):
         self.pluginCallWidget.clear()
@@ -420,8 +421,7 @@ class Actions:
 
         self.logger.remote.getDevices()
         dict = self.logger.remote.devices
-        # print('HAHAHA')
-        # print(dict)
+        # logging.debug(dict)
         for host in dict.keys():
             for sig in dict[host]:
                 if dict[host][sig]['status']:
@@ -463,12 +463,12 @@ class Actions:
                         if host == 'local':
                             self.logger.handleTcpPlugins(dict)
                         else:
-                            # print('remotefunction')
+                            # logging.info('remotefunction')
                             ans = self.logger.remote.callFuncOrParam(
                                 host, plugin, function, self.par)
-                    except:
+                    except Exception:
                         tb = traceback.format_exc()
-                        print(tb)
+                        logging.debug(tb)
                         pyqtlib.info_message(self.tr('Fehler'), self.tr(
                             'Funktionsparameter sind nicht gültig'), self.tr("Bitte geben Sie gültige Parameter an"))
             else:
@@ -482,32 +482,32 @@ class Actions:
                             exec('self.par = '+text)
                             dict = {plugin: {function: self.par}}
                             self.logger.handleTcpPlugins(dict)
-                        except:
+                        except Exception:
                             tb = traceback.format_exc()
-                            print(tb)
+                            logging.debug(tb)
                             pyqtlib.info_message(self.tr('Fehler'), self.tr(
                                 'Wert ungültig'), self.tr("Bitte geben Sie einen gültigen Wert an"))
                 else:
-                    # print('remoteparameter')
+                    # logging.info('remoteparameter')
                     current_value = self.logger.remote.getParam(host, plugin, function)
-                    if current_value != None:
+                    if current_value is not None:
                         text, ok = pyqtlib.text_message(self, self.tr(
                             'Geräte-Parameter ändern'), strung, str(current_value))
                         if ok:
                             self.par = []
                             try:
                                 exec('self.par = '+text)
-                                #dict = {plugin: {function:self.par}}
+                                # dict = {plugin: {function:self.par}}
                                 # self.logger.handleTcpPlugins(dict)
                                 ans = self.logger.remote.callFuncOrParam(
                                     host, plugin, function, self.par)
-                            except:
+                            except Exception:
                                 tb = traceback.format_exc()
-                                print(tb)
+                                logging.debug(tb)
                                 pyqtlib.info_message(self.tr('Fehler'), self.tr(
                                     'Wert ungültig'), self.tr("Bitte geben Sie einen gültigen Wert an"))
                     else:
-                        print('Failed to load parameter')
+                        logging.error('Failed to load parameter')
 
     def updateNetworkMenu(self):
         self.menuMit_Remotehost_verbinden.clear()
@@ -515,10 +515,12 @@ class Actions:
         newAction = self.menuMit_Remotehost_verbinden.addAction(self.tr('Neuer Host'))
         self.menuMit_Remotehost_verbinden.addSeparator()
         activeConnections = self.logger.remote.activeConnections()
-        for s in self.config['knownHosts']:
+        for s in self.config['tcp']['knownHosts'].keys():
             if s not in activeConnections:
-                action = self.menuMit_Remotehost_verbinden.addAction(s)
-                action.triggered.connect(partial(self.connectHost, s))
+                action = self.menuMit_Remotehost_verbinden.addAction(
+                    self.config['tcp']['knownHosts'][s][0]+' ('+s+')')
+                action.triggered.connect(
+                    partial(self.connectHost, s, self.config['tcp']['knownHosts'][s][0], self.config['tcp']['knownHosts'][s][1]))
         for s in activeConnections:
             action = self.menuAktive_Verbindungen.addAction(s)
 
@@ -534,23 +536,27 @@ class Actions:
         ans, ok = pyqtlib.text_message(
             self, 'Verbinde mit neuem Host', 'Verbinde RTOC mit einem neuen Host\n(Inklusive Port ":")', '127.0.0.1')
         if ok:
-            if len(ans.split(':')) == 2:
-                if ans not in self.config['knownHosts']:
-                    self.config['knownHosts'].append(ans)
-                    # self.logger.remote.connect(ans)
-                connected = self.connectHost(ans)
-            elif len(ans.split(':')) == 1:
-                ans = ans+':5050'
-                if ans not in self.config['knownHosts']:
-                    self.config['knownHosts'].append(ans)
-                    # self.logger.remote.connect(ans)
-                connected = self.connectHost(ans)
-            return connected
+            ans2, ok = pyqtlib.text_message(
+                self, 'Name angeben', 'Gib einen Namen für diesen Host an\n(Darf weder "." noch ":" enthalten)', 'RemoteRTOC')
+            if ok:
+                ans2 = ans2.replace('.', 'Dot').replace(':', 'DDot')
+                if len(ans.split(':')) == 2:
+                    if ans not in self.config['tcp']['knownHosts'].keys():
+                        self.config['tcp']['knownHosts'][ans] = [ans2, '']
+                        # self.logger.remote.connect(ans)
+                    connected = self.connectHost(ans, ans2)
+                elif len(ans.split(':')) == 1:
+                    ans = ans+':5050'
+                    if ans not in self.config['tcp']['knownHosts'].keys():
+                        self.config['tcp']['knownHosts'][ans] = [ans2, '']
+                        # self.logger.remote.connect(ans)
+                    connected = self.connectHost(ans, ans2)
+                return connected
         return False
 
-    def addRemoteHostWidget(self, host):
-        remoteHostWidget = QtWidgets.QDockWidget(host, self)
-        widget = RemoteWidget(self, host, remoteHostWidget)
+    def addRemoteHostWidget(self, host, name):
+        remoteHostWidget = QtWidgets.QDockWidget(name, self)
+        widget = RemoteWidget(self, host, remoteHostWidget, name)
         remoteHostWidget.setWidget(widget)
         self.remoteHostWidgets.append(remoteHostWidget)
         self.tabifyDockWidget(self.graphWidget, self.remoteHostWidgets[-1])
@@ -565,6 +571,7 @@ class Actions:
                 self.logger.remote.setSamplerate(samplerate)
                 self.actionUpdate_Rate_1Hz_2.setText('Update-Rate: '+str(samplerate))
             except ValueError:
+                logging.debug(traceback.format_exc())
                 pyqtlib.info_message('Fehler', 'Deine Eingabe war falsch.', '')
 
     def settingsTriggered(self):
@@ -582,13 +589,15 @@ class Actions:
         pyqtlib.info_message(self.tr("Fertig"), self.tr("RTOC-Suche abgeschlossen"),
                              str(len(hostlist)-1)+self.tr(" Server gefunden:")+'\n'+strung)
 
-    def connectHost(self, host):
+    def connectHost(self, host, name, password=''):
         hostsplit = host.split(':')
         hostname = host
-        self.logger.remote.connect(host)
+        host = hostsplit[0]
+        port = int(hostsplit[1])
+        self.logger.remote.connect(host, port, name, password)
         retry = True
         host = hostsplit[0]
-        port = hostsplit[1]
+        self.logger.remote.getConnection(host).tcppassword = password
         while retry:
             retry = False
             status = self.logger.remote.getConnection(host).status
@@ -597,27 +606,38 @@ class Actions:
                     "Der RTOC-Server ")+hostname + self.tr(" ist passwortgeschützt. Bitte Passwort eintragen"),  self.tr('TCP-Passwort'))
                 if ok2:
                     self.logger.remote.getConnection(host).tcppassword = text
-                    self.logger.remote.connect(host)
+                    self.logger.remote.connect(host, port, name, text)
                     retry = True
+                    ok3 = pyqtlib.alert_message(self.tr('Password speichern'), self.tr(
+                        'Möchtest du das Passwort speichern?'), '')
+                    if ok3:
+                        self.logger.config['tcp']['knownHosts'][hostname][1] = text
             elif status is "connected":
                 pyqtlib.info_message(self.tr('Verbindung hergestellt'), self.tr(
                     'Verbindung zu ')+host+self.tr(' an Port ')+str(port)+self.tr(' hergestellt.'), '')
 
-                self.addRemoteHostWidget(host)
+                self.addRemoteHostWidget(host, name)
                 return True
             elif status is "wrongPassword":
                 text, ok = pyqtlib.text_message(None, self.tr('Geschützt'), self.tr('Verbindung zu ')+host+self.tr(
                     ' an Port ')+str(port)+self.tr(' wurde nicht hergestellt.'), self.tr('Passwort ist falsch.'))
                 if ok:
                     self.logger.remote.getConnection(host).tcppassword = text
-                    self.logger.remote.connect(host)
+                    self.logger.remote.connect(host, port, name, text)
                     retry = True
+                    ok3 = pyqtlib.alert_message(self.tr('Password speichern'), self.tr(
+                        'Möchtest du das Passwort speichern?'), '')
+                    if ok3:
+                        self.logger.config['tcp']['knownHosts'][hostname][1] = text
             elif status is "error":
                 ok = pyqtlib.alert_message(self.tr('Verbindungsfehler'), self.tr('Fehler. Verbindung zu ')+host+self.tr(
                     ' an Port ')+str(port)+self.tr(' konnte nicht hergestellt werden.'), self.tr('Erneut versuchen?'))
                 if ok:
-                    self.logger.remote.connect(host)
+                    self.logger.remote.connect(host, port, name, password)
                     retry = True
+            elif status is "connecting...":
+                retry = False
+                return True
             else:
                 pyqtlib.info_message('End of the universe',
                                      'You reached the end of the universe', "This shouldn't happen")

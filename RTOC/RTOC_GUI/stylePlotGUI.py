@@ -6,6 +6,9 @@ import os
 import sys
 
 from . import define as define
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 
 class plotStyler(QtWidgets.QDialog):
@@ -13,7 +16,7 @@ class plotStyler(QtWidgets.QDialog):
         super(plotStyler, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
-            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
@@ -260,7 +263,7 @@ class plotStyler(QtWidgets.QDialog):
         elif style in ["P P S", 'D D S']:
             symbol["style"] = QtCore.Qt.DashDotDotLine
         else:
-            print('no style applied')
+            logging.warning('no style applied')
 
         style = self.shadowStyleComboBox.currentText()
         if style in ["Linie", "Line"]:
@@ -368,7 +371,7 @@ def setStyle(plot, symbol={}, brush={}):
         pen = pg.mkPen(color=symbol["color"], width=int(
             symbol["width"]), style=int(symbol["style"]))
         plot.setPen(pen)
-        # print(symbol["style"])
+        # logging.debug(symbol["style"])
         if symbol["shadowWidth"] is not None and symbol["shadowStyle"] is not None:
             plot.setShadowPen(color=symbol["shadowColor"], width=int(
                 symbol["shadowWidth"]), style=int(symbol["shadowStyle"]), cosmetic=True)

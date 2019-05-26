@@ -4,7 +4,9 @@ from PyQt5 import QtWidgets
 from PyQt5.QtCore import QCoreApplication
 import os
 import sys
-
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 translate = QCoreApplication.translate
 
@@ -73,32 +75,32 @@ class CsvSignalWidget(QtWidgets.QWidget):
             tooltiptext += translate('csv', 'Spalte ')+str(self.ySpinBox.value()
                                                            ) + translate('csv', ' nicht in CSV-Datei\n')
 
-        if error == False:
+        if error is False:
             ylen = self.self.getColumn(self.ySpinBox.value()-1)
             if self.xSpinBox.value() != 0:
                 xlen = self.self.getColumn(self.xSpinBox.value()-1)
             else:
                 xlen = False
 
-            if ylen == None:
+            if ylen is None:
                 error = 4
                 tooltiptext += translate('csv', 'Y Werte leer\n')
 
-            if xlen == None:
+            if xlen is None:
                 error = 5
                 tooltiptext += translate('csv', 'X Werte leer\n')
 
-            if error == False:
+            if error is False:
                 xCheck, xData = self.checkData(self.self.getColumn(self.xSpinBox.value()-1))
                 yCheck, yData = self.checkData(self.self.getColumn(self.ySpinBox.value()-1))
 
-                if xlen != False:
+                if xlen is not False:
                     if len(xData) != len(yData):
                         error = 6
                         tooltiptext += translate('csv', 'Länge der X und Y Werte nicht identisch: ') + \
                             str(len(xData))+':'+str(len(yData))+'\n'
 
-                if xCheck != [] and xlen != False:
+                if xCheck != [] and xlen is not False:
                     error = 7
                     tooltiptext += translate('csv',
                                              'X: Fehler in folgenden Spalten: ')+str(xCheck)+'\n'
@@ -108,7 +110,7 @@ class CsvSignalWidget(QtWidgets.QWidget):
                                              'Y: Fehler in folgenden Spalten: ')+str(yCheck)+'\n'
 
         self.infoLabel.setToolTip(tooltiptext)
-        if error != False:
+        if error is not False:
             self.infoLabel.setText(str(error))
             self.infoLabel.setStyleSheet('background-color: rgb(114, 29, 29)')
         else:
@@ -123,15 +125,15 @@ class CsvSignalWidget(QtWidgets.QWidget):
             try:
                 try:
                     if d.text().replace(' ', '') != '':
-                        text = d.text()
+                        # text = d.text()
                         empty = False
                     else:
                         empty = True
-                except:
+                except Exception:
                     empty = True
                 if not empty:
                     ret.append(float(d.text().replace(',', '.')))
-            except:
+            except Exception:
                 error.append(idx+1)
         return error, ret
 
@@ -150,7 +152,7 @@ class CsvSignalWidget(QtWidgets.QWidget):
             try:
                 lastInt = int(lastSignal[len(lastSignal)-1])+1
                 lastSignal = lastSignal[0:len(lastSignal)-1]
-            except:
+            except Exception:
                 lastInt = 1
             thisSignal = lastSignal+str(lastInt)
 
@@ -161,7 +163,7 @@ class CsvSignalWidget(QtWidgets.QWidget):
         return thisDevice, thisSignal, thisUnit
 
     def getSignal(self):
-        if self.checkValidity() == False:
+        if self.checkValidity() is False:
             sigName = self.signalEdit.text()
             devName = self.deviceEdit.text()
             unit = self.unitEdit.currentText()

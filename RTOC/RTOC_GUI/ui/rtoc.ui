@@ -80,6 +80,9 @@
        <property name="placeholderText">
         <string>Suche Gerät</string>
        </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -234,204 +237,6 @@
      </item>
     </layout>
    </widget>
-  </widget>
-  <widget class="QMenuBar" name="menuBar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>883</width>
-     <height>26</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuDatei">
-    <property name="statusTip">
-     <string>Öffnen, Speichern, Exportieren</string>
-    </property>
-    <property name="tearOffEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>&amp;Datei</string>
-    </property>
-    <property name="separatorsCollapsible">
-     <bool>true</bool>
-    </property>
-    <property name="toolTipsVisible">
-     <bool>true</bool>
-    </property>
-    <addaction name="loadSessionAction"/>
-    <addaction name="saveSessionAction"/>
-    <addaction name="separator"/>
-    <addaction name="importDataAction"/>
-    <addaction name="exportDataAction"/>
-    <addaction name="separator"/>
-    <addaction name="systemTrayAction"/>
-    <addaction name="separator"/>
-    <addaction name="settingsAction"/>
-    <addaction name="separator"/>
-    <addaction name="actionBeenden"/>
-   </widget>
-   <widget class="QMenu" name="menuFenster">
-    <property name="statusTip">
-     <string>Unterfenster-Darstellung verwalten</string>
-    </property>
-    <property name="tearOffEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>&amp;Fenster</string>
-    </property>
-    <property name="separatorsCollapsible">
-     <bool>true</bool>
-    </property>
-    <property name="toolTipsVisible">
-     <bool>true</bool>
-    </property>
-    <addaction name="deviceWidgetToggle"/>
-    <addaction name="pluginsWidgetToggle"/>
-    <addaction name="scriptWidgetToggle"/>
-    <addaction name="eventWidgetToggle"/>
-    <addaction name="deviceRAWWidgetToggle"/>
-   </widget>
-   <widget class="QMenu" name="menuHilfe">
-    <property name="tearOffEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>&amp;Hilfe</string>
-    </property>
-    <property name="icon">
-     <iconset>
-      <normaloff>icons/help.png</normaloff>icons/help.png</iconset>
-    </property>
-    <property name="separatorsCollapsible">
-     <bool>true</bool>
-    </property>
-    <property name="toolTipsVisible">
-     <bool>true</bool>
-    </property>
-    <addaction name="clearCacheAction"/>
-    <addaction name="separator"/>
-    <addaction name="helpAction"/>
-    <addaction name="pluginRepoAction"/>
-    <addaction name="separator"/>
-    <addaction name="checkUpdatesAction"/>
-    <addaction name="aboutAction"/>
-   </widget>
-   <widget class="QMenu" name="menuSprache">
-    <property name="tearOffEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>Sprache</string>
-    </property>
-    <property name="separatorsCollapsible">
-     <bool>true</bool>
-    </property>
-    <property name="toolTipsVisible">
-     <bool>true</bool>
-    </property>
-    <addaction name="actionDeutsch"/>
-    <addaction name="actionEnglish"/>
-   </widget>
-   <widget class="QMenu" name="menuGer_te">
-    <property name="tearOffEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>Geräte</string>
-    </property>
-    <property name="separatorsCollapsible">
-     <bool>true</bool>
-    </property>
-    <property name="toolTipsVisible">
-     <bool>true</bool>
-    </property>
-    <addaction name="getPluginsButton"/>
-   </widget>
-   <widget class="QMenu" name="menuNetzwerk">
-    <property name="tearOffEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>Netzwerk</string>
-    </property>
-    <property name="separatorsCollapsible">
-     <bool>true</bool>
-    </property>
-    <property name="toolTipsVisible">
-     <bool>true</bool>
-    </property>
-    <widget class="QMenu" name="menuTCP_Server_2">
-     <property name="geometry">
-      <rect>
-       <x>0</x>
-       <y>0</y>
-       <width>188</width>
-       <height>126</height>
-      </rect>
-     </property>
-     <property name="title">
-      <string>TCP - Server</string>
-     </property>
-     <addaction name="actionTCPServer_2"/>
-     <addaction name="actionTCPPassword_2"/>
-     <addaction name="actionTCPPort_2"/>
-    </widget>
-    <widget class="QMenu" name="MeniuTelegramBot">
-     <property name="title">
-      <string>Telegram-Bot</string>
-     </property>
-     <addaction name="actionTelegramBot_2"/>
-     <addaction name="actionBotToken_2"/>
-    </widget>
-    <widget class="QMenu" name="menuMit_Remotehost_verbinden">
-     <property name="title">
-      <string>Mit Remotehost verbinden</string>
-     </property>
-     <addaction name="actionNeuer_HOst"/>
-     <addaction name="separator"/>
-    </widget>
-    <widget class="QMenu" name="menuAktive_Verbindungen">
-     <property name="title">
-      <string>Aktive Verbindungen</string>
-     </property>
-     <addaction name="actionkeine_3"/>
-    </widget>
-    <addaction name="menuTCP_Server_2"/>
-    <addaction name="HTMLServerAction_2"/>
-    <addaction name="MeniuTelegramBot"/>
-    <addaction name="separator"/>
-    <addaction name="menuMit_Remotehost_verbinden"/>
-    <addaction name="menuAktive_Verbindungen"/>
-    <addaction name="actionUpdate_Rate_1Hz_2"/>
-    <addaction name="separator"/>
-    <addaction name="actionSearchRTOCServer"/>
-   </widget>
-   <widget class="QMenu" name="menuBackup">
-    <property name="tearOffEnabled">
-     <bool>true</bool>
-    </property>
-    <property name="title">
-     <string>Backup</string>
-    </property>
-    <property name="separatorsCollapsible">
-     <bool>true</bool>
-    </property>
-    <property name="toolTipsVisible">
-     <bool>true</bool>
-    </property>
-    <addaction name="actionSetBackupFile"/>
-    <addaction name="actionSetBackupIntervall"/>
-   </widget>
-   <addaction name="menuDatei"/>
-   <addaction name="menuGer_te"/>
-   <addaction name="menuNetzwerk"/>
-   <addaction name="menuBackup"/>
-   <addaction name="menuFenster"/>
-   <addaction name="menuSprache"/>
-   <addaction name="menuHilfe"/>
   </widget>
   <widget class="QDockWidget" name="scriptDockWidget">
    <property name="floating">
@@ -728,6 +533,9 @@
        <property name="placeholderText">
         <string>Suche</string>
        </property>
+       <property name="clearButtonEnabled">
+        <bool>true</bool>
+       </property>
       </widget>
      </item>
      <item>
@@ -745,6 +553,196 @@
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>883</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <widget class="QMenu" name="menuDatei">
+    <property name="statusTip">
+     <string>Öffnen, Speichern, Exportieren</string>
+    </property>
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Datei</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="loadSessionAction"/>
+    <addaction name="saveSessionAction"/>
+    <addaction name="separator"/>
+    <addaction name="importDataAction"/>
+    <addaction name="exportDataAction"/>
+    <addaction name="separator"/>
+    <addaction name="systemTrayAction"/>
+    <addaction name="separator"/>
+    <addaction name="settingsAction"/>
+    <addaction name="separator"/>
+    <addaction name="actionBeenden"/>
+   </widget>
+   <widget class="QMenu" name="menuFenster">
+    <property name="statusTip">
+     <string>Unterfenster-Darstellung verwalten</string>
+    </property>
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Fenster</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="deviceWidgetToggle"/>
+    <addaction name="pluginsWidgetToggle"/>
+    <addaction name="scriptWidgetToggle"/>
+    <addaction name="eventWidgetToggle"/>
+    <addaction name="deviceRAWWidgetToggle"/>
+   </widget>
+   <widget class="QMenu" name="menuHilfe">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>&amp;Hilfe</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>icons/help.png</normaloff>icons/help.png</iconset>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="clearCacheAction"/>
+    <addaction name="separator"/>
+    <addaction name="helpAction"/>
+    <addaction name="pluginRepoAction"/>
+    <addaction name="separator"/>
+    <addaction name="checkUpdatesAction"/>
+    <addaction name="aboutAction"/>
+   </widget>
+   <widget class="QMenu" name="menuSprache">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Sprache</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="actionDeutsch"/>
+    <addaction name="actionEnglish"/>
+   </widget>
+   <widget class="QMenu" name="menuGer_te">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Geräte</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <addaction name="getPluginsButton"/>
+   </widget>
+   <widget class="QMenu" name="menuNetzwerk">
+    <property name="tearOffEnabled">
+     <bool>true</bool>
+    </property>
+    <property name="title">
+     <string>Netzwerk</string>
+    </property>
+    <property name="separatorsCollapsible">
+     <bool>true</bool>
+    </property>
+    <property name="toolTipsVisible">
+     <bool>true</bool>
+    </property>
+    <widget class="QMenu" name="menuTCP_Server_2">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>188</width>
+       <height>126</height>
+      </rect>
+     </property>
+     <property name="title">
+      <string>TCP - Server</string>
+     </property>
+     <addaction name="actionTCPServer_2"/>
+     <addaction name="actionTCPPassword_2"/>
+     <addaction name="actionTCPPort_2"/>
+    </widget>
+    <widget class="QMenu" name="MeniuTelegramBot">
+     <property name="title">
+      <string>Telegram-Bot</string>
+     </property>
+     <addaction name="actionTelegramBot_2"/>
+     <addaction name="actionBotToken_2"/>
+    </widget>
+    <widget class="QMenu" name="menuMit_Remotehost_verbinden">
+     <property name="title">
+      <string>Mit Remotehost verbinden</string>
+     </property>
+     <addaction name="actionNeuer_HOst"/>
+     <addaction name="separator"/>
+    </widget>
+    <widget class="QMenu" name="menuAktive_Verbindungen">
+     <property name="title">
+      <string>Aktive Verbindungen</string>
+     </property>
+     <addaction name="actionkeine_3"/>
+    </widget>
+    <addaction name="menuTCP_Server_2"/>
+    <addaction name="HTMLServerAction_2"/>
+    <addaction name="MeniuTelegramBot"/>
+    <addaction name="separator"/>
+    <addaction name="menuMit_Remotehost_verbinden"/>
+    <addaction name="menuAktive_Verbindungen"/>
+    <addaction name="actionUpdate_Rate_1Hz_2"/>
+    <addaction name="separator"/>
+    <addaction name="actionSearchRTOCServer"/>
+   </widget>
+   <widget class="QMenu" name="menuDatenbank">
+    <property name="title">
+     <string>Datenbank</string>
+    </property>
+    <addaction name="pullFromDatabaseAction"/>
+    <addaction name="pushToDatabaseAction"/>
+    <addaction name="exportDatabaseAction"/>
+   </widget>
+   <addaction name="menuDatei"/>
+   <addaction name="menuGer_te"/>
+   <addaction name="menuNetzwerk"/>
+   <addaction name="menuDatenbank"/>
+   <addaction name="menuFenster"/>
+   <addaction name="menuSprache"/>
+   <addaction name="menuHilfe"/>
   </widget>
   <action name="exportDataAction">
    <property name="text">
@@ -1027,9 +1025,9 @@
     <string>Täglich</string>
    </property>
   </action>
-  <action name="actionSetBackupFile">
+  <action name="actionSetBackupDir">
    <property name="text">
-    <string>Backup-Datei festlegen</string>
+    <string>Backup-Verzeichnis festlegen</string>
    </property>
   </action>
   <action name="actionDeleteBackups">
@@ -1131,6 +1129,21 @@
   <action name="settingsAction">
    <property name="text">
     <string>Einstellungen</string>
+   </property>
+  </action>
+  <action name="pullFromDatabaseAction">
+   <property name="text">
+    <string>Lokale Daten in Datenbank laden</string>
+   </property>
+  </action>
+  <action name="pushToDatabaseAction">
+   <property name="text">
+    <string>Lokale Daten durch Datenbank ersetzen</string>
+   </property>
+  </action>
+  <action name="exportDatabaseAction">
+   <property name="text">
+    <string>Datenbank exportieren</string>
    </property>
   </action>
  </widget>

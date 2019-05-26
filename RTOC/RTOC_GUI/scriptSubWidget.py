@@ -9,6 +9,9 @@ from ..RTLogger.importCode import importCode
 import os
 import sys
 from ..lib import pyqt_customlib as pyqtlib
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 
 class AnimationThread(QtCore.QThread):
@@ -56,7 +59,7 @@ class ScriptSubWidget(QtWidgets.QWidget):
         super(ScriptSubWidget, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
-            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
@@ -117,7 +120,7 @@ class ScriptSubWidget(QtWidgets.QWidget):
         self.triggerWidget = QtWidgets.QWidget()
         if getattr(sys, 'frozen', False):
             # frozen
-            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
@@ -134,7 +137,8 @@ class ScriptSubWidget(QtWidgets.QWidget):
             "QToolButton:checked, QToolButton:pressed,QToolButton::menu-button:pressed {background-color: #31363b;}")
 
         self.triggerWidget.triggerSignals.clear()
-        for element in self.logger.signalNames:
+        for element in self.logger.database.signalNames():
+            # print(element)
             self.triggerWidget.triggerSignals.addItem(".".join(element))
 
     def toggleScript(self):
@@ -172,7 +176,7 @@ class ScriptSubWidget(QtWidgets.QWidget):
                 text = file.write(text)
                 self.scriptEdit.document().setModified(False)
                 self.saved = True
-                #self.logger.config["lastScript"] = fileName
+                # self.logger.config["lastScript"] = fileName
                 if self.modifiedCallback:
                     head, tail = os.path.split(fileName)
                     self.modifiedCallback(False, tail)
@@ -192,7 +196,7 @@ class ScriptSubWidget(QtWidgets.QWidget):
             try:
                 self.script.init(self.logger)
                 return True, errors
-            except:
+            except Exception:
                 return False, scriptStr + errors + "\nERROR in Initialization"
         else:
             self.scriptEnabled = False
@@ -203,7 +207,7 @@ class ScriptSubWidget(QtWidgets.QWidget):
         try:
             self.script = importCode(scriptStr, "script")
             return True, ""
-        except:
+        except Exception:
             tb = traceback.format_exc()
             tb = tb+"\nSYNTAX ERROR in script"
             return False, tb
@@ -274,25 +278,25 @@ class ScriptSubWidget(QtWidgets.QWidget):
         if self.startScriptButton.isChecked() and self.startScriptButton.styleSheet != "QToolButton{background-color: #8c2020}":
             self.startScriptButton.setStyleSheet("QToolButton{background-color: #8c2020}")
 
-    def handleScript(self, devicename, dataname):
+    def handleScript(self, devicename, signalname):
         if self.scriptEnabled:
-            signalname = devicename + "." + dataname
+            signalname = devicename + "." + signalname
             if signalname in self.selectedTriggerSignals:
                 self.executeScript()
 
-    def singleRunScript(self, scriptStr):
-        self.scriptStr = self.scriptEdit.toPlainText()
-        scriptStr = self.logger.generateCode(self.scriptStr)
-        ok, errors = self.checkScript(scriptStr)
-        if ok:
-            self.executeScript()
+    # def singleRunScript(self, scriptStr):
+    #     self.scriptStr = self.scriptEdit.toPlainText()
+    #     scriptStr = self.logger.generateCode(self.scriptStr)
+    #     ok, errors = self.checkScript(scriptStr)
+    #     if ok:
+    #         self.executeScript()
 
     def executeScript(self):
         try:
             clock = time.time()
             prints = self.script.test(self.logger, clock)
             self.executedCallback(True, prints)
-        except:
+        except Exception:
             tb = traceback.format_exc()
             self.checkScript(self.logger.generateCode(self.scriptStr))
             scriptConverted = "Script converted:\n\n" + \
@@ -323,7 +327,7 @@ class ScriptSubWidget(QtWidgets.QWidget):
             ok = pyqtlib.alert_message(self.tr("Warnung"), self.tr(
                 "Wollen sie die Datei speichern?"), "", "", self.tr("Ja"), self.tr("Nein"))
             if ok is not None:
-                if ok == True:
+                if ok is True:
                     self.saveScript()
                 self.run = False
                 super(ScriptSubWidget, self).closeEvent(event)

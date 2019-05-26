@@ -8,15 +8,19 @@ import time
 from ..lib import pyqt_customlib as pyqtlib
 from .styleMultiPlotGUI import plotMultiStyler
 import os
+import traceback
 import sys
 from PyQt5.QtCore import QCoreApplication
 import re
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 translate = QCoreApplication.translate
 
 if getattr(sys, 'frozen', False):
     # frozen
-    packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+    packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
 else:
     # unfrozen
     packagedir = os.path.dirname(os.path.realpath(__file__))
@@ -81,20 +85,23 @@ class Console(pgconsole.ConsoleWidget):
     def execSingle(self, cmd):
         cmd = self.replaceLoggerFunctions(cmd)
         try:
-            # print(self.globals())
+            # logging.info(self.globals())
             output = eval(cmd, self.globals(), self.locals())
             self.write(repr(output) + '\n')
         except SyntaxError:
+            logging.debug(traceback.format_exc())
             try:
                 exec(cmd, self.globals(), self.locals())
             except SyntaxError as exc:
+                logging.debug(traceback.format_exc())
                 if 'unexpected EOF' in exc.msg:
                     self.multiline = cmd
                 else:
                     self.displayException()
-            except:
+            except Exception:
+                logging.debug(traceback.format_exc())
                 self.displayException()
-        except:
+        except Exception:
             # try:
             #     exec(cmd, self.globals(), self.locals())
             # except SyntaxError as exc:
@@ -102,13 +109,14 @@ class Console(pgconsole.ConsoleWidget):
             #         self.multiline = cmd
             #     else:
             #         self.displayException()
+            logging.debug(traceback.format_exc())
             self.displayException()
 
     def replaceLoggerFunctions(self, s):
-        s = s.replace("stream(", "logger.addData(")
+        s = s.replace("stream(", "logger.database.addData(")
 
-        s = s.replace("event(", "logger.addNewEvent(")
-        s = s.replace("plot(", "logger.plot(")
+        s = s.replace("event(", "logger.database.addNewEvent(")
+        s = s.replace("plot(", "logger.database.plot(")
 
         s = s.replace("print(", "prints += print(")
 
@@ -127,7 +135,7 @@ class RTPlotActions:
 
     def initPlotWidget(self):
         pg.setConfigOptions(
-            useOpenGL=self.config['openGL'], useWeave=self.config['useWeave'], antialias=self.config['antiAliasing'])
+            useOpenGL=self.config['GUI']['openGL'], useWeave=self.config['GUI']['useWeave'], antialias=self.config['GUI']['antiAliasing'])
         self.plot = pg.PlotWidget()
         self.plot.setBackground(None)
         self.plot.getPlotItem().setTitle(translate("Plot", "Signale"))
@@ -135,7 +143,6 @@ class RTPlotActions:
         axis = pyqtlib.TimeAxisItem(orientation='bottom')
         axis.attachToPlotItem(self.plot.getPlotItem())  # THIS LINE CREATES A WARNING
         self.plot.getPlotItem().setLabel("bottom", translate("Plot", "Vergangene Zeit"), "")
-
         self.plotLayout.addWidget(self.plot)
         self.legend = pg.LegendItem()
         self.legend.setParentItem(self.plot.getPlotItem())
@@ -149,6 +156,8 @@ class RTPlotActions:
         self.hideSignalsButton.clicked.connect(self.hideSignalList)
         toggleConsole = self.plot.getPlotItem().getViewBox().menu.addAction('Toggle Console')
         toggleConsole.triggered.connect(self.toggleConsole)
+
+        self.toggleEventButton.setChecked(self.logger.config['GUI']['showEvents'])
 
     def initConsoleWidget(self):
         ns = {}
@@ -227,25 +236,25 @@ class RTPlotActions:
 
     def updateGrid(self):
         self.plot.showGrid(x=self.grid[0], y=self.grid[1], alpha=self.grid[2])
-        self.config["grid"] = self.grid
+        self.config['GUI']['grid'] = self.grid
 
     def toggleInverted(self):
         if self.plotViewWidget.invertPlotButton.isChecked():
-            self.config["plotInverted"] = True
+            self.config['GUI']['plotInverted'] = True
             self.plot.setBackground("w")
         else:
-            self.config["plotInverted"] = False
+            self.config['GUI']['plotInverted'] = False
             self.plot.setBackground(None)
 
     def toggleXTimeBase(self):
         if self.plotViewWidget.xTimeBaseButton.isChecked():
-            self.config["xTimeBase"] = True
+            self.config['GUI']['xTimeBase'] = True
             for sig in self.signalObjects:
                 sig.xTimeBase = True
                 sig.editWidget.xTimeBaseButton.setChecked(True)
             self.xTimeBase = True
         else:
-            self.config["xTimeBase"] = False
+            self.config['GUI']['xTimeBase'] = False
             for sig in self.signalObjects:
                 sig.xTimeBase = False
                 sig.editWidget.xTimeBaseButton.setChecked(False)
@@ -255,7 +264,7 @@ class RTPlotActions:
         if self.plotViewWidget.timeAxisButton.isChecked():
             axis = pyqtlib.TimeAxisItem(orientation='bottom')
             axis.attachToPlotItem(self.plot.getPlotItem())  # THIS LINE CREATES A WARNING
-            self.config["timeAxis"] = True
+            self.config['GUI']['timeAxis'] = True
             self.plot.getPlotItem().setLabel("bottom", "Vergangene Zeit", "")
         else:
             axis = pg.AxisItem(orientation='bottom')
@@ -269,7 +278,7 @@ class RTPlotActions:
             self.plot.getPlotItem().layout.addItem(axis, *pos)
             axis.setZValue(-1000)
             self.plot.getPlotItem().setLabel("bottom", "", "")
-            self.config["timeAxis"] = False
+            self.config['GUI']['timeAxis'] = False
 
     def initPlotToolsWidget(self):
         self.plotToolsWidget = QtWidgets.QWidget()
@@ -277,6 +286,7 @@ class RTPlotActions:
         self.measureButton.clicked.connect(self.toggleROIS)
         self.crosshairButton.clicked.connect(self.toggleCrosshair)
         self.cutButton.clicked.connect(self.toggleCutTool)
+        self.toggleEventButton.clicked.connect(self.toggleEvents)
 
     def initROIS(self):
         self.rois = []
@@ -303,7 +313,7 @@ class RTPlotActions:
     def initCrosshair(self):
         self.vLine = pg.InfiniteLine(angle=90, movable=False)
         self.hLine = pg.InfiniteLine(angle=0, movable=False)
-        #self.CrossHairLabel = pg.LabelItem(justify='right')
+        # self.CrossHairLabel = pg.LabelItem(justify='right')
         self.CrossHairLabel = pg.TextItem("", color=(
             200, 200, 200), fill=(200, 200, 200, 50), html=None)  # ,
         self.plot.addItem(self.vLine, ignoreBounds=True)
@@ -371,29 +381,29 @@ class RTPlotActions:
 
     def togglePlotGrid(self):
         if not self.plotViewWidget.gridButton.isChecked():
-            self.config["plotGridEnabled"] = False
+            self.config['GUI']['plotGridEnabled'] = False
             self.plot.showGrid(x=False, y=False, alpha=0.3)
 
         else:
-            self.config["plotGridEnabled"] = True
+            self.config['GUI']['plotGridEnabled'] = True
             self.plot.showGrid(x=self.grid[0], y=self.grid[1], alpha=self.grid[2])
 
     def togglePlotLegend(self):
         if not self.plotViewWidget.legendButton.isChecked():
-            self.config["plotLegendEnabled"] = False
+            self.config['GUI']['plotLegendEnabled'] = False
             self.legend.hide()
         else:
-            self.config["plotLegendEnabled"] = True
+            self.config['GUI']['plotLegendEnabled'] = True
             self.legend.show()
 
     def togglePlotLabels(self):
         if not self.plotViewWidget.labelButton.isChecked():
-            self.config["plotLabelsEnabled"] = False
+            self.config['GUI']['plotLabelsEnabled'] = False
             for sig in self.signalObjects:
                 sig.labelItem.hide()
                 sig.editWidget.labelButton.setChecked(False)
         else:
-            self.config["plotLabelsEnabled"] = True
+            self.config['GUI']['plotLabelsEnabled'] = True
             for sig in self.signalObjects:
                 if sig.active:
                     sig.labelItem.show()
@@ -401,9 +411,9 @@ class RTPlotActions:
 
     def toggleBlinkingIndicator(self):
         if not self.plotViewWidget.labelButton.isChecked():
-            self.config["blinkingIdentifier"] = False
+            self.config['GUI']['blinkingIdentifier'] = False
         else:
-            self.config["blinkingIdentifier"] = True
+            self.config['GUI']['blinkingIdentifier'] = True
 
     def toggleCrosshair(self):
         if not self.crosshairButton.isChecked():
@@ -463,8 +473,7 @@ class RTPlotActions:
         self.mouseX = mousePoint.x()
         self.mouseY = mousePoint.y()
         if self.crosshairButton.isChecked():
-            self.CrossHairLabel.setText("X: "+str(round(mousePoint.x(), 2)) +
-                                        "s\nY:"+str(round(mousePoint.y(), 2)))
+            self.CrossHairLabel.setText("X: "+str(round(mousePoint.x(), 2)) + "s\nY:"+str(round(mousePoint.y(), 2)))
             self.CrossHairLabel.setPos(mousePoint.x(), mousePoint.y())
             # self.crosshairYLabel.setText(str(mousePoint.y()))
             self.vLine.setPos(mousePoint.x())
@@ -477,8 +486,8 @@ class RTPlotActions:
             sig = self.treeWidget.itemWidget(item, 0)
             found = False
             for text in tex.split(';'):
-                # print(text)
-                if (text != "" or tex == ';') and found == False:
+                # logging.info(text)
+                if (text != "" or tex == ';') and found is False:
                     if text.lower() in sig.button.text().lower() or tex == ";":
                         item.setHidden(False)
                         sig.hidden = False
@@ -488,3 +497,8 @@ class RTPlotActions:
                         item.setHidden(True)
                         sig.hidden = True
                         sig.toggleSignal()
+
+    def toggleEvents(self, state):
+        self.logger.config['GUI']['showEvents'] = state
+        for sig in self.signalObjects:
+            sig.toggleEvents(state)

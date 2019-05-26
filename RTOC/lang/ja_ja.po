@@ -1,0 +1,3904 @@
+msgid ""
+msgstr ""
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Qt-Contexts: true\n"
+
+#: ../RTOC_GUI/Actions.py:104
+msgctxt "Actions|"
+msgid "Datenbank exportieren"
+msgstr "Datenbank exportieren"
+
+#: ../RTOC_GUI/Actions.py:231
+msgctxt "Actions|"
+msgid "Ãberschreiben"
+msgstr "Ãberschreiben"
+
+#: ../RTOC_GUI/Actions.py:111
+msgctxt "Actions|"
+msgid "Wollen Sie die Datei Ã¼berschreiben?"
+msgstr "Wollen Sie die Datei Ã¼berschreiben?"
+
+#: ../RTOC_GUI/Actions.py:127
+msgctxt "Actions|"
+msgid "RTOC_Web Fehler"
+msgstr "RTOC_Web Fehler"
+
+#: ../RTOC_GUI/Actions.py:127
+msgctxt "Actions|"
+msgid ""
+"RTOC_Web kann nicht mehr parallel mit der BenutzeroberflÃ¤che gestartet "
+"werden. Bitte beende RTOC und starte RTOC_Web mit 'python3 -m RTOC.RTLogger "
+"-w'"
+msgstr "RTOC_Web kann nicht mehr parallel mit der BenutzeroberflÃ¤che gestartet werden. Bitte beende RTOC und starte RTOC_Web mit 'python3 -m RTOC.RTLogger -w'"
+
+#: ../RTOC_GUI/Actions.py:127
+msgctxt "Actions|"
+msgid ""
+"Wenn du die GUI benÃ¶tigst, starte danach eine lokale Remote-Verbindung mit "
+"'python3 -m RTOC -r 127.0.0.1'"
+msgstr "Wenn du die GUI benÃ¶tigst, starte danach eine lokale Remote-Verbindung mit 'python3 -m RTOC -r 127.0.0.1'"
+
+#: ../RTOC_GUI/Actions.py:140
+msgctxt "Actions|"
+msgid "Bot Token eingeben"
+msgstr "Bot Token eingeben"
+
+#: ../RTOC_GUI/Actions.py:140
+msgctxt "Actions|"
+msgid ""
+"Bitte erzeugen sie in Telegram mit \"Botfather\" einen Bot,\n"
+" generiere einen Bot und fÃ¼ge dessen Token hier ein"
+msgstr "Bitte erzeugen sie in Telegram mit \"Botfather\" einen Bot,\n generiere einen Bot und fÃ¼ge dessen Token hier ein"
+
+#: ../RTOC_GUI/Actions.py:147
+msgctxt "Actions|"
+msgid "TCP Passwort eingeben"
+msgstr "TCP Passwort eingeben"
+
+#: ../RTOC_GUI/Actions.py:147
+msgctxt "Actions|"
+msgid ""
+"SchÃ¼tze deine Ãbertragung vor unerwÃ¼nschten GÃ¤sten\n"
+"Leer lassen, um Passwort zu deaktivieren"
+msgstr "SchÃ¼tze deine Ãbertragung vor unerwÃ¼nschten GÃ¤sten\nLeer lassen, um Passwort zu deaktivieren"
+
+#: ../RTOC_GUI/Actions.py:152
+msgctxt "Actions|"
+msgid "Passwort-Schutz: Aus"
+msgstr "Passwort-Schutz: Aus"
+
+#: ../RTOC_GUI/Actions.py:154
+msgctxt "Actions|"
+msgid "Passwort-Schutz: An"
+msgstr "Passwort-Schutz: An"
+
+#: ../RTOC_GUI/Actions.py:157
+msgctxt "Actions|"
+msgid "TCP Port eingeben"
+msgstr "TCP Port eingeben"
+
+#: ../RTOC_GUI/Actions.py:157
+msgctxt "Actions|"
+msgid "Gib den Port an, an welchem dein Rechner fÃ¼r RTOC erreichbar ist."
+msgstr "Gib den Port an, an welchem dein Rechner fÃ¼r RTOC erreichbar ist."
+
+#: ../RTOC_GUI/Actions.py:164
+msgctxt "Actions|"
+msgid "Port: "
+msgstr "Port: "
+
+#: ../RTOC_GUI/Actions.py:507
+msgctxt "Actions|"
+msgid "Fehler"
+msgstr "Fehler"
+
+#: ../RTOC_GUI/Actions.py:170
+msgctxt "Actions|"
+msgid "Bitte gib eine Zahl zwischen 0 und 65535 an"
+msgstr "Bitte gib eine Zahl zwischen 0 und 65535 an"
+
+#: ../RTOC_GUI/Actions.py:170
+msgctxt "Actions|"
+msgid "Ihre Eingabe war ungÃ¼ltig."
+msgstr "Ihre Eingabe war ungÃ¼ltig."
+
+#: ../RTOC_GUI/Actions.py:196
+msgctxt "Actions|"
+msgid "Warnung"
+msgstr "Warnung"
+
+#: ../RTOC_GUI/Actions.py:194
+msgctxt "Actions|"
+msgid "Wollen Sie wirklich alle Daten lÃ¶schen?"
+msgstr "Wollen Sie wirklich alle Daten lÃ¶schen?"
+
+#: ../RTOC_GUI/Actions.py:194
+msgctxt "Actions|"
+msgid "(Unwiederrufbar)"
+msgstr "(Unwiederrufbar)"
+
+#: ../RTOC_GUI/Actions.py:196
+msgctxt "Actions|"
+msgid "Wollen Sie auch die Daten in der Datenbank lÃ¶schen?"
+msgstr "Wollen Sie auch die Daten in der Datenbank lÃ¶schen?"
+
+#: ../RTOC_GUI/Actions.py:196
+msgctxt "Actions|"
+msgid "(Unwiederrufbar!!)"
+msgstr "(Unwiederrufbar!!)"
+
+#: ../RTOC_GUI/Actions.py:209
+msgctxt "Actions|"
+msgid "Session laden"
+msgstr "Session laden"
+
+#: ../RTOC_GUI/Actions.py:224
+msgctxt "Actions|"
+msgid "Session speichern"
+msgstr "Session speichern"
+
+#: ../RTOC_GUI/Actions.py:231
+msgctxt "Actions|"
+msgid "Wollen Sie die Datei Ã¼berschreiben oder beide Dateien zusammenfÃ¼hren?"
+msgstr "Wollen Sie die Datei Ã¼berschreiben oder beide Dateien zusammenfÃ¼hren?"
+
+#: ../RTOC_GUI/Actions.py:231
+msgctxt "Actions|"
+msgid "Bei \"Ãberschreiben\" gehen die gespeicherten Daten verloren."
+msgstr "Bei \"Ãberschreiben\" gehen die gespeicherten Daten verloren."
+
+#: ../RTOC_GUI/Actions.py:231
+msgctxt "Actions|"
+msgid "ZusammenfÃ¼hren"
+msgstr "ZusammenfÃ¼hren"
+
+#: ../RTOC_GUI/Actions.py:264
+msgctxt "Actions|"
+msgid "Excel-Tabelle (*.xlsx)"
+msgstr "Excel-Tabelle (*.xlsx)"
+
+#: ../RTOC_GUI/Actions.py:266
+msgctxt "Actions|"
+msgid "CSV-Datei (*.csv)"
+msgstr "CSV-Datei (*.csv)"
+
+#: ../RTOC_GUI/Actions.py:259
+msgctxt "Actions|"
+msgid "Export"
+msgstr "Export"
+
+#: ../RTOC_GUI/Actions.py:259
+msgctxt "Actions|"
+msgid "Excel-Tabelle (*.xlsx);;CSV-Datei (*.csv)"
+msgstr "Excel-Tabelle (*.xlsx);;CSV-Datei (*.csv)"
+
+#: ../RTOC_GUI/Actions.py:334
+msgctxt "Actions|"
+msgid "Ãber"
+msgstr "Ãber"
+
+#: ../RTOC_GUI/Actions.py:334
+msgctxt "Actions|"
+msgid ""
+"RealTime OpenControl (RTOC) ist eine freie OpenSource Software unter der "
+"BSD-3-Lizenz.\n"
+"\n"
+"Alle Symbole werden unter der 'Creative Commons Attribution-NoDerivs 3.0 "
+"Unported' Lizenz bereitgestellt von icons8 (https://icons8.de)\n"
+"\n"
+"Copyright (C) 2018 Sebastian Keller"
+msgstr "RealTime OpenControl (RTOC) ist eine freie OpenSource Software unter der BSD-3-Lizenz.\n\nAlle Symbole werden unter der 'Creative Commons Attribution-NoDerivs 3.0 Unported' Lizenz bereitgestellt von icons8 (https://icons8.de)\n\nCopyright (C) 2018 Sebastian Keller"
+
+#: ../RTOC_GUI/Actions.py:377
+msgctxt "Actions|"
+msgid "Sprache geÃ¤ndert"
+msgstr "Sprache geÃ¤ndert"
+
+#: ../RTOC_GUI/Actions.py:377
+msgctxt "Actions|"
+msgid "Bitte Programm neustarten"
+msgstr "Bitte Programm neustarten"
+
+#: ../RTOC_GUI/Actions.py:383
+msgctxt "Actions|"
+msgid "Installierte Version: "
+msgstr "Installierte Version: "
+
+#: ../RTOC_GUI/Actions.py:385
+msgctxt "Actions|"
+msgid ""
+"Entschuldigung. Konnte RTOC bei PyPi nicht finden. Schau mal bei "
+"'https://pypi.org/project/RTOC/'"
+msgstr "Entschuldigung. Konnte RTOC bei PyPi nicht finden. Schau mal bei 'https://pypi.org/project/RTOC/'"
+
+#: ../RTOC_GUI/Actions.py:388
+msgctxt "Actions|"
+msgid ", Neuste Version: "
+msgstr ", Neuste Version: "
+
+#: ../RTOC_GUI/Actions.py:390
+msgctxt "Actions|"
+msgid "RTOC ist auf dem neusten Stand."
+msgstr "RTOC ist auf dem neusten Stand."
+
+#: ../RTOC_GUI/Actions.py:392
+msgctxt "Actions|"
+msgid ""
+"Neue Version verfÃ¼gbar. Update mit der Konsole:\n"
+"\n"
+"\"pip3 install RTOC --upgrade\"\n"
+msgstr "Neue Version verfÃ¼gbar. Update mit der Konsole:\n\n\"pip3 install RTOC --upgrade\"\n"
+
+#: ../RTOC_GUI/Actions.py:395
+msgctxt "Actions|"
+msgid "RTOC wurde nicht mit PyPi installiert."
+msgstr "RTOC wurde nicht mit PyPi installiert."
+
+#: ../RTOC_GUI/Actions.py:396
+msgctxt "Actions|"
+msgid ""
+"Um die Version zu Ã¼berprÃ¼fen, installiere RTOC mit \"pip3 install RTOC\""
+msgstr "Um die Version zu Ã¼berprÃ¼fen, installiere RTOC mit \"pip3 install RTOC\""
+
+#: ../RTOC_GUI/Actions.py:398
+msgctxt "Actions|"
+msgid "Version"
+msgstr "Version"
+
+#: ../RTOC_GUI/Actions.py:401
+msgctxt "Actions|"
+msgid "Cache leeren"
+msgstr "Cache leeren"
+
+#: ../RTOC_GUI/Actions.py:401
+msgctxt "Actions|"
+msgid "Wollen Sie wirklich den Cache leeren?"
+msgstr "Wollen Sie wirklich den Cache leeren?"
+
+#: ../RTOC_GUI/Actions.py:401
+msgctxt "Actions|"
+msgid ""
+"Dadurch gehen gespeicherte Ploteinstellungen sowie Einstellungen verloren."
+msgstr "Dadurch gehen gespeicherte Ploteinstellungen sowie Einstellungen verloren."
+
+#: ../RTOC_GUI/Actions.py:456
+msgctxt "Actions|"
+msgid "GerÃ¤te-Funktion ausfÃ¼hren"
+msgstr "GerÃ¤te-Funktion ausfÃ¼hren"
+
+#: ../RTOC_GUI/Actions.py:456
+msgctxt "Actions|"
+msgid "Funktionsparameter"
+msgstr "Funktionsparameter"
+
+#: ../RTOC_GUI/Actions.py:472
+msgctxt "Actions|"
+msgid "Funktionsparameter sind nicht gÃ¼ltig"
+msgstr "Funktionsparameter sind nicht gÃ¼ltig"
+
+#: ../RTOC_GUI/Actions.py:472
+msgctxt "Actions|"
+msgid "Bitte geben Sie gÃ¼ltige Parameter an"
+msgstr "Bitte geben Sie gÃ¼ltige Parameter an"
+
+#: ../RTOC_GUI/Actions.py:494
+msgctxt "Actions|"
+msgid "GerÃ¤te-Parameter Ã¤ndern"
+msgstr "GerÃ¤te-Parameter Ã¤ndern"
+
+#: ../RTOC_GUI/Actions.py:507
+msgctxt "Actions|"
+msgid "Wert ungÃ¼ltig"
+msgstr "Wert ungÃ¼ltig"
+
+#: ../RTOC_GUI/Actions.py:507
+msgctxt "Actions|"
+msgid "Bitte geben Sie einen gÃ¼ltigen Wert an"
+msgstr "Bitte geben Sie einen gÃ¼ltigen Wert an"
+
+#: ../RTOC_GUI/Actions.py:515
+msgctxt "Actions|"
+msgid "Neuer Host"
+msgstr "Neuer Host"
+
+#: ../RTOC_GUI/Actions.py:589
+msgctxt "Actions|"
+msgid "Fertig"
+msgstr "Fertig"
+
+#: ../RTOC_GUI/Actions.py:589
+msgctxt "Actions|"
+msgid "RTOC-Suche abgeschlossen"
+msgstr "RTOC-Suche abgeschlossen"
+
+#: ../RTOC_GUI/Actions.py:589
+msgctxt "Actions|"
+msgid " Server gefunden:"
+msgstr " Server gefunden:"
+
+#: ../RTOC_GUI/Actions.py:605
+msgctxt "Actions|"
+msgid "Passwort"
+msgstr "Passwort"
+
+#: ../RTOC_GUI/Actions.py:605
+msgctxt "Actions|"
+msgid "Der RTOC-Server "
+msgstr "Der RTOC-Server "
+
+#: ../RTOC_GUI/Actions.py:605
+msgctxt "Actions|"
+msgid " ist passwortgeschÃ¼tzt. Bitte Passwort eintragen"
+msgstr " ist passwortgeschÃ¼tzt. Bitte Passwort eintragen"
+
+#: ../RTOC_GUI/Actions.py:605
+msgctxt "Actions|"
+msgid "TCP-Passwort"
+msgstr "TCP-Passwort"
+
+#: ../RTOC_GUI/Actions.py:628
+msgctxt "Actions|"
+msgid "Password speichern"
+msgstr "Password speichern"
+
+#: ../RTOC_GUI/Actions.py:628
+msgctxt "Actions|"
+msgid "MÃ¶chtest du das Passwort speichern?"
+msgstr "MÃ¶chtest du das Passwort speichern?"
+
+#: ../RTOC_GUI/Actions.py:616
+msgctxt "Actions|"
+msgid "Verbindung hergestellt"
+msgstr "Verbindung hergestellt"
+
+#: ../RTOC_GUI/Actions.py:622
+msgctxt "Actions|"
+msgid "Verbindung zu "
+msgstr "Verbindung zu "
+
+#: ../RTOC_GUI/Actions.py:633
+msgctxt "Actions|"
+msgid " an Port "
+msgstr " an Port "
+
+#: ../RTOC_GUI/Actions.py:616
+msgctxt "Actions|"
+msgid " hergestellt."
+msgstr " hergestellt."
+
+#: ../RTOC_GUI/Actions.py:622
+msgctxt "Actions|"
+msgid "GeschÃ¼tzt"
+msgstr "GeschÃ¼tzt"
+
+#: ../RTOC_GUI/Actions.py:622
+msgctxt "Actions|"
+msgid " wurde nicht hergestellt."
+msgstr " wurde nicht hergestellt."
+
+#: ../RTOC_GUI/Actions.py:622
+msgctxt "Actions|"
+msgid "Passwort ist falsch."
+msgstr "Passwort ist falsch."
+
+#: ../RTOC_GUI/Actions.py:633
+msgctxt "Actions|"
+msgid "Verbindungsfehler"
+msgstr "Verbindungsfehler"
+
+#: ../RTOC_GUI/Actions.py:633
+msgctxt "Actions|"
+msgid "Fehler. Verbindung zu "
+msgstr "Fehler. Verbindung zu "
+
+#: ../RTOC_GUI/Actions.py:633
+msgctxt "Actions|"
+msgid " konnte nicht hergestellt werden."
+msgstr " konnte nicht hergestellt werden."
+
+#: ../RTOC_GUI/Actions.py:633
+msgctxt "Actions|"
+msgid "Erneut versuchen?"
+msgstr "Erneut versuchen?"
+
+#: ../RTOC_GUI/ui/csveditor.ui:14
+msgctxt "CSVEditor|"
+msgid "CSV Editor"
+msgstr "CSV Editor"
+
+#: ../RTOC_GUI/ui/csveditor.ui:45
+msgctxt "CSVEditor|"
+msgid "Reihe einfügen"
+msgstr "Reihe einfügen"
+
+#: ../RTOC_GUI/ui/csveditor.ui:65
+msgctxt "CSVEditor|"
+msgid "Reihe entfernen"
+msgstr "Reihe entfernen"
+
+#: ../RTOC_GUI/ui/csveditor.ui:85
+msgctxt "CSVEditor|"
+msgid "Spalte einfügen"
+msgstr "Spalte einfügen"
+
+#: ../RTOC_GUI/ui/csveditor.ui:105
+msgctxt "CSVEditor|"
+msgid "Spalte entfernen"
+msgstr "Spalte entfernen"
+
+#: ../RTOC_GUI/ui/csveditor.ui:125
+msgctxt "CSVEditor|"
+msgid "X/Y tauschen"
+msgstr "X/Y tauschen"
+
+#: ../RTOC_GUI/ui/csveditor.ui:274
+msgctxt "CSVEditor|"
+msgid "\\t"
+msgstr "\\t"
+
+#: ../RTOC_GUI/ui/csveditor.ui:284
+msgctxt "CSVEditor|"
+msgid ","
+msgstr ","
+
+#: ../RTOC_GUI/ui/csveditor.ui:279
+msgctxt "CSVEditor|"
+msgid ";"
+msgstr ";"
+
+#: ../RTOC_GUI/ui/csveditor.ui:269
+msgctxt "CSVEditor|"
+msgid "\\n"
+msgstr "\\n"
+
+#: ../RTOC_GUI/ui/csveditor.ui:245
+msgctxt "CSVEditor|"
+msgid "Trennzeichen:"
+msgstr "Trennzeichen:"
+
+#: ../RTOC_GUI/ui/csveditor.ui:255
+msgctxt "CSVEditor|"
+msgid "Reihentrennzeichen:"
+msgstr "Reihentrennzeichen:"
+
+#: ../RTOC_GUI/ui/csveditor.ui:320
+msgctxt "CSVEditor|"
+msgid "Profile: "
+msgstr "Profile: "
+
+#: ../RTOC_GUI/ui/csveditor.ui:420
+msgctxt "CSVEditor|"
+msgid "Signale"
+msgstr "Signale"
+
+#: ../RTOC_GUI/ui/csveditor.ui:428
+msgctxt "CSVEditor|"
+msgid "+"
+msgstr "+"
+
+#: ../RTOC_GUI/ui/csveditor.ui:439
+msgctxt "CSVEditor|"
+msgid "Daten importieren"
+msgstr "Daten importieren"
+
+#: ../RTOC_GUI/ui/csveditor.ui:460
+msgctxt "CSVEditor|"
+msgid "Datei"
+msgstr "Datei"
+
+#: ../RTOC_GUI/ui/csveditor.ui:478
+msgctxt "CSVEditor|"
+msgid "CSV öffnen"
+msgstr "CSV öffnen"
+
+#: ../RTOC_GUI/ui/csveditor.ui:483
+msgctxt "CSVEditor|"
+msgid "CSV schließen"
+msgstr "CSV schließen"
+
+#: ../RTOC_GUI/ui/csveditor.ui:488
+msgctxt "CSVEditor|"
+msgid "CSV speichern"
+msgstr "CSV speichern"
+
+#: ../RTOC_GUI/ui/csveditor.ui:493
+msgctxt "CSVEditor|"
+msgid "Druckvorschau"
+msgstr "Druckvorschau"
+
+#: ../RTOC_GUI/ui/csveditor.ui:498
+msgctxt "CSVEditor|"
+msgid "Drucken"
+msgstr "Drucken"
+
+#: ../RTOC_GUI/ui/messtoolDialog.ui:14
+msgctxt "Dialog|"
+msgid "Dialog"
+msgstr "Dialog"
+
+#: ../RTOC_GUI/ui/messtoolDialog.ui:32
+msgctxt "Dialog|"
+msgid "Messtool"
+msgstr "Messtool"
+
+#: ../RTOC_GUI/ui/messtoolDialog.ui:64
+msgctxt "Dialog|"
+msgid "Minimum"
+msgstr "Minimum"
+
+#: ../RTOC_GUI/ui/messtoolDialog.ui:74
+msgctxt "Dialog|"
+msgid "Y [ ]"
+msgstr "Y [ ]"
+
+#: ../RTOC_GUI/ui/messtoolDialog.ui:154
+msgctxt "Dialog|"
+msgid "1"
+msgstr "1"
+
+#: ../RTOC_GUI/ui/messtoolDialog.ui:91
+msgctxt "Dialog|"
+msgid "X [s]"
+msgstr "X [s]"
+
+#: ../RTOC_GUI/ui/messtoolDialog.ui:108
+msgctxt "Dialog|"
+msgid "Maximum"
+msgstr "Maximum"
+
+#: ../RTOC_GUI/ui/messtoolDialog.ui:138
+msgctxt "Dialog|"
+msgid "Differenz"
+msgstr "Differenz"
+
+#: ../RTOC_GUI/ui/messtoolDialog.ui:164
+msgctxt "Dialog|"
+msgid "1s"
+msgstr "1s"
+
+#: ../RTOC_GUI/ui/stylePlotDialog.ui:14
+msgctxt "Dialog|"
+msgid "Stile anpassen"
+msgstr "Stile anpassen"
+
+#: ../RTOC_GUI/ui/stylePlotDialog.ui:32
+msgctxt "Dialog|"
+msgid "Signal 1"
+msgstr "Signal 1"
+
+#: ../RTOC_GUI/ui/stylePlotDialog.ui:37
+msgctxt "Dialog|"
+msgid "Signal 2"
+msgstr "Signal 2"
+
+#: ../RTOC_GUI/ui/stylePlotDialog.ui:52
+msgctxt "Dialog|"
+msgid "Abbrechen"
+msgstr "Abbrechen"
+
+#: ../RTOC_GUI/ui/stylePlotDialog.ui:59
+msgctxt "Dialog|"
+msgid "Auf alle anwenden"
+msgstr "Auf alle anwenden"
+
+#: ../RTOC_GUI/ui/stylePlotDialog.ui:66
+msgctxt "Dialog|"
+msgid "Auf Auswahl anwenden"
+msgstr "Auf Auswahl anwenden"
+
+#: ../RTOC_GUI/PluginDownloader.py:161
+msgctxt "Downloader|"
+msgid "Aktuelle Version: "
+msgstr "Aktuelle Version: "
+
+#: ../RTOC_GUI/PluginDownloader.py:166
+msgctxt "Downloader|"
+msgid " (Installiert: "
+msgstr " (Installiert: "
+
+#: ../RTOC_GUI/PluginDownloader.py:169
+msgctxt "Downloader|"
+msgid " (Wurde nicht mit der RTOC-Repository installiert)"
+msgstr " (Wurde nicht mit der RTOC-Repository installiert)"
+
+#: ../RTOC_GUI/PluginDownloader.py:180
+msgctxt "Downloader|"
+msgid "Fertig"
+msgstr "Fertig"
+
+#: ../RTOC_GUI/PluginDownloader.py:180
+msgctxt "Downloader|"
+msgid "Installation abgeschlossen"
+msgstr "Installation abgeschlossen"
+
+#: ../RTOC_GUI/PluginDownloader.py:180
+msgctxt "Downloader|"
+msgid "Bitte starte RTOC neu, um Fehler zu vermeiden"
+msgstr "Bitte starte RTOC neu, um Fehler zu vermeiden"
+
+#: ../RTOC_GUI/PluginDownloader.py:192
+msgctxt "Downloader|"
+msgid "Plugin entfernen"
+msgstr "Plugin entfernen"
+
+#: ../RTOC_GUI/PluginDownloader.py:192
+msgctxt "Downloader|"
+msgid "Möchtest du wirklich "
+msgstr "Möchtest du wirklich "
+
+#: ../RTOC_GUI/PluginDownloader.py:192
+msgctxt "Downloader|"
+msgid " entfernen"
+msgstr " entfernen"
+
+#: ../RTOC_GUI/eventWidget.py:64
+msgctxt "EventWidget|"
+msgid "Aus Datenbank lÃ¶schen"
+msgstr "Aus Datenbank lÃ¶schen"
+
+#: ../RTOC_GUI/eventWidget.py:64
+msgctxt "EventWidget|"
+msgid "MÃ¶chtest du die Events auch aus der Datenbank entfernen?"
+msgstr "MÃ¶chtest du die Events auch aus der Datenbank entfernen?"
+
+#: ../RTOC_GUI/eventWidget.py:64
+msgctxt "EventWidget|"
+msgid "Signale bleiben bestehen"
+msgstr "Signale bleiben bestehen"
+
+#: ../RTOC_GUI/eventWidget.py:64
+msgctxt "EventWidget|"
+msgid "Ja"
+msgstr "Ja"
+
+#: ../RTOC_GUI/eventWidget.py:64
+msgctxt "EventWidget|"
+msgid "Nein"
+msgstr "Nein"
+
+#: ../RTOC_GUI/eventWidget.py:80
+msgctxt "EventWidget|"
+msgid "%H:%M:%S %d.%m.%Y"
+msgstr "%H:%M:%S %d.%m.%Y"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:14
+msgctxt "Form|"
+msgid "Form"
+msgstr "Form"
+
+#: ../RTOC_GUI/ui/gridViewWidget.ui:20
+msgctxt "Form|"
+msgid "X-Linien"
+msgstr "X-Linien"
+
+#: ../RTOC_GUI/ui/gridViewWidget.ui:27
+msgctxt "Form|"
+msgid "Y-Linien"
+msgstr "Y-Linien"
+
+#: ../RTOC_GUI/ui/gridViewWidget.ui:34
+msgctxt "Form|"
+msgid "Alpha:"
+msgstr "Alpha:"
+
+#: ../RTOC_GUI/ui/plotToolsWidget.ui:75
+msgctxt "Form|"
+msgid "Zeige Crosshair"
+msgstr "Zeige Crosshair"
+
+#: ../RTOC_GUI/ui/plotToolsWidget.ui:26
+msgctxt "Form|"
+msgid "Fadenkreuz"
+msgstr "Fadenkreuz"
+
+#: ../RTOC_GUI/ui/plotToolsWidget.ui:49
+msgctxt "Form|"
+msgid "Öffne Mess-Rechteck in Plot"
+msgstr "Öffne Mess-Rechteck in Plot"
+
+#: ../RTOC_GUI/ui/plotToolsWidget.ui:52
+msgctxt "Form|"
+msgid "Rechteck-Messwerkzeug"
+msgstr "Rechteck-Messwerkzeug"
+
+#: ../RTOC_GUI/ui/plotToolsWidget.ui:78
+msgctxt "Form|"
+msgid "Schneide-Werkzeug"
+msgstr "Schneide-Werkzeug"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:37
+msgctxt "Form|"
+msgid "Signal-Labels ein/ausblenden"
+msgstr "Signal-Labels ein/ausblenden"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:40
+msgctxt "Form|"
+msgid "Signal-Labels"
+msgstr "Signal-Labels"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:75
+msgctxt "Form|"
+msgid "Darstellung invertieren"
+msgstr "Darstellung invertieren"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:330
+msgctxt "Form|"
+msgid "Aktivieren, X-Achse time.time()+x ist"
+msgstr "Aktivieren, X-Achse time.time()+x ist"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:336
+msgctxt "Form|"
+msgid "Zeitsignal"
+msgstr "Zeitsignal"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:142
+msgctxt "Form|"
+msgid "X-Achse als Zeit formatieren"
+msgstr "X-Achse als Zeit formatieren"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:145
+msgctxt "Form|"
+msgid "Zeitachse"
+msgstr "Zeitachse"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:174
+msgctxt "Form|"
+msgid "Grid"
+msgstr "Grid"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:197
+msgctxt "Form|"
+msgid "Legende ein/ausblenden"
+msgstr "Legende ein/ausblenden"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:200
+msgctxt "Form|"
+msgid "Legende"
+msgstr "Legende"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:232
+msgctxt "Form|"
+msgid "Blinkender Indikator an/aus"
+msgstr "Blinkender Indikator an/aus"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:235
+msgctxt "Form|"
+msgid "Blinkender Indikator"
+msgstr "Blinkender Indikator"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:267
+msgctxt "Form|"
+msgid "Mehrere Plotstile anpassen"
+msgstr "Mehrere Plotstile anpassen"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:270
+msgctxt "Form|"
+msgid "Plotstile anpassen"
+msgstr "Plotstile anpassen"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:297
+msgctxt "Form|"
+msgid "Global X-Offset:"
+msgstr "Global X-Offset:"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:304
+msgctxt "Form|"
+msgid "s"
+msgstr "s"
+
+#: ../RTOC_GUI/ui/plotViewWidget.ui:330
+msgctxt "Form|"
+msgid "Plot-Rate:"
+msgstr "Plot-Rate:"
+
+#: ../RTOC_GUI/ui/triggerWidget.ui:81
+msgctxt "Form|"
+msgid " Hz"
+msgstr " Hz"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:14
+msgctxt "Form|"
+msgid "Script Hilfe"
+msgstr "Script Hilfe"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:34
+msgctxt "Form|"
+msgid "Logger-Funktionen"
+msgstr "Logger-Funktionen"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:44
+msgctxt "Form|"
+msgid "Automatisch importierte Libraries:"
+msgstr "Automatisch importierte Libraries:"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:51
+msgctxt "Form|"
+msgid "import numpy as np"
+msgstr "import numpy as np"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:58
+msgctxt "Form|"
+msgid "import scipy as sp"
+msgstr "import scipy as sp"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:65
+msgctxt "Form|"
+msgid "import math"
+msgstr "import math"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:79
+msgctxt "Form|"
+msgid ""
+"global VARNAME = 0 # Definiere globale Variablen !!Benutzung durch "
+"self.VARNAME!!"
+msgstr "global VARNAME = 0 # Definiere globale Variablen !!Benutzung durch self.VARNAME!!"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:84
+msgctxt "Form|"
+msgid ""
+"trig LOGIC_EXPRESSION: #Use like \"if\" but with only one execution on change"
+msgstr "trig LOGIC_EXPRESSION: #Use like \"if\" but with only one execution on change"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:94
+msgctxt "Form|"
+msgid "stream(y=0, sname=\"noName\", dname=\"noDevice\", unit=\"\") "
+msgstr "stream(y=0, sname=\"noName\", dname=\"noDevice\", unit=\"\") "
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:99
+msgctxt "Form|"
+msgid "plot([x],[y],sname=\"noName\",dname=\"noDevice\",unit=\"\") "
+msgstr "plot([x],[y],sname=\"noName\",dname=\"noDevice\",unit=\"\") "
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:104
+msgctxt "Form|"
+msgid ""
+"plot([y],sname=\"noName\",dname=\"noDevice\",unit=\"\")  # X-Werte = "
+"range(len(y))"
+msgstr "plot([y],sname=\"noName\",dname=\"noDevice\",unit=\"\")  # X-Werte = range(len(y))"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:109
+msgctxt "Form|"
+msgid ""
+"event(text=\"\", sname=\"noName\", dname=\"noDevice\", x=clock, priority=0) "
+msgstr "event(text=\"\", sname=\"noName\", dname=\"noDevice\", x=clock, priority=0) "
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:114
+msgctxt "Form|"
+msgid "{ans} = sendTCP(hostname = \"localhost\", *args, **kwargs)"
+msgstr "{ans} = sendTCP(hostname = \"localhost\", *args, **kwargs)"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:119
+msgctxt "Form|"
+msgid "print() "
+msgstr "print() "
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:124
+msgctxt "Form|"
+msgid "clearData() # löscht alle Daten"
+msgstr "clearData() # löscht alle Daten"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:129
+msgctxt "Form|"
+msgid "exportData(Filetype=\"json\", filename=AUTO) # Exportiert alle Daten"
+msgstr "exportData(Filetype=\"json\", filename=AUTO) # Exportiert alle Daten"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:144
+msgctxt "Form|"
+msgid "Standard-Funktionen"
+msgstr "Standard-Funktionen"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:161
+msgctxt "Form|"
+msgid ""
+"[x], [[y], [y2],...] = rtoc.combine([[x],[y], [x2],[y2], ...], n=10) # "
+"Bringe mehrere Signale auf die gleiche X-Achse"
+msgstr "[x], [[y], [y2],...] = rtoc.combine([[x],[y], [x2],[y2], ...], n=10) # Bringe mehrere Signale auf die gleiche X-Achse"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:166
+msgctxt "Form|"
+msgid "[x], [y] = rtoc.resample([x], [y], n=10) # Sample ein Signal ab "
+msgstr "[x], [y] = rtoc.resample([x], [y], n=10) # Sample ein Signal ab "
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:171
+msgctxt "Form|"
+msgid ""
+"[x], [y] = rtoc.resampleFourier([x], [y], n=10) # Sample ein Signal ab mit "
+"Fourier"
+msgstr "[x], [y] = rtoc.resampleFourier([x], [y], n=10) # Sample ein Signal ab mit Fourier"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:176
+msgctxt "Form|"
+msgid ""
+"[x], [y] = rtoc.mean([x], [y], n= 40) # Mittelwert über die letzten X Werte"
+msgstr "[x], [y] = rtoc.mean([x], [y], n= 40) # Mittelwert über die letzten X Werte"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:181
+msgctxt "Form|"
+msgid ""
+"[x], [y] = rtoc.runningMean([x], [y], n=40) # Laufender Mittelwert über "
+"Signal"
+msgstr "[x], [y] = rtoc.runningMean([x], [y], n=40) # Laufender Mittelwert über Signal"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:186
+msgctxt "Form|"
+msgid ""
+"[x], [y], [params] = rtoc.lsfit([x], [y] , DEF, x0, n) # LeastSquare fit auf "
+"benutzerdefinierte DEF, oder vordefinidert: DEF = \"linear\" oder \"quad\""
+msgstr "[x], [y], [params] = rtoc.lsfit([x], [y] , DEF, x0, n) # LeastSquare fit auf benutzerdefinierte DEF, oder vordefinidert: DEF = \"linear\" oder \"quad\""
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:196
+msgctxt "Form|"
+msgid "dy = rtoc.d([x], [y]) # Ableitung eines Signals"
+msgstr "dy = rtoc.d([x], [y]) # Ableitung eines Signals"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:201
+msgctxt "Form|"
+msgid "[x], [dy] = rtoc.diff([x], [y]) "
+msgstr "[x], [dy] = rtoc.diff([x], [y]) "
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:206
+msgctxt "Form|"
+msgid "t = rtoc.PID([x], [y], Sollwert, kp=1, kd=0) # PD-Regelung"
+msgstr "t = rtoc.PID([x], [y], Sollwert, kp=1, kd=0) # PD-Regelung"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:211
+msgctxt "Form|"
+msgid ""
+"t, newI = rtoc.PID([x], [y], Sollwert, kp=1, kd=0, ki=0, lastI) # "
+"PID-Regelung"
+msgstr "t, newI = rtoc.PID([x], [y], Sollwert, kp=1, kd=0, ki=0, lastI) # PID-Regelung"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:230
+msgctxt "Form|"
+msgid "Geräte"
+msgstr "Geräte"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:261
+msgctxt "Form|"
+msgid "Signale = x,y"
+msgstr "Signale = x,y"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:271
+msgctxt "Form|"
+msgid "X-Werte : Gerät.Signal.x"
+msgstr "X-Werte : Gerät.Signal.x"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:278
+msgctxt "Form|"
+msgid "Aktuellster X-Wert: Gerät.Signal.latest"
+msgstr "Aktuellster X-Wert: Gerät.Signal.latest"
+
+#: ../RTOC_GUI/ui/scriptHelpWidget.ui:285
+msgctxt "Form|"
+msgid "Y-Werte : Gerät.Signal.y"
+msgstr "Y-Werte : Gerät.Signal.y"
+
+#: ../RTOC_GUI/ui/scriptSubWidget.ui:69
+msgctxt "Form|"
+msgid "Start"
+msgstr "Start"
+
+#: ../RTOC_GUI/ui/scriptSubWidget.ui:98
+msgctxt "Form|"
+msgid "Autostart"
+msgstr "Autostart"
+
+#: ../RTOC_GUI/ui/scriptSubWidget.ui:117
+msgctxt "Form|"
+msgid "Python Skript Bereich"
+msgstr "Python Skript Bereich"
+
+#: ../RTOC_GUI/ui/scriptSubWidget.ui:120
+msgctxt "Form|"
+msgid ""
+"trig Funktionsgenerator.Square.latest == 1:\n"
+"\tprint(\"one\")"
+msgstr "trig Funktionsgenerator.Square.latest == 1:\n\tprint(\"one\")"
+
+#: ../RTOC_GUI/ui/scriptSubWidget.ui:138
+msgctxt "Form|"
+msgid "Zuerst Script starten\n"
+msgstr "Zuerst Script starten\n"
+
+#: ../RTOC_GUI/ui/scriptWidget.ui:90
+msgctxt "Form|"
+msgid "Skript in Datei speichern"
+msgstr "Skript in Datei speichern"
+
+#: ../RTOC_GUI/ui/scriptWidget.ui:122
+msgctxt "Form|"
+msgid "+"
+msgstr "+"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:146
+msgctxt "Form|"
+msgid "Signal als CSV-Datei exportieren"
+msgstr "Signal als CSV-Datei exportieren"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:53
+msgctxt "Form|"
+msgid "Signal löschen"
+msgstr "Signal löschen"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:184
+msgctxt "Form|"
+msgid "Signal zuschneiden"
+msgstr "Signal zuschneiden"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:216
+msgctxt "Form|"
+msgid "Signal duplizieren"
+msgstr "Signal duplizieren"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:233
+msgctxt "Form|"
+msgid "Darstellung"
+msgstr "Darstellung"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:79
+msgctxt "Form|"
+msgid "Plotdarstellung pausieren"
+msgstr "Plotdarstellung pausieren"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:368
+msgctxt "Form|"
+msgid "Plotstil anpassen"
+msgstr "Plotstil anpassen"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:295
+msgctxt "Form|"
+msgid "Label anzeigen/ausblenden"
+msgstr "Label anzeigen/ausblenden"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:394
+msgctxt "Form|"
+msgid "Änderungen werden erst mit \"Anwenden\" in die Daten geschrieben"
+msgstr "Änderungen werden erst mit \"Anwenden\" in die Daten geschrieben"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:397
+msgctxt "Form|"
+msgid "Modifikation"
+msgstr "Modifikation"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:429
+msgctxt "Form|"
+msgid "Scale"
+msgstr "Scale"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:439
+msgctxt "Form|"
+msgid "Offset"
+msgstr "Offset"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:503
+msgctxt "Form|"
+msgid " s"
+msgstr " s"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:611
+msgctxt "Form|"
+msgid "X-Y vertauschen"
+msgstr "X-Y vertauschen"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:637
+msgctxt "Form|"
+msgid "Signal umbenennen"
+msgstr "Signal umbenennen"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:640
+msgctxt "Form|"
+msgid "Signal umbenennen (neue Daten werden nicht umgeleitet!)"
+msgstr "Signal umbenennen (neue Daten werden nicht umgeleitet!)"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:643
+msgctxt "Form|"
+msgid "Rename"
+msgstr "Rename"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:662
+msgctxt "Form|"
+msgid "Modifikationen in Daten schreiben"
+msgstr "Modifikationen in Daten schreiben"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:665
+msgctxt "Form|"
+msgid "Modifikationen in Daten schreiben, Daten werden überschrieben"
+msgstr "Modifikationen in Daten schreiben, Daten werden überschrieben"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:668
+msgctxt "Form|"
+msgid "Anwenden"
+msgstr "Anwenden"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:85
+msgctxt "Form|"
+msgid "Plot pausieren"
+msgstr "Plot pausieren"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:120
+msgctxt "Form|"
+msgid "als CSV exportieren"
+msgstr "als CSV exportieren"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:152
+msgctxt "Form|"
+msgid "an Remote-RTOC senden"
+msgstr "an Remote-RTOC senden"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:263
+msgctxt "Form|"
+msgid "Signal-Events ein/ausblenden"
+msgstr "Signal-Events ein/ausblenden"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:301
+msgctxt "Form|"
+msgid "Label ein/ausblenden"
+msgstr "Label ein/ausblenden"
+
+#: ../RTOC_GUI/ui/signalWidget2.ui:374
+msgctxt "Form|"
+msgid "Signalstil anpassen"
+msgstr "Signalstil anpassen"
+
+#: ../RTOC_GUI/ui/triggerWidget.ui:55
+msgctxt "Form|"
+msgid "Samplerate-Triggered: Skript wird mit definierter Samplerate ausgefürt"
+msgstr "Samplerate-Triggered: Skript wird mit definierter Samplerate ausgefürt"
+
+#: ../RTOC_GUI/ui/triggerWidget.ui:58
+msgctxt "Form|"
+msgid "Samplerate-Triggered"
+msgstr "Samplerate-Triggered"
+
+#: ../RTOC_GUI/ui/triggerWidget.ui:68
+msgctxt "Form|"
+msgid ""
+"Signal-Triggered: Script wird mit Geräte-Samplerate verknüpft und ausgeführt"
+msgstr "Signal-Triggered: Script wird mit Geräte-Samplerate verknüpft und ausgeführt"
+
+#: ../RTOC_GUI/ui/triggerWidget.ui:74
+msgctxt "Form|"
+msgid "Signal-Triggered"
+msgstr "Signal-Triggered"
+
+#: ../RTOC_GUI/ui/triggerWidget.ui:101
+msgctxt "Form|"
+msgid "Keines"
+msgstr "Keines"
+
+#: ../RTOC_GUI/ui/eventWidget.ui:26
+msgctxt "Form|"
+msgid "Events"
+msgstr "Events"
+
+#: ../RTOC_GUI/ui/eventWidget.ui:65
+msgctxt "Form|"
+msgid "Filter"
+msgstr "Filter"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:167
+msgctxt "Form|"
+msgid "Lösche alle Signale"
+msgstr "Lösche alle Signale"
+
+#: ../RTOC_GUI/ui/eventWidget.ui:220
+msgctxt "Form|"
+msgid "Zeitpunkt"
+msgstr "Zeitpunkt"
+
+#: ../RTOC_GUI/ui/eventWidget.ui:225
+msgctxt "Form|"
+msgid "Inhalt"
+msgstr "Inhalt"
+
+#: ../RTOC_GUI/ui/eventWidget.ui:230
+msgctxt "Form|"
+msgid "Gerät"
+msgstr "Gerät"
+
+#: ../RTOC_GUI/ui/csveditor_signal.ui:144
+msgctxt "Form|"
+msgid "Signal"
+msgstr "Signal"
+
+#: ../RTOC_GUI/ui/eventWidget.ui:240
+msgctxt "Form|"
+msgid "Rückgabewert"
+msgstr "Rückgabewert"
+
+#: ../RTOC_GUI/ui/eventWidget.ui:245
+msgctxt "Form|"
+msgid "ID"
+msgstr "ID"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:397
+msgctxt "Form|"
+msgid "Globale Events"
+msgstr "Globale Events"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:430
+msgctxt "Form|"
+msgid "Globale Aktionen"
+msgstr "Globale Aktionen"
+
+#: ../RTOC_GUI/ui/csveditor_signal.ui:66
+msgctxt "Form|"
+msgid "."
+msgstr "."
+
+#: ../RTOC_GUI/ui/csveditor_signal.ui:92
+msgctxt "Form|"
+msgid "X: "
+msgstr "X: "
+
+#: ../RTOC_GUI/ui/csveditor_signal.ui:111
+msgctxt "Form|"
+msgid "Y: "
+msgstr "Y: "
+
+#: ../RTOC_GUI/ui/csveditor_signal.ui:137
+msgctxt "Form|"
+msgid "Import"
+msgstr "Import"
+
+#: ../RTOC_GUI/ui/csveditor_signal.ui:160
+msgctxt "Form|"
+msgid "V"
+msgstr "V"
+
+#: ../RTOC_GUI/ui/csveditor_signal.ui:165
+msgctxt "Form|"
+msgid "A"
+msgstr "A"
+
+#: ../RTOC_GUI/ui/csveditor_signal.ui:170
+msgctxt "Form|"
+msgid "Ohm"
+msgstr "Ohm"
+
+#: ../RTOC_GUI/ui/csveditor_signal.ui:175
+msgctxt "Form|"
+msgid "W"
+msgstr "W"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:46
+msgctxt "Form|"
+msgid "OK"
+msgstr "OK"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:66
+msgctxt "Form|"
+msgid "Dauer:"
+msgstr "Dauer:"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:76
+msgctxt "Form|"
+msgid "Ändere die Aufzeichnungsdauer"
+msgstr "Ändere die Aufzeichnungsdauer"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:79
+msgctxt "Form|"
+msgid " Messwerte"
+msgstr " Messwerte"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:98
+msgctxt "Form|"
+msgid "Verbindung bearbeiten"
+msgstr "Verbindung bearbeiten"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:121
+msgctxt "Form|"
+msgid "Übertragung pausieren"
+msgstr "Übertragung pausieren"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:144
+msgctxt "Form|"
+msgid "Session des RemoteRTOCs herunterladen"
+msgstr "Session des RemoteRTOCs herunterladen"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:164
+msgctxt "Form|"
+msgid "Alle Signale auf RemoteRTOC löschen"
+msgstr "Alle Signale auf RemoteRTOC löschen"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:187
+msgctxt "Form|"
+msgid "Verbindung trennen"
+msgstr "Verbindung trennen"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:241
+msgctxt "Form|"
+msgid "Port:"
+msgstr "Port:"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:248
+msgctxt "Form|"
+msgid "Name:"
+msgstr "Name:"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:255
+msgctxt "Form|"
+msgid "Passwort:"
+msgstr "Passwort:"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:272
+msgctxt "Form|"
+msgid "Webserver"
+msgstr "Webserver"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:320
+msgctxt "Form|"
+msgid "Deaktiviert"
+msgstr "Deaktiviert"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:82
+msgctxt "Form|"
+msgid "Backup"
+msgstr "Backup"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:300
+msgctxt "Form|"
+msgid "Hostname:"
+msgstr "Hostname:"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:327
+msgctxt "Form|"
+msgid "TelegramBot"
+msgstr "TelegramBot"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:121
+msgctxt "Form|"
+msgid "ss'd' HH'h' mm'min'"
+msgstr "ss'd' HH'h' mm'min'"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:100
+msgctxt "Form|"
+msgid "Backup-Intervall"
+msgstr "Backup-Intervall"
+
+#: ../RTOC_GUI/ui/remoteHostWidget.ui:463
+msgctxt "Form|"
+msgid "Skripte"
+msgstr "Skripte"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:14
+msgctxt "Form|"
+msgid "Einstellungen"
+msgstr "Einstellungen"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:24
+msgctxt "Form|"
+msgid "Allgemein"
+msgstr "Allgemein"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:37
+msgctxt "Form|"
+msgid "Plot-Aktualisierungsrate"
+msgstr "Plot-Aktualisierungsrate"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:44
+msgctxt "Form|"
+msgid "Telegram-Bot-Name"
+msgstr "Telegram-Bot-Name"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:51
+msgctxt "Form|"
+msgid "RTOC-Remote"
+msgstr "RTOC-Remote"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:58
+msgctxt "Form|"
+msgid "Sprache"
+msgstr "Sprache"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:66
+msgctxt "Form|"
+msgid "English"
+msgstr "English"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:71
+msgctxt "Form|"
+msgid "Deutsch"
+msgstr "Deutsch"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:88
+msgctxt "Form|"
+msgid "Backup aktivieren"
+msgstr "Backup aktivieren"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:138
+msgctxt "Form|"
+msgid "Backup-Verzeichnis"
+msgstr "Backup-Verzeichnis"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:145
+msgctxt "Form|"
+msgid "Verzeichnis ändern"
+msgstr "Verzeichnis ändern"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:154
+msgctxt "Form|"
+msgid "Auto-Backup wenn voll"
+msgstr "Auto-Backup wenn voll"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:161
+msgctxt "Form|"
+msgid "Auto-Backup beim Beenden von RTOC"
+msgstr "Auto-Backup beim Beenden von RTOC"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:168
+msgctxt "Form|"
+msgid "Backup beim Start automatisch laden"
+msgstr "Backup beim Start automatisch laden"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:175
+msgctxt "Form|"
+msgid "Daten aus Sitzung leeren nach Backup"
+msgstr "Daten aus Sitzung leeren nach Backup"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:185
+msgctxt "Form|"
+msgid "Aufräumen"
+msgstr "Aufräumen"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:191
+msgctxt "Form|"
+msgid "Gespeicherte Signal-Stile leeren"
+msgstr "Gespeicherte Signal-Stile leeren"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:198
+msgctxt "Form|"
+msgid "Liste 'Zuletzt bearbeitet' leeren"
+msgstr "Liste 'Zuletzt bearbeitet' leeren"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:205
+msgctxt "Form|"
+msgid "Signal-Stile löschen"
+msgstr "Signal-Stile löschen"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:212
+msgctxt "Form|"
+msgid "Telegram-Verbindungen beenden"
+msgstr "Telegram-Verbindungen beenden"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:219
+msgctxt "Form|"
+msgid "Telegram-Client-Liste leeren"
+msgstr "Telegram-Client-Liste leeren"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:226
+msgctxt "Form|"
+msgid "'Zuletzt bearbeitet' leeren"
+msgstr "'Zuletzt bearbeitet' leeren"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:233
+msgctxt "Form|"
+msgid "Liste 'Bekannte TCP-Hosts' leeren"
+msgstr "Liste 'Bekannte TCP-Hosts' leeren"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:240
+msgctxt "Form|"
+msgid "'Bekannte TCP-Hosts' leeren"
+msgstr "'Bekannte TCP-Hosts' leeren"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:254
+msgctxt "Form|"
+msgid "Ansicht"
+msgstr "Ansicht"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:260
+msgctxt "Form|"
+msgid "Signal-Inactivity-TimeOut"
+msgstr "Signal-Inactivity-TimeOut"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:268
+msgctxt "Form|"
+msgid "Icons"
+msgstr "Icons"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:273
+msgctxt "Form|"
+msgid "Text"
+msgstr "Text"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:365
+msgctxt "Form|"
+msgid "Aus"
+msgstr "Aus"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:288
+msgctxt "Form|"
+msgid "OpenGL"
+msgstr "OpenGL"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:295
+msgctxt "Form|"
+msgid "Signal-Dropdownmenü"
+msgstr "Signal-Dropdownmenü"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:302
+msgctxt "Form|"
+msgid "Neue Signale sofort darstellen"
+msgstr "Neue Signale sofort darstellen"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:309
+msgctxt "Form|"
+msgid "Weave"
+msgstr "Weave"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:330
+msgctxt "Form|"
+msgid "Anti-Aliasing"
+msgstr "Anti-Aliasing"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:351
+msgctxt "Form|"
+msgid "Fensterposition wiederherstellen"
+msgstr "Fensterposition wiederherstellen"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:358
+msgctxt "Form|"
+msgid "Dunkle Darstellung"
+msgstr "Dunkle Darstellung"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:382
+msgctxt "Form|"
+msgid "PostgreSQL Datenbank"
+msgstr "PostgreSQL Datenbank"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:388
+msgctxt "Form|"
+msgid "PostgreSQL aktivieren"
+msgstr "PostgreSQL aktivieren"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:400
+msgctxt "Form|"
+msgid "Nutzername"
+msgstr "Nutzername"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:417
+msgctxt "Form|"
+msgid "Passwort    "
+msgstr "Passwort    "
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:434
+msgctxt "Form|"
+msgid "Host           "
+msgstr "Host           "
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:451
+msgctxt "Form|"
+msgid "Port"
+msgstr "Port"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:472
+msgctxt "Form|"
+msgid "Datenbankname"
+msgstr "Datenbankname"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:484
+msgctxt "Form|"
+msgid "Verbindung testen"
+msgstr "Verbindung testen"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:513
+msgctxt "Form|"
+msgid "Zurücksetzen"
+msgstr "Zurücksetzen"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:520
+msgctxt "Form|"
+msgid "Abbrechen"
+msgstr "Abbrechen"
+
+#: ../RTOC_GUI/ui/settingsWidget.ui:527
+msgctxt "Form|"
+msgid "Speichern"
+msgstr "Speichern"
+
+#: ../RTOC_GUI/ui/rtoc.ui:14
+msgctxt "MainWindow|"
+msgid "RealTime OpenControl"
+msgstr "RealTime OpenControl"
+
+#: ../RTOC_GUI/ui/rtoc.ui:41
+msgctxt "MainWindow|"
+msgid "Geräte, für die PlugIns vorhanden sind, erscheinen hier"
+msgstr "Geräte, für die PlugIns vorhanden sind, erscheinen hier"
+
+#: ../RTOC_GUI/ui/rtoc.ui:803
+msgctxt "MainWindow|"
+msgid "&Geräte"
+msgstr "&Geräte"
+
+#: ../RTOC_GUI/ui/rtoc.ui:81
+msgctxt "MainWindow|"
+msgid "Suche Gerät"
+msgstr "Suche Gerät"
+
+#: ../RTOC_GUI/ui/rtoc.ui:178
+msgctxt "MainWindow|"
+msgid "Falls ein Gerät ein GUI-PlugIn besitzt, erscheint dies hier"
+msgstr "Falls ein Gerät ein GUI-PlugIn besitzt, erscheint dies hier"
+
+#: ../RTOC_GUI/ui/rtoc.ui:814
+msgctxt "MainWindow|"
+msgid "&Plugins"
+msgstr "&Plugins"
+
+#: ../RTOC_GUI/ui/rtoc.ui:233
+msgctxt "MainWindow|"
+msgid "Page 2"
+msgstr "Page 2"
+
+#: ../RTOC_GUI/ui/rtoc.ui:249
+msgctxt "MainWindow|"
+msgid "Skripte"
+msgstr "Skripte"
+
+#: ../RTOC_GUI/ui/rtoc.ui:285
+msgctxt "MainWindow|"
+msgid "toolBar"
+msgstr "toolBar"
+
+#: ../RTOC_GUI/ui/rtoc.ui:917
+msgctxt "MainWindow|"
+msgid "Events"
+msgstr "Events"
+
+#: ../RTOC_GUI/ui/rtoc.ui:333
+msgctxt "MainWindow|"
+msgid "Graph"
+msgstr "Graph"
+
+#: ../RTOC_GUI/ui/rtoc.ui:376
+msgctxt "MainWindow|"
+msgid "Aufzeichnungsdauer:"
+msgstr "Aufzeichnungsdauer:"
+
+#: ../RTOC_GUI/ui/rtoc.ui:386
+msgctxt "MainWindow|"
+msgid "Ändere die Aufzeichnungsdauer"
+msgstr "Ändere die Aufzeichnungsdauer"
+
+#: ../RTOC_GUI/ui/rtoc.ui:389
+msgctxt "MainWindow|"
+msgid " Messwerte"
+msgstr " Messwerte"
+
+#: ../RTOC_GUI/ui/rtoc.ui:418
+msgctxt "MainWindow|"
+msgid "Lösche alle Signale"
+msgstr "Lösche alle Signale"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1078
+msgctxt "MainWindow|"
+msgid "Geräte RAW"
+msgstr "Geräte RAW"
+
+#: ../RTOC_GUI/ui/rtoc.ui:534
+msgctxt "MainWindow|"
+msgid "Suche"
+msgstr "Suche"
+
+#: ../RTOC_GUI/ui/rtoc.ui:568
+msgctxt "MainWindow|"
+msgid "Öffnen, Speichern, Exportieren"
+msgstr "Öffnen, Speichern, Exportieren"
+
+#: ../RTOC_GUI/ui/rtoc.ui:574
+msgctxt "MainWindow|"
+msgid "&Datei"
+msgstr "&Datei"
+
+#: ../RTOC_GUI/ui/rtoc.ui:596
+msgctxt "MainWindow|"
+msgid "Unterfenster-Darstellung verwalten"
+msgstr "Unterfenster-Darstellung verwalten"
+
+#: ../RTOC_GUI/ui/rtoc.ui:602
+msgctxt "MainWindow|"
+msgid "&Fenster"
+msgstr "&Fenster"
+
+#: ../RTOC_GUI/ui/rtoc.ui:621
+msgctxt "MainWindow|"
+msgid "&Hilfe"
+msgstr "&Hilfe"
+
+#: ../RTOC_GUI/ui/rtoc.ui:646
+msgctxt "MainWindow|"
+msgid "Sprache"
+msgstr "Sprache"
+
+#: ../RTOC_GUI/ui/rtoc.ui:662
+msgctxt "MainWindow|"
+msgid "Geräte"
+msgstr "Geräte"
+
+#: ../RTOC_GUI/ui/rtoc.ui:677
+msgctxt "MainWindow|"
+msgid "Netzwerk"
+msgstr "Netzwerk"
+
+#: ../RTOC_GUI/ui/rtoc.ui:695
+msgctxt "MainWindow|"
+msgid "TCP - Server"
+msgstr "TCP - Server"
+
+#: ../RTOC_GUI/ui/rtoc.ui:703
+msgctxt "MainWindow|"
+msgid "Telegram-Bot"
+msgstr "Telegram-Bot"
+
+#: ../RTOC_GUI/ui/rtoc.ui:710
+msgctxt "MainWindow|"
+msgid "Mit Remotehost verbinden"
+msgstr "Mit Remotehost verbinden"
+
+#: ../RTOC_GUI/ui/rtoc.ui:717
+msgctxt "MainWindow|"
+msgid "Aktive Verbindungen"
+msgstr "Aktive Verbindungen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:733
+msgctxt "MainWindow|"
+msgid "Datenbank"
+msgstr "Datenbank"
+
+#: ../RTOC_GUI/ui/rtoc.ui:749
+msgctxt "MainWindow|"
+msgid "&Daten exportieren"
+msgstr "&Daten exportieren"
+
+#: ../RTOC_GUI/ui/rtoc.ui:773
+msgctxt "MainWindow|"
+msgid "Bitte nutze RECHTSKLICK auf Plotbereich"
+msgstr "Bitte nutze RECHTSKLICK auf Plotbereich"
+
+#: ../RTOC_GUI/ui/rtoc.ui:757
+msgctxt "MainWindow|"
+msgid "&Beenden"
+msgstr "&Beenden"
+
+#: ../RTOC_GUI/ui/rtoc.ui:762
+msgctxt "MainWindow|"
+msgid "&Plot anpassen"
+msgstr "&Plot anpassen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:765
+msgctxt "MainWindow|"
+msgid "Plot-Darstellung"
+msgstr "Plot-Darstellung"
+
+#: ../RTOC_GUI/ui/rtoc.ui:770
+msgctxt "MainWindow|"
+msgid "&Plot exportieren"
+msgstr "&Plot exportieren"
+
+#: ../RTOC_GUI/ui/rtoc.ui:778
+msgctxt "MainWindow|"
+msgid "Fenster"
+msgstr "Fenster"
+
+#: ../RTOC_GUI/ui/rtoc.ui:789
+msgctxt "MainWindow|"
+msgid "&Signale"
+msgstr "&Signale"
+
+#: ../RTOC_GUI/ui/rtoc.ui:792
+msgctxt "MainWindow|"
+msgid "Signale-Unterfenster"
+msgstr "Signale-Unterfenster"
+
+#: ../RTOC_GUI/ui/rtoc.ui:806
+msgctxt "MainWindow|"
+msgid "Geräte-Unterfenster"
+msgstr "Geräte-Unterfenster"
+
+#: ../RTOC_GUI/ui/rtoc.ui:817
+msgctxt "MainWindow|"
+msgid "Plugins-Unterfenster"
+msgstr "Plugins-Unterfenster"
+
+#: ../RTOC_GUI/ui/rtoc.ui:825
+msgctxt "MainWindow|"
+msgid "S&kript"
+msgstr "S&kript"
+
+#: ../RTOC_GUI/ui/rtoc.ui:828
+msgctxt "MainWindow|"
+msgid "Skripte-Unterfenster"
+msgstr "Skripte-Unterfenster"
+
+#: ../RTOC_GUI/ui/rtoc.ui:833
+msgctxt "MainWindow|"
+msgid "&Skript laden"
+msgstr "&Skript laden"
+
+#: ../RTOC_GUI/ui/rtoc.ui:836
+msgctxt "MainWindow|"
+msgid "Skript aus Datei laden"
+msgstr "Skript aus Datei laden"
+
+#: ../RTOC_GUI/ui/rtoc.ui:841
+msgctxt "MainWindow|"
+msgid "S&kript speichern"
+msgstr "S&kript speichern"
+
+#: ../RTOC_GUI/ui/rtoc.ui:844
+msgctxt "MainWindow|"
+msgid "Skript in Datei speichern"
+msgstr "Skript in Datei speichern"
+
+#: ../RTOC_GUI/ui/rtoc.ui:849
+msgctxt "MainWindow|"
+msgid "S&ession speichern"
+msgstr "S&ession speichern"
+
+#: ../RTOC_GUI/ui/rtoc.ui:854
+msgctxt "MainWindow|"
+msgid "Zuletzt geladen"
+msgstr "Zuletzt geladen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:859
+msgctxt "MainWindow|"
+msgid "Session &laden"
+msgstr "Session &laden"
+
+#: ../RTOC_GUI/ui/rtoc.ui:864
+msgctxt "MainWindow|"
+msgid "&Hilfe zu RTOC"
+msgstr "&Hilfe zu RTOC"
+
+#: ../RTOC_GUI/ui/rtoc.ui:869
+msgctxt "MainWindow|"
+msgid "Über RTOC"
+msgstr "Über RTOC"
+
+#: ../RTOC_GUI/ui/rtoc.ui:874
+msgctxt "MainWindow|"
+msgid "Daten &importieren"
+msgstr "Daten &importieren"
+
+#: ../RTOC_GUI/ui/rtoc.ui:885
+msgctxt "MainWindow|"
+msgid "Minimize to SystemTray"
+msgstr "Minimize to SystemTray"
+
+#: ../RTOC_GUI/ui/rtoc.ui:893
+msgctxt "MainWindow|"
+msgid "Multiproessing - Listener"
+msgstr "Multiproessing - Listener"
+
+#: ../RTOC_GUI/ui/rtoc.ui:901
+msgctxt "MainWindow|"
+msgid "Deutsch"
+msgstr "Deutsch"
+
+#: ../RTOC_GUI/ui/rtoc.ui:909
+msgctxt "MainWindow|"
+msgid "English"
+msgstr "English"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1015
+msgctxt "MainWindow|"
+msgid "Bot-Token eingeben"
+msgstr "Bot-Token eingeben"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1010
+msgctxt "MainWindow|"
+msgid "Aktiviert"
+msgstr "Aktiviert"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1002
+msgctxt "MainWindow|"
+msgid "RTOC - Web"
+msgstr "RTOC - Web"
+
+#: ../RTOC_GUI/ui/rtoc.ui:984
+msgctxt "MainWindow|"
+msgid "Aktivieren"
+msgstr "Aktivieren"
+
+#: ../RTOC_GUI/ui/rtoc.ui:989
+msgctxt "MainWindow|"
+msgid "Passwort-Schutz"
+msgstr "Passwort-Schutz"
+
+#: ../RTOC_GUI/ui/rtoc.ui:956
+msgctxt "MainWindow|"
+msgid "Auf Updates prüfen"
+msgstr "Auf Updates prüfen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:994
+msgctxt "MainWindow|"
+msgid "Port: 5050"
+msgstr "Port: 5050"
+
+#: ../RTOC_GUI/ui/rtoc.ui:966
+msgctxt "MainWindow|"
+msgid "Cache leeren"
+msgstr "Cache leeren"
+
+#: ../RTOC_GUI/ui/rtoc.ui:971
+msgctxt "MainWindow|"
+msgid "Plugin-Repository"
+msgstr "Plugin-Repository"
+
+#: ../RTOC_GUI/ui/rtoc.ui:976
+msgctxt "MainWindow|"
+msgid "Geräte hinzufügen/entfernen"
+msgstr "Geräte hinzufügen/entfernen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1020
+msgctxt "MainWindow|"
+msgid "Backup-Intervall einstellen"
+msgstr "Backup-Intervall einstellen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1025
+msgctxt "MainWindow|"
+msgid "Täglich"
+msgstr "Täglich"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1030
+msgctxt "MainWindow|"
+msgid "Backup-Verzeichnis festlegen"
+msgstr "Backup-Verzeichnis festlegen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1035
+msgctxt "MainWindow|"
+msgid "Backups löschen"
+msgstr "Backups löschen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1040
+msgctxt "MainWindow|"
+msgid "Backup 1"
+msgstr "Backup 1"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1131
+msgctxt "MainWindow|"
+msgid "Einstellungen"
+msgstr "Einstellungen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1108
+msgctxt "MainWindow|"
+msgid "Neuer Host"
+msgstr "Neuer Host"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1113
+msgctxt "MainWindow|"
+msgid "keine"
+msgstr "keine"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1060
+msgctxt "MainWindow|"
+msgid "Update-Rate: 1 Hz"
+msgstr "Update-Rate: 1 Hz"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1118
+msgctxt "MainWindow|"
+msgid "RTOC-Server suchen"
+msgstr "RTOC-Server suchen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1070
+msgctxt "MainWindow|"
+msgid "Backout-Intervall: täglich"
+msgstr "Backout-Intervall: täglich"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1103
+msgctxt "MainWindow|"
+msgid "Update-Rate: 1Hz"
+msgstr "Update-Rate: 1Hz"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1126
+msgctxt "MainWindow|"
+msgid "Console"
+msgstr "Console"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1136
+msgctxt "MainWindow|"
+msgid "Lokale Daten in Datenbank laden"
+msgstr "Lokale Daten in Datenbank laden"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1141
+msgctxt "MainWindow|"
+msgid "Lokale Daten durch Datenbank ersetzen"
+msgstr "Lokale Daten durch Datenbank ersetzen"
+
+#: ../RTOC_GUI/ui/rtoc.ui:1146
+msgctxt "MainWindow|"
+msgid "Datenbank exportieren"
+msgstr "Datenbank exportieren"
+
+#: ../RTOC_GUI/RTPlotActions.py:141
+msgctxt "Plot|"
+msgid "Signale"
+msgstr "Signale"
+
+#: ../RTOC_GUI/RTPlotActions.py:145
+msgctxt "Plot|"
+msgid "Vergangene Zeit"
+msgstr "Vergangene Zeit"
+
+#: ../RTOC_GUI/ui/getPlugins.ui:14
+msgctxt "PluginDownloader|"
+msgid "Plugin Downloader"
+msgstr "Plugin Downloader"
+
+#: ../RTOC_GUI/ui/getPlugins.ui:28
+msgctxt "PluginDownloader|"
+msgid "Plugins"
+msgstr "Plugins"
+
+#: ../RTOC_GUI/ui/getPlugins.ui:80
+msgctxt "PluginDownloader|"
+msgid "Installieren"
+msgstr "Installieren"
+
+#: ../RTOC_GUI/ui/getPlugins.ui:87
+msgctxt "PluginDownloader|"
+msgid "Entfernen"
+msgstr "Entfernen"
+
+#: ../RTOC.py:204
+msgctxt "RTOC|"
+msgid "Datenbank-Fehler"
+msgstr "Datenbank-Fehler"
+
+#: ../RTOC.py:204
+msgctxt "RTOC|"
+msgid "Konnte keine Verbindung mit der PostgreSQL-Datenbank herstellen."
+msgstr "Konnte keine Verbindung mit der PostgreSQL-Datenbank herstellen."
+
+#: ../RTOC.py:204
+msgctxt "RTOC|"
+msgid ""
+"Bitte passe in den Einstellungen die PostgreSQL-Optionen an und starte RTOC "
+"danach neu."
+msgstr "Bitte passe in den Einstellungen die PostgreSQL-Optionen an und starte RTOC danach neu."
+
+#: ../RTOC.py:228
+msgctxt "RTOC|"
+msgid "Passwort-Schutz: Aus"
+msgstr "Passwort-Schutz: Aus"
+
+#: ../RTOC.py:230
+msgctxt "RTOC|"
+msgid "Passwort-Schutz: An"
+msgstr "Passwort-Schutz: An"
+
+#: ../RTOC.py:231
+msgctxt "RTOC|"
+msgid "Port: "
+msgstr "Port: "
+
+#: ../RTOC.py:254
+msgctxt "RTOC|"
+msgid "Warning"
+msgstr "Warning"
+
+#: ../RTOC.py:254
+msgctxt "RTOC|"
+msgid "Recording length was changed to "
+msgstr "Recording length was changed to "
+
+#: ../RTOC.py:254
+msgctxt "RTOC|"
+msgid "Signal: "
+msgstr "Signal: "
+
+#: ../RTOC.py:287
+msgctxt "RTOC|"
+msgid "Anzeigen"
+msgstr "Anzeigen"
+
+#: ../RTOC.py:289
+msgctxt "RTOC|"
+msgid "Im Hintergrund laufen"
+msgstr "Im Hintergrund laufen"
+
+#: ../RTOC.py:293
+msgctxt "RTOC|"
+msgid "TCP Server"
+msgstr "TCP Server"
+
+#: ../RTOC.py:297
+msgctxt "RTOC|"
+msgid "Beenden"
+msgstr "Beenden"
+
+#: ../RTOC.py:649
+msgctxt "RTOC|"
+msgid "Fehler"
+msgstr "Fehler"
+
+#: ../RTOC.py:484
+msgctxt "RTOC|"
+msgid ""
+"Fehler beim Laden der GerÃ¤te GUI\n"
+"Bitte Code Ã¼berprÃ¼fen."
+msgstr "Fehler beim Laden der GerÃ¤te GUI\nBitte Code Ã¼berprÃ¼fen."
+
+#: ../RTOC.py:487
+msgctxt "RTOC|"
+msgid ""
+"Fehler beim Laden des GerÃ¤ts\n"
+"Bitte stellen Sie sicher, dass das GerÃ¤t verbunden ist."
+msgstr "Fehler beim Laden des GerÃ¤ts\nBitte stellen Sie sicher, dass das GerÃ¤t verbunden ist."
+
+#: ../RTOC.py:514
+msgctxt "RTOC|"
+msgid "Sitzungen zusammenfÃ¼hren"
+msgstr "Sitzungen zusammenfÃ¼hren"
+
+#: ../RTOC.py:514
+msgctxt "RTOC|"
+msgid "MÃ¶chtest du die bisherige Sitzung entfernen?"
+msgstr "MÃ¶chtest du die bisherige Sitzung entfernen?"
+
+#: ../RTOC.py:514
+msgctxt "RTOC|"
+msgid "Nicht gespeicherte Messungen gehen verloren."
+msgstr "Nicht gespeicherte Messungen gehen verloren."
+
+#: ../RTOC.py:514
+msgctxt "RTOC|"
+msgid "Ja"
+msgstr "Ja"
+
+#: ../RTOC.py:514
+msgctxt "RTOC|"
+msgid "Nein"
+msgstr "Nein"
+
+#: ../RTOC.py:544
+msgctxt "RTOC|"
+msgid "lÃ¤uft im Hintergrund weiter und zeichnet Messwerte auf"
+msgstr "lÃ¤uft im Hintergrund weiter und zeichnet Messwerte auf"
+
+#: ../RTOC.py:545
+msgctxt "RTOC|"
+msgid "RealTime OpenControl"
+msgstr "RealTime OpenControl"
+
+#: ../RTOC.py:554
+msgctxt "RTOC|"
+msgid "Speichern"
+msgstr "Speichern"
+
+#: ../RTOC.py:554
+msgctxt "RTOC|"
+msgid "Wollen Sie die aktuelle Sitzung speichern?"
+msgstr "Wollen Sie die aktuelle Sitzung speichern?"
+
+#: ../RTOC.py:636
+msgctxt "RTOC|"
+msgid "Signalname angeben"
+msgstr "Signalname angeben"
+
+#: ../RTOC.py:636
+msgctxt "RTOC|"
+msgid "Gib einen Namen fÃ¼r das zu importierende Signal an"
+msgstr "Gib einen Namen fÃ¼r das zu importierende Signal an"
+
+#: ../RTOC.py:649
+msgctxt "RTOC|"
+msgid "Datei "
+msgstr "Datei "
+
+#: ../RTOC.py:649
+msgctxt "RTOC|"
+msgid " konnte nicht geÃ¶ffnet werden."
+msgstr " konnte nicht geÃ¶ffnet werden."
+
+#: ../RTOC.py:649
+msgctxt "RTOC|"
+msgid "Die Datei ist mÃ¶glicherweise beschÃ¤digt."
+msgstr "Die Datei ist mÃ¶glicherweise beschÃ¤digt."
+
+#: ../RTOC_GUI/RTPlotWidget.py:230
+msgctxt "RTPlotWidget|"
+msgid "Signale: "
+msgstr "Signale: "
+
+#: ../RTOC_GUI/remoteWidget.py:80
+msgctxt "RTRemote|"
+msgid "Verbunden"
+msgstr "Verbunden"
+
+#: ../RTOC_GUI/remoteWidget.py:105
+msgctxt "RTRemote|"
+msgid "Fehler"
+msgstr "Fehler"
+
+#: ../RTOC_GUI/remoteWidget.py:86
+msgctxt "RTRemote|"
+msgid "Falsches Passwort"
+msgstr "Falsches Passwort"
+
+#: ../RTOC_GUI/remoteWidget.py:92
+msgctxt "RTRemote|"
+msgid "Passwortgeschützt"
+msgstr "Passwortgeschützt"
+
+#: ../RTOC_GUI/remoteWidget.py:100
+msgctxt "RTRemote|"
+msgid "Verbindung trennen"
+msgstr "Verbindung trennen"
+
+#: ../RTOC_GUI/remoteWidget.py:100
+msgctxt "RTRemote|"
+msgid "Möchtest du die Verbindung zu "
+msgstr "Möchtest du die Verbindung zu "
+
+#: ../RTOC_GUI/remoteWidget.py:100
+msgctxt "RTRemote|"
+msgid " trennen?"
+msgstr " trennen?"
+
+#: ../RTOC_GUI/remoteWidget.py:100
+msgctxt "RTRemote|"
+msgid "Übertragene Signale bleiben bestehen"
+msgstr "Übertragene Signale bleiben bestehen"
+
+#: ../RTOC_GUI/remoteWidget.py:100
+msgctxt "RTRemote|"
+msgid "Ja"
+msgstr "Ja"
+
+#: ../RTOC_GUI/remoteWidget.py:100
+msgctxt "RTRemote|"
+msgid "Nein"
+msgstr "Nein"
+
+#: ../RTOC_GUI/remoteWidget.py:105
+msgctxt "RTRemote|"
+msgid "Konnte die Verbindung zu "
+msgstr "Konnte die Verbindung zu "
+
+#: ../RTOC_GUI/remoteWidget.py:105
+msgctxt "RTRemote|"
+msgid " nicht trennen."
+msgstr " nicht trennen."
+
+#: ../RTOC_GUI/remoteWidget.py:154
+msgctxt "RTRemote|"
+msgid "Signal löschen"
+msgstr "Signal löschen"
+
+#: ../RTOC_GUI/remoteWidget.py:183
+msgctxt "RTRemote|"
+msgid "Session speichern"
+msgstr "Session speichern"
+
+#: ../RTOC_GUI/remoteWidget.py:187
+msgctxt "RTRemote|"
+msgid "Download abgeschlossen"
+msgstr "Download abgeschlossen"
+
+#: ../RTOC_GUI/remoteWidget.py:187
+msgctxt "RTRemote|"
+msgid "Session wurde erfolgreich heruntergeladen."
+msgstr "Session wurde erfolgreich heruntergeladen."
+
+#: ../RTOC_GUI/scriptWidget.py:46
+msgctxt "ScriptWidget|"
+msgid "neu"
+msgstr "neu"
+
+#: ../RTOC_GUI/scriptWidget.py:62
+msgctxt "ScriptWidget|"
+msgid "Fehler beim laden der Datei "
+msgstr "Fehler beim laden der Datei "
+
+#: ../RTOC_GUI/scriptWidget.py:67
+msgctxt "ScriptWidget|"
+msgid "Fehler"
+msgstr "Fehler"
+
+#: ../RTOC_GUI/scriptWidget.py:67
+msgctxt "ScriptWidget|"
+msgid "Datei "
+msgstr "Datei "
+
+#: ../RTOC_GUI/scriptWidget.py:67
+msgctxt "ScriptWidget|"
+msgid " nicht gefunden"
+msgstr " nicht gefunden"
+
+#: ../RTOC_GUI/scriptWidget.py:99
+msgctxt "ScriptWidget|"
+msgid "Unbenannt"
+msgstr "Unbenannt"
+
+#: ../RTOC_GUI/scriptWidget.py:114
+msgctxt "ScriptWidget|"
+msgid "Skript laden"
+msgstr "Skript laden"
+
+#: ../RTOC_GUI/scriptWidget.py:151
+msgctxt "ScriptWidget|"
+msgid "SchlieÃen"
+msgstr "SchlieÃen"
+
+#: ../RTOC_GUI/settingsWidget.py:255
+msgctxt "SettingsWidget|"
+msgid "Backup-Verzeichnis festlegen"
+msgstr "Backup-Verzeichnis festlegen"
+
+#: ../RTOC_GUI/signalEditWidget.py:113
+msgctxt "SignalEditWidget|"
+msgid "Info"
+msgstr "Info"
+
+#: ../RTOC_GUI/signalEditWidget.py:113
+msgctxt "SignalEditWidget|"
+msgid "WÃ¤hle zuerst das Schneide-Tool aus"
+msgstr "WÃ¤hle zuerst das Schneide-Tool aus"
+
+#: ../RTOC_GUI/signalEditWidget.py:113
+msgctxt "SignalEditWidget|"
+msgid "Du musst zuerst deine Schnittbereich festlegen"
+msgstr "Du musst zuerst deine Schnittbereich festlegen"
+
+#: ../RTOC_GUI/signalEditWidget.py:164
+msgctxt "SignalEditWidget|"
+msgid "CSV-Datei (*.csv)"
+msgstr "CSV-Datei (*.csv)"
+
+#: ../RTOC_GUI/signalEditWidget.py:159
+msgctxt "SignalEditWidget|"
+msgid "Export"
+msgstr "Export"
+
+#: ../RTOC_GUI/signalEditWidget.py:168
+msgctxt "SignalEditWidget|"
+msgid "Umbenennen"
+msgstr "Umbenennen"
+
+#: ../RTOC_GUI/signalEditWidget.py:168
+msgctxt "SignalEditWidget|"
+msgid "Bitte gib einen neuen Namen an"
+msgstr "Bitte gib einen neuen Namen an"
+
+#: ../RTOC_GUI/signalEditWidget.py:221
+msgctxt "SignalEditWidget|"
+msgid "Achtung"
+msgstr "Achtung"
+
+#: ../RTOC_GUI/signalEditWidget.py:221
+msgctxt "SignalEditWidget|"
+msgid "Daten werden dauerhaft geÃ¤ndert"
+msgstr "Daten werden dauerhaft geÃ¤ndert"
+
+#: ../RTOC_GUI/signalEditWidget.py:221
+msgctxt "SignalEditWidget|"
+msgid "Ja"
+msgstr "Ja"
+
+#: ../RTOC_GUI/signalEditWidget.py:221
+msgctxt "SignalEditWidget|"
+msgid "Nein"
+msgstr "Nein"
+
+#: ../RTOC_GUI/signalEditWidget.py:254
+msgctxt "SignalEditWidget|"
+msgid "Host auswÃ¤hlen"
+msgstr "Host auswÃ¤hlen"
+
+#: ../RTOC_GUI/signalEditWidget.py:269
+msgctxt "SignalEditWidget|"
+msgid "Fehler"
+msgstr "Fehler"
+
+#: ../RTOC_GUI/signalEditWidget.py:269
+msgctxt "SignalEditWidget|"
+msgid "Signal konnte nicht gesendet werden."
+msgstr "Signal konnte nicht gesendet werden."
+
+#: ../RTOC_GUI/signalEditWidget.py:269
+msgctxt "SignalEditWidget|"
+msgid "Fehler beim Herstellen der Verbindung"
+msgstr "Fehler beim Herstellen der Verbindung"
+
+#: ../RTOC_GUI/signalWidget.py:539
+msgctxt "SignalWidget|"
+msgid "Aus Datenbank entfernen"
+msgstr "Aus Datenbank entfernen"
+
+#: ../RTOC_GUI/signalWidget.py:539
+msgctxt "SignalWidget|"
+msgid "Möchtest du dieses Signal auch aus der Datenbank entfernen?"
+msgstr "Möchtest du dieses Signal auch aus der Datenbank entfernen?"
+
+#: ../RTOC_GUI/signalWidget.py:539
+msgctxt "SignalWidget|"
+msgid "Dabei werden auch die Events gelöscht, die dem Signal zugeordnet sind"
+msgstr "Dabei werden auch die Events gelöscht, die dem Signal zugeordnet sind"
+
+#: ../RTOC_GUI/signalWidget.py:539
+msgctxt "SignalWidget|"
+msgid "Ja"
+msgstr "Ja"
+
+#: ../RTOC_GUI/signalWidget.py:539
+msgctxt "SignalWidget|"
+msgid "Nein"
+msgstr "Nein"
+
+#: ../RTOC_GUI/csvSignalWidget.py:66
+msgctxt "csv|"
+msgid "X-Daten nicht ausgewählt\n"
+msgstr "X-Daten nicht ausgewählt\n"
+
+#: ../RTOC_GUI/csvSignalWidget.py:76
+msgctxt "csv|"
+msgid "Spalte "
+msgstr "Spalte "
+
+#: ../RTOC_GUI/csvSignalWidget.py:77
+msgctxt "csv|"
+msgid " nicht in CSV-Datei\n"
+msgstr " nicht in CSV-Datei\n"
+
+#: ../RTOC_GUI/csvSignalWidget.py:73
+msgctxt "csv|"
+msgid "Y-Daten nicht in CSV-Datei (0)\n"
+msgstr "Y-Daten nicht in CSV-Datei (0)\n"
+
+#: ../RTOC_GUI/csvSignalWidget.py:88
+msgctxt "csv|"
+msgid "Y Werte leer\n"
+msgstr "Y Werte leer\n"
+
+#: ../RTOC_GUI/csvSignalWidget.py:92
+msgctxt "csv|"
+msgid "X Werte leer\n"
+msgstr "X Werte leer\n"
+
+#: ../RTOC_GUI/csvSignalWidget.py:101
+msgctxt "csv|"
+msgid "Länge der X und Y Werte nicht identisch: "
+msgstr "Länge der X und Y Werte nicht identisch: "
+
+#: ../RTOC_GUI/csvSignalWidget.py:106
+msgctxt "csv|"
+msgid "X: Fehler in folgenden Spalten: "
+msgstr "X: Fehler in folgenden Spalten: "
+
+#: ../RTOC_GUI/csvSignalWidget.py:110
+msgctxt "csv|"
+msgid "Y: Fehler in folgenden Spalten: "
+msgstr "Y: Fehler in folgenden Spalten: "
+
+#: ../RTOC_GUI/RTOC_Import.py:131
+msgctxt "csveditor|"
+msgid "CSV-Datei öffnen"
+msgstr "CSV-Datei öffnen"
+
+#: ../RTOC_GUI/RTOC_Import.py:190
+msgctxt "csveditor|"
+msgid "Matlab Import"
+msgstr "Matlab Import"
+
+#: ../RTOC_GUI/RTOC_Import.py:190
+msgctxt "csveditor|"
+msgid "Bitte wähle einen Datensatz aus der Datei aus."
+msgstr "Bitte wähle einen Datensatz aus der Datei aus."
+
+#: ../RTOC_GUI/RTOC_Import.py:266
+msgctxt "csveditor|"
+msgid "Fehler"
+msgstr "Fehler"
+
+#: ../RTOC_GUI/RTOC_Import.py:266
+msgctxt "csveditor|"
+msgid "Datei "
+msgstr "Datei "
+
+#: ../RTOC_GUI/RTOC_Import.py:205
+msgctxt "csveditor|"
+msgid " konnte nicht geöffnet werden."
+msgstr " konnte nicht geöffnet werden."
+
+#: ../RTOC_GUI/RTOC_Import.py:205
+msgctxt "csveditor|"
+msgid "Die Datei ist möglicherweise beschädigt."
+msgstr "Die Datei ist möglicherweise beschädigt."
+
+#: ../RTOC_GUI/RTOC_Import.py:265
+msgctxt "csveditor|"
+msgid "Fehler in CSV-Datei ->"
+msgstr "Fehler in CSV-Datei ->"
+
+#: ../RTOC_GUI/RTOC_Import.py:266
+msgctxt "csveditor|"
+msgid " konnte nicht gelesen werden."
+msgstr " konnte nicht gelesen werden."
+
+#: ../RTOC_GUI/RTOC_Import.py:266
+msgctxt "csveditor|"
+msgid ""
+"Stellen Sie sicher, dass die CSV-Datei korrekt ist und die Trennzeichen "
+"korrekt sind"
+msgstr "Stellen Sie sicher, dass die CSV-Datei korrekt ist und die Trennzeichen korrekt sind"
+
+#: ../RTOC_GUI/RTOC_Import.py:277
+msgctxt "csveditor|"
+msgid "CSV-Datei speichern"
+msgstr "CSV-Datei speichern"
+
+#: ../RTOC_GUI/RTOC_Import.py:356
+msgctxt "csveditor|"
+msgid "Kopieren"
+msgstr "Kopieren"
+
+#: ../RTOC_GUI/RTOC_Import.py:359
+msgctxt "csveditor|"
+msgid "Einfügen"
+msgstr "Einfügen"
+
+#: ../RTOC_GUI/RTOC_Import.py:362
+msgctxt "csveditor|"
+msgid "Ausschneiden"
+msgstr "Ausschneiden"
+
+#: ../RTOC_GUI/RTOC_Import.py:365
+msgctxt "csveditor|"
+msgid "Reihe entfernen"
+msgstr "Reihe entfernen"
+
+#: ../RTOC_GUI/RTOC_Import.py:368
+msgctxt "csveditor|"
+msgid "Reihe einfügen danach"
+msgstr "Reihe einfügen danach"
+
+#: ../RTOC_GUI/RTOC_Import.py:371
+msgctxt "csveditor|"
+msgid "Reihe einfügen davor"
+msgstr "Reihe einfügen davor"
+
+#: ../RTOC_GUI/RTOC_Import.py:374
+msgctxt "csveditor|"
+msgid "Spalte einfügen davor"
+msgstr "Spalte einfügen davor"
+
+#: ../RTOC_GUI/RTOC_Import.py:378
+msgctxt "csveditor|"
+msgid "Spalte einfügen danach"
+msgstr "Spalte einfügen danach"
+
+#: ../RTOC_GUI/RTOC_Import.py:382
+msgctxt "csveditor|"
+msgid "Spalte löschen"
+msgstr "Spalte löschen"
+
+#: ../RTOC_GUI/RTOC_Import.py:402
+msgctxt "csveditor|"
+msgid "Signal entfernen"
+msgstr "Signal entfernen"
+
+#: ../RTOC_GUI/RTOC_Import.py:494
+msgctxt "csveditor|"
+msgid "Profil laden"
+msgstr "Profil laden"
+
+#: ../RTOC_GUI/RTOC_Import.py:516
+msgctxt "csveditor|"
+msgid "Wollen Sie das Profil "
+msgstr "Wollen Sie das Profil "
+
+#: ../RTOC_GUI/RTOC_Import.py:494
+msgctxt "csveditor|"
+msgid " wirklich laden?"
+msgstr " wirklich laden?"
+
+#: ../RTOC_GUI/RTOC_Import.py:494
+msgctxt "csveditor|"
+msgid "Dabei geht die aktuelle Konfiguration verloren."
+msgstr "Dabei geht die aktuelle Konfiguration verloren."
+
+#: ../RTOC_GUI/RTOC_Import.py:516
+msgctxt "csveditor|"
+msgid "Ja"
+msgstr "Ja"
+
+#: ../RTOC_GUI/RTOC_Import.py:516
+msgctxt "csveditor|"
+msgid "Nein"
+msgstr "Nein"
+
+#: ../RTOC_GUI/RTOC_Import.py:506
+msgctxt "csveditor|"
+msgid "Profil speichern"
+msgstr "Profil speichern"
+
+#: ../RTOC_GUI/RTOC_Import.py:506
+msgctxt "csveditor|"
+msgid ""
+"Speichere die aktuelle Einstellung als Profil\n"
+"Bitte geben Sie einen Profilnamen an"
+msgstr "Speichere die aktuelle Einstellung als Profil\nBitte geben Sie einen Profilnamen an"
+
+#: ../RTOC_GUI/RTOC_Import.py:506
+msgctxt "csveditor|"
+msgid "Profil "
+msgstr "Profil "
+
+#: ../RTOC_GUI/RTOC_Import.py:516
+msgctxt "csveditor|"
+msgid "Profil löschen"
+msgstr "Profil löschen"
+
+#: ../RTOC_GUI/RTOC_Import.py:516
+msgctxt "csveditor|"
+msgid " wirklich löschen?"
+msgstr " wirklich löschen?"
+
+#: ../RTOC_GUI/RTOC_Import.py:565
+msgctxt "csveditor|"
+msgid "Signal"
+msgstr "Signal"
+
+#: ../RTOC_GUI/RTOC_Import.py:566
+msgctxt "csveditor|"
+msgid "Imported"
+msgstr "Imported"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:20
+msgctxt "layout|"
+msgid "Stile anpassen"
+msgstr "Stile anpassen"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:59
+msgctxt "layout|"
+msgid "Füllung"
+msgstr "Füllung"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:65
+msgctxt "layout|"
+msgid "Füllfarbe"
+msgstr "Füllfarbe"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:75
+msgctxt "layout|"
+msgid "y = "
+msgstr "y = "
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:91
+msgctxt "layout|"
+msgid "Füllen bis"
+msgstr "Füllen bis"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:98
+msgctxt "layout|"
+msgid "Füllung löschen"
+msgstr "Füllung löschen"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:436
+msgctxt "layout|"
+msgid "Färben"
+msgstr "Färben"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:115
+msgctxt "layout|"
+msgid "Schatten"
+msgstr "Schatten"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:121
+msgctxt "layout|"
+msgid "Schattenstil"
+msgstr "Schattenstil"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:250
+msgctxt "layout|"
+msgid "Linie"
+msgstr "Linie"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:255
+msgctxt "layout|"
+msgid "Punkte (P)"
+msgstr "Punkte (P)"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:260
+msgctxt "layout|"
+msgid "Striche (S)"
+msgstr "Striche (S)"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:265
+msgctxt "layout|"
+msgid "P S"
+msgstr "P S"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:270
+msgctxt "layout|"
+msgid "P P S"
+msgstr "P P S"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:168
+msgctxt "layout|"
+msgid "Schattenbreite"
+msgstr "Schattenbreite"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:191
+msgctxt "layout|"
+msgid "Schattenfarbe"
+msgstr "Schattenfarbe"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:220
+msgctxt "layout|"
+msgid "Linienfarbe"
+msgstr "Linienfarbe"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:233
+msgctxt "layout|"
+msgid "%"
+msgstr "%"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:278
+msgctxt "layout|"
+msgid "Linienstil"
+msgstr "Linienstil"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:304
+msgctxt "layout|"
+msgid "Opazität"
+msgstr "Opazität"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:311
+msgctxt "layout|"
+msgid "Linienbreite"
+msgstr "Linienbreite"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:347
+msgctxt "layout|"
+msgid "Symbol"
+msgstr "Symbol"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:340
+msgctxt "layout|"
+msgid "Symbolfarbe"
+msgstr "Symbolfarbe"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:354
+msgctxt "layout|"
+msgid "Symbolrandfarbe"
+msgstr "Symbolrandfarbe"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:377
+msgctxt "layout|"
+msgid "Symbolgröße"
+msgstr "Symbolgröße"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:396
+msgctxt "layout|"
+msgid "Kreis"
+msgstr "Kreis"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:401
+msgctxt "layout|"
+msgid "X"
+msgstr "X"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:406
+msgctxt "layout|"
+msgid "Quadrat"
+msgstr "Quadrat"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:411
+msgctxt "layout|"
+msgid "Dreieck"
+msgstr "Dreieck"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:416
+msgctxt "layout|"
+msgid "Raute"
+msgstr "Raute"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:421
+msgctxt "layout|"
+msgid "Plus"
+msgstr "Plus"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:466
+msgctxt "layout|"
+msgid "Abbrechen"
+msgstr "Abbrechen"
+
+#: ../RTOC_GUI/ui/stylePlotDialog2.ui:473
+msgctxt "layout|"
+msgid "Anwenden"
+msgstr "Anwenden"
+
+#: ../RTOC_GUI/ui/plotWidget.ui:14
+msgctxt "plotWidgetX|"
+msgid "Form"
+msgstr "Form"
+
+#: ../RTOC_GUI/ui/plotWidget.ui:117
+msgctxt "plotWidgetX|"
+msgid "Zeige Crosshair"
+msgstr "Zeige Crosshair"
+
+#: ../RTOC_GUI/ui/plotWidget.ui:85
+msgctxt "plotWidgetX|"
+msgid "Öffne Mess-Rechteck in Plot"
+msgstr "Öffne Mess-Rechteck in Plot"
+
+#: ../RTOC_GUI/ui/plotWidget.ui:152
+msgctxt "plotWidgetX|"
+msgid "Tools"
+msgstr "Tools"
+
+#: ../RTOC_GUI/ui/plotWidget.ui:174
+msgctxt "plotWidgetX|"
+msgid "Darstellung"
+msgstr "Darstellung"
+
+#: ../RTOC_GUI/ui/plotWidget.ui:267
+msgctxt "plotWidgetX|"
+msgid "Plot pausieren/fortsetzen"
+msgstr "Plot pausieren/fortsetzen"
+
+#: ../RTOC_GUI/ui/plotWidget.ui:319
+msgctxt "plotWidgetX|"
+msgid "Suche Signal; ..."
+msgstr "Suche Signal; ..."
+
+#: ../RTOC_GUI/ui/plotWidget.ui:375
+msgctxt "plotWidgetX|"
+msgid "Signale"
+msgstr "Signale"
+
+#: ../RTOC_GUI/ui/plotWidget.ui:380
+msgctxt "plotWidgetX|"
+msgid "Wert"
+msgstr "Wert"
+
+#: ../RTOC_GUI/ui/plotWidget.ui:388
+msgctxt "plotWidgetX|"
+msgid "Signale: 0"
+msgstr "Signale: 0"
+
+#: ../RTOC_GUI/settingsWidget.py:166
+msgctxt "settings|"
+msgid "Verbunden"
+msgstr "Verbunden"
+
+#: ../RTOC_GUI/settingsWidget.py:167
+msgctxt "settings|"
+msgid "PostgreSQL korrekt eingerichtet"
+msgstr "PostgreSQL korrekt eingerichtet"
+
+#: ../RTOC_GUI/settingsWidget.py:169
+msgctxt "settings|"
+msgid "Fehler"
+msgstr "Fehler"
+
+#: ../RTOC_GUI/settingsWidget.py:170
+msgctxt "settings|"
+msgid ""
+"Fehler in PostgreSQL-Konfiguration\n"
+"Vielleicht ist PostgreSQL auf Ihrem Rechner nicht installiert bzw. die "
+"Datenbank existiert nicht oder die Logindaten/Port sind falsch."
+msgstr "Fehler in PostgreSQL-Konfiguration\nVielleicht ist PostgreSQL auf Ihrem Rechner nicht installiert bzw. die Datenbank existiert nicht oder die Logindaten/Port sind falsch."
+
+#: ../RTOC_GUI/settingsWidget.py:173
+msgctxt "settings|"
+msgid "Import-Fehler"
+msgstr "Import-Fehler"
+
+#: ../RTOC_GUI/settingsWidget.py:174
+msgctxt "settings|"
+msgid ""
+"Pythonbibliothek psycopg2 ist nicht installiert.\n"
+"Bitte installiere es mit \"pip3 install psycopg2\" und versichere, dass "
+"PostgreSQL korrekt eingerichtet ist."
+msgstr "Pythonbibliothek psycopg2 ist nicht installiert.\nBitte installiere es mit \"pip3 install psycopg2\" und versichere, dass PostgreSQL korrekt eingerichtet ist."
+
+#: ../RTOC_GUI/settingsWidget.py:177
+msgctxt "settings|"
+msgid "PostgreSQL deaktiviert"
+msgstr "PostgreSQL deaktiviert"
+
+#: ../RTOC_GUI/settingsWidget.py:178
+msgctxt "settings|"
+msgid "PostgreSQL ist deaktiviert. Bitte schalte PostgreSQL an."
+msgstr "PostgreSQL ist deaktiviert. Bitte schalte PostgreSQL an."
+
+#: ../RTOC_GUI/settingsWidget.py:305
+msgctxt "settings|"
+msgid "An"
+msgstr "An"
+
+#: ../RTOC_GUI/settingsWidget.py:307
+msgctxt "settings|"
+msgid "Aus"
+msgstr "Aus"
+
+#: ../RTOC_GUI/settingsWidget.py:313
+msgctxt "settings|"
+msgid "Speichern"
+msgstr "Speichern"
+
+#: ../RTOC_GUI/settingsWidget.py:313
+msgctxt "settings|"
+msgid "Wollen Sie die Einstellungen wirklich überschreiben?"
+msgstr "Wollen Sie die Einstellungen wirklich überschreiben?"
+
+#: ../RTOC_GUI/settingsWidget.py:313
+msgctxt "settings|"
+msgid "Danach sollte RTOC neu gestartet werden."
+msgstr "Danach sollte RTOC neu gestartet werden."
+
+#: ../RTOC_GUI/settingsWidget.py:313
+msgctxt "settings|"
+msgid "Abbrechen"
+msgstr "Abbrechen"
+
+#: ../RTLogger/telegramBot.py:49
+msgctxt "telegram|"
+msgid "<-- Zurück"
+msgstr "<-- Zurück"
+
+#: ../RTLogger/telegramBot.py:93
+msgctxt "telegram|"
+msgid " hat sich zum ersten Mal mit "
+msgstr " hat sich zum ersten Mal mit "
+
+#: ../RTLogger/telegramBot.py:94
+msgctxt "telegram|"
+msgid " verbunden."
+msgstr " verbunden."
+
+#: ../RTLogger/telegramBot.py:151
+msgctxt "telegram|"
+msgid " wurde gestartet."
+msgstr " wurde gestartet."
+
+#: ../RTLogger/telegramBot.py:198
+msgctxt "telegram|"
+msgid "*Hallo "
+msgstr "*Hallo "
+
+#: ../RTLogger/telegramBot.py:198
+msgctxt "telegram|"
+msgid ""
+"!*\n"
+"Ich bin dein "
+msgstr "!*\nIch bin dein "
+
+#: ../RTLogger/telegramBot.py:198
+msgctxt "telegram|"
+msgid ""
+"-Bot.\n"
+"Ich helfe dir dabei die Geräte zu verwalten, die du bei mir angelegt hast. "
+"Außerdem kann ich dir die Messdaten zeigen und dich bei Events "
+"benachrichtigen."
+msgstr "-Bot.\nIch helfe dir dabei die Geräte zu verwalten, die du bei mir angelegt hast. Außerdem kann ich dir die Messdaten zeigen und dich bei Events benachrichtigen."
+
+#: ../RTLogger/telegramBot.py:296
+msgctxt "telegram|"
+msgid "Ich bin gerade beschäftigt, bitte lasse mir mehr Zeit."
+msgstr "Ich bin gerade beschäftigt, bitte lasse mir mehr Zeit."
+
+#: ../RTLogger/telegramBot.py:358
+msgctxt "telegram|"
+msgid "Event-Benachrichtigung festlegen"
+msgstr "Event-Benachrichtigung festlegen"
+
+#: ../RTLogger/telegramBot.py:358
+msgctxt "telegram|"
+msgid "Letzte Messwerte"
+msgstr "Letzte Messwerte"
+
+#: ../RTLogger/telegramBot.py:683
+msgctxt "telegram|"
+msgid "Signale"
+msgstr "Signale"
+
+#: ../RTLogger/telegramBot.py:359
+msgctxt "telegram|"
+msgid "Geräte"
+msgstr "Geräte"
+
+#: ../RTLogger/telegramBot.py:359
+msgctxt "telegram|"
+msgid "Event/Signal erzeugen"
+msgstr "Event/Signal erzeugen"
+
+#: ../RTLogger/telegramBot.py:359
+msgctxt "telegram|"
+msgid "Automatisierung"
+msgstr "Automatisierung"
+
+#: ../RTLogger/telegramBot.py:359
+msgctxt "telegram|"
+msgid "Einstellungen"
+msgstr "Einstellungen"
+
+#: ../RTLogger/telegramBot.py:366
+msgctxt "telegram|"
+msgid "*Hauptmenü*"
+msgstr "*Hauptmenü*"
+
+#: ../RTLogger/telegramBot.py:395
+msgctxt "telegram|"
+msgid "Keine Benachrichtigung"
+msgstr "Keine Benachrichtigung"
+
+#: ../RTLogger/telegramBot.py:395
+msgctxt "telegram|"
+msgid "Nur Fehlermeldungen"
+msgstr "Nur Fehlermeldungen"
+
+#: ../RTLogger/telegramBot.py:396
+msgctxt "telegram|"
+msgid "Warnungen"
+msgstr "Warnungen"
+
+#: ../RTLogger/telegramBot.py:396
+msgctxt "telegram|"
+msgid "Alle Benachrichtigungen"
+msgstr "Alle Benachrichtigungen"
+
+#: ../RTLogger/telegramBot.py:402
+msgctxt "telegram|"
+msgid "*Derzeitige Stufe: *"
+msgstr "*Derzeitige Stufe: *"
+
+#: ../RTLogger/telegramBot.py:402
+msgctxt "telegram|"
+msgid "Wähle eine Benachrichtigungsstufe aus."
+msgstr "Wähle eine Benachrichtigungsstufe aus."
+
+#: ../RTLogger/telegramBot.py:412
+msgctxt "telegram|"
+msgid "Einstellung angepasst"
+msgstr "Einstellung angepasst"
+
+#: ../RTLogger/telegramBot.py:418
+msgctxt "telegram|"
+msgid ""
+"Name\t | Wert\t | Einheit\n"
+" -\t | -\t | -\t | -\n"
+msgstr "Name\t | Wert\t | Einheit\n -\t | -\t | -\t | -\n"
+
+#: ../RTLogger/telegramBot.py:430
+msgctxt "telegram|"
+msgid "Keine Messwerte vorhanden"
+msgstr "Keine Messwerte vorhanden"
+
+#: ../RTLogger/telegramBot.py:439
+msgctxt "telegram|"
+msgid "*Geräte*"
+msgstr "*Geräte*"
+
+#: ../RTLogger/telegramBot.py:468
+msgctxt "telegram|"
+msgid "Gerät beenden"
+msgstr "Gerät beenden"
+
+#: ../RTLogger/telegramBot.py:474
+msgctxt "telegram|"
+msgid "Funktionen"
+msgstr "Funktionen"
+
+#: ../RTLogger/telegramBot.py:476
+msgctxt "telegram|"
+msgid "Parameter"
+msgstr "Parameter"
+
+#: ../RTLogger/telegramBot.py:478
+msgctxt "telegram|"
+msgid "Samplerate ändern"
+msgstr "Samplerate ändern"
+
+#: ../RTLogger/telegramBot.py:471
+msgctxt "telegram|"
+msgid "Gerät starten"
+msgstr "Gerät starten"
+
+#: ../RTLogger/telegramBot.py:461
+msgctxt "telegram|"
+msgid "Gerätefehler"
+msgstr "Gerätefehler"
+
+#: ../RTLogger/telegramBot.py:1130
+msgctxt "telegram|"
+msgid "Samplerate wurde geändert"
+msgstr "Samplerate wurde geändert"
+
+#: ../RTLogger/telegramBot.py:1135
+msgctxt "telegram|"
+msgid "Ich habe deine Nachricht nicht verstanden"
+msgstr "Ich habe deine Nachricht nicht verstanden"
+
+#: ../RTLogger/telegramBot.py:518
+msgctxt "telegram|"
+msgid "*Funktionen*"
+msgstr "*Funktionen*"
+
+#: ../RTLogger/telegramBot.py:539
+msgctxt "telegram|"
+msgid "*Parameter*"
+msgstr "*Parameter*"
+
+#: ../RTLogger/telegramBot.py:604
+msgctxt "telegram|"
+msgid "Shortcut entfernen"
+msgstr "Shortcut entfernen"
+
+#: ../RTLogger/telegramBot.py:602
+msgctxt "telegram|"
+msgid "Shortcut erstellen"
+msgstr "Shortcut erstellen"
+
+#: ../RTLogger/telegramBot.py:571
+msgctxt "telegram|"
+msgid ""
+"Bitte gib Parameter an, die der Funktion übergeben werden sollen. (Falls "
+"benötigt)"
+msgstr "Bitte gib Parameter an, die der Funktion übergeben werden sollen. (Falls benötigt)"
+
+#: ../RTLogger/telegramBot.py:608
+msgctxt "telegram|"
+msgid "Keine Parameter"
+msgstr "Keine Parameter"
+
+#: ../RTLogger/telegramBot.py:579
+msgctxt "telegram|"
+msgid "Derzeitiger Wert: *"
+msgstr "Derzeitiger Wert: *"
+
+#: ../RTLogger/telegramBot.py:580
+msgctxt "telegram|"
+msgid ""
+"*\n"
+"Schreib mir einen neuen Wert, wenn du diesen ändern willst."
+msgstr "*\nSchreib mir einen neuen Wert, wenn du diesen ändern willst."
+
+#: ../RTLogger/telegramBot.py:585
+msgctxt "telegram|"
+msgid ""
+"*Fehler*. \n"
+"Parameter "
+msgstr "*Fehler*. \nParameter "
+
+#: ../RTLogger/telegramBot.py:586
+msgctxt "telegram|"
+msgid " nicht gefunden bzw. Gerät "
+msgstr " nicht gefunden bzw. Gerät "
+
+#: ../RTLogger/telegramBot.py:586
+msgctxt "telegram|"
+msgid " nicht gestartet."
+msgstr " nicht gestartet."
+
+#: ../RTLogger/telegramBot.py:720
+msgctxt "telegram|"
+msgid "Graph anfordern"
+msgstr "Graph anfordern"
+
+#: ../RTLogger/telegramBot.py:801
+msgctxt "telegram|"
+msgid "Zeitraum wählen"
+msgstr "Zeitraum wählen"
+
+#: ../RTLogger/telegramBot.py:756
+msgctxt "telegram|"
+msgid "Events ausblenden"
+msgstr "Events ausblenden"
+
+#: ../RTLogger/telegramBot.py:750
+msgctxt "telegram|"
+msgid "Events anzeigen"
+msgstr "Events anzeigen"
+
+#: ../RTLogger/telegramBot.py:808
+msgctxt "telegram|"
+msgid "Alle abwählen"
+msgstr "Alle abwählen"
+
+#: ../RTLogger/telegramBot.py:804
+msgctxt "telegram|"
+msgid "Alle auswählen"
+msgstr "Alle auswählen"
+
+#: ../RTLogger/telegramBot.py:717
+msgctxt "telegram|"
+msgid "Alle mit Einheit \""
+msgstr "Alle mit Einheit \""
+
+#: ../RTLogger/telegramBot.py:717
+msgctxt "telegram|"
+msgid "\" auswählen"
+msgstr "\" auswählen"
+
+#: ../RTLogger/telegramBot.py:782
+msgctxt "telegram|"
+msgid "Ausgewähle Signale löschen!"
+msgstr "Ausgewähle Signale löschen!"
+
+#: ../RTLogger/telegramBot.py:792
+msgctxt "telegram|"
+msgid "Ausgewählte Events löschen!"
+msgstr "Ausgewählte Events löschen!"
+
+#: ../RTLogger/telegramBot.py:818
+msgctxt "telegram|"
+msgid "Ausgewählte Signale herunterladen"
+msgstr "Ausgewählte Signale herunterladen"
+
+#: ../RTLogger/telegramBot.py:694
+msgctxt "telegram|"
+msgid ""
+"\n"
+"            *Signale*\n"
+"\n"
+"            Hier bekommst du Infos über Signale und ich kann dir einen "
+"Graphen schicken. \n"
+"\n"
+"            Wähle dazu zuerst ein oder mehrere Signale aus und klicke auf \""
+msgstr "\n            *Signale*\n\n            Hier bekommst du Infos über Signale und ich kann dir einen Graphen schicken. \n\n            Wähle dazu zuerst ein oder mehrere Signale aus und klicke auf \""
+
+#: ../RTLogger/telegramBot.py:697
+msgctxt "telegram|"
+msgid ""
+"\n"
+"            Ich kann auch die Events im Plot darstellen und ausgewählte "
+"Signale oder Events löschen.\n"
+"\n"
+"            Ausgewählter Zeitraum:\n"
+msgstr "\n            Ich kann auch die Events im Plot darstellen und ausgewählte Signale oder Events löschen.\n\n            Ausgewählter Zeitraum:\n"
+
+#: ../RTLogger/telegramBot.py:699
+msgctxt "telegram|"
+msgid ""
+"\n"
+"Verfügbarer Zeitraum:\n"
+msgstr "\nVerfügbarer Zeitraum:\n"
+
+#: ../RTLogger/telegramBot.py:734
+msgctxt "telegram|"
+msgid " können nicht dargestellt werden."
+msgstr " können nicht dargestellt werden."
+
+#: ../RTLogger/telegramBot.py:740
+msgctxt "telegram|"
+msgid "Ich erzeuge jetzt einen Graphen mit "
+msgstr "Ich erzeuge jetzt einen Graphen mit "
+
+#: ../RTLogger/telegramBot.py:740
+msgctxt "telegram|"
+msgid ""
+" Signalen.\n"
+"Das kann eine Weile dauern"
+msgstr " Signalen.\nDas kann eine Weile dauern"
+
+#: ../RTLogger/telegramBot.py:748
+msgctxt "telegram|"
+msgid "Keine Signale ausgewählt."
+msgstr "Keine Signale ausgewählt."
+
+#: ../RTLogger/telegramBot.py:754
+msgctxt "telegram|"
+msgid "Events werden dargestellt."
+msgstr "Events werden dargestellt."
+
+#: ../RTLogger/telegramBot.py:761
+msgctxt "telegram|"
+msgid "Events werden nicht dargestellt."
+msgstr "Events werden nicht dargestellt."
+
+#: ../RTLogger/telegramBot.py:768
+msgctxt "telegram|"
+msgid "Signal aus Auswahl entfernt."
+msgstr "Signal aus Auswahl entfernt."
+
+#: ../RTLogger/telegramBot.py:780
+msgctxt "telegram|"
+msgid "Signal ausgewählt:\n"
+msgstr "Signal ausgewählt:\n"
+
+#: ../RTLogger/telegramBot.py:790
+msgctxt "telegram|"
+msgid "Ausgewählte Signale wurden gelöscht"
+msgstr "Ausgewählte Signale wurden gelöscht"
+
+#: ../RTLogger/telegramBot.py:799
+msgctxt "telegram|"
+msgid "Events der ausgewählten Signale wurden gelöscht"
+msgstr "Events der ausgewählten Signale wurden gelöscht"
+
+#: ../RTLogger/telegramBot.py:821
+msgctxt "telegram|"
+msgid "Daten werden bereitgestellt..."
+msgstr "Daten werden bereitgestellt..."
+
+#: ../RTLogger/telegramBot.py:834
+msgctxt "telegram|"
+msgid ""
+"Signalnamen bestehen aus \n"
+"<Gerät>.<Signal>\n"
+". Deine Nachricht sah nicht so aus.\n"
+msgstr "Signalnamen bestehen aus \n<Gerät>.<Signal>\n. Deine Nachricht sah nicht so aus.\n"
+
+#: ../RTLogger/telegramBot.py:851
+msgctxt "telegram|"
+msgid ""
+"\n"
+"Ausgewählter Zeitraum:\n"
+msgstr "\nAusgewählter Zeitraum:\n"
+
+#: ../RTLogger/telegramBot.py:852
+msgctxt "telegram|"
+msgid "Verfügbarer Zeitraum:\n"
+msgstr "Verfügbarer Zeitraum:\n"
+
+#: ../RTLogger/telegramBot.py:861
+msgctxt "telegram|"
+msgid "Letzte Minute"
+msgstr "Letzte Minute"
+
+#: ../RTLogger/telegramBot.py:864
+msgctxt "telegram|"
+msgid "Letzten 10 Minuten"
+msgstr "Letzten 10 Minuten"
+
+#: ../RTLogger/telegramBot.py:867
+msgctxt "telegram|"
+msgid "Letzte Stunde"
+msgstr "Letzte Stunde"
+
+#: ../RTLogger/telegramBot.py:870
+msgctxt "telegram|"
+msgid "Letzte 24h"
+msgstr "Letzte 24h"
+
+#: ../RTLogger/telegramBot.py:873
+msgctxt "telegram|"
+msgid "Letzte Woche"
+msgstr "Letzte Woche"
+
+#: ../RTLogger/telegramBot.py:876
+msgctxt "telegram|"
+msgid "Letzter Monat"
+msgstr "Letzter Monat"
+
+#: ../RTLogger/telegramBot.py:879
+msgctxt "telegram|"
+msgid "Alles"
+msgstr "Alles"
+
+#: ../RTLogger/telegramBot.py:930
+msgctxt "telegram|"
+msgid "Bitte sende mir einen Zeitraum, den ich verstehen kann:\n"
+msgstr "Bitte sende mir einen Zeitraum, den ich verstehen kann:\n"
+
+#: ../RTLogger/telegramBot.py:936
+msgctxt "telegram|"
+msgid "Ausgewählter Zeitraum:\n"
+msgstr "Ausgewählter Zeitraum:\n"
+
+#: ../RTLogger/telegramBot.py:951
+msgctxt "telegram|"
+msgid ""
+"*Event oder Messwert erzeugen*\n"
+"\n"
+"                Sende mir eine Nachricht, um ein Event zu erzeugen \n"
+"\n"
+"                Schreibe die Nachricht Fett (*Text*) für eine Fehlermeldung "
+"und kursiv (_Text_) für eine Warnung. Normaler Text hat die Priorität "
+"'Information'\n"
+"\n"
+"                Du kannst mir auch Messwerte schicken (z.B. '5 V'). \n"
+"\n"
+"                *Du kannst das Event/den Messwert auch einem Signal "
+"zuordnen, indem du ein Signal aus der Liste auswählst oder indem du einen "
+"Signalnamen angibst ('Beispiel.Signal').\n"
+"\n"
+"                "
+msgstr "*Event oder Messwert erzeugen*\n\n                Sende mir eine Nachricht, um ein Event zu erzeugen \n\n                Schreibe die Nachricht Fett (*Text*) für eine Fehlermeldung und kursiv (_Text_) für eine Warnung. Normaler Text hat die Priorität 'Information'\n\n                Du kannst mir auch Messwerte schicken (z.B. '5 V'). \n\n                *Du kannst das Event/den Messwert auch einem Signal zuordnen, indem du ein Signal aus der Liste auswählst oder indem du einen Signalnamen angibst ('Beispiel.Signal').\n\n                "
+
+#: ../RTLogger/telegramBot.py:960
+msgctxt "telegram|"
+msgid "*Signal ausgewählt: "
+msgstr "*Signal ausgewählt: "
+
+#: ../RTLogger/telegramBot.py:990
+msgctxt "telegram|"
+msgid "Messwert gesendet."
+msgstr "Messwert gesendet."
+
+#: ../RTLogger/telegramBot.py:1006
+msgctxt "telegram|"
+msgid "Event gesendet."
+msgstr "Event gesendet."
+
+#: ../RTLogger/telegramBot.py:1055
+msgctxt "telegram|"
+msgid "Alle Daten löschen"
+msgstr "Alle Daten löschen"
+
+#: ../RTLogger/telegramBot.py:1061
+msgctxt "telegram|"
+msgid "Aufzeichnungsdauer ändern"
+msgstr "Aufzeichnungsdauer ändern"
+
+#: ../RTLogger/telegramBot.py:1065
+msgctxt "telegram|"
+msgid "Globale Samplerate ändern"
+msgstr "Globale Samplerate ändern"
+
+#: ../RTLogger/telegramBot.py:1068
+msgctxt "telegram|"
+msgid "**Server neustarten**"
+msgstr "**Server neustarten**"
+
+#: ../RTLogger/telegramBot.py:1075
+msgctxt "telegram|"
+msgid "TCP-Server: An"
+msgstr "TCP-Server: An"
+
+#: ../RTLogger/telegramBot.py:1079
+msgctxt "telegram|"
+msgid "TCP-Server: Aus"
+msgstr "TCP-Server: Aus"
+
+#: ../RTLogger/telegramBot.py:1027
+msgctxt "telegram|"
+msgid ""
+"\n"
+"IP-Adresse: "
+msgstr "\nIP-Adresse: "
+
+#: ../RTLogger/telegramBot.py:1032
+msgctxt "telegram|"
+msgid ""
+"\n"
+"Es sind noch "
+msgstr "\nEs sind noch "
+
+#: ../RTLogger/telegramBot.py:1032
+msgctxt "telegram|"
+msgid " GB von "
+msgstr " GB von "
+
+#: ../RTLogger/telegramBot.py:1033
+msgctxt "telegram|"
+msgid " GB verfügbar"
+msgstr " GB verfügbar"
+
+#: ../RTLogger/telegramBot.py:1091
+msgctxt "telegram|"
+msgid "Datenbank herunterladen"
+msgstr "Datenbank herunterladen"
+
+#: ../RTLogger/telegramBot.py:1038
+msgctxt "telegram|"
+msgid ""
+"\n"
+"Messdaten werden in SQL-Datenbank gesichert"
+msgstr "\nMessdaten werden in SQL-Datenbank gesichert"
+
+#: ../RTLogger/telegramBot.py:1039
+msgctxt "telegram|"
+msgid ""
+"\n"
+"Datenbank verwendet...\n"
+msgstr "\nDatenbank verwendet...\n"
+
+#: ../RTLogger/telegramBot.py:1040
+msgctxt "telegram|"
+msgid ""
+"\n"
+"Gesamt: "
+msgstr "\nGesamt: "
+
+#: ../RTLogger/telegramBot.py:1041
+msgctxt "telegram|"
+msgid ""
+"\n"
+"Für Signale: "
+msgstr "\nFür Signale: "
+
+#: ../RTLogger/telegramBot.py:1042
+msgctxt "telegram|"
+msgid ""
+"\n"
+"Für Events: "
+msgstr "\nFür Events: "
+
+#: ../RTLogger/telegramBot.py:1044
+msgctxt "telegram|"
+msgid ""
+"\n"
+"Es sind "
+msgstr "\nEs sind "
+
+#: ../RTLogger/telegramBot.py:1044
+msgctxt "telegram|"
+msgid " von "
+msgstr " von "
+
+#: ../RTLogger/telegramBot.py:1045
+msgctxt "telegram|"
+msgid " verfügbar"
+msgstr " verfügbar"
+
+#: ../RTLogger/telegramBot.py:1046
+msgctxt "telegram|"
+msgid "-Einstellungen*"
+msgstr "-Einstellungen*"
+
+#: ../RTLogger/telegramBot.py:1058
+msgctxt "telegram|"
+msgid "**Alle Daten löschen**"
+msgstr "**Alle Daten löschen**"
+
+#: ../RTLogger/telegramBot.py:1057
+msgctxt "telegram|"
+msgid "Möchtest du wirklich alle Daten löschen?"
+msgstr "Möchtest du wirklich alle Daten löschen?"
+
+#: ../RTLogger/telegramBot.py:1071
+msgctxt "telegram|"
+msgid ""
+"**Da hat etwas nicht geklappt.**\n"
+"Entweder fehlen mir die nötigen Rechte, oder mein Zuhause ist kein "
+"Linux-Gerät."
+msgstr "**Da hat etwas nicht geklappt.**\nEntweder fehlen mir die nötigen Rechte, oder mein Zuhause ist kein Linux-Gerät."
+
+#: ../RTLogger/telegramBot.py:1083
+msgctxt "telegram|"
+msgid "*Telegram-Bot: An (!)*"
+msgstr "*Telegram-Bot: An (!)*"
+
+#: ../RTLogger/telegramBot.py:1087
+msgctxt "telegram|"
+msgid "Telegram-Bot: Aus"
+msgstr "Telegram-Bot: Aus"
+
+#: ../RTLogger/telegramBot.py:1098
+msgctxt "telegram|"
+msgid "Datenbank übertragen"
+msgstr "Datenbank übertragen"
+
+#: ../RTLogger/telegramBot.py:1105
+msgctxt "telegram|"
+msgid "**gestartet**"
+msgstr "**gestartet**"
+
+#: ../RTLogger/telegramBot.py:1107
+msgctxt "telegram|"
+msgid "**beendet**"
+msgstr "**beendet**"
+
+#: ../RTLogger/telegramBot.py:1109
+msgctxt "telegram|"
+msgid " wurde "
+msgstr " wurde "
+
+#: ../RTLogger/telegramBot.py:1111
+msgctxt "telegram|"
+msgid " konnte nicht "
+msgstr " konnte nicht "
+
+#: ../RTLogger/telegramBot.py:1112
+msgctxt "telegram|"
+msgid " werden."
+msgstr " werden."
+
+#: ../RTLogger/telegramBot.py:1120
+msgctxt "telegram|"
+msgid "*Samplerate für alle Geräte ändern*"
+msgstr "*Samplerate für alle Geräte ändern*"
+
+#: ../RTLogger/telegramBot.py:1144
+msgctxt "telegram|"
+msgid ""
+"Die Aufzeichnungsdauer beeinflusst nicht die Aufzeichnungslänge in der "
+"Datenbank. Diese ist unbegrenzt. \n"
+"Derzeitige Aufzeichnungsdauer: "
+msgstr "Die Aufzeichnungsdauer beeinflusst nicht die Aufzeichnungslänge in der Datenbank. Diese ist unbegrenzt. \nDerzeitige Aufzeichnungsdauer: "
+
+#: ../RTLogger/telegramBot.py:1147
+msgctxt "telegram|"
+msgid "Derzeitige Aufzeichnungsdauer: "
+msgstr "Derzeitige Aufzeichnungsdauer: "
+
+#: ../RTLogger/telegramBot.py:1162
+msgctxt "telegram|"
+msgid "Aufzeichnungsdauer geändert"
+msgstr "Aufzeichnungsdauer geändert"
+
+#: ../RTLogger/telegramBot.py:1167
+msgctxt "telegram|"
+msgid "Fehlerhafte Eingabe"
+msgstr "Fehlerhafte Eingabe"
+
+#: ../RTLogger/telegramBot.py:1173
+msgctxt "telegram|"
+msgid ""
+"**Ich konnte kein Bild erstellen.**\n"
+"Du musst auf meinem Server \"matplotlib\" und \"tkinker\" installieren."
+msgstr "**Ich konnte kein Bild erstellen.**\nDu musst auf meinem Server \"matplotlib\" und \"tkinker\" installieren."
+
+#: ../RTLogger/telegramBot.py:1229
+msgctxt "telegram|"
+msgid "%d.%m %H:%M"
+msgstr "%d.%m %H:%M"
+
+#: ../RTLogger/telegramBot.py:1231
+msgctxt "telegram|"
+msgid "%d.%m %H:%M:%S"
+msgstr "%d.%m %H:%M:%S"
+
+#: ../RTLogger/telegramBot.py:1239
+msgctxt "telegram|"
+msgid "Plot zu "
+msgstr "Plot zu "
+
+#: ../RTLogger/telegramBot.py:1239
+msgctxt "telegram|"
+msgid "% abgeschlossen"
+msgstr "% abgeschlossen"
+
+#: ../RTLogger/telegramBot.py:1243
+msgctxt "telegram|"
+msgid "Zeit [s]"
+msgstr "Zeit [s]"
+
+#: ../RTLogger/telegramBot.py:1338
+msgctxt "telegram|"
+msgid "Dauer: "
+msgstr "Dauer: "
+
+#: ../RTLogger/telegramBot.py:1339
+msgctxt "telegram|"
+msgid " Messwerte"
+msgstr " Messwerte"
+
+#: ../RTLogger/telegramBot.py:1365
+msgctxt "telegram|"
+msgid "Ich konnte leider keine Info zu diesem Signal erzeugen."
+msgstr "Ich konnte leider keine Info zu diesem Signal erzeugen."
+
+#: ../RTLogger/telegramBot.py:1385
+msgctxt "telegram|"
+msgid "Bitte gib eine Bezeichnung für diesen Shortcut an."
+msgstr "Bitte gib eine Bezeichnung für diesen Shortcut an."
+
+#: ../RTLogger/telegramBot.py:1414
+msgctxt "telegram|"
+msgid "Für diese Funktionen/ diesen Parameter besteht bereits ein Shortcut!"
+msgstr "Für diese Funktionen/ diesen Parameter besteht bereits ein Shortcut!"
+
+#: ../RTLogger/telegramBot.py:1396
+msgctxt "telegram|"
+msgid "Du kannst den Shortcut nicht nach einem Eintrag im Hauptmenü benennen."
+msgstr "Du kannst den Shortcut nicht nach einem Eintrag im Hauptmenü benennen."
+
+#: ../RTLogger/telegramBot.py:1399
+msgctxt "telegram|"
+msgid "Bitte wähle eine andere Bezeichnung. Diese ist schon vergeben."
+msgstr "Bitte wähle eine andere Bezeichnung. Diese ist schon vergeben."
+
+#: ../RTLogger/telegramBot.py:1410
+msgctxt "telegram|"
+msgid "Shortcut wurde erstellt"
+msgstr "Shortcut wurde erstellt"
+
+#: ../RTLogger/telegramBot.py:1457
+msgctxt "telegram|"
+msgid "Tut mir leid, ich konnte diesen Shortcut nicht finden!"
+msgstr "Tut mir leid, ich konnte diesen Shortcut nicht finden!"
+
+#: ../RTLogger/telegramBot.py:1443
+msgctxt "telegram|"
+msgid "Tut mir leid, ich habe mich verlaufen!"
+msgstr "Tut mir leid, ich habe mich verlaufen!"
+
+#: ../RTLogger/telegramBot.py:1514
+msgctxt "telegram|"
+msgid "Globale Aktionen: An"
+msgstr "Globale Aktionen: An"
+
+#: ../RTLogger/telegramBot.py:1516
+msgctxt "telegram|"
+msgid "Globale Aktionen: Aus"
+msgstr "Globale Aktionen: Aus"
+
+#: ../RTLogger/telegramBot.py:1518
+msgctxt "telegram|"
+msgid "Globale Events: An"
+msgstr "Globale Events: An"
+
+#: ../RTLogger/telegramBot.py:1520
+msgctxt "telegram|"
+msgid "Globale Events: Aus"
+msgstr "Globale Events: Aus"
+
+#: ../RTLogger/telegramBot.py:1522
+msgctxt "telegram|"
+msgid "Aktionen bearbeiten"
+msgstr "Aktionen bearbeiten"
+
+#: ../RTLogger/telegramBot.py:1525
+msgctxt "telegram|"
+msgid "Events bearbeiten"
+msgstr "Events bearbeiten"
+
+#: ../RTLogger/telegramBot.py:1501
+msgctxt "telegram|"
+msgid ""
+"\n"
+"\n"
+"\n"
+"Hier kannst du globale Events und Aktionen ansehen und bearbeiten.\n"
+"\n"
+"Globale Events werden erzeugt, wenn eine angegebene Bedingung erfüllt wird. "
+"Beispielsweise 'Temperatur an Sensor X übersteigt 80°C'. Ist die Bedingung "
+"erfüllt, so wird das angegebene Event erzeugt. (Event=[Nachricht, Priorität, "
+"ID])\n"
+"\n"
+"\n"
+"Globale Aktionen werden ausgeführt, wenn ein Event mit einer angegebenen ID "
+"erzeugt wurde. Die Aktion besteht aus einem Stück Python-Code.\n"
+"        "
+msgstr "\n\n\nHier kannst du globale Events und Aktionen ansehen und bearbeiten.\n\nGlobale Events werden erzeugt, wenn eine angegebene Bedingung erfüllt wird. Beispielsweise 'Temperatur an Sensor X übersteigt 80°C'. Ist die Bedingung erfüllt, so wird das angegebene Event erzeugt. (Event=[Nachricht, Priorität, ID])\n\n\nGlobale Aktionen werden ausgeführt, wenn ein Event mit einer angegebenen ID erzeugt wurde. Die Aktion besteht aus einem Stück Python-Code.\n        "
+
+#: ../RTLogger/telegramBot.py:1538
+msgctxt "telegram|"
+msgid "Globale Events"
+msgstr "Globale Events"
+
+#: ../RTLogger/telegramBot.py:1552
+msgctxt "telegram|"
+msgid "Neues Event anlegen"
+msgstr "Neues Event anlegen"
+
+#: ../RTLogger/telegramBot.py:1644
+msgctxt "telegram|"
+msgid "Information"
+msgstr "Information"
+
+#: ../RTLogger/telegramBot.py:1648
+msgctxt "telegram|"
+msgid "Warnung"
+msgstr "Warnung"
+
+#: ../RTLogger/telegramBot.py:1652
+msgctxt "telegram|"
+msgid "Fehler"
+msgstr "Fehler"
+
+#: ../RTLogger/telegramBot.py:1756
+msgctxt "telegram|"
+msgid "Aktiv"
+msgstr "Aktiv"
+
+#: ../RTLogger/telegramBot.py:1760
+msgctxt "telegram|"
+msgid "Inaktiv"
+msgstr "Inaktiv"
+
+#: ../RTLogger/telegramBot.py:1610
+msgctxt "telegram|"
+msgid "Bedingung ändern"
+msgstr "Bedingung ändern"
+
+#: ../RTLogger/telegramBot.py:1618
+msgctxt "telegram|"
+msgid "Signalzuordnung ändern"
+msgstr "Signalzuordnung ändern"
+
+#: ../RTLogger/telegramBot.py:1630
+msgctxt "telegram|"
+msgid "Rising"
+msgstr "Rising"
+
+#: ../RTLogger/telegramBot.py:1626
+msgctxt "telegram|"
+msgid "Falling"
+msgstr "Falling"
+
+#: ../RTLogger/telegramBot.py:1634
+msgctxt "telegram|"
+msgid "ID vergeben"
+msgstr "ID vergeben"
+
+#: ../RTLogger/telegramBot.py:1639
+msgctxt "telegram|"
+msgid "Text ändern"
+msgstr "Text ändern"
+
+#: ../RTLogger/telegramBot.py:1652
+msgctxt "telegram|"
+msgid "Priorität: "
+msgstr "Priorität: "
+
+#: ../RTLogger/telegramBot.py:1790
+msgctxt "telegram|"
+msgid "Löschen"
+msgstr "Löschen"
+
+#: ../RTLogger/telegramBot.py:1796
+msgctxt "telegram|"
+msgid "Testen"
+msgstr "Testen"
+
+#: ../RTLogger/telegramBot.py:1768
+msgctxt "telegram|"
+msgid "Verfügbare Signale:\n"
+msgstr "Verfügbare Signale:\n"
+
+#: ../RTLogger/telegramBot.py:1622
+msgctxt "telegram|"
+msgid "Wähle ein Signal aus oder gib einen neuen Signalnamen an."
+msgstr "Wähle ein Signal aus oder gib einen neuen Signalnamen an."
+
+#: ../RTLogger/telegramBot.py:1635
+msgctxt "telegram|"
+msgid "Gib jetzt eine EventID ein."
+msgstr "Gib jetzt eine EventID ein."
+
+#: ../RTLogger/telegramBot.py:1640
+msgctxt "telegram|"
+msgid "Gib jetzt den Benachrichtigungstext ein."
+msgstr "Gib jetzt den Benachrichtigungstext ein."
+
+#: ../RTLogger/telegramBot.py:1800
+msgctxt "telegram|"
+msgid "Ich hatte nicht gedacht, dass du mich so in die Irre leiten kannst..."
+msgstr "Ich hatte nicht gedacht, dass du mich so in die Irre leiten kannst..."
+
+#: ../RTLogger/telegramBot.py:1703
+msgctxt "telegram|"
+msgid "Globale Aktionen"
+msgstr "Globale Aktionen"
+
+#: ../RTLogger/telegramBot.py:1718
+msgctxt "telegram|"
+msgid "Neue Aktion anlegen"
+msgstr "Neue Aktion anlegen"
+
+#: ../RTLogger/telegramBot.py:1764
+msgctxt "telegram|"
+msgid "Code ändern"
+msgstr "Code ändern"
+
+#: ../RTLogger/telegramBot.py:1780
+msgctxt "telegram|"
+msgid "ID auswählen"
+msgstr "ID auswählen"
+
+#: ../RTLogger/telegramBot.py:1775
+msgctxt "telegram|"
+msgid " Funktionen:\n"
+msgstr " Funktionen:\n"
+
+#: ../RTLogger/telegramBot.py:1778
+msgctxt "telegram|"
+msgid "Code bearbeiten"
+msgstr "Code bearbeiten"
+
+#: ../RTLogger/telegramBot.py:1786
+msgctxt "telegram|"
+msgid "Wähle Events aus, durch die diese Aktion ausgeführt werden soll."
+msgstr "Wähle Events aus, durch die diese Aktion ausgeführt werden soll."
+
+#: ../RTLogger/telegramBot.py:1821
+msgctxt "telegram|"
+msgid "Aktion erfolgreich ausgeführt"
+msgstr "Aktion erfolgreich ausgeführt"
+
+#: ../RTLogger/telegramBot.py:1833
+msgctxt "telegram|"
+msgid "Aktion ist fehlerhaft"
+msgstr "Aktion ist fehlerhaft"
+

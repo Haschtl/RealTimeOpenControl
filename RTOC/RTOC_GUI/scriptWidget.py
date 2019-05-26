@@ -3,9 +3,13 @@ from PyQt5 import QtWidgets
 from PyQt5 import uic
 from PyQt5 import QtCore
 import sys
+import traceback
 
 from .scriptHelpWidget import ScriptHelpWidget
 from .scriptSubWidget import ScriptSubWidget
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 
 class ScriptWidget(QtWidgets.QWidget):
@@ -13,7 +17,7 @@ class ScriptWidget(QtWidgets.QWidget):
         super(ScriptWidget, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
-            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
@@ -52,16 +56,15 @@ class ScriptWidget(QtWidgets.QWidget):
                     text = file.read()
                 head, tail = os.path.split(fileName)
                 self.openScript(text, tail, fileName)
-                #self.logger.config["lastScript"] = fileName
+                # self.logger.config["lastScript"] = fileName
                 return True
-            except:
-                self.openScript(self.tr("Fehler beim laden der Datei ") +
-                                fileName, self.tr("Fehler"), fileName)
-                #self.logger.config["lastScript"] = ""
+            except Exception:
+                self.openScript(self.tr("Fehler beim laden der Datei ") + fileName, self.tr("Fehler"), fileName)
+                # self.logger.config["lastScript"] = ""
+                logging.debug(traceback.format_exc())
                 return False
         else:
-            self.openScript(self.tr("Datei ")+fileName +
-                            self.tr(" nicht gefunden"), self.tr("Fehler"), fileName)
+            self.openScript(self.tr("Datei ")+fileName + self.tr(" nicht gefunden"), self.tr("Fehler"), fileName)
             return False
 
     def openScript(self, scriptstr="", name="", filepath=""):
@@ -75,7 +78,7 @@ class ScriptWidget(QtWidgets.QWidget):
             text = self.tabWidget.tabText(self.activeScript)+"*"
             self.tabWidget.setTabText(self.activeScript, text)
         else:
-            if newtext != None:
+            if newtext is not None:
                 text = newtext
             else:
                 text = self.tabWidget.tabText(self.activeScript)[:-1]
@@ -84,7 +87,7 @@ class ScriptWidget(QtWidgets.QWidget):
     def closeScript(self, idx):
         if idx < len(self.scripts):
             self.scripts[idx].close()
-            if self.scripts[idx].run == False:
+            if self.scripts[idx].run is False:
                 self.tabWidget.removeTab(idx)
                 self.scripts.pop(idx)
                 if len(self.scripts) == 0:
@@ -102,8 +105,8 @@ class ScriptWidget(QtWidgets.QWidget):
         self.scripts[self.activeScript].saveScript()
 
     def loadScriptAction(self):
-        dir_path = self.logger.config['documentfolder']
-        dir_path = self.logger.config['documentfolder']
+        dir_path = self.logger.config['global']['documentfolder']
+        dir_path = self.logger.config['global']['documentfolder']
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
         fileBrowser.setNameFilters(["Python (*.py)"])
@@ -119,7 +122,7 @@ class ScriptWidget(QtWidgets.QWidget):
                     text = file.read()
                 head, tail = os.path.split(fileName)
                 self.openScript(text, tail, fileName)
-                #self.logger.config["lastScript"] = fileName
+                # self.logger.config["lastScript"] = fileName
 
     def toggleHelpAction(self):
         if self.helpButton.isChecked():
@@ -131,7 +134,7 @@ class ScriptWidget(QtWidgets.QWidget):
         self.help.updateListWidget()
         for script in self.scripts:
             script.triggerWidget.triggerSignals.clear()
-            for element in self.logger.signalNames:
+            for element in self.logger.database.signalNames():
                 script.triggerWidget.triggerSignals.addItem(".".join(element))
 
     def executedCallback(self, ok, text):
@@ -160,5 +163,5 @@ class ScriptWidget(QtWidgets.QWidget):
         for script in self.scripts:
             # script.run=False
             script.close()
-            if script.run == True:
+            if script.run is True:
                 break

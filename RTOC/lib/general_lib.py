@@ -1,34 +1,57 @@
 # -*- encoding: utf-8 -*-
-
+"""
+This module contains some helper functions.
+"""
 import os
 import re
 import datetime
 import sys
 import subprocess
-import json
 from shutil import copy
 from collections import defaultdict
 import requests
 from urllib.parse import urlparse
 from urllib.request import urlopen
 import cgi
-
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 # Type functions
 
 define = ""
 
-def  bytes_to_str(size):
-    #2**10 = 1024
+
+def bytes_to_str(size):
+    """
+    Returns a string representing the size.
+
+    Args:
+        size (int): The number of bytes to be converted to a string.
+
+    Returns:
+        string
+    """
+    # 2**10 = 1024
     size = int(size)
     power = 2**10
     n = 0
-    Dic_powerN = {0 : '', 1: 'K', 2: 'M', 3: 'G', 4: 'T'}
+    Dic_powerN = {0: '', 1: 'K', 2: 'M', 3: 'G', 4: 'T'}
     while size > power:
-        size /=  power
+        size /= power
         n += 1
-    return str(round(size,2))+' '+Dic_powerN[n]+'B'
+    return str(round(size, 2))+' '+Dic_powerN[n]+'B'
+
 
 def identifyElementTypeFromString(string):
+    """
+    Returns a tuple ("type", value). type represents the datatype, value is the transformed string
+
+    Args:
+        string (str): The string to be converted.
+
+    Returns:
+        bool
+    """
     if isInt(string):
         return "int", int(string)
     elif isFloat(string):
@@ -37,122 +60,120 @@ def identifyElementTypeFromString(string):
         return "boolean", convertBoolean(string)
     elif isLink(string):
         return "link", string
-    elif isFile(string):
-        return "file", string
-    elif isPathS(string):
-        return "pfad", string[8:]
-    elif isDate(string):
-        return "date", str2date(string)
     else:
         return "string", string
 
-def identifyElementType(element):
-    if type(element) == list:
-        return "list", element
-    elif type(element) == int:
-        return "int", element
-    elif type(element) == float:
-        return "float", element
-    elif type(element) == bool:
-        return "boolean", element
-    else:
-        if type(element) == str:
-            if isFile(element):
-                return "file", element
-            else:
-                return "string", element
-        else:
-            #logging("Unknown TagType")
-            return "string", str(element)
 
+def isInt(string):
+    """
+    Check if string can be converted to integer
 
-def isInt(s):
+    Args:
+        string (str): The string to be checked.
+
+    Returns:
+        bool
+    """
     try:
-        int(s)
+        int(string)
         return True
     except ValueError:
         return False
 
 
-def isPath(s):
+def isFloat(string):
+    """
+    Check if string can be converted to float
+
+    Args:
+        string (str): The string to be checked.
+
+    Returns:
+        bool
+    """
     try:
-        if not os.path.isabs(s):
-            config=load_config()
-            s = config["current_project_path"]+"/"+define.media_path+s
-        #if os.path.exists(os.path.dirname(s)):
-        if os.path.exists(s):
-            return True
-        else:
-            return False
-    except:
-        return False
-
-
-def isPathS(s):
-    if s.find("file:///") is 0:
-        return True
-    else:
-        return False
-
-
-def isFloat(s):
-    try:
-        float(s)
+        float(string)
         return True
     except ValueError:
         return False
 
 
 def isBoolean(s):
+    """
+    Check if string can be converted to bool
+
+    Args:
+        string (str): The string to be checked.
+
+    Returns:
+        bool
+    """
     if s.lower() in ["true", "ja", "yes"] or s.lower() in ["false", "nein", "no"]:
         return True
     else:
         return False
 
-def convertBoolean(s):
-    if s.lower() in ["true", "ja", "yes"]:
+
+def convertBoolean(string):
+    """
+    Convert a string to bool.
+
+    Args:
+        string (str): The string to be converted.
+
+    Returns:
+        bool
+    """
+    if string.lower() in ["true", "ja", "yes"]:
         return True
     else:
         return False
 
-def isLink(s):
-    if findURLs(s) is not []:
-        return False #True
+
+def isLink(string):
+    """
+    Check if string is a hyperlink
+
+    Args:
+        string (str): The string to be checked.
+
+    Returns:
+        bool
+    """
+    if findURLs(string) is not []:
+        return False  # True
     else:
-        return False
-
-def isPicture(s):
-    if isFile(s):
-        formats = [".jpg", ".png", ".tiff", ".jpeg", ".svg", ".gif", ".ico"]
-        for format in formats:
-            if s.lower().endswith(format):
-                return True
-    return False
-
-def isFile(s):
-    try:
-        if not os.path.isabs(s):
-            config=load_config()
-            s = config["current_project_path"]+"/"+define.media_path+s
-        if os.path.exists(s):
-            return True
-        else:
-            return False
-    except:
         return False
 
 # download functions
 
+
 def findURLs(string):
+    """
+    Returns all hyperlinks in string in a list
+
+    Args:
+        string (str): The string to be checked.
+
+    Returns:
+        list with all hyperlinks in string
+    """
     # findall() has been used
     # with valid conditions for urls in string
     url = re.findall(
         'http[s]?://(?:[a-zA-Z]|[0-9]|[$-_@.&+]|[!*\(\), ]|(?:%[0-9a-fA-F][0-9a-fA-F]))+', string)
     return url
 
+
 def is_downloadable(url):
     """
-    Does the url contain a downloadable resource
+    Check if url is downloadable
+
+    Args:
+        url (str): The url to be checked.
+
+    Returns:
+        bool
     """
     h = requests.head(url, allow_redirects=True)
     header = h.headers
@@ -165,19 +186,38 @@ def is_downloadable(url):
 
 
 def getURLFilename(url):
+    """
+    Returns the filename from an URL
 
+    Args:
+        url (str): The url with filename at the end.
+
+    Returns:
+        The filename from an URL
+    """
     try:
         remotefile = urlopen(url)
         blah = remotefile.info()['Content-Disposition']
         value, params = cgi.parse_header(blah)
         filename = params["filename"]
         return filename
-    except:
+    except Exception:
         a = urlparse(url)
         return os.path.basename(a.path)
 
 
 def downloadFile(self, link, newDir):
+    """
+    DEPRECATED
+    Download a file from 'link' to local disk
+
+    Args:
+        link (str): The url to download.
+        newDir (str): The path, where downloaded files will be stored.
+
+    Returns:
+        Unknown
+    """
     if is_downloadable(link):
         filename = getURLFilename(link)
         uniq_filename = str(datetime.datetime.now().date())
@@ -201,10 +241,6 @@ def downloadFile(self, link, newDir):
             self.delementType = "string"
             self.delementContent = link
             return "string", link
-        if isPicture(filename):
-            self.delementType = "datei"
-            self.delementContent = newDir+date_filename
-            return "bild", newDir+date_filename
         else:
             self.delementType = "datei"
             self.delementContent = newDir+date_filename
@@ -216,14 +252,36 @@ def downloadFile(self, link, newDir):
 
 # File functions
 
+
 def copyFileRand(origFile, newDir):
+    """
+    Copy a file from one place to another
+
+    Args:
+        origFile (str): The original filepath.
+        newDir (str): The path where to file is copied to.
+
+    Returns:
+        The new filepath
+    """
     filename = os.path.basename(origFile)
-    if newDir+filename is not origFile:
+    if os.path.join(newDir, filename) is not origFile:
         copy(origFile, newDir)
-    return newDir+filename
+    return os.path.join(newDir, filename)
+
 
 def openFile(filepath):
-    print("Opening file: "+filepath)
+    """
+    Open a file with the default system program
+
+    Args:
+        filepath (str): The filepath of the file you want to open.
+
+    Returns:
+        True if file could be opened
+        False if file could not be opened
+    """
+    logging.info("Opening file: "+filepath)
     try:
         if sys.platform.startswith('darwin'):
             subprocess.call(('open', filepath))
@@ -232,13 +290,23 @@ def openFile(filepath):
         elif os.name is 'posix':
             subprocess.call(('xdg-open', filepath))
         return True
-    except:
-        #logging("Der angegebenen Datei ist keine Anwendung zugeordnet: "+filepath)
+    except Exception:
+        logging.warning("Der angegebenen Datei ist keine Anwendung zugeordnet: "+filepath)
         return False
 
 # List functions
 
+
 def list_duplicates(seq):
+    """
+    Returns a tuple with all duplicate items in list
+
+    Args:
+        seq (list): The list you want to check for duplicates.
+
+    Returns:
+        A tuple with all duplicate items in list
+    """
     tally = defaultdict(list)
     for i, item in enumerate(seq):
         tally[item].append(i)
@@ -247,90 +315,19 @@ def list_duplicates(seq):
 
 
 def column(matrix, i):
-    # Returns eevery i-th element in array [[i1,...],[i2,...]...]
+    """
+    Get the column i of a nested 2D-list.
+
+    Args:
+        matrix (list): A list containing lists: [[i1_1,i1_2...],[i2_1,i2_2...]...].
+        i (int): The index of an element in the inner list.
+
+    Returns:
+        A list of the i-th element of the inner lists
+    """
     ans = []
     for row in matrix:
-        if i<len(row):
+        if i < len(row):
             ans.append(row[i])
     return ans
 #    return [row[i] for row in matrix]
-
-def indexes(list, element):
-    return [i for i, e in enumerate(list) if e == element]
-
-# Other Functions
-
-def date2str(date):  # date=[Year, Month, Day, Hour, Minute, Second]
-    if date and len(date) is 3 and type(date[0]) is int and type(date[1]) is int and type(date[2]) is int:
-        now = datetime.datetime.now()
-        if date is [now.year, now.month, now.day]:
-            return "heute"
-        elif date is [now.year, now.month, now.day-1] or date is [now.year, now.month - 1, now.day+30]:
-            return "gestern"
-        else:
-            return str(date[2])+"."+str(date[1])+"."+str(date[0])
-    elif date and len(date) is 6 and type(date[0]) is int and type(date[1]) is int and type(date[2]) is int and type(date[3]) is int and type(date[4]) is int and type(date[5]) is int:
-        now = datetime.datetime.now()
-        # for i in [3,4,5]:
-        #     if date[i]<10:
-        #         date[i]="0"+str(date[i])
-        return str(date[2])+"."+str(date[1])+"."+str(date[0])+" "+str(date[3])+":"+str(date[4])+":"+str(date[5])
-    else:
-        return "Wrong date format to print"
-
-def isDate(string):
-    try:
-        datetime.datetime.strptime(string, '%d.%m.%Y %H:%M:%S')
-        print("IsLongDate")
-        return True
-    except:
-        try:
-            datetime.datetime.strptime(string, '%d.%m.%Y')
-            print("IsShortDate")
-            return True
-        except:
-            return False
-
-def str2date(string):
-    stringsplit=string.split(" ")
-    if len(stringsplit)==2:
-        d=datetime.datetime.strptime(string, '%d.%m.%Y %H:%M:%S')
-        date=[d.year, d.month, d.day]
-        time=[d.hour, d.minute, d.second]
-        return date+time
-    elif len(stringsplit)==1:
-        d=datetime.datetime.strptime(string, '%d.%m.%Y')
-        date=[d.year, d.month, d.day]
-        return date+[0,0,0]
-    else:
-        return [0,0,0,0,0,0]
-
-def clearLog():
-    os.remove("ProFiler.log")
-
-def logging(string,dlevel=3):
-    #dlevel=min(define.debug_level,dlevel)
-    if dlevel==1:
-        print(string)
-    elif dlevel==2:
-        logToFile(string)
-    elif dlevel==3:
-        print(string)
-        logToFile(string)
-
-def logToFile(string):
-    now = datetime.datetime.now()
-    datestr = date2str([now.year, now.month, now.day])
-    with open("ProFiler.log", "a") as myfile:
-        myfile.write(datestr+" "+str(string)+"\n")
-
-def load_config():
-    with open("data/config.json", encoding="UTF-8") as jsonfile:
-        config = json.load(jsonfile, encoding="UTF-8")
-    newlist = []
-    for path in config["last_project_pathes"]:
-        if os.path.exists(path):
-            newlist.append(path)
-    config["last_project_pathes"] = newlist
-    #logging('config loaded')
-    return config

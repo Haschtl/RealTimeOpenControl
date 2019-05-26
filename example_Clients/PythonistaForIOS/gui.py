@@ -12,7 +12,7 @@ def changeSamplerate(sender):
 	try:
 		r.samplerate=float(sender.text)
 		print('Samplerate changed')
-	except:
+	except Exception:
 		print('Not a float')
 
 

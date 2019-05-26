@@ -6,7 +6,7 @@
 # python.exe -m pip install --index-url https://test.pypi.org/simple/ RTOC
 
 # virtual env for testing:
-#> virtualenv <DIR>
+# > virtualenv <DIR>
 # move to directory and use python from There
 
 # public:
@@ -42,28 +42,30 @@ setupOpts = dict(
     url='https://github.com/Haschtl/RealTimeOpenControl',
     author='Sebastian Keller',
     author_email='sebastiankeller@online.de',
-    classifiers = [
+    classifiers=[
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
-        #"Development Status :: 2.3",
+        # "Development Status :: 2.3",
         "Environment :: Other Environment",
         "Intended Audience :: Science/Research",
         "License :: OSI Approved :: GNU Lesser General Public License v3 (LGPLv3)",
         "Operating System :: OS Independent",
         "Topic :: Scientific/Engineering :: Visualization",
         "Topic :: Software Development :: User Interfaces",
-        ],
+    ],
 )
 
 
 import distutils.dir_util
 from distutils.command import build
-import os, sys, re
+import os
+import sys
+import re
 try:
     import setuptools
     from setuptools import setup
     from setuptools.command import install
-except (ImportError,SystemError):
+except (ImportError, SystemError):
     sys.stderr.write("Warning: could not import setuptools; falling back to distutils.\n")
     from distutils.core import setup
     from distutils.command import install
@@ -76,33 +78,34 @@ try:
     codecs.lookup('mbcs')
 except LookupError:
     ascii = codecs.lookup('ascii')
-    func = lambda name, enc=ascii: {True: enc}.get(name=='mbcs')
+    func = lambda name, enc=ascii: {True: enc}.get(name == 'mbcs')
     codecs.register(func)
 
 
 path = os.path.split(__file__)[0]
-#sys.path.insert(0, os.path.join(path, 'tools'))
+# sys.path.insert(0, os.path.join(path, 'tools'))
 
 version = "1.9.9"
 forcedVersion = "1.9.9"
-gitVersion ="1.9.9"
-initVersion=1.0
-
+gitVersion = "1.9.9"
+initVersion = 1.0
 
 
 class Build(build.build):
     """
     * Clear build path before building
     """
+
     def run(self):
         global path
 
-        ## Make sure build directory is clean
+        # Make sure build directory is clean
         buildPath = os.path.join(path, self.build_lib)
         if os.path.isdir(buildPath):
             distutils.dir_util.remove_tree(buildPath)
 
         ret = build.build.run(self)
+        return ret
 
 
 class Install(install.install):
@@ -111,6 +114,7 @@ class Install(install.install):
     * Set version string in __init__ after building. This helps to ensure that we
       know when an installation came from a non-release code base.
     """
+
     def run(self):
         global path, version, initVersion, forcedVersion, installVersion
 
@@ -123,7 +127,6 @@ class Install(install.install):
         print("Installing to %s" % path)
         rval = install.install.run(self)
 
-
         # If the version in __init__ is different from the automatically-generated
         # version string, then we will update __init__ in the install directory
         if initVersion == version:
@@ -134,7 +137,7 @@ class Install(install.install):
             data = open(initfile, 'r').read()
             open(initfile, 'w').write(re.sub(r"__version__ = .*", "__version__ = '%s'" % version, data))
             installVersion = version
-        except:
+        except Exception:
             sys.stderr.write("Warning: Error occurred while setting version string in build path. "
                              "Installation will use the original version string "
                              "%s instead.\n" % (initVersion)
@@ -155,39 +158,41 @@ setup(
         ],
     },
     packages=setuptools.find_packages(),
-    #package_dir={'RTOC': 'RTOC', 'RTOC.plugins':'plugins', 'RTOC.example_scripts':'example_scripts'},  ## install examples along with the rest of the source
+    # package_dir={'RTOC': 'RTOC', 'RTOC.plugins':'plugins', 'RTOC.example_scripts':'example_scripts'},  ## install examples along with the rest of the source
     package_data={
         'RTOC': ['*'],
-        'RTOC': ['*']
+        # 'RTOC': ['*']
     },
     python_requires='>=3',
     include_package_data=True,
-    install_requires = [
+    install_requires=[
         'numpy',
         'requests',
-        #'scipy',
-        #'pyqt5',
-        #'pyqtgraph',
+        # 'scipy',
+        # 'pyqt5',
+        # 'pyqtgraph',
         # 'markdown2',
         # 'xlsxwriter',
-#        'QDarkStyle',
-#        'qtmodern',
-#        'qdarkgraystyle',
+        #        'QDarkStyle',
+        #        'qtmodern',
+        #        'qdarkgraystyle',
         # 'python-telegram-bot',
         # 'matplotlib',
         'python-nmap',
         'whaaaaat',
-        # 'bokeh',
+        'prompt_toolkit'
+        # 'dash',
         'pycryptodomex',
+        'psycopg2',
         # 'pyGithub',
         # 'pandas',
         # 'ezodf'
-        ],
+    ],
     extras_require={
-        'GUI':  ["pyqt5", "pyqtgraph","markdown2","pyGithub","pandas","scipy","ezodf","xlsxwriter"],
-        'Webserver': ["bokeh"],
-        'Telegram': ["matplotlib","python-telegram-bot",],
-        'ALL': ["pyqt5", "pyqtgraph","markdown2","pyGithub","pandas","scipy","ezodf","xlsxwriter","bokeh","matplotlib","python-telegram-bot"]
+        'GUI':  ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter"],
+        'Webserver': ["dash", 'gevent', 'dash_daq', 'dash_table', 'plotly', 'flask'],
+        'Telegram': ["matplotlib", "python-telegram-bot", ],
+        'ALL': ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter", "dash", 'gevent', 'dash_daq', 'plotly', 'flask', "matplotlib", "python-telegram-bot", 'dash_table']
     },
     **setupOpts
 )

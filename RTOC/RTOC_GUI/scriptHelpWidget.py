@@ -2,6 +2,9 @@ from PyQt5 import QtWidgets
 from PyQt5 import uic
 import os
 import sys
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 
 class ScriptHelpWidget(QtWidgets.QWidget):
@@ -9,7 +12,7 @@ class ScriptHelpWidget(QtWidgets.QWidget):
         super(ScriptHelpWidget, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
-            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
@@ -44,13 +47,13 @@ class ScriptHelpWidget(QtWidgets.QWidget):
         self.signalListWidget.addItem("clock")
         for element in self.logger.pluginParameters.keys():
             if self.logger.pluginStatus[element.split('.')[0]] == "OK":
-                if element.split(".")[1] not in ["dataY", "dataX", "datanames", "dataunits", "devicename", "run", "smallGUI", 'sock']:
+                if element.split(".")[1] not in ["y", "x", "sname", "unit", "dname", "run", "smallGUI", 'sock']:
                     self.listWidget.addItem(element)
         for element in self.logger.pluginFunctions.keys():
             if self.logger.pluginStatus[element.split('.')[0]] == "OK":
                 if element.split(".")[1] not in ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close"]:
                     self.listWidget.addItem(element+"()")
-        for element in self.logger.signalNames:
+        for element in self.logger.database.signalNames():
             self.signalListWidget.addItem(".".join(element))
 
     def closeEvent(self, event, *args, **kwargs):

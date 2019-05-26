@@ -1,7 +1,14 @@
 import numpy as np
 import pkgutil
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
+"""
+    This file contains some general functions of RTLogger
+"""
 
+    
 def npJSONWorkAround(o):
     if isinstance(o, np.int64):
         return int(o)

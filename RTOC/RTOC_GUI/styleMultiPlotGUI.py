@@ -4,6 +4,9 @@ import os
 import sys
 
 from .stylePlotGUI import plotStyler
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 
 class plotMultiStyler(QtWidgets.QDialog):
@@ -11,7 +14,7 @@ class plotMultiStyler(QtWidgets.QDialog):
         super(plotMultiStyler, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
-            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
@@ -45,6 +48,6 @@ class plotMultiStyler(QtWidgets.QDialog):
     def styleSelected(self):
         for selectedSignal in self.listWidget.selectedItems():
             signalname = selectedSignal.text()
-            idx = self.logger.getSignalId(signalname.split(".")[0], signalname.split(".")[1])
+            idx = self.logger.database.getSignalID(signalname.split(".")[0], signalname.split(".")[1])
             if idx != -1:
                 self.styler.setStyleAction(self.plots[idx])

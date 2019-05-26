@@ -10,6 +10,9 @@ from .RTPlotActions import RTPlotActions
 from .signalWidget import SignalWidget
 from . import define as define
 import os
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 
 class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
@@ -20,7 +23,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         super(RTPlotWidget, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
-            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
@@ -45,7 +48,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.updatePlotTimer.start(int(1/self.updatePlotSamplerate*1000))
         self.xTimeBase = True
         self.globalXOffset = 0
-        self.grid = self.config["grid"]
+        self.grid = self.config['GUI']['grid']
         self.mouseX = 0
         self.mouseY = 0
         self.lastSignalClick = [0, 0]
@@ -73,13 +76,13 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.treeWidget.startDrag = self.startDragTreeWidget
         self.treeWidget.dropEvent = self.dropEventTreeWidget
 
-        self.plotViewWidget.labelButton.setChecked(self.config["plotLabelsEnabled"])
-        self.plotViewWidget.gridButton.setChecked(self.config["plotGridEnabled"])
-        self.plotViewWidget.legendButton.setChecked(self.config["plotLegendEnabled"])
-        self.plotViewWidget.blinkingButton.setChecked(self.config["blinkingIdentifier"])
-        self.plotViewWidget.invertPlotButton.setChecked(self.config["plotInverted"])
-        self.plotViewWidget.xTimeBaseButton.setChecked(self.config["xTimeBase"])
-        self.plotViewWidget.timeAxisButton.setChecked(self.config["timeAxis"])
+        self.plotViewWidget.labelButton.setChecked(self.config['GUI']['plotLabelsEnabled'])
+        self.plotViewWidget.gridButton.setChecked(self.config['GUI']['plotGridEnabled'])
+        self.plotViewWidget.legendButton.setChecked(self.config['GUI']['plotLegendEnabled'])
+        self.plotViewWidget.blinkingButton.setChecked(self.config['GUI']['blinkingIdentifier'])
+        self.plotViewWidget.invertPlotButton.setChecked(self.config['GUI']['plotInverted'])
+        self.plotViewWidget.xTimeBaseButton.setChecked(self.config['GUI']['xTimeBase'])
+        self.plotViewWidget.timeAxisButton.setChecked(self.config['GUI']['timeAxis'])
 
         self.togglePlotLegend()
         self.togglePlotLabels()
@@ -97,12 +100,16 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.signalNames = []
         self.signalObjects = []
 
+    _counter = 0
     def updatePlot(self):
         if self.self.isVisible():
             for signal in self.signalObjects:
                 signal.updatePlot()
             self.lastUpdate = time.time()
-        self.updateCountLabel()
+        self._counter += 1
+        if self._counter > 50:
+            self.updateCountLabel()
+            self._counter = 0
 
     def stop(self):
         self.clear()
@@ -122,7 +129,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
 
     def removeSignal(self, id, devicename, signalname):
         idx = self.getSignalIdx(id)
-        popped = self.signalObjects.pop(idx)
+        self.signalObjects.pop(idx)
         self.treeWidget.removeItemWidget(self.signalTreeWidgetItems[idx], 0)
         self.treeWidget.removeItemWidget(self.signalTreeWidgetItems[idx], 1)
         self.deviceTreeWidgetItems[self.devices.index(
@@ -204,7 +211,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
             treeWidgetItem = QtWidgets.QTreeWidgetItem()
             button = QtWidgets.QPushButton(devicename)
             button.setCheckable(True)
-            button.setChecked(False)
+            button.setChecked(self.logger.config['GUI']['autoShowGraph'])
             self.deviceTreeWidgetItems.append(treeWidgetItem)
             self.treeWidget.addTopLevelItem(treeWidgetItem)
             self.treeWidget.setItemWidget(treeWidgetItem, 0, button)
@@ -219,9 +226,8 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.updateCountLabel()
 
     def updateCountLabel(self):
-        size, maxsize = self.logger.getSignalSize()
-        self.countLabel.setText(self.tr("Signale: ")+str(len(self.signalObjects)) +
-                                ' ('+lib.bytes_to_str(size)+'/'+lib.bytes_to_str(maxsize)+')')
+        size, maxsize, databaseSize = self.logger.database.getSignalSize()
+        self.countLabel.setText(self.tr("Signale: ")+str(len(self.signalObjects)) + ' ('+lib.bytes_to_str(size)+'/'+lib.bytes_to_str(maxsize)+')')
 
     def startDragTreeWidget(self, actions):
         self.self._drag_info = {"oldWidget": "", "newWidget": "", "signalObjects": []}

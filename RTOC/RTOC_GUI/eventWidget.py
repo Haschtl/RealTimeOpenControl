@@ -6,20 +6,28 @@ import datetime
 import os
 import sys
 
+# from .globalActionWidget import GlobalActionWidget
+# from .globalEventWidget import GlobalEventWidget
+from ..lib import pyqt_customlib as pyqtlib
+import logging as log
+
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
+
 
 class EventWidget(QtWidgets.QWidget):
     refresh = QtCore.pyqtSignal()
 
-    def __init__(self, logger):
+    def __init__(self, parent, logger):
         super(EventWidget, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
-            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/eventWidget.ui", self)
-
+        self.parent = parent
         self.logger = logger
         self.events = []
         self.tableWidget.setSizeAdjustPolicy(
@@ -41,13 +49,42 @@ class EventWidget(QtWidgets.QWidget):
         self.clearButton.clicked.connect(self.clear)
         self.refresh.connect(self.setmydata,  QtCore.Qt.QueuedConnection)
 
+        # self.globalActionWidget = GlobalActionWidget(logger)
+        # self.globalEventWidget = GlobalEventWidget(logger)
+        # self.globalEventLayout_2.addWidget(self.globalEventWidget)
+        # self.globalActionLayout.addWidget(self.globalActionWidget)
+
+        self.updateAllEvents()
+
     def clear(self):
         self.events = []
         self.setmydata()
+        database = False
+        if self.logger.config['postgresql']['active']:
+            database = pyqtlib.alert_message(self.tr('Aus Datenbank löschen'), self.tr('Möchtest du die Events auch aus der Datenbank entfernen?'), self.tr('Signale bleiben bestehen'), "", self.tr("Ja"), self.tr("Nein"))
+        self.logger.database.clear(False, False, True, database)
 
-    def update(self, time, text, devicename, signalname, priority, value, id):
-        self.events.append([priority, datetime.datetime.fromtimestamp(time).strftime(
-            self.tr("%H:%M:%S %d.%m.%Y")), text, devicename, signalname, value, id])
+    def updateAllEvents(self):
+        self.events = []
+        if self.logger.database is not None:
+            for evID in self.logger.database.events().keys():
+                event = self.logger.database.events()[evID]
+                # [DEVICE_ID,SIGNAL_ID,EVENT_ID,TEXT,TIME,VALUE,PRIORITY]
+                # TIME, TEXT, PRIORITY, VALUE, EVENT_ID, DEVICE_ID, SIGNAL_ID
+                name = self.logger.database.getEventName(evID)
+                self.update(event[4], event[3], name[0], name[1], event[6], event[5], event[2], evID)
+        # else:
+            # print('NOT UPDATING EVENT_WIDGET FROM DATABASE')
+
+    def update(self, time, text, devicename, signalname, priority, value, id, event_id):
+        try:
+            timestr = datetime.datetime.fromtimestamp(time).strftime(
+            self.tr("%H:%M:%S %d.%m.%Y"))
+        except Exception:
+            logging.warning('Translation error')
+            timestr = datetime.datetime.fromtimestamp(time).strftime("%H:%M:%S %d.%m.%Y")
+        # print(timestr)
+        self.events.append([priority, str(timestr), text, devicename, signalname, value, id, event_id])
 
         self.refresh.emit()
 
@@ -56,7 +93,7 @@ class EventWidget(QtWidgets.QWidget):
         self.tableWidget.setRowCount(0)
         self.tableWidget.setRowCount(len(events))
         self.tableWidget.setSortingEnabled(False)
-        l = len(events)-1
+        evLen = len(events)-1
         for n, event in enumerate(events):
             if event[0] == 2:
                 color = QtGui.QColor(177, 19, 19)
@@ -66,10 +103,11 @@ class EventWidget(QtWidgets.QWidget):
                 color = QtGui.QColor(198, 131, 40)
                 color.setAlpha(0)
             for m, item in enumerate(event):
-                if m != 0:
+                if m != 0 and m != 7:
+                    # print(item)
                     newitem = QtWidgets.QTableWidgetItem(item)
                     newitem.setBackground(color)
-                    self.tableWidget.setItem(l-n, m-1, newitem)
+                    self.tableWidget.setItem(evLen-n, m-1, newitem)
         self.tableWidget.setSortingEnabled(True)
 
         return events

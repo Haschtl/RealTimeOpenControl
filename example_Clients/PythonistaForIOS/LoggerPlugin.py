@@ -6,7 +6,7 @@ import os
 
 try:
     from . import jsonsocket
-except:
+except Exception:
     import jsonsocket
 
 
@@ -27,7 +27,7 @@ class LoggerPlugin:
         self.widget = None
 
     def getDir(self, dir = None):
-        if dir == None:
+        if dir is None:
             dir = __file__
         if getattr(sys, 'frozen', False):
             # frozen
@@ -174,16 +174,16 @@ class LoggerPlugin:
                 print('TCP Connection refused')
                 try:
                     self.sock.close()
-                except:
+                except Exception:
                     pass
                 return False
-            except:
+            except Exception:
                 tb = traceback.format_exc()
                 print(tb)
                 print("Error sending over TCP")
                 try:
                     self.sock.close()
-                except:
+                except Exception:
                     pass
                 self.sock = jsonsocket.Client()
                 return False

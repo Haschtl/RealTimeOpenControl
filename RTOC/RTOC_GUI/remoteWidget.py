@@ -6,26 +6,33 @@ from PyQt5.QtCore import QCoreApplication
 import os
 import sys
 
+from .scriptWidget import ScriptWidget
+from .globalActionWidget import GlobalActionWidget
+from .globalEventWidget import GlobalEventWidget
 from ..lib import pyqt_customlib as pyqtlib
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 translate = QCoreApplication.translate
 
 
 class RemoteWidget(QtWidgets.QWidget):
-    def __init__(self, selfself, remotehost="", parent=None):
+    def __init__(self, selfself, remotehost="", parent=None, name="Remote"):
         super(RemoteWidget, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
-            packagedir = os.path.dirname(sys.executable)+'/RTOC/data'
+            packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/remoteHostWidget.ui", self)
-        self.setWindowTitle(remotehost)
-        #elf.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
+        self.setWindowTitle(name)
+        # self.setWindowFlags(self.windowFlags() | QtCore.Qt.WindowStaysOnTopHint)
         self.self = selfself
         self.hostname = remotehost
         self.parent = parent
+        self.name = name
         self.listWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.listWidget.customContextMenuRequested.connect(self.listItemRightClicked)
 
@@ -36,11 +43,37 @@ class RemoteWidget(QtWidgets.QWidget):
         self.saveButton.clicked.connect(self.saveRemoteSession)
         self.remote = self.self.logger.remote.getConnection(self.hostname)
         self.remote.updateRemoteCallback = self.updateRemote
-        if self.remote != None:
+        if self.remote is not None:
             self.maxLengthSpinBox.setValue(self.remote.maxLength)
             self.updateList()
             self.pauseButton.setChecked(self.remote.pause)
             self.setStatusLabel()
+
+        # self.globalActionWidget = GlobalActionWidget(self.self.logger.remote)
+        # self.globalEventWidget = GlobalEventWidget(self.self.logger.remote)
+        # self.globalEventLayout.addWidget(self.globalEventWidget)
+        # self.globalActionLayout.addWidget(self.globalActionWidget)
+
+        self.scriptWidget = ScriptWidget(self.self.logger)
+        self.scriptLayout.addWidget(self.scriptWidget)
+
+        self.editLayout.hide()
+
+        self.editButton.clicked.connect(self.toggleEditView)
+
+    def toggleEditView(self, value):
+        if value:
+            self.hostLineEdit.setText(self.remote.host)
+            self.portSpinBox.setValue(self.remote.port)
+            self.nameLineEdit.setText(self.remote.name)
+            self.passwordLineEdit.setText(self.remote.tcppassword)
+            self.editLayout.show()
+            self.pauseButton.hide()
+            self.clearButton.hide()
+        else:
+            self.editLayout.hide()
+            self.pauseButton.show()
+            self.clearButton.show()
 
     def setStatusLabel(self):
         if self.remote.status == "connected":
@@ -60,17 +93,21 @@ class RemoteWidget(QtWidgets.QWidget):
             self.statusLabel.setStyleSheet('background-color: rgb(98, 1, 1)')
 
     def disconnect(self):
-        ans = pyqtlib.alert_message(translate('RTRemote', 'Verbindung trennen'), translate('RTRemote', 'Möchtest du die Verbindung zu ')+self.hostname+translate(
-            'RTRemote', ' trennen?'), translate('RTRemote', 'Übertragene Signale bleiben bestehen'), "", translate('RTRemote', "Ja"), translate('RTRemote', "Nein"))
-        if ans:
-            ans = self.self.logger.remote.disconnect(self.hostname)
-            if ans == False:
-                ans = pyqtlib.info_message(translate('RTRemote', 'Fehler'), translate(
-                    'RTRemote', 'Konnte die Verbindung zu ')+self.hostname+translate('RTRemote', ' nicht trennen.'), '')
-            self.close()
+        if self.editButton.isChecked():
+            self.toggleEditView(False)
+            self.editButton.setChecked(False)
+        else:
+            ans = pyqtlib.alert_message(translate('RTRemote', 'Verbindung trennen'), translate('RTRemote', 'Möchtest du die Verbindung zu ')+self.hostname+translate(
+                'RTRemote', ' trennen?'), translate('RTRemote', 'Übertragene Signale bleiben bestehen'), "", translate('RTRemote', "Ja"), translate('RTRemote', "Nein"))
+            if ans:
+                ans = self.self.logger.remote.disconnect(self.hostname)
+                if ans is False:
+                    ans = pyqtlib.info_message(translate('RTRemote', 'Fehler'), translate(
+                        'RTRemote', 'Konnte die Verbindung zu ')+self.hostname+translate('RTRemote', ' nicht trennen.'), '')
+                self.close()
 
     def resizeRemoteLogger(self):
-        self.self.logger.remote.resize(self.hostname, self.maxLengthSpinBox.value())
+        self.self.logger.remote.resize(self.name, self.maxLengthSpinBox.value())
 
     def something(self):
         if self.checkBox.isChecked():
@@ -92,6 +129,7 @@ class RemoteWidget(QtWidgets.QWidget):
             sig = self.listWidget.item(idx)
             if sig.text() in t:
                 self.listWidget.item(idx).setSelected(True)
+        self.self.logger.remote.sigSelectList = t
         # now tell RTRemote to only listen to selected Items
 
     def plotSignals(self):
@@ -130,13 +168,24 @@ class RemoteWidget(QtWidgets.QWidget):
         self.self.logger.remote.pauseHost(self.hostname, value)
 
     def saveRemoteSession(self):
-        examplename = "RTOC-RemoteSession"
-        fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, translate('RTRemote', "Session speichern"),
-                                                            (QtCore.QDir.homePath() + "/" + examplename + ".json"), "JSON Files (*.json)")
-        if fileName:
-            self.self.logger.remote.downloadSession(self.hostname, fileName)
-            pyqtlib.info_message(translate('RTRemote', 'Download abgeschlossen'), translate(
-                'RTRemote', 'Session wurde erfolgreich heruntergeladen.'), '')
+        if self.editButton.isChecked():
+            host = self.hostLineEdit.text()
+            port = self.portSpinBox.value()
+            name = self.nameLineEdit.text()
+            password = self.passwordLineEdit.text()
+            self.remote.saveSettings(host, port, name, password)
+
+            self.toggleEditView(False)
+            self.editButton.setChecked(False)
+        else:
+
+            examplename = "RTOC-RemoteSession"
+            fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, translate('RTRemote', "Session speichern"),
+                                                                (QtCore.QDir.homePath() + "/" + examplename + ".json"), "JSON Files (*.json)")
+            if fileName:
+                self.self.logger.remote.downloadSession(self.hostname, fileName)
+                pyqtlib.info_message(translate('RTRemote', 'Download abgeschlossen'), translate(
+                    'RTRemote', 'Session wurde erfolgreich heruntergeladen.'), '')
 
     def updateRemote(self):
         self.updateList()

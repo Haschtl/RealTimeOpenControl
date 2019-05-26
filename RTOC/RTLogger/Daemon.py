@@ -7,7 +7,9 @@ import os
 import time
 import atexit
 import signal
-
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 class Daemon:
     """A generic daemon class.
@@ -68,7 +70,7 @@ class Daemon:
 
     def start(self):
         """Start the daemon."""
-        print('Starting server...')
+        logging.info('Starting server...')
         # Check for a pidfile to see if the daemon already runs
         try:
             with open(self.pidfile, 'r') as pf:
@@ -89,7 +91,7 @@ class Daemon:
 
     def stop(self):
         """Stop the daemon."""
-        print('Stopping server ...')
+        logging.info('Stopping server ...')
         # Get the pid from the pidfile
         try:
             with open(self.pidfile, 'r') as pf:
@@ -114,16 +116,16 @@ class Daemon:
                 if os.path.exists(self.pidfile):
                     os.remove(self.pidfile)
             else:
-                print(str(err.args))
+                logging.debug(str(err.args))
                 sys.exit(1)
 
     def restart(self):
         """Restart the daemon."""
-        print('Restarting server...')
+        logging.info('Restarting server...')
         self.stop()
-        print('Server stopped. Now restarting ...')
+        logging.info('Server stopped. Now restarting ...')
         self.start()
-        print('Finished')
+        logging.info('Server restarted.')
 
     def run(self):
         """You should override this method when you subclass Daemon.

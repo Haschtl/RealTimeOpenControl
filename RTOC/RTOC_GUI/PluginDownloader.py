@@ -8,6 +8,9 @@ from PyQt5.QtCore import QCoreApplication
 import json
 import traceback
 import urllib.request
+import logging as log
+log.basicConfig(level=log.INFO)
+logging = log.getLogger(__name__)
 
 try:
     import markdown2
@@ -18,9 +21,9 @@ try:
     from github import Github
 except ImportError:
     Github = None
-    print('Github for python not installed. Please install with "pip3 install pyGithub"')
+    logging.error('Github for python not installed. Please install with "pip3 install pyGithub"')
 
-from .lib import pyqt_customlib as pyqtlib
+from ..lib import pyqt_customlib as pyqtlib
 
 
 translate = QCoreApplication.translate
@@ -48,14 +51,14 @@ class PluginDownloader(QtWidgets.QWidget):
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
-        uic.loadUi(packagedir+"/RTOC_GUI/ui/getPlugins.ui", self)
+        uic.loadUi(packagedir+"/ui/getPlugins.ui", self)
 
         self.pluginList.currentTextChanged.connect(self.loadPlugin)
         self.installButton.clicked.connect(self.installPlugin)
         self.removeButton.clicked.connect(self.removePlugin)
         self.loadRepo(repo)
         self.loadLocalPlugins(userpath)
-        print(self.localPlugins)
+        logging.info(self.localPlugins)
 
     def loadLocalPlugins(self, userpath):
         self.localPlugins = {}
@@ -71,7 +74,7 @@ class PluginDownloader(QtWidgets.QWidget):
                     if files.endswith('.py'):
                         name = devices.__name__+'.'+folder+"."+files.replace('.py', '')
                         namesplit = name.split('.')
-                        print(name)
+                        logging.debug(name)
                         if namesplit[-1] not in ["LoggerPlugin"]:
                             self.localPlugins[namesplit[-1]] = list(devices.__path__)[0]+'/'+folder
         for plug in self.localPlugins.keys():
@@ -81,11 +84,12 @@ class PluginDownloader(QtWidgets.QWidget):
                     with open(self.localPlugins[plug]+"/info.json") as f:
                         data = json.load(f)
                         self.localPluginInfos[plug] = data
-                except:
-                    print('Error loading local plugin info: '+str(plug))
+                except Exception:
+                    logging.debug(traceback.format_exc())
+                    logging.error('Error loading local plugin info: '+str(plug))
                     self.localPluginInfos[plug] = ''
             else:
-                print('Plugin '+plug+' was not installed from any repository')
+                logging.error('Plugin '+plug+' was not installed from any repository')
                 self.localPluginInfos[plug] = False
 
     def loadRepo(self, repo):
@@ -102,10 +106,10 @@ class PluginDownloader(QtWidgets.QWidget):
                         data = json.loads(info.decoded_content.decode('utf-8'))
                         self.pluginInfos[realdir] = data
                         self.onlinePlugins.append(realdir)
-                except:
-                    print(info.decoded_content.decode('utf-8'))
-                    tb = traceback.format_exc()
-                    print('Error in '+dir.path)
+                except Exception:
+                    logging.debug(traceback.format_exc())
+                    logging.debug(info.decoded_content.decode('utf-8'))
+                    logging.error('Error in '+dir.path)
 
         for p in self.onlinePlugins:
             self.pluginList.addItem(p)
@@ -131,7 +135,8 @@ class PluginDownloader(QtWidgets.QWidget):
             strung += "*OS:* "+info['OS']+"\n\n"
             strung += "*GUI:* "+str(info['GUI'])+"\n\n"
             strung += "###Info:\n"+info['Info'].replace('\n', '\n\n')
-        except:
+        except Exception:
+            logging.debug(traceback.format_exc())
             strung = "# Error loading description from repo\n\n"
             tb = traceback.format_exc()
             strung += tb
@@ -164,12 +169,12 @@ class PluginDownloader(QtWidgets.QWidget):
         ok = pyqtlib.alert_message("Install plugin", "Möchtest du wirklich " +
                                    self.currentname + " installieren", strung)
         if ok:
-            print('install')
+            logging.info('install')
             url = 'https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/' + \
                 self.repoName+'/tree/master/'+self.currentname
-            print(url)
+            logging.info(url)
             self.download_directory(self.currentname)
-            print('Download finished')
+            logging.info('Download finished')
             pyqtlib.info_message(translate('Downloader', "Fertig"), translate(
                 'Downloader', "Installation abgeschlossen"), translate('Downloader', "Bitte starte RTOC neu, um Fehler zu vermeiden"))
             if self.self:
@@ -185,7 +190,7 @@ class PluginDownloader(QtWidgets.QWidget):
         ok = pyqtlib.alert_message(translate('Downloader', "Plugin entfernen"), translate(
             'Downloader', "Möchtest du wirklich ")+self.currentname + translate('Downloader', " entfernen"), "")
         if ok:
-            print('remove')
+            logging.info('remove')
             if os.path.exists(self.userpath+"/devices/"+self.currentname):
                 import shutil
                 shutil.rmtree(self.userpath+"/devices/"+self.currentname)
@@ -201,7 +206,7 @@ class PluginDownloader(QtWidgets.QWidget):
         if not os.path.exists(self.userpath+"/devices/"+self.currentname):
             os.mkdir(self.userpath+"/devices/"+self.currentname)
         for content in contents:
-            print("Processing " + content.path)
+            logging.info("Processing " + content.path)
             if content.type == 'dir' and '__pycache__' not in content.path:
                 if not os.path.exists(self.userpath+"/devices/"+content.path):
                     os.mkdir(self.userpath+"/devices/"+content.path)
@@ -212,7 +217,8 @@ class PluginDownloader(QtWidgets.QWidget):
                     url = content.download_url
                     urllib.request.urlretrieve(url, self.userpath+"/devices/"+path)
                 except IOError as exc:
-                    print('Error processing %s: %s', content.path, exc)
+                    logging.debug(traceback.format_exc())
+                    logging.error('Error processing %s: %s', content.path, exc)
 
         self.loadLocalPlugins(self.userpath)
         self.loadPlugin(self.currentname)
