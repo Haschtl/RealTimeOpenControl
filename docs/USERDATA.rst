@@ -6,7 +6,7 @@ Document-Tree
 ========================================
 User data is stored in the home directory of the current user
   - home/USER/.RTOC/ on linux
-  - C:\user\USER\.RTOC\ on windows
+  - C:\\user\\USER\\.RTOC\\ on windows
 
 It contains the following files
 ::
