@@ -11,7 +11,7 @@ logging = log.getLogger(__name__)
 try:
     from Cryptodome.Cipher import AES
     import hashlib
-except ImportError:
+except (SystemError, ImportError):
     AES = None
     logging.warning(
         'CryptodomeX or hashlib not installed! Install with "pip3 install pycryptodomex"')

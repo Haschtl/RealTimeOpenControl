@@ -168,13 +168,13 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
         # self.maxLength = self.config['global']['recordLength']
         self.__latestSignal = []
         self.devicenames = {}
-        self.getDeviceList()
         self.triggerExpressions = []
         self.triggerValues = []
         self.telegramBot = None
         self.globalEvents = {}
         self.activeGlobalEvents = {}
         self.globalActions = {}
+        self.getDeviceList()
         self.tcp = None
         if enableTCP is not None:
             self.config['tcp']['active'] = enableTCP
@@ -230,6 +230,12 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
             packagedir = os.path.dirname(os.path.realpath(dir))
 
         return packagedir
+
+    def getThread(self):
+        """
+        Returns the :mod:`threading.Thread` object of :meth:`._tcpListener`
+        """
+        return self.__tcpserver
 
     def stop(self):
         """

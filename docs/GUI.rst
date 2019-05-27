@@ -1,10 +1,15 @@
-RTOC GUI
-===================================================
+********************************
+Graphical user interface
+********************************
 
 .. image:: ../screenshots/overview3.png
 
+You can use the GUI to control your plugins, manipulate your measurements, try scripts, import data and configure your settings.
+You can also view and control RTOC-servers remotely. Unfortunately this is limited to short recordings due to the TCP-protocol, which cannot handle long datasizes. This will maybe be fixed in future releases.
+
 Titlebar
-----------------------------------
+========================================
+Systembar-structure
 ::
   Systembar
   ├── File
@@ -59,43 +64,44 @@ Titlebar
 - Open new plot window. You can simply drag'n'drop signals from one window into another.
 
 Device Widget
-----------------------------------
+========================================
 The device widget (left) holds all plugins. Each plugin is represented by a button. You can start/stop plugins with these buttons. If the plugin has a GUI and ``smallGUI`` is True, the gui will be available as a button-dropdown.
 
 Signal Widget
-----------------------------------
+========================================
 The signal widget (right) hold all signals. You can toggle each signal by clicking it (red=hidden, green=visible).
 Next to the button is the latest value.
 
-Each signal also has a dropdown-menu:
+Each signal also has a dropdown-menu
+
 .. image:: ../screenshots/signalWidget.png
 
 Check out each menu-entry by yourself, please.
 
 Event Widget
-----------------------------------
+========================================
 
 .. image:: ../screenshots/eventWidget.png
 
 The event widget shows a list with all events. You can filter the events by text or hide specific priorities. On the right top is a button to delete all events.
 
 DevicesRAW Widget
-----------------------------------
+========================================
 
 .. image:: ../screenshots/devicesRAWWidget.png
 
 This widget holds a list with all plugin functions and parameters
 
 Script Widget
-----------------------------------
+========================================
 
 .. image:: ../screenshots/scriptWidget.png
 
 This widget is a simple text-editor for scripts.
-If you want to learn more about scripts, check out :ref:`RTOC Scripting`.
+If you want to learn more about scripts, check out :doc:`SCRIPT`.
 
 Run scripts in GUI
----------------------------------------------
+========================================
 Click on one of the buttons at the top of this widget to run the code either once or repeated.
 
 You can also load/save scripts from/to file.
@@ -104,7 +110,7 @@ At the right top is a help window with lists for all signals, parameters and fun
 
 
 Trigger-System
-++++++++++++++++++++++++++
+---------------------------------
 
 .. image:: ../screenshots/scriptWidget_dropdown.png
 
@@ -115,17 +121,17 @@ Scripts are executed in two different ways (can be selected from the "Start" but
 
 
 Settings Widget
-----------------------------------
+========================================
 
 .. image:: ../screenshots/settingsWidget.png
 
 This widget can modify the :ref:`config.json`
 
 Import/Export signals/sessions
-----------------------------------
+========================================
 
 Import session
-++++++++++++++++++++++++++++++++++
+---------------------------------
 
 1. Open "File"->"Load session" in the menubar
 2. Select a file you want to import
@@ -135,7 +141,7 @@ or
 1. Drag'n'Drop a file or copied data into RTOC
 
 Import XLSX, MATLAB, CSV
-++++++++++++++++++++++++++++++++++
+---------------------------------
 .. image:: ../screenshots/importWidget.png
 
 On the left side is the data-table. You can modify it to your needs.
@@ -148,14 +154,14 @@ On the right side you can define signals, that will be taken from the data-table
 5. Click "Import data" to load the signals to RTOC. Invalid signals will be skipped
 
 Remote-control via TCP
------------------------
+========================================
 
 .. image:: ../screenshots/remoteWidget.png
 
 You can connect to any remote RTOC in the 'Network'-menu of the :ref:`Titlebar`.
 
 Plugin-Downloader
-------------------------
+========================================
 
 .. image:: ../screenshots/pluginDownloader.png
 

@@ -1,6 +1,18 @@
+********************************
+Backend Source-code
+********************************
+
 LoggerPlugin.py
 ====================
 .. automodule:: RTOC.LoggerPlugin
+    :members:
+    :undoc-members:
+    :show-inheritance:
+    :noindex:
+
+jsonsocket.py
+====================
+.. automodule:: RTOC.jsonsocket
     :members:
     :undoc-members:
     :show-inheritance:
@@ -123,20 +135,11 @@ RTOC.RTLogger.scriptLibrary module
     :undoc-members:
     :show-inheritance:
 
-.. 
-  RTOC.RTLogger.telegramBot module
-  --------------------------------
 
-  .. automodule:: RTOC.RTLogger.telegramBot
-      :members:
-      :undoc-members:
-      :show-inheritance:
+RTOC.RTLogger.telegramBot module
+--------------------------------
 
-..
-  RTLogger Module contents
-  ------------------------
-
-  .. automodule:: RTOC.RTLogger
-      :members:
-      :undoc-members:
-      :show-inheritance:
+.. automodule:: RTOC.RTLogger.telegramBot
+    :members:
+    :undoc-members:
+    :show-inheritance:

@@ -80,7 +80,7 @@ app.layout = html.Div([
                 dcc.Graph(id='live-update-graph'),  # , style={'height': '100vh'},),
                 dcc.Interval(
                     id='interval-component',
-                    interval=1*1000,  # in milliseconds
+                    interval=1*1000*60,  # in milliseconds
                     n_intervals=0
                 )
             ],
@@ -107,7 +107,7 @@ app.layout = html.Div([
                 ),
                 dcc.Interval(
                     id='interval-component2',
-                    interval=1*1000,  # in milliseconds
+                    interval=1*1000*60,  # in milliseconds
                     n_intervals=0
                 ),
                 html.Div(id='datatable-interactivity-container',

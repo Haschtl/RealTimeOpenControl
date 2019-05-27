@@ -6,8 +6,8 @@ import sys
 
 from RTOC.RTLogger.RTLogger import RTLogger
 
+logger = RTLogger(True)
 try:
-	logger = RTLogger(True)
 	#logger.startPlugin('Heliotherm')
 	#logger.getPlugin('Heliotherm').start('192.168.178.72')
 	#logger.startPlugin('Futtertrocknung')

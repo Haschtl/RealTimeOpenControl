@@ -1,10 +1,15 @@
+****************
+Collecting data
+****************
+
 Writing Plugins
 ===================================================
 To integrate a new device, you have to program your own plugin.
 
-Each user-plugin must be stored in the user-directory ``~/.RTOC/devices/``. Each plugin must have its own folder.
+Each user-plugin must be stored in the user-directory ``~/.RTOC/devices/``. Each plugin must has its own folder.
 
-Plugins are written in Python3 and need to follow some rules:
+Plugins are written in Python3 and need to follow some rules::
+
   from LoggerPlugin import LoggerPlugin # contains all plugin-functions
 
   class Plugin(LoggerPlugin):  # This must be the main class of your function
@@ -17,98 +22,14 @@ The above lines **must** be copied exactly into the plugin!
 
 All functions and parameters defined in the main class are available for scripts. To prevent them from being displayed in the Script Help (and Telegram-bot), parameters and functions must begin with '_'.
 
-Refer to :mod:`RTOC.LoggerPlugin` for a full list of available functions.
+Refer to :py:mod:`.LoggerPlugin` for a full list of available functions.
 
-The following example plugin sends data to RTOC every second and loads an empty GUI::
-  # This template shows, how to implement plugins in RTOC
-  # RTOC version 2.0
+The following example plugin sends data to RTOC every second and loads an empty GUI
 
-  # A plugin needs to import RTOC.LoggerPlugin to be recognized by RTOC.
-  from RTOC.LoggerPlugin import LoggerPlugin
+Template.py
+====================
 
-  import sys
-  import time
-  from PyQt5 import uic
-  from PyQt5 import QtWidgets
-  import numpy as np
-
-  DEVICENAME = "Template"  # Define the name of this Device
-
-  AUTORUN = True  # If true, the thread to collect data will run right after initializing this plugin
-  SAMPLERATE = 1  # The thread,which is supposed to collect data will be executed with 1 Hz
-
-
-  class Plugin(LoggerPlugin):
-    def __init__(self, stream=None, plot=None, event=None):
-      # Plugin configuration
-      # Call this to initialize RTOC.LoggerPlugin
-      super(Plugin, self).__init__(stream, plot, event)
-      # Set a default devicename.
-      # This will be used for all signals sent by this plugin as default
-      self.setDeviceName(DEVICENAME)
-
-      # GUI configuration
-      self.smallGUI = True  # Only cares, if your Plugin has a GUI
-
-      self._firstrun = True
-
-      # set the function, which will collect data periodically
-      self.setPerpetualTimer(self._updateT, samplerate=SAMPLERATE)
-      if AUTORUN:
-        self.start()
-        # start the configured perpetual timer. It can be stopped with 'self.cancel()'
-
-      # Instead of this, you can also start a normal thread, which is active in this while loop: 'while self.run:'. This ensures, that this plugin can be stopped.
-
-    # This function is being called in a thread.
-    def _updateT(self):
-      y1 = np.sin(time.time())
-      y2 = np.cos(time.time())
-      # Do something, collect data ,...
-
-      # Then send your data
-      self.stream([y1, y2], snames=['Sinus', 'Cosinus'], unit=["kg", "m"])  # send data to RTOC
-
-      # You can also plot data like this:
-      self.plot([-10, 0], [2, 1], sname='Plot', unit='Wow')
-
-      # Or send an event with self.event(text='',sname='')
-      # (but use with caution, it can spam your RTOC plots):
-      if self._firstrun:
-        self.event('Test event', sname='Plot', id='testID')
-        self._firstrun = False
-
-    # This function is used to initialize a own Plugin-GUI,
-    # which will be available in RTOC.
-    # Remove it, if you don't want a GUI for your plugin.
-    def loadGUI(self):
-      self.widget = QtWidgets.QWidget()  # Create an empty QWidget
-      packagedir = self.getDir(__file__)  # Get filepath of this file
-      # Load a GUI designed with QDesigner
-      uic.loadUi(packagedir+"/Template/template.ui", self.widget)
-      return self.widget  # This function needs to return a QWidget
-
-
-  # Sometimes you want to use plugins standalone also. Very useful for testing.
-  hasGUI = True  # If your plugin has a widget do this
-
-  if __name__ == "__main__":
-      if hasGUI:
-          app = QtWidgets.QApplication(sys.argv)
-          myapp = QtWidgets.QMainWindow()
-
-      widget = Plugin()
-
-      if hasGUI:
-          widget.loadGUI()
-          myapp.setCentralWidget(widget.widget)
-
-          myapp.show()
-          app.exec_()
-
-      widget.run = False
-
-      sys.exit()
+.. literalinclude:: ../RTOC/Template.py
 
 Plugin repository
 ==========================
@@ -151,6 +72,7 @@ Template
 ++++++++++++++++++++
 
 **GUI**: Yes, if you want to
+
 .. image:: ../screenshots/template.png
 
 **Dependencies**: -
@@ -169,17 +91,22 @@ DPS5020
 
 **Info**:
 
-- You can set a parameters in file DPS5020.py:
-  - default_device = '/dev/ttyUSB0'
-  - SERIAL_BAUDRATE = 9600
-  - SERIAL_BYTESIZE = 8
-  - SERIAL_TIMEOUT = 2
+- You can set a parameters in file DPS5020.py
+
+.. code-block:: python
+
+  default_device = '/dev/ttyUSB0'
+  SERIAL_BAUDRATE = 9600
+  SERIAL_BYTESIZE = 8
+  SERIAL_TIMEOUT = 2
+
 - You will need to run RTOC as root unless you set devices rules. See [this tutorial](http://ask.xmodulo.com/change-usb-device-permission-linux.html) for how to set device rules.
 
 Generator
 ++++++++++++++++++++
 
 **GUI**: Yes
+
 .. image:: ../screenshots/generator.png
 
 **Dependencies**: -
@@ -234,6 +161,7 @@ Octotouch
 ++++++++++++++++++++
 
 **GUI**: Yes
+
 .. image:: ../screenshots/octotouch.png
 
 **Dependencies**: -
@@ -270,6 +198,7 @@ System
 ++++++++++++++++++++
 
 **GUI**: Yes
+
 .. image:: ../screenshots/systemPlugin.png
 
 **Dependencies**: -
@@ -284,6 +213,7 @@ ReflowOfen/ReflowPlatte
 +++++++++++++++++++++++++++
 
 **GUI**: Yes
+
 .. image:: ../screenshots/reflowOven.png
 
 **Dependencies**: -
@@ -298,6 +228,7 @@ Heliotherm
 ++++++++++++++++++++
 
 **GUI**: Yes
+
 .. image:: ../screenshots/heliotherm.png
 
 **Dependencies**: `pip3 install pyModbusTCP`

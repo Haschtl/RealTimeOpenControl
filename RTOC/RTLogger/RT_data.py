@@ -117,32 +117,37 @@ class RT_data:
         self._backupThread = None
         self._connection = None
         self._cursor = None
-        ok = self._connect()
         if self.logger is None:
             self.isGUI = False
             self.webserver = True
             """ Is true, if running as webserver, False, if not."""
+            ok = self._connect()
             dev, sig, ev = self._checkDatabases()
-            self.clear(not dev, not sig, not ev)
+            self.clear(not dev, not sig, not ev, True)
             self.pullFromDatabase()
 
             self.start()
-        elif not self.logger.forceLocal:
+        else:
             self.isGUI = self.logger.isGUI
             self.webserver = False
-            if ok and self.logger.config['backup']['loadOnOpen']:
+            if not self.logger.forceLocal:
                 if self.logger.config['postgresql']['active']:
-                    # self.clear(False,False,True)
-                    dev, sig, ev = self._checkDatabases()
-                    self.clear(not dev, not sig, not ev)
-                    self.pullFromDatabase()
+                    ok = self._connect()
+                    if ok and self.logger.config['backup']['loadOnOpen']:
+                            # self.clear(False,False,True)
+                            dev, sig, ev = self._checkDatabases()
+                            self.clear(not dev, not sig, not ev, True)
+                            self.pullFromDatabase()
+                    elif ok:
+                        dev, sig, ev = self._checkDatabases()
+                        self.clear(not dev, not sig, not ev, True)
+                        self.pullFromDatabase(True, True, True, False)
+                    else:
+                        logging.error('Checking database failed!')
+                    if self.logger.config['backup']['active']:
+                        self.start()
                 elif self.logger.config['backup']['active']:
                     logging.warning('File backup is not implemented')
-            elif self.logger.config['postgresql']['active']:
-                # self.clear(False,False,True)
-                dev, sig, ev = self._checkDatabases()
-                self.clear(not dev, not sig, not ev)
-                self.pullFromDatabase(True, True, True, False)
 
     def connect_callbacks(self):
         """
@@ -184,12 +189,12 @@ class RT_data:
                         self._cursor.execute('DROP TABLE '+DEVICE_TABLE_NAME+' CASCADE;')
                         logging.info('Deleting devices table')
                         self._connection.commit()
-                    if dev is True:
-                        self._createDevicesTable()
-                    if sig is True:
-                        self._createSignalsTable()
-                    if ev is True:
-                        self._createEventsTable()
+                if dev is True:
+                    self._createDevicesTable()
+                if sig is True:
+                    self._createSignalsTable()
+                if ev is True:
+                    self._createEventsTable()
 
     def devices(self):
         """
@@ -253,8 +258,8 @@ class RT_data:
 
         for sigID in self._signals.keys():
             s = self._signals[sigID]
-            self._signals[sigID] = [s[0], s[1], s[2], deque(
-                list(s[3]), newLength), deque(list(s[4]), newLength), s[5]]
+            self._signals[sigID] = [s[0], s[1], deque(
+                list(s[2]), newLength), deque(list(s[3]), newLength), s[4]]
 
     def getDeviceID(self, devicename):
         """
@@ -325,6 +330,23 @@ class RT_data:
             return [devName, sigName]
         else:
             return None
+
+    def getSignalUnit(self, sigID):
+        """
+        Returns the unit for a given sigID. Returns "", if sigID could not be found
+
+        Args:
+            sigID (int)
+
+        Returns:
+            unit (str)
+        """
+        if sigID in self._signals.keys():
+            s = self._signals[sigID]
+            unit = s[4]
+            return unit
+        else:
+            return ""
 
     def getEventName(self, evID):
         """
@@ -542,7 +564,7 @@ class RT_data:
         elif type(y) == str:
             self.addNewEvent(y)
 
-    def plot(self, x=[], y=[], sname="noName", dname="noDevice", unit="", c=False, hold='off', autoResize=False):
+    def plot(self, x=[], y=[], sname="noName", dname="noDevice", unit="", c=False, hold='off', autoResize=False, sigID=None):
         """
         Adds/merges/replaces new data to one signals and automatically creates new devices and signals if they do not exist.
 
@@ -559,6 +581,10 @@ class RT_data:
         if y == []:
             y = x
             x = list(range(len(x)))
+        if sigID is not None:
+            names = self.getSignalName(sigID)
+            dname = names[0]
+            sname = names[1]
         if len(x) == len(y):
             self._plotNewData(x, y,
                               unit, dname, sname, c, hold, autoResize)
@@ -636,10 +662,12 @@ class RT_data:
             dict: {'dname.sname':[x,y],...}
         """
         ans = {}
+        # print(self._signals.keys())
         for sigID in self._signals.keys():
             dev = self.getSignalName(sigID)
+            # unit = self.getSignalUnit(sigID)
             if len(self._signals[sigID][2]) > 0:
-                ans['.'.join(dev)] = [self._signals[sigID][2][-1], self._signals[sigID][3][-1]]
+                ans['.'.join(dev)] = [self._signals[sigID][2][-1], self._signals[sigID][3][-1], self._signals[sigID][4]]
         return ans
 
     def addNewEvent(self, text="", sname="noName", dname="noDevice", x=None, priority=0, id=None, value=None):
@@ -844,6 +872,8 @@ class RT_data:
                                                      for i in signals[sigID][3][0:maxLength]]
                                 signals[sigID][2] = deque(signals[sigID][2], maxLength)
                                 signals[sigID][3] = deque(signals[sigID][3], maxLength)
+                                signals[sigID][4] = signals[sigID][4]
+
                         else:
                             for sigID in signals.keys():
                                 devID = signals[sigID][0]
@@ -944,10 +974,10 @@ class RT_data:
           (ID SERIAL PRIMARY KEY     UNIQUE NOT NULL,
           NAME          TEXT   UNIQUE NOT NULL,
           CREATION_DATE REAL   NOT NULL); '''
-
+        print('here')
         if self._execute(create_table_query):
             logging.info('Initialized devices table')
-
+        print('there')
     def _createSignalsTable(self):
         create_table_query = 'CREATE TABLE '+SIGNAL_TABLE_NAME+'''
           (ID SERIAL PRIMARY KEY     UNIQUE NOT NULL,
@@ -987,7 +1017,8 @@ class RT_data:
             logging.info('Initialized events table')
 
     def _execute(self, query):
-        if self._execute_n_commit(query):
+        ok = self._execute_n_commit(query)
+        if ok:
             logging.info("Table created successfully in PostgreSQL ")
 
     def _execute_n_fetchall(self, query):
@@ -1239,10 +1270,14 @@ class RT_data:
             ans = []
         return ans
 
-    def _SQLplot(self, x=[], y=[], sname="noName", dname="noDevice", unit="", c=False, hold='off', autoResize=False):
+    def _SQLplot(self, x=[], y=[], sname="noName", dname="noDevice", unit="", c=False, hold='off', autoResize=False, sigID=None):
         if y == []:
             y = x
             x = list(range(len(x)))
+        if sigID is not None:
+            names = self.getSignalName(sigID)
+            dname = names[0]
+            sname = names[1]
         if len(x) == len(y):
             if not self._SQLdeviceExists(dname):
                 self._SQLcreateDevice(dname)
@@ -2111,6 +2146,36 @@ class RT_data:
 
         return unique
 
+    def resampleDatabase(self, samplerate):
+        """
+        Will resample all signals in database with given samplerate
+
+        Args:
+            samplerate (float): Desired samplerate for signals
+
+        Returns:
+            bool: True, if successfull, False, if nothing to resample
+        """
+        signals = self._execute_n_fetchall(
+            "select ID, X, Y from "+SIGNAL_TABLE_NAME)
+
+        if signals is not None and signals != []:
+            signals = {signal[0]: list(signal)[1:] for signal in signals}
+
+            for sigID in signals.keys():
+                s = signals[sigID]
+                if len(s[0])>2:
+                    xrange = s[0][-1]-s[0][0]
+                    n = samplerate*xrange
+                    if len(s[0]) == len(s[1]):
+                        x = np.linspace(s[0][0], s[0][-1], n)
+                        y = np.interp(x, s[0], s[1])
+
+                        self._SQLplot(x=x, y=y, sigID=sigID)
+
+            self.clear()
+            return True
+        return False
 
 def saveUserInput(self, strung):
     """

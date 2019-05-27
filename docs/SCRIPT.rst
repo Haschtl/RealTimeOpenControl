@@ -1,4 +1,8 @@
-RTOC Scripting
+*****************************
+Controlling and automation
+*****************************
+
+Overview
 ===================================================
 Own scripts can be used during the runtime:
 
@@ -9,7 +13,7 @@ Own scripts can be used during the runtime:
 
 In general, you write a Python script like any other, you can import libraries, etc. However, you should pay attention to performance.
 
-RTOC provides an own library for scripts: :mod:`RTOC.RTLogger.scriptLibrary`
+RTOC provides an own library for scripts: :mod:`.RTLogger.scriptLibrary`
 
 There are three places, where custom scripting is possible.
 
@@ -18,12 +22,14 @@ There are three places, where custom scripting is possible.
 - :ref:`Event/Action system`
 
 Available functions and libraries
--------------------------------------
+======================================
 
 Python libraries
-+++++++++++++++++
+----------------------
 
-There are several python libraries automatically imported in scripts::
+There are several python libraries automatically imported in scripts
+
+.. code-block:: python
 
   import math
   import numpy as np
@@ -32,7 +38,7 @@ There are several python libraries automatically imported in scripts::
   from .RTLogger import scriptLibrary as rtoc
 
 Functions to interact with RTOC
-++++++++++++++++++++++++++++++++++++++++++++++++++
+--------------------------------------------
 .. automethod:: RTOC.LoggerPlugin.LoggerPlugin.stream
   :noindex:
 .. automethod:: RTOC.LoggerPlugin.LoggerPlugin.plot
@@ -43,33 +49,43 @@ Functions to interact with RTOC
   :noindex:
 
 Access to plugin parameters and signals in scripts
-++++++++++++++++++++++++++++++++++++++++++++++++++++
-All signals can be references in scripts in these ways::
+------------------------------------------------------------------
+All signals can be references in scripts in these ways
+
+.. code-block:: python
+
   [x],[y] = Device.Signalname
   [x] = Device.Signalname.x
   [y] = Device.Signalname.y
   c = Device.Signalname.latest
 
-plugin parameters and functions can be accessed in this way::
+plugin parameters and functions can be accessed in this way
+
+.. code-block:: python
+
   Device.FUNCTION(...)
   Device.PARAMETER = ...
 
 Special stuff
-+++++++++++++++++++++++++++++++++++++++++++
+----------------------
 The actual timestamp is available in the global variable ``clock``.
 You can use the default ``print()`` function for text-output in console, GUI and telegram.
 
-You can define variables **global**. This ensures, this variable will remain until the next call of this script. Example::
+You can define variables **global**. This ensures, this variable will remain until the next call of this script. Example
+
+.. code-block:: python
   global VARNAME = 0
 
-If-else conditions aren't always suitable for real-time operations. You cannot trigger rising/falling for example. Therefore you can use a trigger to call the code inside a condition only once::
+If-else conditions aren't always suitable for real-time operations. You cannot trigger rising/falling for example. Therefore you can use a trigger to call the code inside a condition only once
+.. code-block:: python
   trig CONDITION:
     print('Hello')
 
 This example will only print 'Hello', if CONDITION changes from ``False`` to ``True``.
 
 RTOC library
-+++++++++++++++++
+----------------------
+
 .. automodule:: RTOC.RTLogger.scriptLibrary
     :members:
     :undoc-members:
@@ -77,14 +93,17 @@ RTOC library
     :noindex:
 
 Event/Action system
---------------------------------
+============================
 The Event/Action System allows Python code to be executed when events occur. These pieces of code have the same possibilities as scripts.
 
 Global actions
 +++++++++++++++++++++++
 Global actions are stored in the file :ref:`globalActions.json`.
 
-Example::
+Example
+
+.. code-block:: python
+
   {
     "action2": {
       "listenID": ["testID"],
@@ -111,7 +130,10 @@ Global events
 +++++++++++++++++++++++
 Global events are stored in the file :ref:`globalEvents.json` unlike events created in plugins.
 
-Example::
+Example
+
+.. code-block:: python
+
   {
     "myevent": {
       "cond": "Generator.Square.latest >= 2",
@@ -138,7 +160,7 @@ Parameter         Datatype            Definition
 ``active``        ``bool``            If True, this event will be active.
 ``id``            ``str``             The event-ID used to trigger actions.
 ``return``        ``str``             Unused
-``text``          ``str``             See :func:`RTOC.LoggerPlugin.event`
+``text``          ``str``             See :py:meth:`.LoggerPlugin.event`
 ``dname``         ``str``             ...
 ``sname``         ``str``
 ``priority``      ``0,1 or 2``

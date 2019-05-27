@@ -10,7 +10,7 @@ logging = log.getLogger(__name__)
 
 try:
     from . import jsonsocket
-except ImportError:
+except (SystemError, ImportError):
     import jsonsocket
 
 lock = Lock()
@@ -51,8 +51,9 @@ class LoggerPlugin:
         self._tcppassword = ''
         self._tcpport = 5050
         self._tcpaddress = ''
-        self._tcpthread = True
+        self._tcpthread = False
         self._pluginThread = None
+        self.__oldPerpetualTimer = False
         self.lockPerpetialTimer = Lock()
         # -------------
         self.run = False  # False -> stops thread
@@ -79,11 +80,11 @@ class LoggerPlugin:
 
         return packagedir
 
-    def stream(self, *args, **kwargs):
+    def stream(self, **kwargs):
         """
         Use this function to send new measurements to RTOC. You can send multiple signals at once.
 
-        This function is a wrapper for :func:`RTOC.RTLogger.RT_data.addData`
+        This function is a wrapper for :py:meth:`.RT_data.addData`
 
 
         You can choose one of three ways to send measurements.
@@ -123,16 +124,13 @@ class LoggerPlugin:
                 kwargs['dname'] = self._deviceName
             if signallist is None:
                 y = kwargs.get('y', [0])
-                for idx, arg in enumerate(args):
-                    if idx == 0:
-                        y = arg
                 if type(y) == list:
                     kwargs['x'] = [now]*len(y)
                 else:
                     kwargs['x'] = [now]
 
 
-                self.__cb(*args, **kwargs)
+                self.__cb(**kwargs)
                 return True
             elif type(signallist) == list:
                 kwargs.pop('list')
@@ -147,11 +145,12 @@ class LoggerPlugin:
                             kwargs['snames'].append(sig[1])
                             kwargs['unit'].append(sig[2])
                             kwargs['x'].append(now)
-                self.__cb(*args, **kwargs)
+                self.__cb(**kwargs)
                 return True
             elif type(signallist) == dict:
                 kwargs.pop('list')
                 for dev in signallist.keys():
+                    kwargs = {}
                     kwargs['dname'] = dev
                     kwargs['y'] = []
                     kwargs['x'] = []
@@ -165,13 +164,15 @@ class LoggerPlugin:
                                     kwargs['snames'].append(sig)
                                     kwargs['unit'].append(signallist[dev][sig][1])
                                     kwargs['x'].append(now)
+                                else:
+                                    logging.error('STREAM ERROR, signal has not this format: [y, "unit"]')
                             else:
                                 logging.error('STREAM_ERROR: One signal was malformed')
                         # logging.debug(kwargs)
                         self.__cb(**kwargs)
-                        return True
                     else:
                         logging.error('STREAM_ERROR: One device was malformed')
+                return True
             else:
                 logging.error('STREAM_ERROR: The data you provided with in your plugin was wrong."')
         else:
@@ -190,7 +191,7 @@ class LoggerPlugin:
         `hold='mergeY'` will only add xy-pairs, if the y-value is not in the existing data.
 
 
-        This function is a wrapper for :func:`RTOC.RTLogger.RT_data.plot`
+        This function is a wrapper for :py:meth:`.RT_data.plot`
 
         Args:
             x (list): A list containing all x values, e.g: `[1, 2, 3, 4, 5, 6, 7, 8]`
@@ -221,7 +222,7 @@ class LoggerPlugin:
         """
         Use this function to send an event to RTOC.
 
-        This function is a wrapper for :func:`RTOC.RTLogger.RT_data.addNewEvent`
+        This function is a wrapper for :py:meth:`.RT_data.addNewEvent`
 
         Args:
             text (str): A description of this event, e.g: `'Freezer door opened'`
@@ -248,7 +249,7 @@ class LoggerPlugin:
             logging.warning("No event connected")
             return False
 
-    def createTCPClient(self, address="localhost", password=None, tcpport=5050, threaded=True):
+    def createTCPClient(self, address="localhost", password=None, tcpport=5050, threaded=False):
         '''
         Creates a TCP client. Used to talk to RTOC via TCP. Read :doc:`TCP` for more information.
         You need to call this once, before you can use `sendTCP()`
@@ -285,16 +286,16 @@ class LoggerPlugin:
             unit (list or str): Signal-unit
             plot (bool): False: xy-pairs are interpreted as different signals, True: xy-pairs are one signal
             event ([text, id, value]): Submit an event
-            remove: :func:`RTOC.RTLogger.NetworkFunctions.remove`
-            plugin: :func:`RTOC.RTLogger.NetworkFunctions.handleTcpPlugins`
-            logger: :func:`RTOC.RTLogger.NetworkFunctions.handleTcpLogger`
-            getSignal: :func:`RTOC.RTLogger.NetworkFunctions.getSignal`
-            getLatest: :func:`RTOC.RTLogger.NetworkFunctions.getLatest`
-            getEvent: :func:`RTOC.RTLogger.NetworkFunctions.getEvent`
-            getSignalList: :func:`RTOC.RTLogger.NetworkFunctions.getSignalList`
-            getEventList: :func:`RTOC.RTLogger.NetworkFunctions.getEventList`
-            getPluginList: :func:`RTOC.RTLogger.NetworkFunctions.getPluginList`
-            getSession: :func:`RTOC.RTLogger.RT_data.generateSessionJSON`
+            remove: :py:meth:`.NetworkFunctions.remove`
+            plugin: :py:meth:`.NetworkFunctions.handleTcpPlugins`
+            logger: :py:meth:`.NetworkFunctions.handleTcpLogger`
+            getSignal: :py:meth:`.NetworkFunctions.getSignal`
+            getLatest: :py:meth:`.NetworkFunctions.getLatest`
+            getEvent: :py:meth:`.NetworkFunctions.getEvent`
+            getSignalList: :py:meth:`.NetworkFunctions.getSignalList`
+            getEventList: :py:meth:`.NetworkFunctions.getEventList`
+            getPluginList: :py:meth:`.NetworkFunctions.getPluginList`
+            getSession: :py:meth:`.RT_data.generateSessionJSON`
 
         Returns:
             tcp_response (dict), if createTCPClient(threaded=False)
@@ -435,9 +436,9 @@ class LoggerPlugin:
         if self.widget:
             self.widget.hide()
             self.widget.close()
-        if self._pluginThread:
+        if self._pluginThread and not self.__oldPerpetualTimer:
             self._pluginThread.cancel()
-        
+
         # if self._sock:
             # self._sock.close()
 
@@ -482,10 +483,10 @@ class LoggerPlugin:
     @samplerate.setter
     def samplerate(self, samplerate):
         self.__samplerate = samplerate
-        if self._pluginThread:
+        if self._pluginThread and not self.__oldPerpetualTimer:
             self._pluginThread.setSamplerate(samplerate)
 
-    def setPerpetualTimer(self, fun, samplerate=None, interval = None):
+    def setPerpetualTimer(self, fun, samplerate=None, interval = None, old = False):
         """
         Configures a perpetual timer. A perpetual timer is a thread, which is repeated infinitly in a specified time-interval or samplerate.
 
@@ -493,22 +494,38 @@ class LoggerPlugin:
             fun (function): The function to be called periodically.
             samplerate (float): The desired samplerate.
             interval (float): The desired time-delay interval.
+            old (bool): If True, an old method for perpetual timer is used (based on :mod:`threading.Thread`). If False, the new method will be used (based on :mod:`threading.Timer`).
 
         Returns:
             bool: True, if perpetual timer could be configured, False, if not.
 
         """
+        if old:
+            self.__oldPerpetualTimer = True
+        else:
+            self.__oldPerpetualTimer = False
+
         if samplerate is None and interval is None:
             samplerate = self.samplerate
         elif samplerate is None:
             samplerate = 1/interval
-        try:
-            self.__samplerate = samplerate
-            self._pluginThread = _perpetualTimer(fun, samplerate, self.lockPerpetialTimer)
-            return True
-        except Exception:
-            self._pluginThread = None
-            return False
+
+        if not self.__oldPerpetualTimer:
+            try:
+                self.__samplerate = samplerate
+                self._pluginThread = _perpetualTimer(fun, samplerate, self.lockPerpetialTimer)
+                return True
+            except Exception:
+                self._pluginThread = None
+                return False
+        else:
+            try:
+                self.__samplerate = samplerate
+                self._pluginThread = Thread(target=self.__updateT, args=(fun,))
+                return True
+            except Exception:
+                self._pluginThread = None
+                return False
 
     def start(self):
         """
@@ -535,12 +552,23 @@ class LoggerPlugin:
 
         """
         if self._pluginThread:
-            self._pluginThread.cancel()
+            if not self.__oldPerpetualTimer:
+                self._pluginThread.cancel()
             self.run = False
             return True
         else:
             self.run = False
             return False
+
+    def __updateT(self, func):
+        diff = 0
+        while self.run:
+            if diff < 1/self.__samplerate:
+                time.sleep(1/self.__samplerate-diff)
+            start_time = time.time()
+            func()
+            diff = (time.time() - start_time)
+
 
 
 class _perpetualTimer():

@@ -1,5 +1,6 @@
+****************************
 Telegram Communication
-===================================================
+****************************
 
 Telegram-Bot setup
 ----------------------------
@@ -80,7 +81,7 @@ Settings
 
 - Delete signals: Deletes all signals and events.
 - Change recording length: Change the recording length of the server.
-- Change global samplerate: Change the samplerate of all plugins using ``self.samplerate`` or ``self.setPerpetualTimer``.
+- Change global samplerate: Change the samplerate of all plugins using ``self.samplerate`` or ``self.setPerpetualTimer(func,samplerate)``.
 - Restart server: Restart host computer
 - TCP-Server: On/Off: En/disable TCP-server
 
@@ -89,7 +90,10 @@ Telegram Custom-menu
 -----------------------------
 The file :ref:`telegramActions.json` contains dicts with actions, that will be shown in the main menu and can be executed by any user.
 
-Here is an example to send a screenshot::
+Here is an example to send a screenshot
+
+.. code-block:: python
+
   {
 	 "Screenshot": """
 

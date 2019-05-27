@@ -75,6 +75,7 @@ class telegramBot():
         self.menuCommands = [translate('telegram', 'Event-Benachrichtigung festlegen'), translate(
             'telegram', 'Letzte Messwerte'), translate('telegram', 'Signale'), translate('telegram', 'Geräte'), translate('telegram', 'Event/Signal erzeugen'), translate('telegram', 'Automatisierung'), translate('telegram', 'Einstellungen')]
 
+        self.userActions = {}
         userpath = self.logger.config['global']['documentfolder']
         if os.path.exists(userpath+"/telegramActions.json"):
             try:
@@ -82,7 +83,6 @@ class telegramBot():
                     self.userActions = json.load(jsonfile, encoding="UTF-8")
             except:
                 # print(traceback.print_exc())
-                self.userActions = {}
                 logging.error('Error in Telegram-UserActions-JSON-File')
 
     def setToken(self, token):
@@ -1010,14 +1010,21 @@ class telegramBot():
 
     def settingsHandler(self, bot, chat_id):
         self.mode[chat_id] = "settings"
-        commands = [translate('telegram', "Alle Daten löschen"), translate(
-            'telegram', 'Aufzeichnungsdauer ändern'), translate(
-                'telegram', 'Globale Samplerate ändern'), translate(
-                'telegram', '**Server neustarten**')]
+        self.helper[chat_id] = None
+        commands = [
+            translate('telegram', "Alle Daten löschen"),
+            translate('telegram', 'Aufzeichnungsdauer ändern'),
+            translate('telegram', 'Globale Samplerate ändern'),
+            translate('telegram', '**Server neustarten**'),
+            ]
         if self.logger.config['tcp']['active']:
             commands += [translate('telegram', "TCP-Server: An")]
         else:
             commands += [translate('telegram', "TCP-Server: Aus")]
+
+        if self.logger.config['postgresql']['active']:
+            commands += [translate('telegram', 'Datenbank resamplen')]
+
         # if self.logger.config['telegram']['active']:
         #     commands += [translate('telegram', "*Telegram-Bot: An (!)*")]
         # else:
@@ -1052,6 +1059,7 @@ class telegramBot():
             return
         elif strung == translate('telegram', '**Alle Daten löschen**'):
             self.logger.clear(True)
+            return
         elif strung == translate('telegram', 'Alle Daten löschen'):
             #self.settingsHandler(bot, chat_id)
             text = translate('telegram', 'Möchtest du wirklich alle Daten löschen?')
@@ -1097,6 +1105,20 @@ class telegramBot():
 
             self.send_message(chat_id, translate('telegram', 'Datenbank übertragen'))
             return
+        elif strung == translate('telegram', 'Datenbank resamplen'):
+            self.sendMenuMessage(bot, chat_id, ['0.01','0.1','0.5','1','5'], translate('telegram', 'In welcher Samplerate sollen die Daten resampled werden?'))
+            self.helper[chat_id] = 'resample'
+            return
+        elif self.helper[chat_id] == 'resample':
+            try:
+                samplerate = float(strung)
+            except:
+                self.send_message(chat_id, translate('telegram', 'Das war keine gültige Eingabe'))
+                return
+            self.send_message(chat_id, translate('telegram', 'Daten werden jetzt resamplet.\nDies kann eine ganze Weile in Anspruch nehmen, je nach Größe der Datenbank.'))
+            self.logger.database.resampleDatabase(samplerate)
+            self.send_message(chat_id, translate('telegram', 'Daten wurden resamplet.'))
+            self.settingsHandler(bot, chat_id)
         else:
             self.settingsHandler(bot, chat_id)
             return

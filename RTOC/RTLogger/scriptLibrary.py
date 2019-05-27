@@ -18,7 +18,7 @@ def lsfit(self, x, y, func="linear", x0=None, n=None):
     """
     Use non-linear least squares to fit a function, func, to data.
 
-    This functions calls :func:`scipy.optimize.curve_fit`.
+    This functions calls :py:meth:`.scipy.optimize.curve_fit`.
 
     There are two predefined functions. Set func to 'linear' to perform a linear lsqfit.
     Set func to 'quad' to perform a quadratic lsqfit.
@@ -27,7 +27,7 @@ def lsfit(self, x, y, func="linear", x0=None, n=None):
         x (list): List of x-values
         y (list): List of y-values
         func (function): Least-square function or 'linear' or 'quad'
-        x0 (:func:`np.array`): List of initial parameters for fitting
+        x0 (:py:meth:`.np.array`): List of initial parameters for fitting
         n (int): Length of returned data. If None, default is config['global']['recordLength']
 
     Returns:
@@ -64,7 +64,7 @@ def resample(self, x, y, n=None):
     """
     One-dimensional linear interpolation.
 
-    This functions calls :func:`numpy.interp`.
+    This functions calls :py:meth:`.numpy.interp`.
 
     Args:
         x (list): List of x-values

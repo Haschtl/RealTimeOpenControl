@@ -1,10 +1,11 @@
-## Important: If you installed RTOC with `pip3`, you can now choose between different dependencies. If you need the graphical user interface, you need to install `pip3 install RTOC[ALL]`. Now you can install RTOC on a RaspberryPi with pip. Installation failed due to missing python3-qt5 package in pip. If you need the GUI on a RaspberryPi, you need to install PyQt5 with `apt install python3-qt5`.
-
 # RealTime OpenControl (RTOC)
 
-### Version 2.0 (PRERELEASE)
+| [![Documentation Status](https://readthedocs.org/projects/realtimeopencontrol/badge/?version=latest)](https://realtimeopencontrol.readthedocs.io/en/latest/) | [![Builds v1.6](https://img.shields.io/badge/Builds%20version-1.6-brightgreen.svg?style=flat)](https://github.com/Haschtl/RealTimeOpenControl/releases) | [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/) | [![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://GitHub.com/Naereen/StrapDown.js/releases/) |
+
+
+### Version 2.0
 ![Usecase](screenshots/RTOC-schematik.png)
-[Documentation](https://github.com/Haschtl/RealTimeOpenControl/wiki) !!! NEW LINK !!!
+[Documentation](https://realtimeopencontrol.readthedocs.io/en/latest/)
 
 RealTime OpenControl is a simple way for real-time data recording, visualization and editing.
 
@@ -76,17 +77,17 @@ RTOC can be installed and used in different ways:
 - Installation with builds (Linux/Windows)
 - Installation from source
 
-!!! MORE INFORMATION LINK !!!
+[Click here for a complete setup-tutorial](https://realtimeopencontrol.readthedocs.io/en/latest/)
 
 
-### Wiki
-[Read the Wiki for full documentation](https://github.com/Haschtl/RealTimeOpenControl/wiki) !!! NEW LINK !!!
+### Documentation
+[Read the Wiki for full documentation](https://realtimeopencontrol.readthedocs.io/en/latest/)
 
 ### Default/Example Plugins:
 
 - function generator: generates sine, square, sawtooth, random, AC, DC
 
-You can get more plugins from the [RTOC-plugin-repository](https://github.com/Haschtl/rtoc-plugins). Simply follow the steps described in the [documentation](https://github.com/Haschtl/RealTimeOpenControl/wiki/RTOC-Repo) !!! NEW LINK !!!:
+You can get more plugins from the [RTOC-plugin-repository](https://github.com/Haschtl/rtoc-plugins). Simply follow the steps described in the [documentation](https://realtimeopencontrol.readthedocs.io/en/latest/PLUGINS.html#plugin-repository):
 - System: For recording many system variables (CPU, Memory, Network,...)
 - Octoprint: Recording of 3D printers
 - DPS5020: power supply unit recording and control (possibly also DPS5005, ...)
@@ -112,7 +113,7 @@ The graphical user interface of RTOC offers a wealth of functions for data displ
     - Scaling, shifting of signals
     - Run multiple scripts in parallel
 
-[Complete GUI-tutorial here.](https://github.com/Haschtl/RealTimeOpenControl/wiki/GUI) !!! NEW LINK !!!
+[Complete GUI-tutorial here.](https://realtimeopencontrol.readthedocs.io/en/latest/GUI.html)
 
 ### Write simple Python-Plugin
 
@@ -123,7 +124,7 @@ Python plugins are integrated into RTOC and can be used to
 
 Plugins can **not** access all measurements. This can be done with a TCP connection to RTOC.
 
-[Example-Plugins here.](https://github.com/Haschtl/RealTimeOpenControl/wiki/PlugIns) !!! NEW LINK !!!
+[Example-Plugins here.](https://realtimeopencontrol.readthedocs.io/en/latest/PLUGINS.html)
 
 ### Simple local TCP-Datastream
 
@@ -141,11 +142,11 @@ The client can
 
 The connection between RTOC server and client can be encrypted end-to-end (DES) with a password.
 
-[Example for TCP here.](https://github.com/Haschtl/RealTimeOpenControl/wiki/clientCommunication) !!! NEW LINK !!!
+[Example for TCP here.](https://realtimeopencontrol.readthedocs.io/en/latest/TCP.html)
 
 ### Include Telegram-messanger
 
-[Tutorial for Telegram here.](https://github.com/Haschtl/RealTimeOpenControl/wiki/telegram) !!! NEW LINK !!!
+[Tutorial for Telegram here.](https://realtimeopencontrol.readthedocs.io/en/latest/TELEGRAM.html)
 
 ## Screenshots
 
@@ -206,3 +207,14 @@ Please read [CONTRIBUTING.md](https://gist.github.com/PurpleBooth/b24679402957c6
 ## License
 
 This project is licensed under the  **GNU General Public License v3.0** - see the [LICENSE](LICENSE) file for details
+
+
+# Coffee
+Feel free to buy me some coffee with milk
+
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick" />
+<input type="hidden" name="hosted_button_id" value="Y5894CRYB4L36" />
+<input type="image" src="https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
+<img alt="" border="0" src="https://www.paypal.com/en_DE/i/scr/pixel.gif" width="1" height="1" />
+</form>

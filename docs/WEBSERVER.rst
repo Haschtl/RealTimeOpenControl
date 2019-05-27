@@ -1,7 +1,11 @@
+**************************
+Run webserver
+**************************
+
 RTOC Webserver
 ================================
 
-Since *v2.0* the webserver must be called with ``python3 -m RTOC.RTLogger -w``.
+Since *v2.0* the webserver must be started with ``python3 -m RTOC.RTLogger -w``.
 
 If you have enabled the postgreSQL database, the webserver will run standalone and read the data from the database only.
 

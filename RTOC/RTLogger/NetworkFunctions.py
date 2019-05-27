@@ -74,7 +74,7 @@ class NetworkFunctions:
         if value is None:
             value = self.config['tcp']['active']
         self.config['tcp']['active'] = value
-        if value:
+        if value is True:
             try:
                 password = None
                 if self.config['tcp']['password'] != "":
@@ -122,16 +122,10 @@ class NetworkFunctions:
 
     def sendTCP(self, hostname="localhost", *args, **kwargs):
         """
-        See :func:`RTOC.LoggerPlugin.LoggerPlugin._sendTCP` for more information
+        See :py:meth:`.LoggerPlugin.sendTCP` for more information
         """
         self.tcpclient.createTCPClient(hostname)
         return self.tcpclient._sendTCP(*args, **kwargs)
-
-    def getThread(self):
-        """
-        Returns the :mod:`threading.Thread` object of :meth:`._tcpListener`
-        """
-        return self.__tcpserver
 
     def _tcpListener(self):
         while self.tcpRunning:
@@ -274,7 +268,7 @@ class NetworkFunctions:
 
             loggerDict (dict): {'export':['dname.sname',...]} to export a signal
 
-            loggerDict (dict): {'info':None} to get informations about RTOC 
+            loggerDict (dict): {'info':None} to get informations about RTOC
 
             loggerDict (dict): {'reboot':None} to reboot RTOC-server
 
@@ -325,7 +319,7 @@ class NetworkFunctions:
         Returns signallist, which is used in tcp-requests
 
         Returns:
-            :func:`RTOC.RTLogger.RT_data.signalNames`
+            :py:meth:`.RT_data.signalNames`
         """
         signalNames = self.database.signalNames()
         if ['RTOC', ''] in signalNames:
@@ -364,7 +358,7 @@ class NetworkFunctions:
         Returns eventlist, which is used in tcp-requests
 
         Returns:
-            :func:`RTOC.RTLogger.RT_data.events`
+            :py:meth:`.RT_data.events`
         """
         return self.database.events()
 
@@ -376,7 +370,7 @@ class NetworkFunctions:
             nameList (list): List of device.signalnames
 
         Returns:
-            list: [:func:`RTOC.RTLogger.RT_data.getEvents`,...]
+            list: [:py:meth:`.RT_data.getEvents`,...]
         """
         ans = {}
         for device in nameList:
