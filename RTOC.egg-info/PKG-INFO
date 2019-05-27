@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: RTOC
-Version: 1.9.9
+Version: 2.0b0
 Summary: RealTime OpenControl
 Home-page: https://github.com/Haschtl/RealTimeOpenControl
 Author: Sebastian Keller
@@ -19,7 +19,6 @@ Description: RealTime OpenControl enables simple real-time data recording, visua
         - Decentralized data recording (e.g. on Raspberry) and access via network connection (smart projects)
         
 Platform: UNKNOWN
-Classifier: Programming Language :: Python
 Classifier: Programming Language :: Python :: 3
 Classifier: Environment :: Other Environment
 Classifier: Intended Audience :: Science/Research
@@ -29,6 +28,6 @@ Classifier: Topic :: Scientific/Engineering :: Visualization
 Classifier: Topic :: Software Development :: User Interfaces
 Requires-Python: >=3
 Provides-Extra: ALL
-Provides-Extra: Webserver
-Provides-Extra: Telegram
 Provides-Extra: GUI
+Provides-Extra: Telegram
+Provides-Extra: Webserver

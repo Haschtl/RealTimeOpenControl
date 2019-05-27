@@ -1,2 +1,2 @@
 name = "RTOC"
-__version__ = "1.9.9"
+__version__ = "2.0b0"

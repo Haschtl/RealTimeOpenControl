@@ -44,7 +44,7 @@ def main():
                     'RTOC.py [-h] [-r <Remoteadress>]\n -h: Hilfe\n-r (--remote) <Remoteadresse>: TCP-Client zu RTOC-Server\nFür Optionen ohne GUI verwende "python3 -m RTOC.RTLogger -h"')
                 sys.exit(0)
             elif opt == '-v':
-                logging.info("1.9.9")
+                logging.info("2.0b0")
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)

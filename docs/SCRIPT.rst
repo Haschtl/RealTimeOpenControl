@@ -74,10 +74,13 @@ You can use the default ``print()`` function for text-output in console, GUI and
 You can define variables **global**. This ensures, this variable will remain until the next call of this script. Example
 
 .. code-block:: python
+
   global VARNAME = 0
 
 If-else conditions aren't always suitable for real-time operations. You cannot trigger rising/falling for example. Therefore you can use a trigger to call the code inside a condition only once
+
 .. code-block:: python
+
   trig CONDITION:
     print('Hello')
 
@@ -97,7 +100,7 @@ Event/Action system
 The Event/Action System allows Python code to be executed when events occur. These pieces of code have the same possibilities as scripts.
 
 Global actions
-+++++++++++++++++++++++
+----------------
 Global actions are stored in the file :ref:`globalActions.json`.
 
 Example
@@ -127,7 +130,7 @@ Parameter         Datatype            Definition
 ===============   =================== =========================================================
 
 Global events
-+++++++++++++++++++++++
+---------------------
 Global events are stored in the file :ref:`globalEvents.json` unlike events created in plugins.
 
 Example

@@ -331,7 +331,7 @@ class Actions:
                     self.importData(fileName)
 
     def showAboutMessage(self):
-        pyqtlib.info_message(self.tr("Über"), "RealTime OpenControl 1.9.9", self.tr(
+        pyqtlib.info_message(self.tr("Über"), "RealTime OpenControl 2.0b0", self.tr(
             "RealTime OpenControl (RTOC) ist eine freie OpenSource Software unter der BSD-3-Lizenz.\n\nAlle Symbole werden unter der 'Creative Commons Attribution-NoDerivs 3.0 Unported' Lizenz bereitgestellt von icons8 (https://icons8.de)\n\nCopyright (C) 2018 Sebastian Keller"))
 
     def showHelpWebsite(self):

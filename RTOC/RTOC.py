@@ -26,7 +26,7 @@ logging = log.getLogger(__name__)
 
 if os.name == 'nt':
     import ctypes
-    myappid = 'RTOC.1.9.9'  # arbitrary string
+    myappid = 'RTOC.2.0b0'  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 try:

@@ -12,3 +12,6 @@ bokeh-master/
 RTOC.egg-info/
 test/
 src/
+docs/_build
+docs/_static
+docs/_templates

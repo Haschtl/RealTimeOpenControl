@@ -2,6 +2,15 @@
 Installation
 *************
 
+Python3 needs to be installed on your target-computer. Download python3 from the official website: `www.python.org <https://www.python.org/downloads/>`_
+
+After installing python3, you are able to run python in a terminal. (``cmd.exe`` on windows)
+.. code-block:: bash
+
+  $ python3 --version
+  Python 3.6.3
+
+
 Installing with Python3 (recommended)
 ======================================================
 

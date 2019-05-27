@@ -2,7 +2,8 @@ numpy
 requests
 python-nmap
 whaaaaat
-pycryptodomex
+prompt_toolkitpycryptodomex
+psycopg2
 
 [ALL]
 pyqt5
@@ -13,9 +14,14 @@ pandas
 scipy
 ezodf
 xlsxwriter
-bokeh
+dash
+gevent
+dash_daq
+plotly
+flask
 matplotlib
 python-telegram-bot
+dash_table
 
 [GUI]
 pyqt5
@@ -32,4 +38,9 @@ matplotlib
 python-telegram-bot
 
 [Webserver]
-bokeh
+dash
+gevent
+dash_daq
+dash_table
+plotly
+flask

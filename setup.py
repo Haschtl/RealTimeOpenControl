@@ -43,7 +43,7 @@ setupOpts = dict(
     author='Sebastian Keller',
     author_email='sebastiankeller@online.de',
     classifiers=[
-        "Programming Language :: Python",
+        # "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         # "Development Status :: 2.3",
         "Environment :: Other Environment",
@@ -85,9 +85,9 @@ except LookupError:
 path = os.path.split(__file__)[0]
 # sys.path.insert(0, os.path.join(path, 'tools'))
 
-version = "1.9.9"
-forcedVersion = "1.9.9"
-gitVersion = "1.9.9"
+version = "2.0b0"
+forcedVersion = "2.0b0"
+gitVersion = "2.0b0"
 initVersion = 1.0
 
 
