@@ -166,7 +166,7 @@ registry==0.4.2
 requests==2.20.0
 requests-toolbelt==0.8.0
 retrying==1.3.3
-rope==0.10.7
+rope==0.11.0
 RTOC==2.0b0
 scapy==2.4.0
 scapy-python3==0.26
