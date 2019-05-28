@@ -8,7 +8,7 @@ from telegram.ext import MessageHandler, CommandHandler, CallbackQueryHandler, F
 from telegram import KeyboardButton, ReplyKeyboardMarkup, ChatAction, ParseMode, InlineKeyboardMarkup, InlineKeyboardButton
 from telegram.error import (TelegramError, Unauthorized, BadRequest,
                             TimedOut, ChatMigrated, NetworkError)
-from ..lib import general_lib as lib
+
 import os
 import traceback
 import psutil
@@ -512,8 +512,11 @@ class telegramBot():
         name = self.current_plugin[chat_id]
         commands = []
         for fun in self.logger.pluginFunctions.keys():
-            if fun.startswith(name+".") and fun not in [name+".close", name+".loadGUI", name+".createTCPClient", name+".sendTCP", name+".plot", name+".setDeviceName", name+".event", name+".stream"]:
-                commands += [fun.replace(name+".", '')+'()']
+            hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir']
+            hiddenFuncs = [name+'.'+i for i in hiddenFuncs]
+            if fun.startswith(name+".") and fun not in hiddenFuncs:
+                parStr = ', '.join(self.logger.pluginFunctions[fun][1])
+                commands += [fun.replace(name+".", '')+'('+parStr+')']
         commands.sort()
         self.sendMenuMessage(bot, chat_id, commands, translate('telegram', '*Funktionen*'))
 
@@ -523,7 +526,8 @@ class telegramBot():
             self.deviceHandler(bot, chat_id, self.current_plugin[chat_id])
         else:
             for fun in self.logger.pluginFunctions.keys():
-                if fun.replace(name+".", '')+'()' == strung:
+                parStr = ', '.join(self.logger.pluginFunctions[fun][1])
+                if fun.replace(name+".", '')+'('+parStr+')' == strung:
                     self.deviceCallHandler(bot, chat_id, strung)
                     return
             self.deviceFunctionsHandler(bot, chat_id)
@@ -533,7 +537,9 @@ class telegramBot():
         name = self.current_plugin[chat_id]
         commands = []
         for fun in self.logger.pluginParameters.keys():
-            if fun.startswith(name+".") and fun not in [name+".deviceName", name+".close", name+".run", name+".smallGUI", name+".sock", name+".widget"]:
+            hiddenParams = ["run", "smallGUI", 'widget', 'samplerate','lockPerpetialTimer']
+            hiddenParams = [name+'.'+i for i in hiddenParams]
+            if fun.startswith(name+".") and fun not in hiddenParams:
                 commands += [fun.replace(name+".", '')]
         commands.sort()
         self.sendMenuMessage(bot, chat_id, commands, translate('telegram', '*Parameter*'))
@@ -1048,8 +1054,8 @@ class telegramBot():
             diskspace += str(translate('telegram', '\nFür Signale: ')+databaseSize[2])
             diskspace += str(translate('telegram', '\nFür Events: ')+databaseSize[3])
         else:
-            diskspace += translate('telegram', '\nEs sind ')+lib.bytes_to_str(size)+translate(
-                'telegram', ' von ')+lib.bytes_to_str(maxsize)+translate('telegram', ' verfügbar')
+            diskspace += translate('telegram', '\nEs sind ')+str(size)+translate(
+                'telegram', ' von ')+str(maxsize)+translate('telegram', ' verfügbar')
         self.sendMenuMessage(bot, chat_id, commands, '*'+self.logger.config['global']['name']+translate(
             'telegram', '-Einstellungen*')+ipadress+diskspace)
 

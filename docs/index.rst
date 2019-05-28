@@ -124,4 +124,4 @@ Table of contents
   :caption: Contributing
 
   CONTRIBUTING
-  Donate <https://www.paypal.com/donate/?token=kJ0lF-KkcPnkAAmbbOuFnPUJQmY0B9vt1LsPWtByvHxXKz_oX0q5xWluNAAOMwWTChQV50&fromUL=true>
+  Donate <https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=V3JGL7BM8WGQY&source=url>

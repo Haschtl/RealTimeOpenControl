@@ -320,8 +320,12 @@ class DeviceFunctions:
         for element in all:
             if str(element)[0] != "_":
                 if callable(getattr(object, element)):
-                    self.pluginFunctions[name+"."+element] = "self.pluginObjects[" + \
-                        name+"']."+getattr(object, element).__name__
+                    origFunName = "self.pluginObjects[" + name+"']."+getattr(object, element).__name__
+                    argCount = getattr(object, element).__code__.co_argcount-1
+                    varnames = getattr(object, element).__code__.co_varnames
+                    argNames = varnames[1:argCount+1]
+                    self.pluginFunctions[name+"."+element] = [origFunName, argNames, argCount, varnames]
                 else:
-                    self.pluginParameters[name+"." +
-                                          element] = "self.pluginObjects['"+name+"']."+str(element)
+                    origParName = "self.pluginObjects['"+name+"']."+str(element)
+
+                    self.pluginParameters[name+"." +element] = origParName

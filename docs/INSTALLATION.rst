@@ -31,7 +31,7 @@ There are also different variations available to install::
 Installing from builds
 ======================================================
 
-Download the latest release builds for Windows (soon also Linux) `here <https://github.com/Haschtl/RealTimeOpenControl/releases>`_.
+Download the latest release builds for Windows `here <https://github.com/Haschtl/RealTimeOpenControl/releases>`_.
 
 Extract the .zip file into a directory. RTOC is started by double-clicking on "RTOC.exe". Alternatively via command line::
 

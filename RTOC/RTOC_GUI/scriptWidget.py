@@ -34,8 +34,8 @@ class ScriptWidget(QtWidgets.QWidget):
         self.saveScriptButton.clicked.connect(self.saveScriptAction)
         self.helpButton.clicked.connect(self.toggleHelpAction)
         self.tabWidget.currentChanged.connect(self.changeActiveScript)
-
         self.openScript("", self.tr("neu"))
+        self.updateListWidget()
 
     def getSession(self):
         ans = []

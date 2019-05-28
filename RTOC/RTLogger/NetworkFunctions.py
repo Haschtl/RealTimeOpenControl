@@ -6,7 +6,10 @@ from threading import Thread
 # import sys
 # import subprocess
 
-from .. import jsonsocket
+try:
+    from .. import jsonsocket
+except (ImportError, SystemError, ValueError):
+    jsonsocket = None
 
 import logging as log
 log.basicConfig(level=log.DEBUG)

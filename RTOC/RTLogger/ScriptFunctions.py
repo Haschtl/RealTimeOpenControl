@@ -11,7 +11,7 @@ class ScriptFunctions:
     """
     This class contains all script-execution-specific functions of RTLogger
     """
-    
+
     def generateCode(self, s, condition=False):
         s = self.replacePluginParameters(s)
         s = self.replacePluginMethods(s)
@@ -54,7 +54,7 @@ class ScriptFunctions:
                     strung = "self.remote.callFuncOrParam2('"+host+"','"+device+"','"+function+"','"
                     s = s.replace(host+':'+device+'.'+function+"(", strung)
         for function in self.pluginFunctions.keys():
-            s = s.replace(function, self.pluginFunctions[function])
+            s = s.replace(function, self.pluginFunctions[function][0])
         return s
 
     def replaceSignalNames(self, s):

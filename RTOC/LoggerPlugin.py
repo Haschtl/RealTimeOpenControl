@@ -80,7 +80,7 @@ class LoggerPlugin:
 
         return packagedir
 
-    def stream(self, **kwargs):
+    def stream(self, *args, **kwargs):
         """
         Use this function to send new measurements to RTOC. You can send multiple signals at once.
 
@@ -114,6 +114,12 @@ class LoggerPlugin:
             bool: True, if data was sent successfully, False, if not.
 
         """
+        for idx, arg in enumerate(args):
+            if idx == 0:
+                kwargs['y']=arg
+            elif idx == 1:
+                kwargs['snames']=arg
+                
         if 'units' in kwargs:
             kwargs['unit'] = kwargs['units']
             kwargs.pop('units')

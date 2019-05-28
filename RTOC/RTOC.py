@@ -4,6 +4,7 @@ The core module of RTOC_GUI
 """
 
 import sys
+
 import os
 from PyQt5 import QtCore
 from PyQt5 import uic
@@ -12,14 +13,25 @@ from functools import partial
 import traceback
 import json
 
-from .RTLogger import RTLogger
-from .lib import pyqt_customlib as pyqtlib
-from .lib import general_lib as lib
-from .RTOC_GUI.scriptWidget import ScriptWidget
-from .RTOC_GUI.eventWidget import EventWidget
-from .RTOC_GUI.RTPlotWidget import RTPlotWidget
-from .RTOC_GUI.Actions import Actions
-from .RTOC_GUI import RTOC_Import
+try:
+    from .RTLogger import RTLogger
+    from .lib import pyqt_customlib as pyqtlib
+    from .lib import general_lib as lib
+    from .RTOC_GUI.scriptWidget import ScriptWidget
+    from .RTOC_GUI.eventWidget import EventWidget
+    from .RTOC_GUI.RTPlotWidget import RTPlotWidget
+    from .RTOC_GUI.Actions import Actions
+    from .RTOC_GUI import RTOC_Import
+except (SystemError, ImportError):
+    from RTLogger import RTLogger
+    from lib import pyqt_customlib as pyqtlib
+    from lib import general_lib as lib
+    from RTOC_GUI.scriptWidget import ScriptWidget
+    from RTOC_GUI.eventWidget import EventWidget
+    from RTOC_GUI.RTPlotWidget import RTPlotWidget
+    from RTOC_GUI.Actions import Actions
+    from RTOC_GUI import RTOC_Import
+
 import logging as log
 log.basicConfig(level=log.DEBUG)
 logging = log.getLogger(__name__)

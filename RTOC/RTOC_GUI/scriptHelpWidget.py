@@ -46,13 +46,14 @@ class ScriptHelpWidget(QtWidgets.QWidget):
         self.signalListWidget.clear()
         self.signalListWidget.addItem("clock")
         for element in self.logger.pluginParameters.keys():
-            if self.logger.pluginStatus[element.split('.')[0]] == "OK":
-                if element.split(".")[1] not in ["y", "x", "sname", "unit", "dname", "run", "smallGUI", 'sock']:
+            if self.logger.pluginStatus[element.split('.')[0]] == True:
+                if element.split(".")[1] not in ["run", "smallGUI", 'widget', 'samplerate','lockPerpetialTimer']:
                     self.listWidget.addItem(element)
         for element in self.logger.pluginFunctions.keys():
-            if self.logger.pluginStatus[element.split('.')[0]] == "OK":
-                if element.split(".")[1] not in ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close"]:
-                    self.listWidget.addItem(element+"()")
+            if self.logger.pluginStatus[element.split('.')[0]] == True:
+                if element.split(".")[1] not in ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir']:
+                    parStr = ', '.join(self.logger.pluginFunctions[element][1])
+                    self.listWidget.addItem(element+"("+parStr+")")
         for element in self.logger.database.signalNames():
             self.signalListWidget.addItem(".".join(element))
 
