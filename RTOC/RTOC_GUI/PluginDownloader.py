@@ -25,8 +25,14 @@ except ImportError:
 
 from ..lib import pyqt_customlib as pyqtlib
 
+if True:
+    translate = QCoreApplication.translate
 
-translate = QCoreApplication.translate
+    def _(text):
+        return translate('downloader', text)
+else:
+    import gettext
+    _ = gettext.gettext
 
 
 class PluginDownloader(QtWidgets.QWidget):
@@ -156,18 +162,14 @@ class PluginDownloader(QtWidgets.QWidget):
             self.removeButton.hide()
 
     def installPlugin(self):
-        strung = translate('Downloader', "Aktuelle Version: ") + \
-            self.pluginInfos[self.currentname]['version']
+        strung = translate('RTOC', "Aktuelle Version: {}").format(self.pluginInfos[self.currentname]['version'])
         if self.currentname in self.localPluginInfos.keys():
             self.installed = True
             if self.localPluginInfos[self.currentname] != False:
-                strung += translate('Downloader', ' (Installiert: ') + \
-                    self.localPluginInfos[self.currentname]['version']+')'
+                strung += translate('RTOC', ' (Installiert: {})').format(self.localPluginInfos[self.currentname]['version'])
             else:
-                strung += translate('Downloader',
-                                    ' (Wurde nicht mit der RTOC-Repository installiert)')
-        ok = pyqtlib.alert_message("Install plugin", "Möchtest du wirklich " +
-                                   self.currentname + " installieren", strung)
+                strung += translate('RTOC', ' (Wurde nicht mit der RTOC-Repository installiert)')
+        ok = pyqtlib.alert_message(translate('RTOC', "Install plugin"), translate('RTOC', "M\xf6chtest du wirklich {} installieren?").format(self.currentname), strung)
         if ok:
             logging.info('install')
             url = 'https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/' + \
@@ -175,20 +177,17 @@ class PluginDownloader(QtWidgets.QWidget):
             logging.info(url)
             self.download_directory(self.currentname)
             logging.info('Download finished')
-            pyqtlib.info_message(translate('Downloader', "Fertig"), translate(
-                'Downloader', "Installation abgeschlossen"), translate('Downloader', "Bitte starte RTOC neu, um Fehler zu vermeiden"))
+            pyqtlib.info_message(translate('RTOC', "Fertig"), translate('RTOC', "Installation abgeschlossen"), translate('RTOC', "Bitte starte RTOC neu, um Fehler zu vermeiden"))
             if self.self:
                 self.self.reloadDevices()
 
             if self.localPluginInfos[self.currentname] != False:
                 if self.localPluginInfos[self.currentname]['dependencies'] != []:
                     info = '\n'.join(self.localPluginInfos[self.currentname]['dependencies'])
-                    pyqtlib.info_message(translate(
-                        'Abhängigkeiten'), "Dieses plugin benötigt einige Abhängigkeiten, die mittels 'pip3 install PACKAGE' installiert werden müssen.", info)
+                    pyqtlib.info_message(translate('RTOC', 'Abh\xe4ngigkeiten'), translate('RTOC', "Dieses plugin ben\xf6tigt einige Abh\xe4ngigkeiten, die mittels 'pip3 install PACKAGE' installiert werden m\xfcssen."), info)
 
     def removePlugin(self):
-        ok = pyqtlib.alert_message(translate('Downloader', "Plugin entfernen"), translate(
-            'Downloader', "Möchtest du wirklich ")+self.currentname + translate('Downloader', " entfernen"), "")
+        ok = pyqtlib.alert_message(translate('RTOC', "Plugin entfernen"), translate('RTOC', "M\xf6chtest du wirklich {} entfernen?").format(self.currentname), "")
         if ok:
             logging.info('remove')
             if os.path.exists(self.userpath+"/devices/"+self.currentname):

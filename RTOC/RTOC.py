@@ -38,7 +38,7 @@ logging = log.getLogger(__name__)
 
 if os.name == 'nt':
     import ctypes
-    myappid = 'RTOC.2.0b0'  # arbitrary string
+    myappid = 'RTOC.2.0.1'  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 try:
@@ -57,6 +57,15 @@ except AttributeError:
 # bg = np.empty((int(self.params['width']), int(self.params['height']), 4), dtype=np.ubyte)
 #
 # https://github.com/pyqtgraph/pyqtgraph/issues/454
+
+if True:
+    translate = QtCore.QCoreApplication.translate
+
+    def _(text):
+        return translate('rtoc', text)
+else:
+    import gettext
+    _ = gettext.gettext
 
 LINECOLORS = ['r', 'g', 'b', 'c', 'm', 'y', 'w']
 
@@ -213,8 +222,8 @@ class RTOC(QtWidgets.QMainWindow, Actions):
 
         if self.config['postgresql']['active']:
             if self.logger.database.status != 'connected':
-                pyqtlib.info_message(self.tr('Datenbank-Fehler'), self.tr('Konnte keine Verbindung mit der PostgreSQL-Datenbank herstellen.'),
-                                     self.tr('Bitte passe in den Einstellungen die PostgreSQL-Optionen an und starte RTOC danach neu.'))
+                pyqtlib.info_message(translate('RTOC', 'Datenbank-Fehler'), translate('RTOC', 'Konnte keine Verbindung mit der PostgreSQL-Datenbank herstellen.'),
+                                     translate('RTOC', 'Bitte passe in den Einstellungen die PostgreSQL-Optionen an und starte RTOC danach neu.'))
         else:
             # self.pullFromDatabaseButton.hide()
             # self.pushToDatabaseButton.hide()
@@ -237,10 +246,10 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.actionTelegramBot_2.setChecked(self.config['telegram']['active'])
         self.actionBotToken_2.setText(self.config['telegram']['token'])
         if self.config['tcp']['password'] == '':
-            self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: Aus'))
+            self.actionTCPPassword_2.setText(translate('RTOC', 'Passwort-Schutz: Aus'))
         else:
-            self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: An'))
-        self.actionTCPPort_2.setText(self.tr('Port: ')+str(self.config['tcp']['port']))
+            self.actionTCPPassword_2.setText(translate('RTOC', 'Passwort-Schutz: An'))
+        self.actionTCPPort_2.setText(translate('RTOC', 'Port: {}').format(self.config['tcp']['port']))
         self.updateLabels()
         if self.config['GUI']['restoreWidgetPosition']:
             self.readSettings()
@@ -263,8 +272,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
 
     def loggerChangedAlert(self, devicename, signalname, length):
         self.maxLengthSpinBox.setValue(length)
-        pyqtlib.info_message(self.tr("Warning"), self.tr(
-            "Recording length was changed to ")+str(length), self.tr('Signal: '+devicename+'.'+signalname))
+        pyqtlib.info_message(translate('RTOC', "Warnung"), translate('RTOC', "Aufzeichnungsdauer wurde auf {} ge\xe4ndert.").format(length), translate('RTOC', 'Signal: {}.{}').format(devicename, signalname))
 
     def loadPlotStyles(self):
         filename = self.config['global']['documentfolder']+"/plotStyles.json"
@@ -296,17 +304,17 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.toolBar.addWidget(self.createGraphButton)
 
     def initTrayIcon(self):
-        show_action = QtWidgets.QAction(self.tr("Anzeigen"), self)
+        show_action = QtWidgets.QAction(translate('RTOC', "Anzeigen"), self)
         show_action.triggered.connect(self.show)
-        self.hide_action = QtWidgets.QAction(self.tr("Im Hintergrund laufen"), self)
+        self.hide_action = QtWidgets.QAction(translate('RTOC', "Im Hintergrund laufen"), self)
         self.hide_action.setCheckable(True)
         self.hide_action.setChecked(self.config['GUI']['systemTray'])
         self.hide_action.triggered.connect(self.toggleSystemTray)
-        self.tcp_action = QtWidgets.QAction(self.tr("TCP Server"), self)
+        self.tcp_action = QtWidgets.QAction(translate('RTOC', "TCP Server"), self)
         self.tcp_action.setCheckable(True)
         self.tcp_action.setChecked(self.config['tcp']['active'])
         self.tcp_action.triggered.connect(self.toggleTcpServer)
-        quit_action = QtWidgets.QAction(self.tr("Beenden"), self)
+        quit_action = QtWidgets.QAction(translate('RTOC', "Beenden"), self)
         quit_action.triggered.connect(self.forceClose)
 
         tray_menu = QtWidgets.QMenu()
@@ -493,11 +501,11 @@ class RTOC(QtWidgets.QMainWindow, Actions):
                 except Exception:
                     tb = traceback.format_exc()
                     logging.debug(tb)
-                    pyqtlib.info_message(self.tr("Fehler"), self.tr(
-                        "Fehler beim Laden der Geräte GUI\nBitte Code überprüfen."), tb)
+                    pyqtlib.info_message(translate('RTOC', "Fehler"), translate("RTOC",
+                        "Fehler beim Laden der Ger\xe4te GUI\nBitte Code \xfcberpr\xfcfen."), tb)
             else:
-                pyqtlib.info_message(self.tr("Fehler"), self.tr(
-                    "Fehler beim Laden des Geräts\nBitte stellen Sie sicher, dass das Gerät verbunden ist."), errors)
+                pyqtlib.info_message(translate('RTOC', "Fehler"), translate("RTOC",
+                    "Fehler beim Laden des Ger\xe4ts\nBitte stellen Sie sicher, dass das Ger\xe4t verbunden ist."), errors)
                 button.setChecked(False)
         self.scriptWidget.updateListWidget()
         self.updateDeviceRAW()
@@ -523,8 +531,8 @@ class RTOC(QtWidgets.QMainWindow, Actions):
 
     def loadSession(self, fileName="restore.json", clear=None):
         if clear is None:
-            clear = pyqtlib.alert_message(self.tr('Sitzungen zusammenführen'), self.tr('Möchtest du die bisherige Sitzung entfernen?'), self.tr(
-                'Nicht gespeicherte Messungen gehen verloren.'), '', self.tr('Ja'), self.tr('Nein'))
+            clear = pyqtlib.alert_message(translate('RTOC', 'Sitzungen zusammenf\xfchren'), translate('RTOC', 'M\xf6chtest du die bisherige Sitzung entfernen?'), translate("RTOC",
+                'Nicht gespeicherte Messungen gehen verloren.'), '', translate('RTOC', 'Ja'), translate('RTOC', 'Nein'))
         if clear:
             self.clearData()
         ok = self.logger.database.restoreJSON(fileName, clear)
@@ -553,9 +561,9 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             self.tray_icon.show()
             event.ignore()
             self.hide()
-            t = self.tr("läuft im Hintergrund weiter und zeichnet Messwerte auf")
+            t = translate('RTOC', "l\xe4uft im Hintergrund weiter und zeichnet Messwerte auf")
             self.tray_icon.showMessage(
-                self.tr("RealTime OpenControl"),
+                translate('RTOC', "RealTime OpenControl"),
                 t,
                 self.app_icon,
                 2000
@@ -564,14 +572,13 @@ class RTOC(QtWidgets.QMainWindow, Actions):
             self.savePlotStyles()
             if len(self.logger.database.signals()) > 0 and not self.logger.config['postgresql']['active']:
                 ok = pyqtlib.tri_message(
-                    self.tr("Speichern"), self.tr("Wollen Sie die aktuelle Sitzung speichern?"), "")
+                    translate('RTOC', "Speichern"), translate('RTOC', "Wollen Sie die aktuelle Sitzung speichern?"), "")
             else:
                 ok = False
             if ok is not None:
                 if ok is True:
-                    scripts = self.scriptWidget.getSession()
                     self.logger.database.exportJSON(
-                        self.config['global']['documentfolder']+"/restore.json", scripts, True)
+                        self.config['global']['documentfolder']+"/restore.json", True)
                 elif ok is False:
                     if os.path.exists(self.config['global']['documentfolder']+"/restore.json"):
                         os.remove(self.config['global']['documentfolder']+"/restore.json")
@@ -645,8 +652,8 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         try:
             from scipy.io import wavfile
             fs, data = wavfile.read(filename)
-            text, ok = pyqtlib.text_message(self, self.tr("Signalname angeben"), self.tr(
-                "Gib einen Namen für das zu importierende Signal an"), os.path.splitext(str(filename))[0].split("/")[-1]+'.Signal')
+            text, ok = pyqtlib.text_message(self, translate('RTOC', "Signalname angeben"), translate("RTOC",
+                "Gib einen Namen f\xfcr das zu importierende Signal an"), os.path.splitext(str(filename))[0].split("/")[-1]+'.Signal')
             if ok:
                 y = list(data)
                 # x = list(range(y))/fs
@@ -658,8 +665,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         except Exception:
             tb = traceback.format_exc()
             logging.debug(tb)
-            pyqtlib.info_message(self.tr("Fehler"), self.tr("Datei ")+filename+self.tr(
-                " konnte nicht geöffnet werden."), self.tr("Die Datei ist möglicherweise beschädigt."))
+            pyqtlib.info_message(translate('RTOC', "Fehler"), translate('RTOC', "Datei {} konnte nicht ge\xf6ffnet werden.").format(filename), translate('RTOC', "Die Datei ist m\xf6glicherweise besch\xe4digt."))
 
     def dropEvent(self, e):
         if e.mimeData().hasText:

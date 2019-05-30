@@ -14,6 +14,15 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
+if True:
+    translate = QtCore.QCoreApplication.translate
+
+    def _(text):
+        return translate('rtoc', text)
+else:
+    import gettext
+    _ = gettext.gettext
+
 
 class EventWidget(QtWidgets.QWidget):
     refresh = QtCore.pyqtSignal()
@@ -27,6 +36,7 @@ class EventWidget(QtWidgets.QWidget):
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
         uic.loadUi(packagedir+"/ui/eventWidget.ui", self)
+        self.toolBox.hide()
         self.parent = parent
         self.logger = logger
         self.events = []
@@ -61,7 +71,7 @@ class EventWidget(QtWidgets.QWidget):
         self.setmydata()
         database = False
         if self.logger.config['postgresql']['active']:
-            database = pyqtlib.alert_message(self.tr('Aus Datenbank löschen'), self.tr('Möchtest du die Events auch aus der Datenbank entfernen?'), self.tr('Signale bleiben bestehen'), "", self.tr("Ja"), self.tr("Nein"))
+            database = pyqtlib.alert_message(translate('RTOC', 'Aus Datenbank l\xf6schen'), translate('RTOC', 'M\xf6chtest du die Events auch aus der Datenbank entfernen?'), translate('RTOC', 'Signale bleiben bestehen'), "", translate('RTOC', "Ja"), translate('RTOC', "Nein"))
         self.logger.database.clear(False, False, True, database)
 
     def updateAllEvents(self):
@@ -78,8 +88,7 @@ class EventWidget(QtWidgets.QWidget):
 
     def update(self, time, text, devicename, signalname, priority, value, id, event_id):
         try:
-            timestr = datetime.datetime.fromtimestamp(time).strftime(
-            self.tr("%H:%M:%S %d.%m.%Y"))
+            timestr = datetime.datetime.fromtimestamp(time).strftime("%H:%M:%S %d.%m.%Y")
         except Exception:
             logging.warning('Translation error')
             timestr = datetime.datetime.fromtimestamp(time).strftime("%H:%M:%S %d.%m.%Y")

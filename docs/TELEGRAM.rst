@@ -32,7 +32,7 @@ Mainmenu
 - Devices
 - Send event/signal
 - Automation
-- Settings
+- Settings (**only admin**)
 
 Set Event Notification
 ++++++++++++++++++++++++
@@ -51,9 +51,9 @@ Contains a list of all signals. Clicking on a signal will select this signal. Yo
 
 ``Show/Hide events`` will show/hide events in the plot. Events are displayed as vertical lines with the event-text
 
-``Delete signals`` will delete all selected data (signals and time-period).
+``Delete signals`` (**only admin**) will delete all selected data (signals and time-period).
 
-``Delete events`` will delete all selected events (time-period).
+``Delete events`` (**only admin**) will delete all selected events (time-period).
 
 Devices
 +++++++++++++++++++++++
@@ -79,10 +79,14 @@ Editor for :ref:`Event/Action system`.
 Settings
 ++++++++++++++++++++++
 
+To get access to the settings, you need to connect your client with the bot once first and then stop RTOC. Then you need to edit the :ref:`config.json` at ``['telegram'][<CLIENT_ID>]['admin']=True``.
+
+
 - Delete signals: Deletes all signals and events.
 - Change recording length: Change the recording length of the server.
 - Change global samplerate: Change the samplerate of all plugins using ``self.samplerate`` or ``self.setPerpetualTimer(func,samplerate)``.
 - Restart server: Restart host computer
+- Telegram clients: List of connected clients. Admins can change user-permissions.
 - TCP-Server: On/Off: En/disable TCP-server
 
 

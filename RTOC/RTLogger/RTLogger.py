@@ -7,12 +7,6 @@ import sys
 import traceback
 import collections
 
-try:
-    from PyQt5.QtCore import QCoreApplication
-    translate = QCoreApplication.translate
-except ImportError:
-    def translate(id, text):
-        return text
 
 from .ScriptFunctions import ScriptFunctions
 from .NetworkFunctions import NetworkFunctions
@@ -281,14 +275,13 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
 
 # Other functions #########################################################
 
-    def exportData(self, filename=None, filetype="json", scripts=None, overwrite=False):
+    def exportData(self, filename=None, filetype="json", overwrite=False):
         """
         Export all local data to file
 
         Args:
             filename (str)
             filetype ('xlsx','json','csv')
-            scripts (list): List of scripts to be saved
             overwrite (bool): If True, existing file will be overwritten
         """
         if filename is None:
@@ -296,7 +289,7 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
         if filetype == "xlsx":
             self.database.exportXLSX(filename)
         elif filetype == "json":
-            self.database.exportJSON(filename, scripts, overwrite)
+            self.database.exportJSON(filename, overwrite)
         else:
             self.database.exportCSV(filename)
 
@@ -374,10 +367,6 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
                         self.__config['telegram']['chat_ids'][id], [[], []]]
                     logging.warning(
                         'Telegram chat ids were saved without shortcuts. Empty list added')
-                elif len(self.__config['telegram']['chat_ids'][id]) != 2:
-                    self.__config['telegram']['chat_ids'][id] = [
-                        self.__config['telegram']['eventlevel'], [[], []]]
-                    logging.warning('Telegram chat ids had strange format. Has been resetted.')
 
         if type(self.__config['tcp']['knownHosts']) == list:
             newdict = {}

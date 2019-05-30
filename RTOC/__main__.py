@@ -41,10 +41,10 @@ def main():
         for opt, arg in opts:
             if opt == '-h':
                 logging.info(
-                    'RTOC.py [-h] [-r <Remoteadress>]\n -h: Hilfe\n-r (--remote) <Remoteadresse>: TCP-Client zu RTOC-Server\nFür Optionen ohne GUI verwende "python3 -m RTOC.RTLogger -h"')
+                    'RTOC.py [-h] [-r <Remoteadress>]\n -h: Hilfe\n-r (--remote) <Remoteadresse>: TCP-Client zu RTOC-Server\nF\xfcr Optionen ohne GUI verwende "python3 -m RTOC.RTLogger -h"')
                 sys.exit(0)
             elif opt == '-v':
-                logging.info("2.0b0")
+                logging.info("2.0.1")
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)
@@ -157,30 +157,34 @@ def setStyleSheet(app, myapp):
     return app, myapp
 
 
-def setLanguage(app):
-
-    from PyQt5 import QtCore
-    # from PyQt5 import QtWidgets
-    userpath = os.path.expanduser('~/.RTOC')
-    if os.path.exists(userpath+"/config.json"):
-        try:
-            with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
-                config = json.load(jsonfile, encoding="UTF-8")
-        except Exception:
-            logging.debug(traceback.format_exc())
-            config = {'global': {'language': 'en'}}
-    else:
-        config = {'global': {'language': 'en'}}
-    if config['global']['language'] == 'en':
-        translator = QtCore.QTranslator()
-        if getattr(sys, 'frozen', False):
-            # frozen
-            packagedir = os.path.dirname(sys.executable)
-        else:
-            # unfrozen
-            packagedir = os.path.dirname(os.path.realpath(__file__))
-        translator.load(packagedir+"/lang/en_en.qm")
-        app.installTranslator(translator)
+# def setLanguage(app):
+#
+#     from PyQt5 import QtCore
+#     # from PyQt5 import QtWidgets
+#     userpath = os.path.expanduser('~/.RTOC')
+#     if os.path.exists(userpath+"/config.json"):
+#         try:
+#             with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
+#                 config = json.load(jsonfile, encoding="UTF-8")
+#         except Exception:
+#             logging.debug(traceback.format_exc())
+#             config = {'global': {'language': 'en'}}
+#     else:
+#         config = {'global': {'language': 'en'}}
+#     if config['global']['language'] == 'en':
+#         translator = QtCore.QTranslator()
+#         if getattr(sys, 'frozen', False):
+#             # frozen
+#             packagedir = os.path.dirname(sys.executable)
+#         else:
+#             # unfrozen
+#             packagedir = os.path.dirname(os.path.realpath(__file__))
+#         translator.load(packagedir+"/locales/en_en.qm")
+#         app.installTranslator(translator)
+#         import gettext
+#         el = gettext.translation('base', localedir='locales', languages=['en'])
+#         el.install()
+#         _ = el.gettext
     # more info here: http://kuanyui.github.io/2014/09/03/pyqt-i18n/
     # generate translationfile: % pylupdate5 RTOC.py -ts lang/de_de.ts
     # compile translationfile: % lrelease-qt5 lang/de_de.ts
@@ -206,6 +210,8 @@ def startRemoteRTOC(remotepath):
 
     app = QtWidgets.QApplication(sys.argv)
 
+    from PyQt5 import QtCore
+    # from PyQt5 import QtWidgets
     userpath = os.path.expanduser('~/.RTOC')
     if os.path.exists(userpath+"/config.json"):
         try:
@@ -217,7 +223,6 @@ def startRemoteRTOC(remotepath):
     else:
         config = {'global': {'language': 'en'}}
     if config['global']['language'] == 'en':
-        logging.info("English language selected")
         translator = QtCore.QTranslator()
         if getattr(sys, 'frozen', False):
             # frozen
@@ -225,8 +230,14 @@ def startRemoteRTOC(remotepath):
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
-        translator.load(packagedir+"/lang/en_en.qm")
+        translator.load(packagedir+"/locales/en_en.qm")
         app.installTranslator(translator)
+
+        # import gettext
+        # el = gettext.translation('base', localedir='locales', languages=['en'])
+        # el.install()
+        # _ = el.gettext
+
     myapp = RTOC(False)
     myapp.config['tcp']['active'] = True
 
@@ -249,6 +260,8 @@ def startRTOC(tcp=None, port=None, local =False):
 
     app = QtWidgets.QApplication(sys.argv)
 
+    from PyQt5 import QtCore
+    # from PyQt5 import QtWidgets
     userpath = os.path.expanduser('~/.RTOC')
     if os.path.exists(userpath+"/config.json"):
         try:
@@ -260,7 +273,6 @@ def startRTOC(tcp=None, port=None, local =False):
     else:
         config = {'global': {'language': 'en'}}
     if config['global']['language'] == 'en':
-        logging.info("English language selected")
         translator = QtCore.QTranslator()
         if getattr(sys, 'frozen', False):
             # frozen
@@ -268,12 +280,13 @@ def startRTOC(tcp=None, port=None, local =False):
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
-        translator.load(packagedir+"/lang/en_en.qm")
+        translator.load(packagedir+"/locales/en_en.qm")
         app.installTranslator(translator)
-        # more info here: http://kuanyui.github.io/2014/09/03/pyqt-i18n/
-        # generate translationfile: % pylupdate5 RTOC.py -ts lang/de_de.ts
-        # compile translationfile: % lrelease-qt5 lang/de_de.ts
-        # use self.tr("TEXT TO TRANSLATE") in the code
+
+        # import gettext
+        # el = gettext.translation('base', localedir='locales', languages=['en'])
+        # el.install()
+        # _ = el.gettext
     myapp = RTOC(tcp, port, local)
     app, myapp = setStyleSheet(app, myapp)
 

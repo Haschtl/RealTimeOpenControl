@@ -15,7 +15,14 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
-translate = QCoreApplication.translate
+if True:
+    translate = QCoreApplication.translate
+
+    def _(text):
+        return translate('settings', text)
+else:
+    import gettext
+    _ = gettext.gettext
 
 
 class SettingsWidget(QtWidgets.QWidget):
@@ -163,20 +170,17 @@ class SettingsWidget(QtWidgets.QWidget):
                     logging.error("Error while connecting to PostgreSQL", error)
                     ok = False
                 if ok:
-                    title = translate('settings', 'Verbunden')
-                    strung = translate('settings', 'PostgreSQL korrekt eingerichtet')
+                    title = translate('RTOC', 'Verbunden')
+                    strung = translate('RTOC', 'PostgreSQL korrekt eingerichtet')
                 else:
-                    title = translate('settings', 'Fehler')
-                    strung = translate(
-                        'settings', 'Fehler in PostgreSQL-Konfiguration\nVielleicht ist PostgreSQL auf Ihrem Rechner nicht installiert bzw. die Datenbank existiert nicht oder die Logindaten/Port sind falsch.')
+                    title = translate('RTOC', 'Fehler')
+                    strung = translate('RTOC', 'Fehler in PostgreSQL-Konfiguration\nVielleicht ist PostgreSQL auf Ihrem Rechner nicht installiert bzw. die Datenbank existiert nicht oder die Logindaten/Port sind falsch.')
             else:
-                title = translate('settings', 'Import-Fehler')
-                strung = translate(
-                    'settings', 'Pythonbibliothek psycopg2 ist nicht installiert.\nBitte installiere es mit "pip3 install psycopg2" und versichere, dass PostgreSQL korrekt eingerichtet ist.')
+                title = translate('RTOC', 'Import-Fehler')
+                strung = translate('RTOC', 'Pythonbibliothek psycopg2 ist nicht installiert.\nBitte installiere es mit "pip3 install psycopg2" und versichere, dass PostgreSQL korrekt eingerichtet ist.')
         else:
-            title = translate('settings', 'PostgreSQL deaktiviert')
-            strung = translate(
-                'settings', 'PostgreSQL ist deaktiviert. Bitte schalte PostgreSQL an.')
+            title = translate('RTOC', 'PostgreSQL deaktiviert')
+            strung = translate('RTOC', 'PostgreSQL ist deaktiviert. Bitte schalte PostgreSQL an.')
         pyqtlib.info_message(title, strung, '')
 
     def setLang(self, value):
@@ -251,9 +255,9 @@ class SettingsWidget(QtWidgets.QWidget):
         fileBrowser.selectNameFilter("")
 
         # fname, mask = fileBrowser.getSaveFileName(
-        #    self, self.tr("Backup-Verzeichnis festlegen"), dir_path, "JSON-Datei (*.json)")
+        #    self, translate('RTOC', "Backup-Verzeichnis festlegen"), dir_path, "JSON-Datei (*.json)")
         fname, mask = fileBrowser.getExistingDirectory(
-            self, self.tr("Backup-Verzeichnis festlegen"), dir_path)
+            self, translate('RTOC', "Backup-Verzeichnis festlegen"), dir_path)
 
         # if self.dir_name:
         #     self.btn_file.setText(self.dir_name)
@@ -270,27 +274,6 @@ class SettingsWidget(QtWidgets.QWidget):
         minutes = time.minute()
 
         intervall = days*24*60*60+hours*60*60+minutes*60
-        # intervall = 0
-        # items = [self.tr('Aus'), self.tr('stündlich'), self.tr('täglich'), self.tr(
-        #     '2x täglich'), self.tr('wöchentlich'), self.tr('Monatlich')]
-        # item, ok = pyqtlib.item_message(self, self.tr('Backup Intervall setzen'), self.tr(
-        #     'Wähle den Zeitabstände zwischen den Backups'), items)
-        # if ok:
-        #     if item == self.tr('stündlich'):
-        #         intervall = 60*60
-        #     elif item == self.tr('täglich'):
-        #         intervall = 60*60*24
-        #     elif item == self.tr('2x täglich'):
-        #         intervall = 60*60*12
-        #     elif item == self.tr('wöchentlich'):
-        #         intervall = 60*60*24*7
-        #     elif item == self.tr('Monatlich'):
-        #         intervall = 60*60*24*30.5
-        #
-        #     if intervall == 0:
-        #         self.actionSetBackupIntervall.setText(self.tr('Backup deaktiviert'))
-        #     else:
-        #         self.actionSetBackupIntervall.setText(self.tr('Intervall: ')+item)
 
         self.self.logger.database.setBackupIntervall(intervall)
 
@@ -302,16 +285,15 @@ class SettingsWidget(QtWidgets.QWidget):
 
     def toggleButtonText(self, button, value):
         if value:
-            button.setText(translate('settings', 'An'))
+            button.setText(translate('RTOC', 'An'))
         else:
-            button.setText(translate('settings', 'Aus'))
+            button.setText(translate('RTOC', 'Aus'))
 
     def abort(self):
         self.close()
 
     def save(self):
-        ok = pyqtlib.alert_message(translate('settings', 'Speichern'), translate('settings', 'Wollen Sie die Einstellungen wirklich überschreiben?'), translate(
-            'settings', 'Danach sollte RTOC neu gestartet werden.'), "", translate('settings', 'Speichern'), translate('settings', 'Abbrechen'))
+        ok = pyqtlib.alert_message(translate('RTOC', 'Speichern'), translate('RTOC', 'Wollen Sie die Einstellungen wirklich \xfcberschreiben?'), translate('RTOC', 'Danach sollte RTOC neu gestartet werden.'), "", translate('RTOC', 'Speichern'), translate('RTOC', 'Abbrechen'))
         if ok:
             self.self.config = self.config
             self.close()

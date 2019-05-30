@@ -11,6 +11,15 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
+if True:
+    translate = QtCore.QCoreApplication.translate
+
+    def _(text):
+        return translate('rtoc', text)
+else:
+    import gettext
+    _ = gettext.gettext
+
 
 class ScriptWidget(QtWidgets.QWidget):
     def __init__(self, logger):
@@ -34,7 +43,7 @@ class ScriptWidget(QtWidgets.QWidget):
         self.saveScriptButton.clicked.connect(self.saveScriptAction)
         self.helpButton.clicked.connect(self.toggleHelpAction)
         self.tabWidget.currentChanged.connect(self.changeActiveScript)
-        self.openScript("", self.tr("neu"))
+        self.openScript("", translate('RTOC', "neu"))
         self.updateListWidget()
 
     def getSession(self):
@@ -43,7 +52,7 @@ class ScriptWidget(QtWidgets.QWidget):
             scriptstr = script.scriptEdit.toPlainText()
             filepath = script.filepath
             if filepath == '':
-                name = self.tr('neu')
+                name = translate('RTOC', 'neu')
             else:
                 name = filepath
             ans.append([scriptstr, name, filepath])
@@ -59,12 +68,12 @@ class ScriptWidget(QtWidgets.QWidget):
                 # self.logger.config["lastScript"] = fileName
                 return True
             except Exception:
-                self.openScript(self.tr("Fehler beim laden der Datei ") + fileName, self.tr("Fehler"), fileName)
+                self.openScript(translate('RTOC', "Fehler beim laden der Datei {}").format(fileName), translate('RTOC', "Fehler"), fileName)
                 # self.logger.config["lastScript"] = ""
                 logging.debug(traceback.format_exc())
                 return False
         else:
-            self.openScript(self.tr("Datei ")+fileName + self.tr(" nicht gefunden"), self.tr("Fehler"), fileName)
+            self.openScript(translate('RTOC', "Datei {} nicht gefunden").format(fileName), translate('RTOC', "Fehler"), fileName)
             return False
 
     def openScript(self, scriptstr="", name="", filepath=""):
@@ -91,12 +100,12 @@ class ScriptWidget(QtWidgets.QWidget):
                 self.tabWidget.removeTab(idx)
                 self.scripts.pop(idx)
                 if len(self.scripts) == 0:
-                    self.openScript("", self.tr("Unbenannt"))
+                    self.openScript("", translate('RTOC', "Unbenannt"))
 
     def changeActiveScript(self):
         self.activeScript = self.tabWidget.currentIndex()
         if self.activeScript == len(self.scripts):
-            self.openScript("", self.tr("Unbenannt"))
+            self.openScript("", translate('RTOC', "Unbenannt"))
 
     def addTextToScriptEdit(self, strung):
         self.scripts[self.activeScript].addTextToScriptEdit(strung)
@@ -112,7 +121,7 @@ class ScriptWidget(QtWidgets.QWidget):
         fileBrowser.setNameFilters(["Python (*.py)"])
         fileBrowser.selectNameFilter("")
         fname, mask = fileBrowser.getOpenFileName(
-            self, self.tr("Skript laden"), dir_path, "Python (*.py)")
+            self, translate('RTOC', "Skript laden"), dir_path, "Python (*.py)")
         # if fileBrowser.exec_():
         if fname:
             fileName = fname
@@ -147,7 +156,7 @@ class ScriptWidget(QtWidgets.QWidget):
 
     def contextMenuEvent(self, event):
         menu = QtWidgets.QMenu(self)
-        quitAction = menu.addAction(self.tr("Schließen"))
+        quitAction = menu.addAction(translate('RTOC', "Schliessen"))
         action = menu.exec_(self.mapToGlobal(event.pos()))
         if action == quitAction:
             self.closeScript(self.activeScript)

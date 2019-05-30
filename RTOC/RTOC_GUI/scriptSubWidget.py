@@ -13,6 +13,15 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
+if True:
+    translate = QtCore.QCoreApplication.translate
+
+    def _(text):
+        return translate('rtoc', text)
+else:
+    import gettext
+    _ = gettext.gettext
+
 
 class AnimationThread(QtCore.QThread):
     blinkRequest = QtCore.pyqtSignal(bool)
@@ -168,7 +177,7 @@ class ScriptSubWidget(QtWidgets.QWidget):
             fileBrowser.setNameFilters(["Python (*.py)"])
             fileBrowser.selectNameFilter("")
             self.filepath, mask = fileBrowser.getSaveFileName(
-                self, self.tr("Skript speichern unter"), self.filepath, "Python (*.py)")
+                self, translate('RTOC', "Skript speichern unter"), self.filepath, "Python (*.py)")
         if self.filepath:
             fileName = self.filepath
             text = self.scriptEdit.toPlainText()
@@ -184,7 +193,7 @@ class ScriptSubWidget(QtWidgets.QWidget):
     def startScript(self):
         self.scriptEnabled = True
         self.startScriptButton.setChecked(True)
-        self.startScriptButton.setText(self.tr("Stop"))
+        self.startScriptButton.setText(translate('RTOC', "Stop"))
         self.infoEdit.setPlainText("")
         self.infoEdit.hide()
 
@@ -214,8 +223,11 @@ class ScriptSubWidget(QtWidgets.QWidget):
 
     def singleRunScript(self):
         self.infoEdit.hide()
-        ans = self.logger.singleRunScript(self.scriptEdit.toPlainText())
-        if ans != "":
+        ok, ans = self.logger.executeScript(self.scriptEdit.toPlainText())
+        if ok:
+            self.infoEdit.show()
+            self.infoEdit.appendPlainText(ans)
+        else:
             self.infoEdit.show()
             self.infoEdit.appendPlainText(ans)
 
@@ -324,8 +336,8 @@ class ScriptSubWidget(QtWidgets.QWidget):
             self.run = False
             super(ScriptSubWidget, self).closeEvent(event)
         else:
-            ok = pyqtlib.alert_message(self.tr("Warnung"), self.tr(
-                "Wollen sie die Datei speichern?"), "", "", self.tr("Ja"), self.tr("Nein"))
+            ok = pyqtlib.alert_message(translate('RTOC', "Warnung"), translate('RTOC',
+                "Wollen sie die Datei speichern?"), "", "", translate('RTOC', "Ja"), translate('RTOC', "Nein"))
             if ok is not None:
                 if ok is True:
                     self.saveScript()

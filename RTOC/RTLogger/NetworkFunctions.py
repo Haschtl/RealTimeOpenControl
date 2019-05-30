@@ -249,7 +249,7 @@ class NetworkFunctions:
                     for call in pluginDicts[plugin].keys():
                         if call == "start" and type(pluginDicts[plugin][call]) == bool:
                             if pluginDicts[plugin][call]:
-                                pluginDicts[plugin][call] = self.startPlugin(plugin, callback=None)
+                                pluginDicts[plugin][call] = self.startPlugin(plugin, remote=True)
                             else:
                                 pluginDicts[plugin][call] = self.stopPlugin(plugin)
                         elif '()' in call:
@@ -343,10 +343,14 @@ class NetworkFunctions:
             dict[name]['parameters'] = []
             dict[name]['status'] = False
             for fun in self.pluginFunctions.keys():
-                if fun.startswith(name+".") and fun not in [name+".close", name+".loadGUI", name+".createTCPClient", name+".sendTCP", name+".plot", name+".setDeviceName", name+".event", name+".stream", name+".cancel", name+".start", name+".setPerpetualTimer", name+".setSamplerate", name+".getDir"]:
+                hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir']
+
+                if fun not in [name+'.'+i for i in hiddenFuncs]:
                     dict[name]['functions'].append(fun.replace(name+".", ''))
             for fun in self.pluginParameters.keys():
-                if fun.startswith(name+".") and fun not in [name+".run", name+".smallGUI", name+".widget", name+".samplerate"]:
+                hiddenParams = ["run", "smallGUI", 'widget', 'samplerate','lockPerpetialTimer']
+
+                if fun.startswith(name+".") and fun not in [name+'.'+i for i in hiddenParams]:
                     value = self.getPluginParameter(name, "get", fun.replace(name+".", ''))
                     if type(value) not in [str, int, float, list, bool]:
                         value = "Unknown datatype"
@@ -363,7 +367,7 @@ class NetworkFunctions:
         Returns:
             :py:meth:`.RT_data.events`
         """
-        return self.database.events()
+        return self.database.events(beauty=True)
 
     def getEvent(self, nameList):
         """

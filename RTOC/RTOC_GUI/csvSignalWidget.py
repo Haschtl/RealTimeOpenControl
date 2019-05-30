@@ -8,7 +8,14 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
-translate = QCoreApplication.translate
+if True:
+    translate = QCoreApplication.translate
+
+    def _(text):
+        return translate('csv', text)
+else:
+    import gettext
+    _ = gettext.gettext
 
 
 class CsvSignalWidget(QtWidgets.QWidget):
@@ -62,18 +69,16 @@ class CsvSignalWidget(QtWidgets.QWidget):
         error = False
         tooltiptext = ''
         if self.xSpinBox.value() == 0:
-            tooltiptext += translate('csv', 'X-Daten nicht ausgewählt\n')
+            tooltiptext += translate('RTOC', 'X-Daten nicht ausgew\xe4hlt\n')
         elif self.xSpinBox.value() > self.self.model.columnCount():
             error = 1
-            tooltiptext += translate('csv', 'Spalte ')+str(self.xSpinBox.value()
-                                                           ) + translate('csv', ' nicht in CSV-Datei\n')
+            tooltiptext += translate('RTOC', 'Spalte {} nicht in CSV-Datei\n').format(self.xSpinBox.value())
         if self.ySpinBox.value() == 0:
             error = 2
-            tooltiptext += translate('csv', 'Y-Daten nicht in CSV-Datei (0)\n')
+            tooltiptext += translate('RTOC', 'Y-Daten nicht in CSV-Datei (0)\n')
         elif self.ySpinBox.value() > self.self.model.columnCount():
             error = 3
-            tooltiptext += translate('csv', 'Spalte ')+str(self.ySpinBox.value()
-                                                           ) + translate('csv', ' nicht in CSV-Datei\n')
+            tooltiptext += translate('RTOC', 'Spalte {} nicht in CSV-Datei\n').format(self.ySpinBox.value())
 
         if error is False:
             ylen = self.self.getColumn(self.ySpinBox.value()-1)
@@ -84,11 +89,11 @@ class CsvSignalWidget(QtWidgets.QWidget):
 
             if ylen is None:
                 error = 4
-                tooltiptext += translate('csv', 'Y Werte leer\n')
+                tooltiptext += translate('RTOC', 'Y Werte leer\n')
 
             if xlen is None:
                 error = 5
-                tooltiptext += translate('csv', 'X Werte leer\n')
+                tooltiptext += translate('RTOC', 'X Werte leer\n')
 
             if error is False:
                 xCheck, xData = self.checkData(self.self.getColumn(self.xSpinBox.value()-1))
@@ -97,17 +102,13 @@ class CsvSignalWidget(QtWidgets.QWidget):
                 if xlen is not False:
                     if len(xData) != len(yData):
                         error = 6
-                        tooltiptext += translate('csv', 'Länge der X und Y Werte nicht identisch: ') + \
-                            str(len(xData))+':'+str(len(yData))+'\n'
-
+                        tooltiptext += translate('RTOC', 'L\xe4nge der X und Y Werte nicht identisch: {}:{}\n').format(len(xData), len(yData))
                 if xCheck != [] and xlen is not False:
                     error = 7
-                    tooltiptext += translate('csv',
-                                             'X: Fehler in folgenden Spalten: ')+str(xCheck)+'\n'
+                    tooltiptext += translate('RTOC', 'X: Fehler in folgenden Spalten: {}\n').format(xCheck)
                 if yCheck != []:
                     error = 8
-                    tooltiptext += translate('csv',
-                                             'Y: Fehler in folgenden Spalten: ')+str(yCheck)+'\n'
+                    tooltiptext += translate('RTOC', 'Y: Fehler in folgenden Spalten: {}\n').format(yCheck)
 
         self.infoLabel.setToolTip(tooltiptext)
         if error is not False:

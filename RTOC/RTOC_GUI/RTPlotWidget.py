@@ -14,6 +14,15 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
+if True:
+    translate = QtCore.QCoreApplication.translate
+
+    def _(text):
+        return translate('rtoc', text)
+else:
+    import gettext
+    _ = gettext.gettext
+
 
 class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
     droppedTree = QtCore.pyqtSignal(dict)
@@ -227,7 +236,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
 
     def updateCountLabel(self):
         size, maxsize, databaseSize = self.logger.database.getSignalSize()
-        self.countLabel.setText(self.tr("Signale: ")+str(len(self.signalObjects)) + ' ('+lib.bytes_to_str(size)+'/'+lib.bytes_to_str(maxsize)+')')
+        self.countLabel.setText(translate('RTOC', "Signale: {} ({}/{})").format(len(self.signalObjects), lib.bytes_to_str(size), lib.bytes_to_str(maxsize)))
 
     def startDragTreeWidget(self, actions):
         self.self._drag_info = {"oldWidget": "", "newWidget": "", "signalObjects": []}

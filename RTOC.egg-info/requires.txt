@@ -2,7 +2,8 @@ numpy
 requests
 python-nmap
 whaaaaat
-prompt_toolkitpycryptodomex
+prompt_toolkit
+pycryptodomex
 psycopg2
 
 [ALL]

@@ -1,4 +1,5 @@
 from PyQt5 import QtWidgets
+from PyQt5.QtCore import QCoreApplication
 from PyQt5 import uic
 import time
 import os
@@ -11,6 +12,15 @@ from .stylePlotGUI import plotStyler
 import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
+
+if True:
+    translate = QCoreApplication.translate
+
+    def _(text):
+        return translate('rtoc', text)
+else:
+    import gettext
+    _ = gettext.gettext
 
 
 class SignalEditWidget(QtWidgets.QWidget):
@@ -73,7 +83,7 @@ class SignalEditWidget(QtWidgets.QWidget):
             self.self.xTimeBase = False
 
     def toggleEvents(self):
-        if self.eventButton.isChecked() and self.self.config['GUI']['showEvents']:
+        if self.eventButton.isChecked() and self.self.logger.config['GUI']['showEvents']:
             self.self.showEvents = True
             for event in self.self.eventItems:
                 event.show()
@@ -110,8 +120,8 @@ class SignalEditWidget(QtWidgets.QWidget):
 
     def cutSignal(self):
         if not self.plotWidget.cutButton.isChecked():
-            pyqtlib.info_message(self.tr("Info"), self.tr("Wähle zuerst das Schneide-Tool aus"),
-                                 self.tr("Du musst zuerst deine Schnittbereich festlegen"))
+            pyqtlib.info_message(translate('RTOC', "Info"), translate('RTOC', "W\xe4hle zuerst das Schneide-Tool aus"),
+                                 translate('RTOC', "Du musst zuerst deine Schnittbereich festlegen"))
         else:
             x1 = self.plotWidget.cutVLine1.value()
             x2 = self.plotWidget.cutVLine2.value()
@@ -133,7 +143,7 @@ class SignalEditWidget(QtWidgets.QWidget):
                 maxIdx = -1
 
                 signal = self.self.logger.database.getSignal(self.id)
-                for idx, value in enumerate(signal[0]):
+                for idx, value in enumerate(signal[2]):
                     if value > xmin and minIdx == -1:
                         minIdx = idx
                     elif value > xmax and maxIdx == -1:
@@ -141,7 +151,7 @@ class SignalEditWidget(QtWidgets.QWidget):
                         break
                 if maxIdx > minIdx:
                     signalname = self.self.logger.database.getSignalName(self.id)[1] + \
-                        "_cut"+str(len(self.self.logger.database.signals()[2]))
+                        "_cut"+int(xmax-xmin)+'s'
                     devicename = self.self.logger.database.getSignalName(self.id)[0]
                     unit = signal[4]
                     x = list(signal[2])[minIdx:maxIdx]
@@ -150,25 +160,25 @@ class SignalEditWidget(QtWidgets.QWidget):
                     self.self.updatePlot()
 
     def exportSignal(self):
-        dir_path = self.config['global']['documentfolder']
+        dir_path = self.self.logger.config['global']['documentfolder']
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
         fileBrowser.setNameFilters(
-            [self.tr("CSV-Datei (*.csv)")])
+            [translate('RTOC', "CSV-Datei (*.csv)")])
         fileBrowser.selectNameFilter("")
         fname, mask = fileBrowser.getSaveFileName(
-            self, self.tr("Export"), dir_path, self.tr("CSV-Datei (*.csv)"))
+            self, translate('RTOC', "Export"), dir_path, translate('RTOC', "CSV-Datei (*.csv)"))
         # if fileBrowser.exec_():
         if fname:
             fileName = fname
-            if mask == self.tr('CSV-Datei (*.csv)'):
+            if mask == translate('RTOC', 'CSV-Datei (*.csv)'):
                 self.self.logger.database.exportSignal(fileName, self.self.logger.database.getSignal(self.id))
 
     def renameSignal(self):
         name, ok = pyqtlib.text_message(
-            self, self.tr("Umbenennen"), self.tr("Bitte gib einen neuen Namen an"), self.self.logger.database.getSignalName(self.id)[1])
+            self, translate('RTOC', "Umbenennen"), translate('RTOC', "Bitte gib einen neuen Namen an"), self.self.logger.database.getSignalName(self.id)[1])
         if name != "" and ok:
-            self.self.logger.renameSignal(self.id, name)
+            self.self.logger.database.renameSignal(self.id, name)
         self.self.updatePlot()
         self.self.rename(name)
 
@@ -219,7 +229,7 @@ class SignalEditWidget(QtWidgets.QWidget):
 
     def submitModification(self):  # !!!
         ok = pyqtlib.alert_message(
-            self.tr("Achtung"), self.tr("Daten werden dauerhaft geändert"), "", "", self.tr("Ja"), self.tr("Nein"))
+            translate('RTOC', "Achtung"), translate('RTOC', "Daten werden dauerhaft ge\xe4ndert"), "", "", translate('RTOC', "Ja"), translate('RTOC', "Nein"))
         if ok:
             offsetX = self.self.signalModifications[0]
             offsetY = self.self.signalModifications[1]
@@ -251,8 +261,8 @@ class SignalEditWidget(QtWidgets.QWidget):
         textlist = []
         for s in self.self.logger.config['tcp']['knownHosts'].keys():
             textlist.append(self.self.logger.config['tcp']['knownHosts'][s][0]+' ('+s+')')
-        item, ok = pyqtlib.item_message(None, self.tr(
-            'Host auswählen'), "Bitte wähle einen bekannten Remote-Host aus", textlist, stylesheet="")
+        item, ok = pyqtlib.item_message(None, translate("RTOC",
+            'Host ausw\xe4hlen'), "Bitte w\xe4hle einen bekannten Remote-Host aus", textlist, stylesheet="")
         if ok:
             idx = textlist.index(item)
             for idx2, s in enumerate(self.self.logger.config['tcp']['knownHosts'].keys()):
@@ -266,5 +276,5 @@ class SignalEditWidget(QtWidgets.QWidget):
                         signal[3]), dname=self.self.logger.config['global']['name']+":"+name[0], sname=name[1], unit=signal[4])
                     if ans:
                         return
-        pyqtlib.info_message(self.tr("Fehler"), self.tr(
-            'Signal konnte nicht gesendet werden.'), self.tr('Fehler beim Herstellen der Verbindung'))
+        pyqtlib.info_message(translate('RTOC', "Fehler"), translate("RTOC",
+            'Signal konnte nicht gesendet werden.'), translate('RTOC', 'Fehler beim Herstellen der Verbindung'))

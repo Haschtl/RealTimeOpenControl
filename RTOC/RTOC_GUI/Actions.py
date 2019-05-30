@@ -14,9 +14,17 @@ from .PluginDownloader import PluginDownloader
 from ..RTLogger import RTLogger
 import logging as log
 
-translate = QCoreApplication.translate
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
+
+if True:
+    translate = QCoreApplication.translate
+
+    def _(text):
+        return translate('rtoc', text)
+else:
+    import gettext
+    _ = gettext.gettext
 
 
 class Actions:
@@ -102,13 +110,13 @@ class Actions:
             ["Datei (*)"])
         fileBrowser.selectNameFilter("")
         fname, mask = fileBrowser.getSaveFileName(
-            self, self.tr("Datenbank exportieren"), dir_path, "Datei (*)")
+            self, translate('RTOC', "Datenbank exportieren"), dir_path, "Datei (*)")
         if fname:
             fileName = fname
             if mask == 'Datei (*)':
                 overwrite = False
                 if os.path.exists(fileName):
-                    overwrite = pyqtlib.alert_message(self.tr('Überschreiben'), self.tr('Wollen Sie die Datei überschreiben?'))
+                    overwrite = pyqtlib.alert_message(translate('RTOC', '\xdcberschreiben'), translate('RTOC', 'Wollen Sie die Datei \xfcberschreiben?'))
                 self.logger.database.exportCSV(fileName, True)
 
     def toggleTcpServer(self):
@@ -124,8 +132,8 @@ class Actions:
         #     self.config["rtoc_web"] = False
         # else:
         #     self.config["rtoc_web"] = True
-        pyqtlib.info_message(self.tr("RTOC_Web Fehler"), self.tr("RTOC_Web kann nicht mehr parallel mit der Benutzeroberfläche gestartet werden. Bitte beende RTOC und starte RTOC_Web mit 'python3 -m RTOC.RTLogger -w'"),
-                             self.tr("Wenn du die GUI benötigst, starte danach eine lokale Remote-Verbindung mit 'python3 -m RTOC -r 127.0.0.1'"))
+        pyqtlib.info_message(translate('RTOC', "RTOC_Web Fehler"), translate('RTOC', "RTOC_Web kann nicht mehr parallel mit der Benutzeroberfl\xe4che gestartet werden. Bitte beende RTOC und starte RTOC_Web mit 'python3 -m RTOC.RTLogger -w'"),
+                             translate('RTOC', "Wenn du die GUI ben\xf6tigst, starte danach eine lokale Remote-Verbindung mit 'python3 -m RTOC -r 127.0.0.1'"))
         # self.HTMLServerAction_2.setChecked(self.config["rtoc_web"])
 
     def toggleTelegramBot(self):
@@ -138,37 +146,37 @@ class Actions:
 
     def setBotToken(self):
         ans, ok = pyqtlib.text_message(
-            self, self.tr("Bot Token eingeben"), self.tr('Bitte erzeugen sie in Telegram mit "Botfather" einen Bot,\n generiere einen Bot und füge dessen Token hier ein'), self.config['telegram']['token'])
+            self, translate('RTOC', "Bot Token eingeben"), translate('RTOC', 'Bitte erzeugen sie in Telegram mit "Botfather" einen Bot,\n generiere einen Bot und f\xfcge dessen Token hier ein'), self.config['telegram']['token'])
         if ok and self.logger.telegramBot is not None:
             self.logger.telegramBot.setToken(ans)
             self.actionBotToken_2.setText(self.config['telegram']['token'])
 
     def setTCPPassword(self):
         ans, ok = pyqtlib.text_message(
-            self, self.tr("TCP Passwort eingeben"), self.tr('Schütze deine Übertragung vor unerwünschten Gästen\nLeer lassen, um Passwort zu deaktivieren'), self.config['tcp']['password'])
+            self, translate('RTOC', "TCP Passwort eingeben"), translate('RTOC', 'Sch\xfctze deine \xdcbertragung vor unerw\xfcnschten G\xe4sten\nLeer lassen, um Passwort zu deaktivieren'), self.config['tcp']['password'])
         if ok:
             self.logger.setTCPPassword(ans)
             if ans == '':
-                self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: Aus'))
+                self.actionTCPPassword_2.setText(translate('RTOC', 'Passwort-Schutz: Aus'))
             else:
-                self.actionTCPPassword_2.setText(self.tr('Passwort-Schutz: An'))
+                self.actionTCPPassword_2.setText(translate('RTOC', 'Passwort-Schutz: An'))
 
     def setTCPPort(self):
         ans, ok = pyqtlib.text_message(
-            self, self.tr("TCP Port eingeben"), self.tr('Gib den Port an, an welchem dein Rechner für RTOC erreichbar ist.'), self.config['tcp']['port'])
+            self, translate('RTOC', "TCP Port eingeben"), translate('RTOC', 'Gib den Port an, an welchem dein Rechner f\xfcr RTOC erreichbar ist.'), self.config['tcp']['port'])
         if ok:
             try:
                 ans = int(ans)
                 if ans >= 0 and ans <= 65535:
                     self.logger.setTCPPort(ans)
-                    self.actionTCPPort_2.setText(self.tr('Port: ')+str(ans))
+                    self.actionTCPPort_2.setText(translate('RTOC', 'Port: ')+str(ans))
                 else:
-                    pyqtlib.info_message(self.tr('Fehler'), self.tr(
+                    pyqtlib.info_message(translate('RTOC', 'Fehler'), _(
                         'Bitte gib eine Zahl zwischen 0 und 65535 an'), '')
             except Exception:
                 logging.debug(traceback.format_exc())
-                pyqtlib.info_message(self.tr('Fehler'), self.tr(
-                    'Bitte gib eine Zahl zwischen 0 und 65535 an'), self.tr('Ihre Eingabe war ungültig.'))
+                pyqtlib.info_message(translate('RTOC', 'Fehler'), _(
+                    'Bitte gib eine Zahl zwischen 0 und 65535 an'), translate('RTOC', 'Ihre Eingabe war ung\xfcltig.'))
 
     def toggleSystemTray(self):
         if self.config['GUI']['systemTray']:
@@ -191,9 +199,9 @@ class Actions:
 
     def clearDataAction(self):
         logging.info("deleting plot")
-        if pyqtlib.alert_message(self.tr("Warnung"), self.tr("Wollen Sie wirklich alle Daten löschen?"), self.tr("(Unwiederrufbar)")):
+        if pyqtlib.alert_message(translate('RTOC', "Warnung"), translate('RTOC', "Wollen Sie wirklich alle Daten l\xf6schen?"), translate('RTOC', "(Unwiederrufbar)")):
 
-            if pyqtlib.alert_message(self.tr("Warnung"), self.tr("Wollen Sie auch die Daten in der Datenbank löschen?"), self.tr("(Unwiederrufbar!!)")):
+            if pyqtlib.alert_message(translate('RTOC', "Warnung"), translate('RTOC', "Wollen Sie auch die Daten in der Datenbank l\xf6schen?"), translate('RTOC', "(Unwiederrufbar!!)")):
                 database=True
             else:
                 database = False
@@ -207,7 +215,7 @@ class Actions:
         fileBrowser.setNameFilters(["Json (*.json)"])
         fileBrowser.selectNameFilter("")
         fname, mask = fileBrowser.getOpenFileName(
-            self, self.tr("Session laden"), dir_path, "Json (*.json)")
+            self, translate('RTOC', "Session laden"), dir_path, "Json (*.json)")
         # if fileBrowser.exec_():
         if fname:
             fileName = fname
@@ -222,16 +230,16 @@ class Actions:
             ["JSON-Datei (*.json)"])
         fileBrowser.selectNameFilter("")
         fname, mask = fileBrowser.getSaveFileName(
-            self, self.tr("Session speichern"), dir_path, "JSON-Datei (*.json)")
+            self, translate('RTOC', "Session speichern"), dir_path, "JSON-Datei (*.json)")
         if fname:
             fileName = fname
             if mask == 'JSON-Datei (*.json)':
                 overwrite = False
                 if os.path.exists(fileName):
-                    overwrite = pyqtlib.alert_message(self.tr('Überschreiben'), self.tr('Wollen Sie die Datei überschreiben oder beide Dateien zusammenführen?'), self.tr(
-                        'Bei "Überschreiben" gehen die gespeicherten Daten verloren.'), "", self.tr('Überschreiben'), self.tr('Zusammenführen'))
+                    overwrite = pyqtlib.alert_message(translate('RTOC', '\xdcberschreiben'), translate('RTOC', 'Wollen Sie die Datei \xfcberschreiben oder beide Dateien zusammenf\xfchren?'), _(
+                        'Bei "\xdcberschreiben" gehen die gespeicherten Daten verloren.'), "", translate('RTOC', '\xdcberschreiben'), translate('RTOC', 'Zusammenf\xfchren'))
                 s = self.scriptWidget.getSession()
-                self.logger.exportData(fileName, "json", scripts=s, overwrite=overwrite)
+                self.logger.exportData(fileName, "json", overwrite=overwrite)
 
     def importData(self, filename):
         self.importer.loadCsv(filename)
@@ -254,16 +262,16 @@ class Actions:
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
         fileBrowser.setNameFilters(
-            [self.tr("Excel-Tabelle (*.xlsx)"), self.tr("CSV-Datei (*.csv)")])
+            [translate('RTOC', "Excel-Tabelle (*.xlsx)"), translate('RTOC', "CSV-Datei (*.csv)")])
         fileBrowser.selectNameFilter("")
         fname, mask = fileBrowser.getSaveFileName(
-            self, self.tr("Export"), dir_path, self.tr("Excel-Tabelle (*.xlsx);;CSV-Datei (*.csv)"))
+            self, translate('RTOC', "Export"), dir_path, translate('RTOC', "Excel-Tabelle (*.xlsx);;CSV-Datei (*.csv)"))
         # if fileBrowser.exec_():
         if fname:
             fileName = fname
-            if mask == self.tr('Excel-Tabelle (*.xlsx)'):
+            if mask == translate('RTOC', 'Excel-Tabelle (*.xlsx)'):
                 self.logger.exportData(fileName, "xlsx")
-            elif mask == self.tr('CSV-Datei (*.csv)'):
+            elif mask == translate('RTOC', 'CSV-Datei (*.csv)'):
                 self.logger.exportData(fileName, "csv")
 
     def updateWidgetCheckboxes(self):
@@ -331,11 +339,11 @@ class Actions:
                     self.importData(fileName)
 
     def showAboutMessage(self):
-        pyqtlib.info_message(self.tr("Über"), "RealTime OpenControl 2.0b0", self.tr(
+        pyqtlib.info_message(translate('RTOC', "\xdcber"), "RealTime OpenControl 2.0.1", _(
             "RealTime OpenControl (RTOC) ist eine freie OpenSource Software unter der BSD-3-Lizenz.\n\nAlle Symbole werden unter der 'Creative Commons Attribution-NoDerivs 3.0 Unported' Lizenz bereitgestellt von icons8 (https://icons8.de)\n\nCopyright (C) 2018 Sebastian Keller"))
 
     def showHelpWebsite(self):
-        url = "https://github.com/Haschtl/RealTimeOpenControl/wiki"
+        url = "https://realtimeopencontrol.readthedocs.io/en/latest/"
         import webbrowser
         webbrowser.open(url, new=0, autoraise=True)
 
@@ -374,31 +382,31 @@ class Actions:
                 b.setChecked(False)
             self.config['global']['language'] = newlang
             if force is False:
-                pyqtlib.info_message(self.tr("Sprache geändert"),
-                                     self.tr("Bitte Programm neustarten"), "")
+                pyqtlib.info_message(translate('RTOC', "Sprache ge\xe4ndert"),
+                                     translate('RTOC', "Bitte Programm neustarten"), "")
 
     def checkUpdates(self):
         current, available = self.logger.check_for_updates()
         if current is not None:
-            text = self.tr('Installierte Version: ')+str(current)
+            text = translate('RTOC', 'Installierte Version: {}').format(current)
             if not available:
-                info = self.tr(
+                info = _(
                     "Entschuldigung. Konnte RTOC bei PyPi nicht finden. Schau mal bei 'https://pypi.org/project/RTOC/'")
             else:
-                text += self.tr(', Neuste Version: ')+str(available[0])
+                text += translate('RTOC', ', Neuste Version: {}').format(available[0])
                 if current == available[0]:
-                    info = self.tr('RTOC ist auf dem neusten Stand.')
+                    info = translate('RTOC', 'RTOC ist auf dem neusten Stand.')
                 else:
-                    info = self.tr(
-                        'Neue Version verfügbar. Update mit der Konsole:\n\n"pip3 install RTOC --upgrade"\n')
+                    info = _(
+                        'Neue Version verf\xfcgbar. Update mit der Konsole:\n\n"pip3 install RTOC --upgrade"\n')
         else:
-            text = self.tr('RTOC wurde nicht mit PyPi installiert.')
-            info = self.tr('Um die Version zu überprüfen, installiere RTOC mit "pip3 install RTOC"')
+            text = translate('RTOC', 'RTOC wurde nicht mit PyPi installiert.')
+            info = translate('RTOC', 'Um die Version zu \xfcberpr\xfcfen, installiere RTOC mit "pip3 install RTOC"')
 
-        pyqtlib.info_message(self.tr('Version'), text, info)
+        pyqtlib.info_message(translate('RTOC', 'Version'), text, info)
 
     def clearCache(self):
-        ok = pyqtlib.alert_message(self.tr('Cache leeren'), self.tr('Wollen Sie wirklich den Cache leeren?'), self.tr(
+        ok = pyqtlib.alert_message(translate('RTOC', 'Cache leeren'), translate('RTOC', 'Wollen Sie wirklich den Cache leeren?'), _(
             'Dadurch gehen gespeicherte Ploteinstellungen sowie Einstellungen verloren.'))
         if ok:
             self.plotStyles = {}
@@ -411,13 +419,28 @@ class Actions:
 
     def updateDeviceRAW(self):
         self.pluginCallWidget.clear()
-        dict = self.logger.getPluginDict()
-        for sig in dict.keys():
-            if dict[sig]['status']:
-                for element in dict[sig]['functions']:
-                    self.pluginCallWidget.addItem(sig+"."+element+'()')
-                for element in dict[sig]['parameters']:
-                    self.pluginCallWidget.addItem(sig+"."+element[0])
+        #dict = self.logger.getPluginDict()
+        # for sig in dict.keys():
+        #     if dict[sig]['status']:
+        #         for element in dict[sig]['functions']:
+        #             ls =
+        #             self.pluginCallWidget.addItem(sig+"."+element+'('+ls+')')
+        #         for element in dict[sig]['parameters']:
+        #             self.pluginCallWidget.addItem(sig+"."+element[0])
+        for name in self.logger.devicenames.keys():
+            if self.logger.pluginStatus[name] is True:
+                for fun in self.logger.pluginFunctions.keys():
+                    hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir']
+
+                    if fun.startswith(name+'.') and fun not in [name+'.'+i for i in hiddenFuncs]:
+                        parStr = ', '.join(self.logger.pluginFunctions[fun][1])
+                        funStr = fun+'('+parStr+')'
+                        self.pluginCallWidget.addItem(funStr)
+                for fun in self.logger.pluginParameters.keys():
+                    hiddenParams = ["run", "smallGUI", 'widget', 'samplerate','lockPerpetialTimer']
+
+                    if fun.startswith(name+'.') and fun not in [name+'.'+i for i in hiddenParams]:
+                        self.pluginCallWidget.addItem(fun)
 
         self.logger.remote.getDevices()
         dict = self.logger.remote.devices
@@ -447,18 +470,19 @@ class Actions:
         else:
             devsplit = a[1].split('.')
             host = a[0]
-
+        print(devsplit)
         if len(devsplit) == 2:
             plugin = devsplit[0]
             function = devsplit[1]
-
-            if function.endswith('()'):
-                text, ok = pyqtlib.text_message(self, self.tr(
-                    'Geräte-Funktion ausführen'), strung, self.tr('Funktionsparameter'))
+            print(function)
+            if '(' in function and function.endswith(')'):
+                text, ok = pyqtlib.text_message(self, _(
+                    'Ger\xe4te-Funktion ausf\xfchren'), strung, translate('RTOC', 'Funktionsparameter'))
                 if ok:
                     self.par = []
                     try:
                         exec('self.par = ['+text+"]")
+                        function = function[:function.index('(')]+'()'
                         dict = {plugin: {function: self.par}}
                         if host == 'local':
                             self.logger.handleTcpPlugins(dict)
@@ -469,13 +493,13 @@ class Actions:
                     except Exception:
                         tb = traceback.format_exc()
                         logging.debug(tb)
-                        pyqtlib.info_message(self.tr('Fehler'), self.tr(
-                            'Funktionsparameter sind nicht gültig'), self.tr("Bitte geben Sie gültige Parameter an"))
+                        pyqtlib.info_message(translate('RTOC', 'Fehler'), _(
+                            'Funktionsparameter sind nicht g\xfcltig'), translate('RTOC', "Bitte geben Sie g\xfcltige Parameter an"))
             else:
                 if host == 'local':
                     ans = self.logger.handleTcpPlugins({plugin: {'get': [function]}})
-                    text, ok = pyqtlib.text_message(self, self.tr(
-                        'Geräte-Parameter ändern'), strung, str(ans[plugin]['get'][0]))
+                    text, ok = pyqtlib.text_message(self, _(
+                        'Ger\xe4te-Parameter \xe4ndern'), strung, str(ans[plugin]['get'][0]))
                     if ok:
                         self.par = []
                         try:
@@ -485,14 +509,14 @@ class Actions:
                         except Exception:
                             tb = traceback.format_exc()
                             logging.debug(tb)
-                            pyqtlib.info_message(self.tr('Fehler'), self.tr(
-                                'Wert ungültig'), self.tr("Bitte geben Sie einen gültigen Wert an"))
+                            pyqtlib.info_message(translate('RTOC', 'Fehler'), _(
+                                'Wert ung\xfcltig'), translate('RTOC', "Bitte geben Sie einen g\xfcltigen Wert an"))
                 else:
                     # logging.info('remoteparameter')
                     current_value = self.logger.remote.getParam(host, plugin, function)
                     if current_value is not None:
-                        text, ok = pyqtlib.text_message(self, self.tr(
-                            'Geräte-Parameter ändern'), strung, str(current_value))
+                        text, ok = pyqtlib.text_message(self, _(
+                            'Ger\xe4te-Parameter \xe4ndern'), strung, str(current_value))
                         if ok:
                             self.par = []
                             try:
@@ -504,15 +528,15 @@ class Actions:
                             except Exception:
                                 tb = traceback.format_exc()
                                 logging.debug(tb)
-                                pyqtlib.info_message(self.tr('Fehler'), self.tr(
-                                    'Wert ungültig'), self.tr("Bitte geben Sie einen gültigen Wert an"))
+                                pyqtlib.info_message(translate('RTOC', 'Fehler'), _(
+                                    'Wert ung\xfcltig'), translate('RTOC', "Bitte geben Sie einen g\xfcltigen Wert an"))
                     else:
                         logging.error('Failed to load parameter')
 
     def updateNetworkMenu(self):
         self.menuMit_Remotehost_verbinden.clear()
         self.menuAktive_Verbindungen.clear()
-        newAction = self.menuMit_Remotehost_verbinden.addAction(self.tr('Neuer Host'))
+        newAction = self.menuMit_Remotehost_verbinden.addAction(translate('RTOC', 'Neuer Host'))
         self.menuMit_Remotehost_verbinden.addSeparator()
         activeConnections = self.logger.remote.activeConnections()
         for s in self.config['tcp']['knownHosts'].keys():
@@ -537,7 +561,7 @@ class Actions:
             self, 'Verbinde mit neuem Host', 'Verbinde RTOC mit einem neuen Host\n(Inklusive Port ":")', '127.0.0.1')
         if ok:
             ans2, ok = pyqtlib.text_message(
-                self, 'Name angeben', 'Gib einen Namen für diesen Host an\n(Darf weder "." noch ":" enthalten)', 'RemoteRTOC')
+                self, 'Name angeben', 'Gib einen Namen f\xfcr diesen Host an\n(Darf weder "." noch ":" enthalten)', 'RemoteRTOC')
             if ok:
                 ans2 = ans2.replace('.', 'Dot').replace(':', 'DDot')
                 if len(ans.split(':')) == 2:
@@ -564,7 +588,7 @@ class Actions:
 
     def setRemoteSamplerate(self):
         ans, ok = pyqtlib.text_message(
-            self, 'Remote Updaterate ändern', 'Ändere die Updaterate, mit der Remote-Geräte abgefragt werden', '1')
+            self, 'Remote Updaterate \xe4ndern', '\xc4ndere die Updaterate, mit der Remote-Ger\xe4te abgefragt werden', '1')
         if ok:
             try:
                 samplerate = int(ans)
@@ -586,8 +610,8 @@ class Actions:
 
     def foundRTOCServer(self, hostlist):
         strung = '\n'.join(hostlist)
-        pyqtlib.info_message(self.tr("Fertig"), self.tr("RTOC-Suche abgeschlossen"),
-                             str(len(hostlist)-1)+self.tr(" Server gefunden:")+'\n'+strung)
+        pyqtlib.info_message(translate('RTOC', "Fertig"), translate('RTOC', "RTOC-Suche abgeschlossen"),
+                             translate('RTOC', "{} Server gefunden:\n{}").format(len(hostlist)-1, strung))
 
     def connectHost(self, host, name, password=''):
         hostsplit = host.split(':')
@@ -602,36 +626,34 @@ class Actions:
             retry = False
             status = self.logger.remote.getConnection(host).status
             if status is "protected":
-                text, ok2 = pyqtlib.text_message(None, self.tr('Passwort'), self.tr(
-                    "Der RTOC-Server ")+hostname + self.tr(" ist passwortgeschützt. Bitte Passwort eintragen"),  self.tr('TCP-Passwort'))
+                text, ok2 = pyqtlib.text_message(None, translate('RTOC', 'Passwort'), _(
+                    "Der RTOC-Server {} ist passwortgesch\xfctzt. Bitte Passwort eintragen.").format(hostname),  translate('RTOC', 'TCP-Passwort'))
                 if ok2:
                     self.logger.remote.getConnection(host).tcppassword = text
                     self.logger.remote.connect(host, port, name, text)
                     retry = True
-                    ok3 = pyqtlib.alert_message(self.tr('Password speichern'), self.tr(
-                        'Möchtest du das Passwort speichern?'), '')
+                    ok3 = pyqtlib.alert_message(translate('RTOC', 'Password speichern'), _(
+                        'M\xf6chtest du das Passwort speichern?'), '')
                     if ok3:
                         self.logger.config['tcp']['knownHosts'][hostname][1] = text
             elif status is "connected":
-                pyqtlib.info_message(self.tr('Verbindung hergestellt'), self.tr(
-                    'Verbindung zu ')+host+self.tr(' an Port ')+str(port)+self.tr(' hergestellt.'), '')
+                pyqtlib.info_message(translate('RTOC', 'Verbindung hergestellt'), _(
+                    'Verbindung zu {} an Port {} hergestellt.').format(host, port), '')
 
                 self.addRemoteHostWidget(host, name)
                 return True
             elif status is "wrongPassword":
-                text, ok = pyqtlib.text_message(None, self.tr('Geschützt'), self.tr('Verbindung zu ')+host+self.tr(
-                    ' an Port ')+str(port)+self.tr(' wurde nicht hergestellt.'), self.tr('Passwort ist falsch.'))
+                text, ok = pyqtlib.text_message(None, translate('RTOC', 'Gesch\xfctzt'), translate('RTOC', 'Verbindung zu {} an Port {} wurde nicht hergestellt').format(host, port), translate('RTOC', 'Passwort ist falsch.'))
                 if ok:
                     self.logger.remote.getConnection(host).tcppassword = text
                     self.logger.remote.connect(host, port, name, text)
                     retry = True
-                    ok3 = pyqtlib.alert_message(self.tr('Password speichern'), self.tr(
-                        'Möchtest du das Passwort speichern?'), '')
+                    ok3 = pyqtlib.alert_message(translate('RTOC', 'Password speichern'), _(
+                        'M\xf6chtest du das Passwort speichern?'), '')
                     if ok3:
                         self.logger.config['tcp']['knownHosts'][hostname][1] = text
             elif status is "error":
-                ok = pyqtlib.alert_message(self.tr('Verbindungsfehler'), self.tr('Fehler. Verbindung zu ')+host+self.tr(
-                    ' an Port ')+str(port)+self.tr(' konnte nicht hergestellt werden.'), self.tr('Erneut versuchen?'))
+                ok = pyqtlib.alert_message(translate('RTOC', 'Verbindungsfehler'), translate('RTOC', 'Fehler. Verbindung zu {} an Port {} konnte nicht hergestellt werden.').format(host, port), translate('RTOC', 'Erneut versuchen?'))
                 if ok:
                     self.logger.remote.connect(host, port, name, password)
                     retry = True

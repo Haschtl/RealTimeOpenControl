@@ -6,13 +6,6 @@ import socket
 from ..LoggerPlugin import LoggerPlugin
 import logging as log
 
-try:
-    from PyQt5.QtCore import QCoreApplication
-    translate = QCoreApplication.translate
-except ImportError:
-    def translate(id, text):
-        return text
-
 
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
@@ -33,9 +26,12 @@ class _SingleConnection(LoggerPlugin):
         self.host = host
         self.name = name
         self.port = port
-        self.run = False  # False -> stops thread
+
+        self.getPlugins = True
+        self.getSignals = True
+        self.getEvents = True
+
         self.pause = False
-        self.samplerate = 1
         self.maxLength = 0
         self.status = 'connecting...'
         self.siglist = []
@@ -45,30 +41,30 @@ class _SingleConnection(LoggerPlugin):
         #self.createTCPClient(host, None, port)
         self.tcppassword = password
         self.updateRemoteCallback = None
-        self.start()
+        self.setPerpetualTimer(self.updateT, samplerate=1)
+        self.startTCPLogging()
 
     # THIS IS YOUR THREAD
 
     def updateT(self):
-        diff = 0
-        while self.run:
-            #logging.debug('stll active')
-            if self.samplerate > 0:
-                if diff < 1/self.samplerate:
-                    time.sleep(1/self.samplerate-diff)
-            start_time = time.time()
-            if not self.pause:
-                self.getAll()
-            diff = time.time() - start_time
+        if not self.pause:
+            self.getAll(self.getSignals, self.getEvents, self.getPlugins)
 
-    def getAll(self):
+    def getAll(self, signals=True, events=True,plugins=True):
         self.status = 'connecting...'
-        ans1 = self.getAllSignals()
-        #ans2 = self.getAllEvents()
-        ans2 = True
+        if signals:
+            ans1 = self.getAllSignals()
+        else:
+            ans1 = True
+        if events:
+            ans2 = self.getAllEvents()
+        else:
+            ans2 = True
         ans3 = self.getAllInfo()
-        #ans4 = self.getAllPlugins()
-        ans4 = True
+        if plugins:
+            ans4 = self.getAllPlugins()
+        else:
+            ans4 = True
         ans = [ans1, ans2, ans3, ans4]
         logging.debug(ans)
         if any(ans) == True:
@@ -103,7 +99,7 @@ class _SingleConnection(LoggerPlugin):
                                     signame = sig.split('.')
                                     s = ans['signals'][sig]
                                     u = s[2]
-                                    self.database.plot(s[0], s[1], sname=signame[1],
+                                    self.logger.database.plot(s[0], s[1], sname=signame[1],
                                               dname=self.name+":"+signame[0], unit=u)
                 return True
         return False
@@ -113,7 +109,12 @@ class _SingleConnection(LoggerPlugin):
         if ans:
             if 'events' in ans.keys():
                 if ans['events'] != self.eventlist:
-                    self.updateEvents(ans['events'])
+                    selection = {}
+                    for evID in ans['events'].keys():
+                        name = ans['events'][evID][0:2]
+                        if name in self.sigSelectList and len(name[0].split(':')) == 1:
+                            selection[evID] = ans['events'][evID]
+                    self.updateEvents(selection)
                 return True
         return False
 
@@ -166,17 +167,17 @@ class _SingleConnection(LoggerPlugin):
         # logging.debug(ans)
 
     def stop(self):
-        self.run = False
+        self.cancel()
         self.siglist = []
         self.pluglist = []
         self.eventlist = {}
+        logging.info('Remote-Connection stopped')
 
-    def start(self):
+    def startTCPLogging(self):
         if self.run:
-            self.run = False
+            self.cancel()
         else:
             self.createTCPClient(self.host, self.tcppassword, self.port)
-            #self.run = True
             try:
                 ok = self._sendTCP()
                 # logging.debug(ok)
@@ -190,17 +191,15 @@ class _SingleConnection(LoggerPlugin):
                 ok = False
             if ok:
                 self.getAll()
-                self.run = True
-                self.__updater = Thread(target=self.updateT)
-                self.__updater.start()
+                self.start()
                 self.status = 'connected'
             elif ok is False:
                 self.__base_address = ""
-                self.run = False
+                self.cancel()
                 self.status = "error"
             else:
                 self.__base_address = ""
-                self.run = False
+                self.cancel()
                 self.status = "wrongPassword"
 
     def getSession(self):

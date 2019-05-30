@@ -6,12 +6,19 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
-try:
-    from PyQt5.QtCore import QCoreApplication
-    translate = QCoreApplication.translate
-except ImportError:
-    def translate(id, text):
-        return text
+if True:
+    try:
+        from PyQt5.QtCore import QCoreApplication
+
+        translate = QCoreApplication.translate
+    except ImportError:
+        def translate(id, text):
+            return text
+    def _(text):
+        return translate('web', text)
+else:
+    import gettext
+    _ = gettext.gettext
 
 
 class EventActionFunctions:
@@ -38,7 +45,7 @@ class EventActionFunctions:
                 return
         else:
             self.globalEvents = {
-                "myevent": {
+                "myevent1": {
                     "cond": "Generator.Square.latest >= 2",
                     "text": "It is big",
                     "return": " ",
@@ -211,7 +218,7 @@ class EventActionFunctions:
             if action['errors'] is False:
                 for actionId in action['listenID']:
                     if actionId == id and action['active']:
-                        # Aktion ausführen
+                        # Aktion ausf\xfchren
                         ok, prints = self.executeScript(action['script'])
                         print('Performing global action for eventID: ' +
                               str(id)+' with value: '+str(value))
@@ -282,12 +289,12 @@ class EventActionFunctions:
             ok, cond = self.checkCondition(event['cond'])
             if ok:
                 # cond = bool(cond)
-                text = translate('telegram', 'Bedingung ist in Ordnung\nAntwort: ')+str(cond)
+                text = translate('RTOC', 'Bedingung ist in Ordnung\nAntwort: ')+str(cond)
                 self.database.addNewEvent(text=event['text'], sname=event['sname'], dname=event['dname'],
                                           value=event['return'], priority=event['priority'], id=event['id'])
                 return True, text
             else:
-                text = translate('telegram', 'Bedingung ist ungültig\nAntwort: ')+str(cond)
+                text = translate('RTOC', 'Bedingung ist ung\xfcltig\nAntwort: ')+str(cond)
                 return False, text
         return False, None
 
@@ -296,9 +303,9 @@ class EventActionFunctions:
             action = self.globalActions[key]
             ok, prints = self.executeScript(action['script'])
             if ok:
-                text = translate('telegram', 'Aktion ist in Ordnung\nAntwort: ')+str(prints)
+                text = translate('RTOC', 'Aktion ist in Ordnung\nAntwort: ')+str(prints)
                 return True, text
             else:
-                text = translate('telegram', 'Aktion ist ungültig\nAntwort: ')+str(prints)
+                text = translate('RTOC', 'Aktion ist ung\xfcltig\nAntwort: ')+str(prints)
                 return False, text
         return False, None

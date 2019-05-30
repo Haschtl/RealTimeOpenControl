@@ -16,7 +16,15 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
-translate = QCoreApplication.translate
+if True:
+    translate = QCoreApplication.translate
+
+    def _(text):
+        return translate('plot', text)
+else:
+    import gettext
+    _ = gettext.gettext
+
 
 if getattr(sys, 'frozen', False):
     # frozen
@@ -138,11 +146,11 @@ class RTPlotActions:
             useOpenGL=self.config['GUI']['openGL'], useWeave=self.config['GUI']['useWeave'], antialias=self.config['GUI']['antiAliasing'])
         self.plot = pg.PlotWidget()
         self.plot.setBackground(None)
-        self.plot.getPlotItem().setTitle(translate("Plot", "Signale"))
+        self.plot.getPlotItem().setTitle(translate('RTOC', "Signale"))
         self.plot.getPlotItem().ctrlMenu = None  # get rid of 'Plot Options'
         axis = pyqtlib.TimeAxisItem(orientation='bottom')
         axis.attachToPlotItem(self.plot.getPlotItem())  # THIS LINE CREATES A WARNING
-        self.plot.getPlotItem().setLabel("bottom", translate("Plot", "Vergangene Zeit"), "")
+        self.plot.getPlotItem().setLabel("bottom", translate('RTOC', "Vergangene Zeit"), "")
         self.plotLayout.addWidget(self.plot)
         self.legend = pg.LegendItem()
         self.legend.setParentItem(self.plot.getPlotItem())

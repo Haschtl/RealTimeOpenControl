@@ -20,7 +20,14 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
-translate = QCoreApplication.translate
+if True:
+    translate = QCoreApplication.translate
+
+    def _(text):
+        return translate('signal', text)
+else:
+    import gettext
+    _ = gettext.gettext
 
 
 def mouseClickEventPlotCurveItem(self, ev):
@@ -434,7 +441,7 @@ class SignalWidget(QtWidgets.QWidget):
 
         for idx, eventItem in enumerate(self.eventItems):
             if eventItem.id not in found_ids:
-                # wenn nicht in datenbank löschen
+                # wenn nicht in datenbank l\xf6schen
                 self.eventItems[idx].hide()
                 self.eventItems[idx].vLine.hide()
                 logging.debug('Not deleted, but hidden')
@@ -534,7 +541,7 @@ class SignalWidget(QtWidgets.QWidget):
     def remove(self, cb=True, total=True, force = True):
         database = False
         if self.logger.config['postgresql']['active'] and not force:
-            database = pyqtlib.alert_message(translate('SignalWidget', 'Aus Datenbank entfernen'), translate('SignalWidget', 'Möchtest du dieses Signal auch aus der Datenbank entfernen?'), translate('SignalWidget', 'Dabei werden auch die Events gelöscht, die dem Signal zugeordnet sind'), "", translate('SignalWidget', "Ja"), translate('SignalWidget', "Nein"))
+            database = pyqtlib.alert_message(translate('RTOC', 'Aus Datenbank entfernen'), translate('RTOC', 'M\xf6chtest du dieses Signal auch aus der Datenbank entfernen?'), translate('RTOC', 'Dabei werden auch die Events gel\xf6scht, die dem Signal zugeordnet sind'), "", translate('RTOC', "Ja"), translate('RTOC', "Nein"))
         self.plotWidget.legend.removeItem(self.legendName)
         if total:
             self.logger.database.removeSignal(self.id, None, None, database)

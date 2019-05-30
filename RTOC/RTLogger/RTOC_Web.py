@@ -28,6 +28,21 @@ from flask import Flask
 # import os
 log.basicConfig(level=log.WARNING)
 logging = log.getLogger(__name__)
+
+if True:
+    try:
+        from PyQt5.QtCore import QCoreApplication
+
+        translate = QCoreApplication.translate
+    except ImportError:
+        def translate(id, text):
+            return text
+    def _(text):
+        return translate('web', text)
+else:
+    import gettext
+    _ = gettext.gettext
+
 # pip3 install dash dash-core-components==0.39.0rc4
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
@@ -37,7 +52,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets, sharing=Tru
 app.config['suppress_callback_exceptions'] = True
 #server = app.server
 
-eventTableTitle = ['Zeitpunkt', 'Typ', 'Gerät', 'Signal', 'Inhalt', 'ID', 'Rückgabewert']
+eventTableTitle = [translate('RTOC', 'Zeitpunkt'), translate('RTOC', 'Typ'), translate('RTOC', 'Ger\xe4t'), translate('RTOC', 'Signal'), translate('RTOC', 'Inhalt'), translate('RTOC', 'ID'), translate('RTOC', 'R\xfcckgabewert')]
 from .RTLogger import RTLogger
 
 # @server.route('/favicon.ico')
@@ -54,7 +69,7 @@ app.layout = html.Div([
                 dcc.Checklist(
                     id='activeCheck',
                     options=[
-                        {'label': 'Plot aktiv', 'value': 'PLOT'},
+                        {'label': translate('RTOC', 'Plot aktiv'), 'value': 'PLOT'},
                     ],
                     values=['PLOT']
                 ),
@@ -63,7 +78,7 @@ app.layout = html.Div([
                     options=[],
                     searchable=True,
                     clearable=True,
-                    placeholder="Wähle Signale aus, um sie darzustellen.",
+                    placeholder=translate('RTOC', "W\xe4hle Signale aus, um sie darzustellen."),
                     multi=True,
                     # value=""
                 ),
@@ -76,7 +91,7 @@ app.layout = html.Div([
             ],
                 id='signals_div')
         ]),
-        dcc.Tab(label='Mitteilungen', children=[
+        dcc.Tab(label=translate('RTOC', 'Mitteilungen'), children=[
                 dash_table.DataTable(
                     id='datatable-interactivity',
                     columns=[{"name": i, "id": i} for i in eventTableTitle],
@@ -269,7 +284,7 @@ def update_graph_live(n_intervals, lastPlot, active, relayout_data, selection):
                 'type': 'scatter'
             }, idx+1, 1)
         fig['layout']['yaxis'+str(idx+1)].update(title='['+unit+']', showgrid=True)
-        fig['layout']['xaxis'+str(idx+1)].update(title='Vergangene Zeit [s]', showgrid=True)
+        fig['layout']['xaxis'+str(idx+1)].update(title=translate('RTOC', 'Vergangene Zeit [s]'), showgrid=True)
         if relayout_data:
             if 'xaxis'+str(idx+1)+'.range[0]' in relayout_data:
                 fig['layout']['xaxis'+str(idx+1)]['range'] = [
@@ -283,7 +298,7 @@ def update_graph_live(n_intervals, lastPlot, active, relayout_data, selection):
                 ]
         if idx == 0:
             fig['layout']['yaxis'].update(title='['+unit+']', showgrid=True)
-            fig['layout']['xaxis'].update(title='Vergangene Zeit [s]', showgrid=True)
+            fig['layout']['xaxis'].update(title=translate('RTOC', 'Vergangene Zeit [s]'), showgrid=True)
             if relayout_data:
                 if 'xaxis.range[0]' in relayout_data:
                     fig['layout']['xaxis']['range'] = [
@@ -322,12 +337,12 @@ def update_output(n_intervals):
         event_dict[eventTableTitle[0]] = datetime.datetime.fromtimestamp(
             event[4]).strftime('%Y-%m-%d %H:%M:%S:%f')
         if event[6] == 0:
-            text = "Information"
+            text = translate('RTOC', "Information")
         elif event[6] == 1:
-            text = "Warnung"
+            text = translate('RTOC', "Warnung")
         else:
-            text = "Fehler"
-        event_dict[eventTableTitle[1]] = text # ['Zeitpunkt', 'Typ', 'Gerät', 'Signal', 'Inhalt', 'ID', 'Rückgabewert']
+            text = translate('RTOC', "Fehler")
+        event_dict[eventTableTitle[1]] = text # ['Zeitpunkt', 'Typ', 'Ger\xe4t', 'Signal', 'Inhalt', 'ID', 'R\xfcckgabewert']
         event_dict[eventTableTitle[2]] = name[0]
         event_dict[eventTableTitle[3]] = name[1]
         event_dict[eventTableTitle[4]] = event[3]

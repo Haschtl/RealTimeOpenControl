@@ -28,7 +28,6 @@ RTOC/RTLogger/RT_data.py
 RTOC/RTLogger/ScriptFunctions.py
 RTOC/RTLogger/__init__.py
 RTOC/RTLogger/__main__.py
-RTOC/RTLogger/favicon.ico
 RTOC/RTLogger/importCode.py
 RTOC/RTLogger/loggerlib.py
 RTOC/RTLogger/requirenments.txt
@@ -38,6 +37,7 @@ RTOC/RTLogger/__pycache__/Console.cpython-36.pyc
 RTOC/RTLogger/__pycache__/Daemon.cpython-36.pyc
 RTOC/RTLogger/__pycache__/DeviceFunctions.cpython-36.pyc
 RTOC/RTLogger/__pycache__/EventActionFunctions.cpython-36.pyc
+RTOC/RTLogger/__pycache__/LoggerPlugin.cpython-36.pyc
 RTOC/RTLogger/__pycache__/NetworkFunctions.cpython-36.pyc
 RTOC/RTLogger/__pycache__/RTLogger.cpython-36.pyc
 RTOC/RTLogger/__pycache__/RTOC_Web.cpython-36.pyc
@@ -50,6 +50,7 @@ RTOC/RTLogger/__pycache__/ScriptFunctions.cpython-36.pyc
 RTOC/RTLogger/__pycache__/__init__.cpython-36.pyc
 RTOC/RTLogger/__pycache__/__main__.cpython-36.pyc
 RTOC/RTLogger/__pycache__/importCode.cpython-36.pyc
+RTOC/RTLogger/__pycache__/jsonsocket.cpython-36.pyc
 RTOC/RTLogger/__pycache__/loggerlib.cpython-36.pyc
 RTOC/RTLogger/__pycache__/scriptLibrary.cpython-36.pyc
 RTOC/RTLogger/__pycache__/telegramBot.cpython-36.pyc
@@ -217,25 +218,16 @@ RTOC/__pycache__/Template.cpython-36.pyc
 RTOC/__pycache__/__init__.cpython-36.pyc
 RTOC/__pycache__/__main__.cpython-36.pyc
 RTOC/__pycache__/jsonsocket.cpython-36.pyc
+RTOC/data/favicon.ico
 RTOC/data/icon.ico
 RTOC/data/icon.png
-RTOC/lang/ar_ar.po
-RTOC/lang/de_de.po
-RTOC/lang/de_de.ts
-RTOC/lang/en_en.po
-RTOC/lang/en_en.qm
-RTOC/lang/en_en.ts
-RTOC/lang/en_en_old.qm
-RTOC/lang/en_en_old.ts
-RTOC/lang/es_es.po
-RTOC/lang/fr_fr.po
-RTOC/lang/it_it.po
-RTOC/lang/ja_ja.po
-RTOC/lang/pt_pt.po
-RTOC/lang/ru_ru.po
 RTOC/lib/__init__.py
 RTOC/lib/general_lib.py
 RTOC/lib/pyqt_customlib.py
 RTOC/lib/__pycache__/__init__.cpython-36.pyc
 RTOC/lib/__pycache__/general_lib.cpython-36.pyc
 RTOC/lib/__pycache__/pyqt_customlib.cpython-36.pyc
+RTOC/locales/en_en _fertig.ts
+RTOC/locales/en_en.qm
+RTOC/locales/en_en.ts
+RTOC/locales/en_en_double.ts

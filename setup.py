@@ -21,23 +21,16 @@
 # pip install 'RTOC[Webserver]'
 # pip install 'RTOC[ALL]'
 
-DESCRIPTION = """RealTime OpenControl enables simple real-time data recording, visualization and editing. The recording can be done with a local Python scripts or via TCP locally/from the network. Visualization and editing is available locally, in the network (TCP and HTML) and via Telegram on the smartphone.
-
-In addition to data recording, events can also be recorded. These can, for example, trigger a telegram message.
-
-Possible applications:
-
-- Central measurement data recording of laboratory instruments with PC connection (e.g. power supply unit, multimeter, sensors, microcontroller)
-- Central recording of measurement data from Internet devices (e.g. mobile weather stations, drones, smartphones)
-- Remote monitoring and control of processes and devices with PC and Smartphone (Telegram) (e.g. 3D printing, heating, Custom-SmartHome)
-- Controlling between several devices (e.g.: power regulation of a power supply unit on the temperature sensor of a multimeter)
-- Decentralized data recording (e.g. on Raspberry) and access via network connection (smart projects)
-"""
+from os import path
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
 
 setupOpts = dict(
     name='RTOC',
     description='RealTime OpenControl',
-    long_description=DESCRIPTION,
+    long_description=long_description,
+    long_description_content_type="text/markdown",
     license='GNU',
     url='https://github.com/Haschtl/RealTimeOpenControl',
     author='Sebastian Keller',
@@ -85,9 +78,9 @@ except LookupError:
 path = os.path.split(__file__)[0]
 # sys.path.insert(0, os.path.join(path, 'tools'))
 
-version = "2.0b0"
-forcedVersion = "2.0b0"
-gitVersion = "2.0b0"
+version = "2.0.1"
+forcedVersion = "2.0.1"
+gitVersion = "2.0.1"
 initVersion = 1.0
 
 
@@ -180,7 +173,7 @@ setup(
         # 'matplotlib',
         'python-nmap',
         'whaaaaat',
-        'prompt_toolkit'
+        'prompt_toolkit',
         # 'dash',
         'pycryptodomex',
         'psycopg2',

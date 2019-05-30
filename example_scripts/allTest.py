@@ -1,5 +1,5 @@
 event("Loop", "Note", "one")
-evnet("ten", "Note", "two", x=clock+10)
+event("ten", "Note", "two", x=clock+10)
 print("Loop")
 
 global x=1

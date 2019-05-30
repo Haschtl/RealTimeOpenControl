@@ -5,13 +5,6 @@ import traceback
 import importlib
 import sys
 
-try:
-    from PyQt5.QtCore import QCoreApplication
-    translate = QCoreApplication.translate
-except ImportError:
-    def translate(id, text):
-        return text
-
 from . import loggerlib as loggerlib
 from . import plugins
 import logging as log

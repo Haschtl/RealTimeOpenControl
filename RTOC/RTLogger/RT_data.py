@@ -29,8 +29,8 @@ try:
 except ImportError:
     QTimer = None
 
-    def translate(id, text):
-        return text
+    # def translate(id, text):
+    #     return text
 
 DEVICE_TABLE_NAME = 'devices'
 SIGNAL_TABLE_NAME = 'signals'
@@ -169,7 +169,6 @@ class RT_data:
             ev (bool): If True, all events will be deleted.
             database (bool): If True, also data from database will be deleted.
         """
-        d, s, e = self._checkDatabases()
         with localLock:
             if dev is True or sig is True:
                 self._signals = {}
@@ -177,6 +176,7 @@ class RT_data:
             if ev is True:
                 self._events = {}
         if database:
+            d, s, e = self._checkDatabases()
             if self._cursor is not None:
                 with lock:
                     if e is True and ev is True:
@@ -387,10 +387,15 @@ class RT_data:
             self._newSignalCallback(sigID, devicename, signalname, unit)
         return sigID
 
-    def _createDevice(self, devicename):
+    def _createDevice(self, devicename, devID=None):
         if devicename not in self._devices.values():
-            id = self.getNewDeviceID()
-            self._devices[id] = devicename
+            if devID is None or type(devID)!=int:
+                devID = self.getNewDeviceID()
+            elif type(devID) is int:
+                if devID in self._devices[devID]:
+                    devID = self.getNewDeviceID()
+
+            self._devices[devID] = devicename
             return True
         else:
             return False
@@ -546,12 +551,13 @@ class RT_data:
             y = [y]
         if type(x) == float or type(x) == int:
             x = [x]
+
         if type(y) == list and type(snames) == list:
-            if x == [None]:
-                x = [None]*len(y)
+            if x == []:
+                x = [time.time()]*len(y)
             if unit == [] or unit is None or type(unit) == str:
                 unit = [""]*len(y)
-            if len(unit) < len(y):
+            elif len(unit) < len(y):
                 unit += ['']*(len(y)-len(unit))
             elif len(unit) > len(y):
                 unit = unit[0:len(y)]
@@ -753,14 +759,22 @@ class RT_data:
         else:
             return False
 
-    def events(self):
+    def events(self, beauty=False):
         """
         Returns all locally stored events.
+
+        Args:
+            beauty (bool): If True, dict will contain names instead of ids
 
         Returns:
             dict: {EVENT_ID: [DEVICE_ID,SIGNAL_ID,EVENT_ID,TEXT,TIME,VALUE,PRIORITY, ID],...}
         """
-        return self._events
+        ev = {}
+        for evID in self._events.keys():
+            name = self.getEventName(evID)
+            old = self._events[evID]
+            ev[evID]=[name[0],name[1],*old[2:]]
+        return ev
 
     def signals(self):
         """
@@ -915,28 +929,33 @@ class RT_data:
         for sigID in self._signals.keys():
             sig = self._getSQLSignal(sigID, 1)
             if sig is not None:
-                latest[sigID] = [sig[0][-1], sig[1][-1]]
+                latest[sigID] = [sig[2][-1], sig[3][-1]]
 
-        newData = copy.deepcopy(self.signals())
+        localData = self._signals
+        newData = {}
         newSignals = {}
-        popIDs = []
-        for sigID in newData.keys():
-            signal = newData[sigID]
-            new = False
-            for idx, x in enumerate(signal[2]):
-                if sigID in latest.keys():
+        # popIDs = []
+        for sigID in localData.keys():
+            signal = localData[sigID]
+            # new = False
+            if sigID in latest.keys():
+                for idx, x in enumerate(signal[2]):
                     if x > latest[sigID][0]:
-                        newData[sigID][2] = list(newData[sigID][2])[int(idx):]
-                        newData[sigID][3] = list(newData[sigID][3])[int(idx):]
-                        new = True
+                        newData[sigID] = [-1,'',[],[],'']
+                        newData[sigID][0] = localData[sigID][0]
+                        newData[sigID][1] = localData[sigID][1]
+                        newData[sigID][4] = localData[sigID][4]
+                        newData[sigID][2] = list(localData[sigID][2])[int(idx):]
+                        newData[sigID][3] = list(localData[sigID][3])[int(idx):]
+                        # new = True
                         break
-                else:
-                    newSignals[sigID] = newData[sigID]
-            if not new:
-                popIDs.append(sigID)
+            else:
+                newSignals[sigID] = localData[sigID]
+            # if not new:
+            #     popIDs.append(sigID)
 
-        for sigID in popIDs:
-            newData.pop(sigID)
+        # for sigID in popIDs:
+        #     newData.pop(sigID)
 
         if newData == {} and newSignals == {}:
             logging.info('Signal-Backup is already up to date.')
@@ -1218,10 +1237,10 @@ class RT_data:
     def _SQLgetStartTime(self):
         t = self._execute_n_fetchall("select CREATION_DATE from "+DEVICE_TABLE_NAME)
         if t is not None and t != []:
-            t = [int(i[0]) for i in t]
+            t = [float(i[0]) for i in t]
             t = min(t)
         else:
-            t = -1
+            t = time.time()
         return t
 
     def _getSQLEventIDs(self):
@@ -1342,7 +1361,7 @@ class RT_data:
             else:
                 logging.warning(
                     'Database-service is enabled, but backup intervall was set to zero! Will not update database')
-        # backup service für upload und download
+        # backup service f\xfcr upload und download
 
     def __updateT(self):
         if self.config['postgresql']['active']:
@@ -1354,7 +1373,7 @@ class RT_data:
                 if not self.config['postgresql']['onlyPush']:
                     self.pullFromDatabase(dev=True, sig=True, ev=True)
             # logging.info('Data commited to postgresql database')
-            if self.logger and self.config['backup']['clear']:
+            if self.logger and self.config['backup']['clear'] and self.config['backup']['active']:
                 self.logger.clearCB()
                 logging.info('Local data cleared after backup')
             # self.clear()
@@ -1377,7 +1396,7 @@ class RT_data:
         """
         This function is called, if RTOC is beeing closed.
         """
-        if self.config['backup']['autoOnClose']:
+        if self.config['backup']['autoOnClose'] and self.config['backup']['active']:
             self.__updateT()
         if self._backupThread:
             self._backupThread.cancel()
@@ -1429,8 +1448,8 @@ class RT_data:
             filename (str): Filename (without '.csv')
             signal (SIGNAL): The signal to be stored.
         """
-        with open(filename+".csv", 'w', newline='') as myfile:
-            wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+        with open(filename, 'w', newline='') as myfile:
+            wr = csv.writer(myfile, quoting=csv.QUOTE_NONE, delimiter=' ', quotechar='|')
             wr.writerow(list(signal[2]))
             wr.writerow(list(signal[3]))
 
@@ -1442,7 +1461,7 @@ class RT_data:
             filename (str)
         """
         if xlsxwriter is not None:
-            workbook = xlsxwriter.Workbook(filename+".xslx")
+            workbook = xlsxwriter.Workbook(filename)
 
             worksheet = workbook.add_worksheet()
             row = -1
@@ -1479,8 +1498,9 @@ class RT_data:
                 worksheet2.write(row, col, "Einheit")
             row += 1
             col = -1
-            for idx, signal in enumerate(self.signals()):
-                for xy in signal[2:3]:
+            for sigID in self._signals.keys():
+                signal = self._signals[sigID]
+                for xy in [signal[2],signal[3]]:
                     col += 1
                     row = 1
                     for data in xy:
@@ -1497,53 +1517,29 @@ class RT_data:
         else:
             logging.error('XLSXWriter not installed! Please install with "pip3 install xlsxwriter"')
 
-    def generateSessionJSON(self, scripts=None):
+    def generateSessionJSON(self):
         """
         Generates a json-file of all data to export
 
-        Args:
-            scripts (list): List of scripts to be exported.
         """
         jsonfile = {}
         jsonfile["maxLength"] = self.config['global']['recordLength']
-        jsonfile["data"] = {}
-        jsonfile["events"] = {}
-        for sigID in self.signals().keys():
-            name = self.getSignalName(sigID)
-            signal = self.signals()[sigID]
-            x = list(signal[2])
-            y = list(signal[3])
-            unit = signal[4]
-            jsonfile["data"][".".join(name)] = []
-            x = np.nan_to_num(x)
-            for idx2, value in enumerate(x):
-                if isinstance(value, np.generic):
-                    x[idx2] = np.asscalar(value)
-            y = np.nan_to_num(y)
-            for idx2, value in enumerate(y):
-                if isinstance(value, np.generic):
-                    y[idx2] = np.asscalar(value)
-            jsonfile["data"][".".join(name)].append(x.tolist())
-            jsonfile["data"][".".join(name)].append(y.tolist())
-            jsonfile["data"][".".join(name)].append(unit)
-
-        for evID in self.events():
-            name = self.getEventName(evID)
-            event = self.events()[evID]
-            jsonfile["events"].append([*name, *event[2:-1]])
-
-        if scripts is not None:
-            jsonfile["scripts"] = scripts
-
+        t_signals = {}
+        signals = dict(self._signals)
+        for sigID in signals.keys():
+            s = signals[sigID]
+            t_signals[sigID]=[s[0],s[1],list(s[2]),list(s[3]),s[4]]
+        jsonfile["signals"] = t_signals
+        jsonfile["events"] = dict(self._events)
+        jsonfile["devices"] = dict(self._devices)
         return jsonfile
 
-    def backupJSON(self, filename=None, scripts=None, overwrite=False):
+    def backupJSON(self, filename=None, overwrite=False):
         """
         Backup session to JSON-file
 
         Args:
             filename (str): Filename of backup
-            scripts (list): List of scripts to be saved
             overwrite (bool): If True, existing file will be overwritten.
         """
         if self.config['backup']['active']:
@@ -1552,21 +1548,19 @@ class RT_data:
             if filename != '':
                 # if self.config['backup']['clear'] or self.config['backup']['autoIfFull']:
                 #     self.clear()
-                self.exportJSON(filename, scripts, overwrite)
+                self.exportJSON(filename, overwrite)
             else:
                 logging.warning('Cannot create backup in root folder. Aborted')
 
-    def exportJSON(self, filename, scripts=None, overwrite=False):
+    def exportJSON(self, filename, overwrite=False):
         """
         Save session to JSON-file
 
         Args:
             filename (str): Filename of backup
-            scripts (list): List of scripts to be saved
             overwrite (bool): If True, existing file will be overwritten.
         """
-        jsonfile = self.generateSessionJSON(scripts)
-
+        jsonfile = self.generateSessionJSON()
         if os.path.isdir(filename):
             filename = os.path.join(filename, time.strftime('RTOC_%d_%m_%Hh%Mm%Ss')+'.json')
         if overwrite or not os.path.exists(filename):
@@ -1575,56 +1569,58 @@ class RT_data:
 
             return True
         else:
+            raise NotImplemented
             try:
-                with open(filename) as f:
-                    data = json.load(f)
-
-                for signal in jsonfile["data"].keys():
-                    name = signal.split(".")
-                    if len(jsonfile["data"][signal][0]) != 0:
-                        if signal in data['data'].keys():
-                            for idx, xvalue in enumerate(jsonfile["data"][signal][0]):
-                                if xvalue not in data['data'][signal][0]:
-                                    data['data'][signal][0].append(jsonfile['data'][signal][0][idx])
-                                    data['data'][signal][1].append(jsonfile['data'][signal][1][idx])
-                        else:
-                            data['data'][signal] = jsonfile['data'][signal]
-                for signal in jsonfile["events"].keys():
-                    if signal != ".":
-                        name = signal.split(".")
-                        if signal in data['data'].keys():
-                            if len(name) == 1:
-                                name.append("")
-                            for idx, event in enumerate(jsonfile["events"][signal][0]):
-                                if xvalue not in data['events'][signal][0]:
-                                    data['events'][signal][0].append(
-                                        jsonfile['events'][signal][0][idx])
-                                    data['events'][signal][1].append(
-                                        jsonfile['events'][signal][1][idx])
-                                    data['events'][signal][2].append(
-                                        jsonfile['events'][signal][2][idx])
-                                    data['events'][signal][3].append(
-                                        jsonfile['events'][signal][3][idx])
-                                    data['events'][signal][4].append(
-                                        jsonfile['events'][signal][4][idx])
-                                    data['events'][signal][5].append(
-                                        jsonfile['events'][signal][5][idx])
-                                    data['events'][signal][6].append(
-                                        jsonfile['events'][signal][6][idx])
-                                    data['events'][signal][7].append(
-                                        jsonfile['events'][signal][7][idx])
-                                    # data['events'][signal][5].append(
-                                    #     jsonfile['events'][signal][5][idx])
-                                    # data['events'][signal][6].append(
-                                    #     jsonfile['events'][signal][6][idx])
-                        else:
-                            data['events'] = jsonfile['events']
-                if 'scripts' in jsonfile.keys():
-                    if 'scripts' not in data.keys():
-                        data['scripts'] = None
-                    data['scripts'] += jsonfile['scripts']
-                with open(filename, 'w') as fp:
-                    json.dump(data, fp, sort_keys=False, indent=4, separators=(',', ': '))
+                pass
+                # with open(filename) as f:
+                #     data = json.load(f)
+                #
+                # for signal in jsonfile["data"].keys():
+                #     name = signal.split(".")
+                #     if len(jsonfile["data"][signal][0]) != 0:
+                #         if signal in data['data'].keys():
+                #             for idx, xvalue in enumerate(jsonfile["data"][signal][0]):
+                #                 if xvalue not in data['data'][signal][0]:
+                #                     data['data'][signal][0].append(jsonfile['data'][signal][0][idx])
+                #                     data['data'][signal][1].append(jsonfile['data'][signal][1][idx])
+                #         else:
+                #             data['data'][signal] = jsonfile['data'][signal]
+                # for signal in jsonfile["events"].keys():
+                #     if signal != ".":
+                #         name = signal.split(".")
+                #         if signal in data['data'].keys():
+                #             if len(name) == 1:
+                #                 name.append("")
+                #             for idx, event in enumerate(jsonfile["events"][signal][0]):
+                #                 if xvalue not in data['events'][signal][0]:
+                #                     data['events'][signal][0].append(
+                #                         jsonfile['events'][signal][0][idx])
+                #                     data['events'][signal][1].append(
+                #                         jsonfile['events'][signal][1][idx])
+                #                     data['events'][signal][2].append(
+                #                         jsonfile['events'][signal][2][idx])
+                #                     data['events'][signal][3].append(
+                #                         jsonfile['events'][signal][3][idx])
+                #                     data['events'][signal][4].append(
+                #                         jsonfile['events'][signal][4][idx])
+                #                     data['events'][signal][5].append(
+                #                         jsonfile['events'][signal][5][idx])
+                #                     data['events'][signal][6].append(
+                #                         jsonfile['events'][signal][6][idx])
+                #                     data['events'][signal][7].append(
+                #                         jsonfile['events'][signal][7][idx])
+                #                     # data['events'][signal][5].append(
+                #                     #     jsonfile['events'][signal][5][idx])
+                #                     # data['events'][signal][6].append(
+                #                     #     jsonfile['events'][signal][6][idx])
+                #         else:
+                #             data['events'] = jsonfile['events']
+                # if 'scripts' in jsonfile.keys():
+                #     if 'scripts' not in data.keys():
+                #         data['scripts'] = None
+                #     data['scripts'] += jsonfile['scripts']
+                # with open(filename, 'w') as fp:
+                #     json.dump(data, fp, sort_keys=False, indent=4, separators=(',', ': '))
 
                 return True
             except Exception:
@@ -1649,37 +1645,32 @@ class RT_data:
                     data = json.load(f)
                 if clear:
                     self.clear()
-                    # self.maxLength = data["maxLength"]
-                    # self.maxLength = self.config['global']['recordLength']
-                for signal in data["data"].keys():
-                    name = signal.split(".")
-                    if len(data["data"][signal][0]) != 0:
-                        if clear is True:
-                            holde = "off"
-                        else:
-                            holde = "mergeX"
-                        self.plot(data["data"][signal][0], data["data"][signal][1],
-                                  name[1], name[0], data["data"][signal][2], False, hold=holde, autoResize=True)
-                for signal in data["events"].keys():
-                    if signal != ".":
-                        name = signal.split(".")
-                        if len(name) == 1:
-                            name.append("")
-                        for idx, event in enumerate(data["events"][signal][0]):
-                            self.addNewEvent(
-                                text=data["events"][signal][1][idx],
-                                sname=name[1],
-                                dname=name[0],
-                                x=event,
-                                priority=data["events"][signal][2][idx],
-                                value=data["events"][signal][3][idx],
-                                id=data["events"][signal][4][idx],
-                            )
-                if 'scripts' in data.keys():
-                    return data['scripts']
+                    holde = "off"
+                else:
+                    holde = "mergeX"
+                for devID in data['devices'].keys():
+                    devicename = data['devices'][devID]
+                    self._createDevice(devicename, devID=devID)
+                for sigID in data["signals"].keys():
+                    signal = data['signals'][sigID]
+                    devname=self.getDeviceName(signal[0])
+                    self.plot(signal[2], signal[3],
+                                  signal[1], devname, signal[4], False, hold=holde, autoResize=True)
+                for evID in data["events"].keys():
+                    event = data['events'][evID]  # ID: [DEVICE_ID,SIGNAL_ID,EVENT_ID,TEXT,TIME,VALUE,PRIORITY, ID]
+                    name=self.getSignalName(event[1])
+                    self.addNewEvent(
+                        text=event[3],
+                        sname=name[1],
+                        dname=name[0],
+                        x=event[4],
+                        priority=event[6],
+                        value=event[5],
+                        id=event[7],
+                    )
                 return True
             except Exception:
-                logging.debug(traceback.format_exc())
+                logging.error(traceback.format_exc())
                 logging.error('Could not import data')
                 return False
         else:
@@ -1697,11 +1688,11 @@ class RT_data:
             return self._SQLExportCSV(filename)
         textfile = ''
         with open(filename+".csv", 'w', newline='') as myfile:
-            wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+            wr = csv.writer(myfile, quoting=csv.QUOTE_NONE, delimiter=' ', quotechar='|')
             for sigID in self.signals().keys():
                 signal = self.signals()[sigID]
-                wr.writerow(signal[2])
-                wr.writerow(signal[3])
+                wr.writerow(list(signal[2]))
+                wr.writerow(list(signal[3]))
                 signame = '.'.join(self.getSignalName(sigID))
                 textfile = textfile+signame+" X\n"+signame+" Y\n"
         with open(filename+".txt", 'w') as myfile:
@@ -1721,13 +1712,13 @@ class RT_data:
         """
         textfile = ''
         with open(filename+".csv", 'w', newline='') as myfile:
-            wr = csv.writer(myfile, quoting=csv.QUOTE_ALL)
+            wr = csv.writer(myfile, quoting=csv.QUOTE_NONE, delimiter=' ', quotechar='|')
             for sigID in self.signals().keys():
                 if sigID in sigIDs:
                     signal = self.signals()[sigID]
                     signal = self.getSignal(sigID, xmin, xmax, database)
-                    wr.writerow(signal[2])
-                    wr.writerow(signal[3])
+                    wr.writerow(list(signal[2]))
+                    wr.writerow(list(signal[3]))
                     signame = '.'.join(self.getSignalName(sigID))
                     textfile = textfile+signame+" X\n"+signame+" Y\n"
         with open(filename+".txt", 'w') as myfile:
@@ -1814,6 +1805,9 @@ class RT_data:
 
             sigLen (float)
         """
+        xmin = time.time()
+        xmax = xmin
+        sigLen = 0
         if self.logger.config['postgresql']['active'] and database:
             xmin = self._execute_n_fetchall(
                 "select X[1] from "+SIGNAL_TABLE_NAME+" where ID = "+str(sigID))
@@ -1837,18 +1831,17 @@ class RT_data:
                     sigLen = 0
             else:
                 sigLen = 0
-        else:
-            signal = self.getSignal(sigID)
-            if signal is not None:
-                xmin = min(signal[2])
-                xmax = max(signal[2])
-                sigLen = len(list(signal[2]))
-            else:
-                xmin = 0
-                xmax = 0
-                sigLen = 0
+        #else:
+        signal = self.getSignal(sigID)
+        if signal is not None:
+            xminLocal = min(signal[2])
+            xmaxLocal = max(signal[2])
+            sigLenLocal = len(list(signal[2]))
+            xmin = min([xminLocal, xmin])
+            xmax = max([xmaxLocal, xmax])
+            sigLen = max([sigLenLocal, sigLen])
 
-        return xmin, xmax, sigLen
+        return float(xmin), float(xmax), int(sigLen)
 
     def removeSignal(self, sigID, xmin=None, xmax=None, database=False):
         """
@@ -1860,6 +1853,7 @@ class RT_data:
             xmax (float): Maximum timestamp of data to be deleted.
             database (bool): If True, the signal will be removed from database.
         """
+        logging.info('Deleting signal {}'.format(sigID))
         if xmin == None or xmax == None:
             if sigID in self._signals.keys():
                 self._signals.pop(sigID)
@@ -1964,8 +1958,8 @@ class RT_data:
         if database is True:
             ans = self._execute_n_commit(
                 "DELETE from "+EVENT_TABLE_NAME+" where SIGNAL_ID = "+str(sigID)+" and TIME >"+str(xmin)+" and TIME < "+str(xmax))
-            print(ans)
-        print('Events from Signal: '+str(sigID)+' have been deleted')
+            logging.info(ans)
+            logging.info('Events from Signal: {} have been deleted. Database: {}'.format(sigID, database))
 
     def getSignal(self, sigID, xmin=None, xmax=None, database=False, maxN=None):
         """
@@ -1984,34 +1978,34 @@ class RT_data:
             xmax = time.time()*2
 
         if self.logger.config['postgresql']['active'] and database:
-            data = self.logger.database._getSQLSignal(sigID, None,  xmin=xmin, xmax=xmax, maxN=maxN)  # sigLen)
-            unit = self.logger.database._getSQLSignalUnit(sigID)
-            signal = [-1, '', *data, unit]
-            if data is not None:
-                for idx, x in enumerate(signal[2]):
-                    if x > xmin:
-                        signal[2] = signal[2][idx:]
-                        signal[3] = signal[3][idx:]
-                        break
-                for idx, x in enumerate(signal[2]):
-                    if x > xmax:
-                        signal[2] = signal[2][0:idx-1]
-                        signal[3] = signal[3][0:idx-1]
-                        break
-                if maxN != None and type(maxN) == int:
-                    if len(signal[2]) > maxN:
-                        overRatio = int(len(signal[2])/maxN)
-                        newX = []
-                        newY = []
-                        for idx, i in enumerate(signal[2]):
-                            if idx % overRatio == 0:
-                                newX.append(signal[2][idx])
-                                newY.append(signal[3][idx])
-                        signal[2] = newX
-                        signal[3] = newY
-                return signal
-            else:
-                return None
+            signal = self._getSQLSignal(sigID, None,  xmin=xmin, xmax=xmax, maxN=maxN)  # sigLen)
+            if signal == None:
+                logging.warning('Could not find {} in database'.format(sigID))
+                database = False
+
+        if database:
+            for idx, x in enumerate(signal[2]):
+                if x > xmin:
+                    signal[2] = signal[2][idx:]
+                    signal[3] = signal[3][idx:]
+                    break
+            for idx, x in enumerate(signal[2]):
+                if x > xmax:
+                    signal[2] = signal[2][0:idx-1]
+                    signal[3] = signal[3][0:idx-1]
+                    break
+            if maxN != None and type(maxN) == int:
+                if len(signal[2]) > maxN:
+                    overRatio = int(len(signal[2])/maxN)
+                    newX = []
+                    newY = []
+                    for idx, i in enumerate(signal[2]):
+                        if idx % overRatio == 0:
+                            newX.append(signal[2][idx])
+                            newY.append(signal[3][idx])
+                    signal[2] = newX
+                    signal[3] = newY
+            return signal
         else:
             if sigID in self._signals:
                 # signal = copy.deepcopy(self._signals[sigID])
@@ -2085,18 +2079,20 @@ class RT_data:
             upper = sigLen
             lenstr = "["+str(lower)+':'+str(upper)+"]"
             ans = self._execute_n_fetchall(
-                "select X"+lenstr+",Y"+lenstr+" from "+SIGNAL_TABLE_NAME+" where ID = "+str(id)+"")
+                "select X"+lenstr+",Y"+lenstr+" from "+SIGNAL_TABLE_NAME+" where ID = "+str(id))
         else:
             ans = self._execute_n_fetchall(
-                "select X,Y from "+SIGNAL_TABLE_NAME+" where ID = "+str(id)+"")
+                "select X,Y from "+SIGNAL_TABLE_NAME+" where ID = "+str(id))
         if ans != [] and ans is not None:
             ans = ans[0]
             ans = [list(i) for i in ans]
             ans[0] = [float(i) for i in ans[0]]
             ans[1] = [float(i) for i in ans[1]]
         else:
-            ans = None
-        return ans
+            return None
+        ans2 = self._execute_n_fetchall(
+            "select DEVICE_ID, NAME, UNIT from "+SIGNAL_TABLE_NAME+" where ID = "+str(id))[0]
+        return [ans2[0], ans2[1], ans[0], ans[1], ans2[2]]
 
     def getUniqueEvents(self, database=False):
         """

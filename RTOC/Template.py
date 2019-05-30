@@ -1,7 +1,7 @@
 """
 This template shows, how to implement plugins in RTOC
 
-RTOC version 2.0
+RTOC version 2.0.1
 
 A plugin needs to import RTOC.LoggerPlugin to be recognized by RTOC.
 """
@@ -44,7 +44,7 @@ class Plugin(LoggerPlugin):
         self.setPerpetualTimer(self._updateT, samplerate=SAMPLERATE)
         """You will need to collect data periodically in many applications. You need to start that in a seperate thread.
         RTOC provides a simple way to start a repeated thread with :py:meth:`.LoggerPlugin.setPerpetualTimer`.
-        
+
         The first parameter is the function, which collects data and sends it to RTOC.
 
         You can define a ``samplerate`` or an ``interval`` to set the samplerate.

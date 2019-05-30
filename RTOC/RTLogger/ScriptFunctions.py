@@ -38,7 +38,7 @@ class ScriptFunctions:
                     value = parameter[1]
                     s = s.replace(host+':'+device+'.'+parameter[0], str(value))
 
-                    # wenn Parameter verändert werden soll
+                    # wenn Parameter ver\xe4ndert werden soll
                     # self.remote.callFuncOrParam(self, host, device, parameter[], value)
         for parameter in self.pluginParameters.keys():
             s = s.replace(parameter, self.pluginParameters[parameter])

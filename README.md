@@ -1,6 +1,6 @@
 # RealTime OpenControl (RTOC)
 
-| [![Documentation Status](https://readthedocs.org/projects/realtimeopencontrol/badge/?version=latest)](https://realtimeopencontrol.readthedocs.io/en/latest/) | [![Builds v1.6](https://img.shields.io/badge/Builds%20version-1.6-brightgreen.svg?style=flat)](https://github.com/Haschtl/RealTimeOpenControl/releases) | [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) | [![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) |
+| [![Documentation Status](https://readthedocs.org/projects/realtimeopencontrol/badge/?version=latest)](https://realtimeopencontrol.readthedocs.io/en/latest/) | [![Builds v2.0](https://img.shields.io/badge/Builds%20version-1.6-brightgreen.svg?style=flat)](https://github.com/Haschtl/RealTimeOpenControl/releases) | [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) | [![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) |
 
 
 ### Version 2.0
@@ -37,35 +37,6 @@ Every plugin can send measurements and events to the RTOC-Server.
 
 A measurement represents the collected data. Events occur in certain conditions (for example if a measured value is higher than a limit value) and can trigger actions, which will be performed after the event. Also these events can be used to trigger PushNotifications in Telegram.
 
-
-
-### GUI
-
-![Übersicht](screenshots/overview.png)
-
-You can run the GUI with "python3 -m RTOC"
-
-The GUI offers a lot of tools:
-
-- Enable/disable devices
-- Access to optional device-GUIs
-- View and edit measurements in a lot of different ways
-- View, filter and delete events
-- Edit global events and actions
-- Download devices from RTOC-repository
-- Write and execute python-scripts, which can interact with the devices.
-- Connect to a remote RTOC-Server and view/delete measurements and events and access devices of remote RTOC-Server
-
-
-
-### No GUI
-
-In some cases you don't want to run the GUI (e.g. raspberry). Then you can still configure RTOC in a terminal: `python3 -m RTOC.RTLogger -c`
-
-If you just want to run the TCP-Server after configuration, you can do this with `python3 -m RTOC.RTLogger`. The best way, to run this code on embedded devices, is, to setup a systemd-service for automated startup. But you can also run/stop RTOC in background with 'python3 -m RTOC.RTLogger -s start/stop'.
-
-If you want to start the HTML server on port 8050, you need to run it with 'python3 -m RTOC.RTLogger -w'.
-
 ## Getting Started
 
 RTOC is written in Python 3.  Tested on Windows and Linux.
@@ -79,6 +50,16 @@ RTOC can be installed and used in different ways:
 
 [Click here for a complete setup-tutorial](https://realtimeopencontrol.readthedocs.io/en/latest/)
 
+### Write simple Python-Plugin
+
+Python plugins are integrated into RTOC and can be used to
+
+- send data as stream(=append) or plot(=replace) to RTOC
+- send events
+
+Plugins can **not** access all measurements. This can be done with a TCP connection to RTOC.
+
+[Example-Plugins here.](https://realtimeopencontrol.readthedocs.io/en/latest/PLUGINS.html)
 
 ### Documentation
 [Read the Wiki for full documentation](https://realtimeopencontrol.readthedocs.io/en/latest/)
@@ -95,36 +76,22 @@ You can get more plugins from the [RTOC-plugin-repository](https://github.com/Ha
 - ...
 
 
-### First GUI-Run
+### No GUI
 
-The graphical user interface of RTOC offers a wealth of functions for data display and processing.
+In some cases you don't want to run the GUI (e.g. raspberry). Then you can still configure RTOC in a terminal: `python3 -m RTOC.RTLogger -c`
 
-- measuring tools
-- Customize and save plot styles
-- Save and load session
-- Create multiple plots
-- Run in the background
-- Import and export data
-- Scripts:
-  - Multi-Tab Script Editor
-  - The user can interact with the signals and plugins during runtime:
-    - Execute plugin functions or set plugin parameters
-    - Edit signals, create new signals, crop, overlay, ...
-    - Scaling, shifting of signals
-    - Run multiple scripts in parallel
+If you just want to run the TCP-Server after configuration, you can do this with `python3 -m RTOC.RTLogger`. The best way, to run this code on embedded devices, is, to setup a systemd-service for automated startup. But you can also run/stop RTOC in background with 'python3 -m RTOC.RTLogger -s start/stop'.
+
+If you want to start the HTML server on port 8050, you need to run it with 'python3 -m RTOC.RTLogger -w'.
+
+
+### GUI
+
+![Übersicht](screenshots/overview.png)
 
 [Complete GUI-tutorial here.](https://realtimeopencontrol.readthedocs.io/en/latest/GUI.html)
 
-### Write simple Python-Plugin
 
-Python plugins are integrated into RTOC and can be used to
-
-- send data as stream(=append) or plot(=replace) to RTOC
-- send events
-
-Plugins can **not** access all measurements. This can be done with a TCP connection to RTOC.
-
-[Example-Plugins here.](https://realtimeopencontrol.readthedocs.io/en/latest/PLUGINS.html)
 
 ### Simple local TCP-Datastream
 
@@ -147,44 +114,6 @@ The connection between RTOC server and client can be encrypted end-to-end (DES) 
 ### Include Telegram-messanger
 
 [Tutorial for Telegram here.](https://realtimeopencontrol.readthedocs.io/en/latest/TELEGRAM.html)
-
-## Screenshots
-
-#### MultiWindow
-
-![multiWindow](screenshots/multiWindow.png)
-
-#### Crosshair-tool
-
-![multiWindow](screenshots/crosshair.png)
-
-#### Cutting-tool
-
-![multiWindow](screenshots/cut.png)
-
-#### Rectangle-measure-tool
-
-![multiWindow](screenshots/rect.png)
-
-#### Plotstyle-window
-
-![multiWindow](screenshots/plotStyleEdit.png)
-
-#### Plot-View-Dropdown
-
-![multiWindow](screenshots/plotView.png)
-
-#### Signal
-
-![multiWindow](screenshots/signalWidget.png)
-
-#### Plot
-
-![multiWindow](screenshots/plotWidget.png)
-
-#### Scripts
-
-![multiWindow](screenshots/scriptWidget.png)
 
 ## Built With
 
@@ -210,11 +139,4 @@ This project is licensed under the  **GNU General Public License v3.0** - see th
 
 
 # Coffee
-Feel free to buy me some coffee with milk
-
-<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
-<input type="hidden" name="cmd" value="_s-xclick" />
-<input type="hidden" name="hosted_button_id" value="Y5894CRYB4L36" />
-<input type="image" src="https://www.paypalobjects.com/en_US/DK/i/btn/btn_donateCC_LG.gif" border="0" name="submit" title="PayPal - The safer, easier way to pay online!" alt="Donate with PayPal button" />
-<img alt="" border="0" src="https://www.paypal.com/en_DE/i/scr/pixel.gif" width="1" height="1" />
-</form>
+[Feel free to buy me some coffee with milk](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=V3JGL7BM8WGQY&source=url)
