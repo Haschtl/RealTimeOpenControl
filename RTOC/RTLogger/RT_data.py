@@ -55,7 +55,10 @@ class _perpetualTimer():
             self._thread = Timer(self._t, self._handle_function)
 
     def _handle_function(self):
-        self._hFunction()
+        try:
+            self._hFunction()
+        except Exception:
+            logging.info('Backup failed')
         if QTimer is not None and self._useqtimer:
             self._thread = QTimer()
             self._thread.timeout.connect(self._handle_function)

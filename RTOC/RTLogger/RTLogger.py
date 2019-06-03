@@ -84,7 +84,8 @@ defaultconfig = {
         "token": "",
         "eventlevel": 0,
         "chat_ids": {},
-        "inlineMenu": False
+        "inlineMenu": False,
+        "onlyAdmin": False
     },
     "tcp": {
         "active": False,

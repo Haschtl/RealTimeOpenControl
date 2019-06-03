@@ -26,7 +26,7 @@ class ScriptFunctions:
             s = self.generateTriggerCode(s)
             s = self.printfunction() + s
             s = self.createFunction(s)
-        s = "import math\nimport numpy as np\nimport sys\nimport scipy as sp\ntry:\n\timport RTOC.RTLogger.scriptLibrary as rtoc\nexcept (ImportError,SystemError):\n\tfrom .RTLogger import scriptLibrary as rtoc\n\n" + init + "\n"+s
+        s = "import math\nimport numpy as np\nimport sys\nimport os\nimport scipy as sp\ntry:\n\timport RTOC.RTLogger.scriptLibrary as rtoc\nexcept (ImportError,SystemError):\n\tfrom .RTLogger import scriptLibrary as rtoc\n\n" + init + "\n"+s
         return s
 
     def replacePluginParameters(self, s):

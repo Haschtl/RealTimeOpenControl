@@ -1,4 +1,4 @@
-# LoggerPlugin v2.1
+# LoggerPlugin v2.3
 import traceback
 import time
 import sys
@@ -44,16 +44,16 @@ class LoggerPlugin:
         # Plugin setup
         # self.setDeviceName()
         self._deviceName = "noDevice"
-        self.__cb = stream
-        self.__ev = event
-        self.__plt = plot
+        self._cb = stream
+        self._ev = event
+        self._plt = plot
         self._sock = None
         self._tcppassword = ''
         self._tcpport = 5050
         self._tcpaddress = ''
         self._tcpthread = False
         self._pluginThread = None
-        self.__oldPerpetualTimer = False
+        self._oldPerpetualTimer = False
         self.lockPerpetialTimer = Lock()
         # -------------
         self.run = False  # False -> stops thread
@@ -62,7 +62,7 @@ class LoggerPlugin:
         """ If this is True, the plugin-GUI will be shown in a dropdown menu (GUI related)"""
         self.widget = None
         """ Replace this with your QWidget to enable the plugin-GUI"""
-        self.__samplerate = 1
+        self._samplerate = 1
 
     def getDir(self, dir=None):
         """
@@ -80,7 +80,7 @@ class LoggerPlugin:
 
         return packagedir
 
-    def stream(self, *args, **kwargs):
+    def stream(self, y, snames, dname=None, unit=None, x=None, slist=None, sdict=None):
         """
         Use this function to send new measurements to RTOC. You can send multiple signals at once.
 
@@ -92,13 +92,13 @@ class LoggerPlugin:
         **dict**
 
         Args:
-            list (dict): A dict containing keys like this: `{'Temperature':[28,'°C'], 'Voltage':[12,'V']}`
+            sdict (dict): A dict containing keys like this: `{'Temperature':[28,'°C'], 'Voltage':[12,'V']}`
             dname (str): The devicename of this signal, e.g: `'Freezer'`
 
         **list**
 
         Args:
-            list (list): A list containing these lists: `[y, dname, unit]`. E.g: `[[28,'Temperature','°C'],[12,'Voltage','V']]`
+            slist (list): A list containing these lists: `[y, dname, unit]`. E.g: `[[28,'Temperature','°C'],[12,'Voltage','V']]`
             dname (str): The devicename of this signal, e.g: `'Freezer'`
 
         **seperate**
@@ -114,68 +114,55 @@ class LoggerPlugin:
             bool: True, if data was sent successfully, False, if not.
 
         """
-        for idx, arg in enumerate(args):
-            if idx == 0:
-                kwargs['y']=arg
-            elif idx == 1:
-                kwargs['snames']=arg
-                
-        if 'units' in kwargs:
-            kwargs['unit'] = kwargs['units']
-            kwargs.pop('units')
-        if self.__cb:
+
+        if self._cb:
             now = time.time()
-            signallist = kwargs.get('list', None)
-            if 'dname' not in kwargs:
-                kwargs['dname'] = self._deviceName
-            if signallist is None:
-                y = kwargs.get('y', [0])
-                if type(y) == list:
-                    kwargs['x'] = [now]*len(y)
-                else:
-                    kwargs['x'] = [now]
+            if dname is None:
+                dname = self._deviceName
+            if slist is None and sdict is None:
+                if type(y) == int or type(y) == float:
+                    y = [y]
+                if type(x) != list:
+                    x = [now]*len(y)
+                if len(y) != len(x):
+                    x = [now]*len(y)
 
-
-                self.__cb(**kwargs)
+                self._cb(y=y, snames=snames, dname=dname, unit=unit, x=x)
                 return True
-            elif type(signallist) == list:
-                kwargs.pop('list')
-                kwargs['y'] = []
-                kwargs['x'] = []
-                kwargs['unit'] = []
-                kwargs['snames'] = []
-                for sig in signallist:
+            elif slist is not None:
+                y = []
+                x = []
+                unit = []
+                snames = []
+                for sig in slist:
                     if type(sig) == list:
                         if len(sig) == 3:
-                            kwargs['y'].append(sig[0])
-                            kwargs['snames'].append(sig[1])
-                            kwargs['unit'].append(sig[2])
-                            kwargs['x'].append(now)
-                self.__cb(**kwargs)
+                            y.append(sig[0])
+                            snames.append(sig[1])
+                            unit.append(sig[2])
+                            x.append(now)
+                self._cb(y=y, snames=snames, dname=dname, unit=unit, x=x)
                 return True
-            elif type(signallist) == dict:
-                kwargs.pop('list')
-                for dev in signallist.keys():
-                    kwargs = {}
-                    kwargs['dname'] = dev
-                    kwargs['y'] = []
-                    kwargs['x'] = []
-                    kwargs['unit'] = []
-                    kwargs['snames'] = []
-                    if type(signallist[dev]) == dict:
-                        for sig in signallist[dev].keys():
-                            if type(signallist[dev][sig]) == list:
-                                if len(signallist[dev][sig]) == 2:
-                                    kwargs['y'].append(signallist[dev][sig][0])
-                                    kwargs['snames'].append(sig)
-                                    kwargs['unit'].append(signallist[dev][sig][1])
-                                    kwargs['x'].append(now)
+            elif sdict is not None:
+                for dev in sdict.keys():
+                    dname = dev
+                    y = []
+                    x = []
+                    unit = []
+                    snames = []
+                    if type(sdict[dev]) == dict:
+                        for sig in sdict[dev].keys():
+                            if type(sdict[dev][sig]) == list:
+                                if len(sdict[dev][sig]) == 2:
+                                    y.append(sdict[dev][sig][0])
+                                    snames.append(sig)
+                                    unit.append(sdict[dev][sig][1])
+                                    x.append(now)
                                 else:
                                     logging.error('STREAM ERROR, signal has not this format: [y, "unit"]')
                             else:
                                 logging.error('STREAM_ERROR: One signal was malformed')
-                        # logging.debug(kwargs)
-                        self.__cb(**kwargs)
+                        self._cb(y=y, snames=snames, dname=dname, unit=unit, x=x)
                     else:
                         logging.error('STREAM_ERROR: One device was malformed')
                 return True
@@ -217,8 +204,8 @@ class LoggerPlugin:
             x = list(range(len(x)))
         if dname is None:
             dname = self._deviceName
-        if self.__plt:
-            self.__plt(x, y, sname, dname, unit, hold=hold, autoResize=autoResize)
+        if self._plt:
+            self._plt(x, y, sname, dname, unit, hold=hold, autoResize=autoResize)
             return True
         else:
             logging.warning("No event connected")
@@ -248,8 +235,8 @@ class LoggerPlugin:
             sname = "unknownEvent"
         if dname is None:
             dname = self._deviceName
-        if self.__ev:
-            self.__ev(text, sname, dname, x, priority, value=value, id=id)
+        if self._ev:
+            self._ev(text, sname, dname, x, priority, value=value, id=id)
             return True
         else:
             logging.warning("No event connected")
@@ -278,7 +265,7 @@ class LoggerPlugin:
             self._tcppassword = password
             self._sock.setKeyword(password)
 
-    def sendTCP(self, *args, **kwargs):
+    def sendTCP(self, y=None, sname=None, dname=None, unit=None, x=None, getSignal=None, getLatest=None, getEvent=None, getSignalList=False, getEventList=False, getPluginList=False, getSession=False, plot=False, event=None, remove=None, plugin=None, logger=None, stream=None):
         """
         Use any of the arguments described in :doc:`TCP`.
 
@@ -310,43 +297,13 @@ class LoggerPlugin:
 
         """
         if self._tcpthread:
-            t = Thread(target=self._sendTCP, args=(args, kwargs,))
+            t = Thread(target=self._sendTCP, args=(y, sname, dname, unit, x, getSignal, getLatest, getEvent, getSignalList, getEventList, getPluginList, getSession, plot, event, remove, plugin, logger, stream,))
             t.start()
         else:
-            return self._sendTCP(*args, **kwargs)
+            return self._sendTCP(y, sname, dname, unit, x, getSignal, getLatest, getEvent, getSignalList, getEventList, getPluginList, getSession, plot, event, remove, plugin, logger, stream)
 
-    def _sendTCP(self, *args, **kwargs):
+    def _sendTCP(self, y=None, sname=None, dname=None, unit=None, x=None, getSignal=None, getLatest=None, getEvent=None, getSignalList=False, getEventList=False, getPluginList=False, getSession=False, plot=False, event=None, remove=None, plugin=None, logger=None, stream=None):
         with lock:
-            y = kwargs.get('y', None)
-            sname = kwargs.get('sname', None)
-            dname = kwargs.get('dname', self._deviceName)
-            unit = kwargs.get('unit', None)
-            x = kwargs.get('x', None)
-            getsignals = kwargs.get('getSignal', None)
-            latest = kwargs.get('getLatest', None)
-            events = kwargs.get('getEvent', None)
-            signallist = kwargs.get('getSignalList', False)
-            eventlist = kwargs.get('getEventList', False)
-            pluginlist = kwargs.get('getPluginList', False)
-            session = kwargs.get('getSession', False)
-            plot = kwargs.get('plot', False)
-            event = kwargs.get('event', None)
-            remove = kwargs.get('remove', None)
-            plugin = kwargs.get('plugin', None)
-            logger = kwargs.get('logger', None)
-            signals = kwargs.get('stream', None)
-
-            for idx, arg in enumerate(args):
-                if idx == 0:
-                    y = arg
-                if idx == 1:
-                    sname = arg
-                if idx == 2:
-                    dname = arg
-                if idx == 3:
-                    unit = arg
-                if idx == 4:
-                    x = arg
 
             if x is None and y is not None and not plot:
                 x = [time.time()]*len(y)
@@ -358,27 +315,27 @@ class LoggerPlugin:
                 dicti['sname'] = sname
                 dicti['dname'] = dname
                 dicti['unit'] = unit
-            if signallist:
+            if getSignalList:
                 dicti['getSignalList'] = True
-            if eventlist:
+            if getEventList:
                 dicti['getEventList'] = True
             if event is not None:
                 dicti['event'] = event
-            if events is not None:
-                dicti['getEvent'] = events
-            if getsignals is not None:
-                dicti['getSignal'] = getsignals
-            if latest is not None:
-                dicti['getLatest'] = latest
+            if getEvent is not None:
+                dicti['getEvent'] = getEvent
+            if getSignal is not None:
+                dicti['getSignal'] = getSignal
+            if getLatest is not None:
+                dicti['getLatest'] = getLatest
             if remove is not None:
                 dicti['remove'] = remove
             if plugin is not None:
                 dicti['plugin'] = plugin
             if logger is not None:
                 dicti['logger'] = logger
-            if pluginlist:
+            if getPluginList:
                 dicti['getPluginList'] = True
-            if session:
+            if getSession:
                 dicti['getSession'] = True
             # if self._tcppassword != '' and self._tcppassword is not None:
                 # hash_object = hashlib.sha256(self._tcppassword.encode('utf-8'))
@@ -398,20 +355,28 @@ class LoggerPlugin:
                         return response
                 except ConnectionRefusedError:
                     logging.error('TCP Connection refused')
-                    try:
-                        self._sock.close()
-                    except Exception:
-                        logging.debug(traceback.format_exc())
+                    # try:
+                    #     self._sock.close()
+                    # except Exception:
+                    #     logging.debug(traceback.format_exc())
+                    return False
+                except jsonsocket.NoPasswordProtectionError:
+                    return False
+                except jsonsocket.WrongPasswordError:
+                    return False
+                except jsonsocket.PasswordProtectedError:
+                    return False
+                except jsonsocket.NoPasswordProtectionError:
                     return False
                 except Exception:
                     tb = traceback.format_exc()
                     logging.debug(tb)
                     logging.error("Error sending over TCP")
-                    try:
-                        self._sock.close()
-                    except Exception:
-                        logging.debug(traceback.format_exc())
-                    self._sock = jsonsocket.Client()
+                    # try:
+                    #     self._sock.close()
+                    # except Exception:
+                    #     logging.debug(traceback.format_exc())
+                    # self._sock = jsonsocket.Client()
                     return False
                 finally:
                     self._sock.close()
@@ -442,7 +407,7 @@ class LoggerPlugin:
         if self.widget:
             self.widget.hide()
             self.widget.close()
-        if self._pluginThread and not self.__oldPerpetualTimer:
+        if self._pluginThread and not self._oldPerpetualTimer:
             self._pluginThread.cancel()
 
         # if self._sock:
@@ -484,12 +449,12 @@ class LoggerPlugin:
 
     @property
     def samplerate(self):
-        return self.__samplerate
+        return self._samplerate
 
     @samplerate.setter
     def samplerate(self, samplerate):
-        self.__samplerate = samplerate
-        if self._pluginThread and not self.__oldPerpetualTimer:
+        self._samplerate = samplerate
+        if self._pluginThread is not None and not self._oldPerpetualTimer:
             self._pluginThread.setSamplerate(samplerate)
 
     def setPerpetualTimer(self, fun, samplerate=None, interval = None, old = False):
@@ -507,18 +472,18 @@ class LoggerPlugin:
 
         """
         if old:
-            self.__oldPerpetualTimer = True
+            self._oldPerpetualTimer = True
         else:
-            self.__oldPerpetualTimer = False
+            self._oldPerpetualTimer = False
 
         if samplerate is None and interval is None:
             samplerate = self.samplerate
         elif samplerate is None:
             samplerate = 1/interval
 
-        if not self.__oldPerpetualTimer:
+        if not self._oldPerpetualTimer:
             try:
-                self.__samplerate = samplerate
+                self._samplerate = samplerate
                 self._pluginThread = _perpetualTimer(fun, samplerate, self.lockPerpetialTimer)
                 return True
             except Exception:
@@ -526,7 +491,7 @@ class LoggerPlugin:
                 return False
         else:
             try:
-                self.__samplerate = samplerate
+                self._samplerate = samplerate
                 self._pluginThread = Thread(target=self.__updateT, args=(fun,))
                 return True
             except Exception:
@@ -558,7 +523,7 @@ class LoggerPlugin:
 
         """
         if self._pluginThread:
-            if not self.__oldPerpetualTimer:
+            if not self._oldPerpetualTimer:
                 self._pluginThread.cancel()
             self.run = False
             return True
@@ -569,8 +534,8 @@ class LoggerPlugin:
     def __updateT(self, func):
         diff = 0
         while self.run:
-            if diff < 1/self.__samplerate:
-                time.sleep(1/self.__samplerate-diff)
+            if diff < 1/self._samplerate:
+                time.sleep(1/self._samplerate-diff)
             start_time = time.time()
             func()
             diff = (time.time() - start_time)

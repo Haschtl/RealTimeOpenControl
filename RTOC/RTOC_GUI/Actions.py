@@ -661,6 +661,7 @@ class Actions:
                 retry = False
                 return True
             else:
+                print(status)
                 pyqtlib.info_message('End of the universe',
                                      'You reached the end of the universe', "This shouldn't happen")
         return False

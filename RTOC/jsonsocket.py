@@ -1,9 +1,8 @@
-# jsonsocket.py v1.5
-# https://github.com/mdebbar/jsonsocket
+# jsonsocket.py v1.6
+
 import json
 import socket
 import traceback
-# from Cryptodome.Cipher import DES
 import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
@@ -17,6 +16,59 @@ except (SystemError, ImportError):
         'CryptodomeX or hashlib not installed! Install with "pip3 install pycryptodomex"')
 
 HOST_WHITELIST = ['127.0.0.1', 'localhost']
+
+
+class NoPasswordProtectionError(Exception):
+    """
+    Raised when a password was provided, but server has no protectionAttributes.
+
+    Attributes:
+        expression -- input expression in which the error occurred
+        message -- explanation of the error
+    """
+    def __init__(self, expression, message):
+        self.expression = expression
+        self.message = message
+
+
+class WrongPasswordError(Exception):
+    """
+    Raised when the password is wrong.
+
+    Attributes:
+        expression -- input expression in which the error occurred
+        message -- explanation of the error
+    """
+    def __init__(self, expression, message):
+       self.expression = expression
+       self.message = message
+
+
+class PasswordProtectedError(Exception):
+    """
+    Raised when the server may be password protected.
+
+    Attributes:
+        expression -- input expression in which the error occurred
+        message -- explanation of the error
+    """
+    def __init__(self, expression, message):
+        self.expression = expression
+        self.message = message
+
+
+# class ValueTooLargeError(Exception):
+#    """
+#    Raised when the input value is too large.
+#
+#    Attributes:
+#        expression -- input expression in which the error occurred
+#        message -- explanation of the error
+#    """
+#    def __init__(self, expression, message):
+#        self.expression = expression
+#        self.message = message
+
 
 
 class Server(object):
@@ -233,7 +285,11 @@ def _send(socket, data, key=None):
     # send the length of the serialized data first
     nonce = b''
     tag = b''
-    if key is not None and key != '' and type(key) == str and AES is not None:
+    if key is not None and key != '':
+        if AES is None:
+            raise SystemError
+        if type(key) != str:
+            raise TypeError
         # des = DES.new(key.encode(), DES.MODE_ECB)
         # padded_text = pad(serialized)
         # serialized = des.encrypt(padded_text.encode('utf-8'))
@@ -247,60 +303,53 @@ def _send(socket, data, key=None):
     else:
         serialized = serialized.encode()
     b = '%d,%d,%d\n' % (len(serialized), len(tag), len(nonce))
-    socket.send(b.encode())
+    # socket.send(b.encode())
     # send the serialized data
-    socket.sendall(tag+nonce+serialized)
+    socket.sendall(b.encode()+tag+nonce+serialized)
 
 
 def _recv(socket, key=None):
     # read the length of the data, letter by letter until we reach EOL
-    length_str = ''
+    length_str = b''
     try:
-        char = socket.recv(1).decode()
-        while char != '\n':
+        char = socket.recv(1)#.decode()
+        while char != b'\n':
             length_str += char
-            char = socket.recv(1).decode()
+            char = socket.recv(1)#.decode()
     except Exception:
-        # socket.close()
         print(traceback.format_exc())
         return False
+    try:
+        length_str = length_str.decode()
+    except Exception:
+        raise EnvironmentError(traceback.format_exc())
+
     lens = length_str.split(',')
     total = 0
     tagTotal = 0
     nonceTotal = 0
-    for packet_l in range(len(lens)):
-        if packet_l == 0:
-            total = int(lens[packet_l])
-        elif packet_l == 1:
-            tagTotal = int(lens[packet_l])
-        elif packet_l == 2:
-            nonceTotal = int(lens[packet_l])
+    if len(lens) ==1:
+        total = int(lens[0])
+        # not encrypted
+    elif len(lens) == 3:
+        total = int(lens[0])
+        tagTotal = int(lens[1])
+        nonceTotal = int(lens[2])
+        # encrypted
+    else:
+        raise EnvironmentError
 
-    # use a memoryview to receive the data chunk by chunk efficiently
     if tagTotal > 0:
-        tagView = memoryview(bytearray(tagTotal))
-        next_offset = 0
-        while tagTotal - next_offset > 0:
-            recv_size = socket.recv_into(tagView[next_offset:], tagTotal - next_offset)
-            next_offset += recv_size
-        tagView = tagView.tobytes()
+        tagView = readBlock(socket, tagTotal)
     else:
         tagView = b''
     if nonceTotal > 0:
-        nonceView = memoryview(bytearray(nonceTotal))
-        next_offset = 0
-        while nonceTotal - next_offset > 0:
-            recv_size = socket.recv_into(nonceView[next_offset:], nonceTotal - next_offset)
-            next_offset += recv_size
-        nonceView = nonceView.tobytes()
+        nonceView = readBlock(socket, nonceTotal)
     else:
         nonceView = b''
-    view = memoryview(bytearray(total))
-    next_offset = 0
-    while total - next_offset > 0:
-        recv_size = socket.recv_into(view[next_offset:], total - next_offset)
-        next_offset += recv_size
-    view = view.tobytes()
+
+    view = readBlock(socket, total)
+
     if key is not None and key != '' and type(key) == str:
         if len(tagView) != 0 and len(nonceView) != 0 and AES is not None:
             try:
@@ -309,48 +358,40 @@ def _recv(socket, key=None):
                 hash_object = hashlib.sha256(key.encode('utf-8'))
                 cipher = AES.new(hash_object.digest(), AES.MODE_EAX, nonceView)
                 decrypted = cipher.decrypt_and_verify(view, tagView)
-                deserialized = json.loads(decrypted.decode('utf-8'))
-                return deserialized
+                return deserializeJSON(decrypted)
             except Exception:
                 tb = traceback.format_exc()
-                logging.debug(tb)
-                print('tb')
-                logging.error("SOCKET PASSWORD ERROR, The provided password is wrong!")
-                return None
+                logging.error(tb)
+                raise WrongPasswordError("SOCKET PASSWORD ERROR, The provided password is wrong!")
         else:
-            logging.error("SOCKET PASSWORD ERROR, No password provided!\nCannot receive data")
-            return None
+            raise NoPasswordProtectionError('SOCKET PASSWORD ERROR, No password provided!\nCannot receive data')
     else:
         if len(tagView) == 0 and len(nonceView) == 0:
             try:
-                deserialized = json.loads(view.decode('utf-8'))
-                return deserialized
+                return deserializeJSON(view)
             except (TypeError, ValueError):
                 tb = traceback.format_exc()
                 logging.debug(tb)
-                logging.error("JSON SOCKET ERROR, Data received was not in JSON format")
-                logging.error("Maybe the RTOC-Server is password-protected")
-                return {}
+                raise PasswordProtectedError('JSON SOCKET ERROR, Data received was not in JSON format. Maybe the RTOC-Server is password-protected')
         else:
-            logging.error("SOCKET ERROR, No password protection found!\nUnknown error")
-            return None
-
-    # try:
-    #     deserialized = json.loads(view.tobytes())
-    #     return deserialized
-    # except (TypeError, ValueError):
-    #         # raise Exception('Data received was not in JSON format')
-    #     try:
-    #         deserialized = json.loads(view.tobytes().decode('utf-8'))
-    #         return deserialized
-    #     except (TypeError, ValueError):
-    #         tb = traceback.format_exc()
-    #         logging.error("JSON SOCKET ERROR, Data received was not in JSON format")
-    #         logging.debug(tb)
-    #         return {}
+            raise PasswordProtectedError('SOCKET ERROR, The server is password protected')
 
 
 def pad(text, padding=16):
     while len(text) % padding != 0:
         text += ' '
     return text
+
+
+def readBlock(socket, blockLength):
+    # use a memoryview to receive the data chunk by chunk efficiently
+    view = memoryview(bytearray(blockLength))
+    next_offset = 0
+    while blockLength - next_offset > 0:
+        recv_size = socket.recv_into(view[next_offset:], blockLength - next_offset)
+        next_offset += recv_size
+    return view.tobytes()
+
+
+def deserializeJSON(json_bytes):
+    return json.loads(json_bytes.decode('utf-8'))

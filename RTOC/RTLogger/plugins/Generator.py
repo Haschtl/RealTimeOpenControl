@@ -59,15 +59,15 @@ class Plugin(LoggerPlugin):
             self.gen_start = time.time()
         if time.time() - self.gen_start >= 0.5/self.gen_freq:
             if self._lastValue != self.gen_level:
-                self.stream(self._lastValue, self._sname, units=[""])
+                self.stream(self._lastValue, self._sname, unit=[""])
             self._lastValue = self.gen_level + self.offset
-            self.stream(self._lastValue, self._sname, units=[""])
+            self.stream(self._lastValue, self._sname, unit=[""])
 
         else:
             if self._lastValue != 0:
-                self.stream(self._lastValue, self._sname, units=[""])
+                self.stream(self._lastValue, self._sname, unit=[""])
             self._lastValue = 0 + self.offset
-            self.stream(self._lastValue, self._sname, units=[""])
+            self.stream(self._lastValue, self._sname, unit=[""])
 
     def __sawtooth(self):
         if time.time() - self.gen_start >= 1/self.gen_freq:
@@ -75,41 +75,41 @@ class Plugin(LoggerPlugin):
             if self._lastValue != 0:
                 #self._lastValue += self.gen_level*(self.gen_freq)/self.samplerate
                 self._lastValue = self.gen_level
-                self.stream(self._lastValue, self._sname, units=[""])
+                self.stream(self._lastValue, self._sname, unit=[""])
             self._lastValue = 0 + self.offset
-            self.stream(self._lastValue, self._sname, units=[""])
+            self.stream(self._lastValue, self._sname, unit=[""])
         else:
             self._lastValue = self.gen_level * \
                 ((time.time() - self.gen_start*self.gen_freq)) + self.offset
-            self.stream(self._lastValue, self._sname, units=[""])
+            self.stream(self._lastValue, self._sname, unit=[""])
 
     def __sinus(self):
         self._lastValue = self.gen_level * \
             math.sin((time.time()*self.gen_freq)*(2*math.pi) + self.phase) + self.offset
-        self.stream(self._lastValue, self._sname, units=[""])
+        self.stream(self._lastValue, self._sname, unit=[""])
 
     def __noise(self):
         self._lastValue = random.uniform(0, self.gen_level) + self.offset
-        self.stream(self._lastValue, self._sname, units=[""])
+        self.stream(self._lastValue, self._sname, unit=[""])
 
     def __ac(self):
         if time.time() - self.gen_start >= 1/self.gen_freq:
             self.gen_start = time.time()
         if time.time() - self.gen_start >= 0.5/self.gen_freq:
             if self._lastValue != self.gen_level:
-                self.stream(self._lastValue, self._sname, units=[""])
+                self.stream(self._lastValue, self._sname, unit=[""])
             self._lastValue = self.gen_level + self.offset
-            self.stream(self._lastValue, self._sname, units=[""])
+            self.stream(self._lastValue, self._sname, unit=[""])
 
         else:
             if self._lastValue != 0:
-                self.stream(self._lastValue, self._sname, units=[""])
+                self.stream(self._lastValue, self._sname, unit=[""])
             self._lastValue = -self.gen_level - self.offset
-            self.stream(self._lastValue, self._sname, units=[""])
+            self.stream(self._lastValue, self._sname, unit=[""])
 
     def __dc(self):
         self._lastValue = self.gen_level + self.offset
-        self.stream(self._lastValue, self._sname, units=[""])
+        self.stream(self._lastValue, self._sname, unit=[""])
 
     def setCallbacks(self):
         #self.connect(self.widget.samplerate, SIGNAL("valueChanged()",self.changeSamplerate))
