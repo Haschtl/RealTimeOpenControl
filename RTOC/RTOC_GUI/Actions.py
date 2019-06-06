@@ -163,7 +163,7 @@ class Actions:
 
     def setTCPPort(self):
         ans, ok = pyqtlib.text_message(
-            self, translate('RTOC', "TCP Port eingeben"), translate('RTOC', 'Gib den Port an, an welchem dein Rechner f\xfcr RTOC erreichbar ist.'), self.config['tcp']['port'])
+            self, translate('RTOC', "TCP Port eingeben"), translate('RTOC', 'Gib den Port an, an welchem dein Rechner f\xfcr RTOC erreichbar ist.'), str(self.config['tcp']['port']))
         if ok:
             try:
                 ans = int(ans)
@@ -339,7 +339,7 @@ class Actions:
                     self.importData(fileName)
 
     def showAboutMessage(self):
-        pyqtlib.info_message(translate('RTOC', "\xdcber"), "RealTime OpenControl 2.0.1", _(
+        pyqtlib.info_message(translate('RTOC', "\xdcber"), "RealTime OpenControl 2.0.2", _(
             "RealTime OpenControl (RTOC) ist eine freie OpenSource Software unter der BSD-3-Lizenz.\n\nAlle Symbole werden unter der 'Creative Commons Attribution-NoDerivs 3.0 Unported' Lizenz bereitgestellt von icons8 (https://icons8.de)\n\nCopyright (C) 2018 Sebastian Keller"))
 
     def showHelpWebsite(self):
@@ -445,8 +445,8 @@ class Actions:
         self.logger.remote.getDevices()
         dict = self.logger.remote.devices
         # logging.debug(dict)
-        for host in dict.keys():
-            for sig in dict[host]:
+        for host in dict.keys():  # iterating hosts
+            for sig in dict[host]:  # iterating RTRemote.SingleConn.pluglist (getPluginList)
                 if dict[host][sig]['status']:
                     for element in dict[host][sig]['functions']:
                         # self.pluginCallWidget.addItem(host+":"+sig+"."+element+'()')
@@ -625,7 +625,7 @@ class Actions:
         while retry:
             retry = False
             status = self.logger.remote.getConnection(host).status
-            if status is "protected":
+            if status == "protected":
                 text, ok2 = pyqtlib.text_message(None, translate('RTOC', 'Passwort'), _(
                     "Der RTOC-Server {} ist passwortgesch\xfctzt. Bitte Passwort eintragen.").format(hostname),  translate('RTOC', 'TCP-Passwort'))
                 if ok2:
@@ -636,13 +636,13 @@ class Actions:
                         'M\xf6chtest du das Passwort speichern?'), '')
                     if ok3:
                         self.logger.config['tcp']['knownHosts'][hostname][1] = text
-            elif status is "connected":
+            elif status == "connected":
                 pyqtlib.info_message(translate('RTOC', 'Verbindung hergestellt'), _(
                     'Verbindung zu {} an Port {} hergestellt.').format(host, port), '')
 
                 self.addRemoteHostWidget(host, name)
                 return True
-            elif status is "wrongPassword":
+            elif status == "wrongPassword":
                 text, ok = pyqtlib.text_message(None, translate('RTOC', 'Gesch\xfctzt'), translate('RTOC', 'Verbindung zu {} an Port {} wurde nicht hergestellt').format(host, port), translate('RTOC', 'Passwort ist falsch.'))
                 if ok:
                     self.logger.remote.getConnection(host).tcppassword = text
@@ -652,16 +652,20 @@ class Actions:
                         'M\xf6chtest du das Passwort speichern?'), '')
                     if ok3:
                         self.logger.config['tcp']['knownHosts'][hostname][1] = text
-            elif status is "error":
+            elif status == "error":
                 ok = pyqtlib.alert_message(translate('RTOC', 'Verbindungsfehler'), translate('RTOC', 'Fehler. Verbindung zu {} an Port {} konnte nicht hergestellt werden.').format(host, port), translate('RTOC', 'Erneut versuchen?'))
                 if ok:
                     self.logger.remote.connect(host, port, name, password)
                     retry = True
-            elif status is "connecting...":
+            elif status == "connecting...":
                 retry = False
+                pyqtlib.info_message(translate('RTOC', 'Verbindung hergestellt'), _(
+                    'Verbindung zu {} an Port {} hergestellt.').format(host, port), '')
+
+                self.addRemoteHostWidget(host, name)
                 return True
             else:
                 print(status)
                 pyqtlib.info_message('End of the universe',
-                                     'You reached the end of the universe', "This shouldn't happen")
+                                     'You reached the end of the universe', "This shouldn't happen. Status {}".format(status))
         return False

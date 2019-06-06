@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: RTOC
-Version: 2.0.1
+Version: 2.0.2
 Summary: RealTime OpenControl
 Home-page: https://github.com/Haschtl/RealTimeOpenControl
 Author: Sebastian Keller
@@ -159,7 +159,7 @@ Classifier: Topic :: Scientific/Engineering :: Visualization
 Classifier: Topic :: Software Development :: User Interfaces
 Requires-Python: >=3
 Description-Content-Type: text/markdown
-Provides-Extra: ALL
-Provides-Extra: Telegram
-Provides-Extra: Webserver
 Provides-Extra: GUI
+Provides-Extra: Webserver
+Provides-Extra: Telegram
+Provides-Extra: ALL

@@ -88,8 +88,8 @@ class NetworkFunctions:
                 self.__tcpserver.start()
                 logging.info("TCPServer gestartet")
                 return True
-            except OSError:
-                logging.error("Port already in use. Cannot start TCP-Server")
+            except OSError as error:
+                logging.error("Port already in use. Cannot start TCP-Server:\n{}".format(error))
                 self.tcpRunning = False
                 # self.config['tcp']['active'] = False
                 return False
@@ -345,7 +345,7 @@ class NetworkFunctions:
             for fun in self.pluginFunctions.keys():
                 hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir']
 
-                if fun not in [name+'.'+i for i in hiddenFuncs]:
+                if fun.startswith(name+".") and fun not in [name+'.'+i for i in hiddenFuncs]:
                     dict[name]['functions'].append(fun.replace(name+".", ''))
             for fun in self.pluginParameters.keys():
                 hiddenParams = ["run", "smallGUI", 'widget', 'samplerate','lockPerpetialTimer']

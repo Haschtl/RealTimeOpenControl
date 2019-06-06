@@ -13,7 +13,7 @@ import os
 import traceback
 import psutil
 import datetime as dt
-import copy
+# import copy
 
 import logging as log
 log.basicConfig(level=log.DEBUG)
@@ -80,7 +80,8 @@ class telegramBot():
         self.helper = {}
         self._teleThreads = []
         self.busy = False
-        self.menuCommands = [translate('RTOC', 'Event-Benachrichtigung festlegen'), translate('RTOC', 'Letzte Messwerte'), translate('RTOC', 'Signale'), translate('RTOC', 'Ger\xe4te'), translate('RTOC', 'Event/Signal erzeugen'), translate('RTOC', 'Automatisierung')]
+        self.menuCommands = [translate('RTOC', 'Event-Benachrichtigung festlegen'), translate('RTOC', 'Letzte Messwerte'), translate('RTOC', 'Signale')]
+        self.writeMenuCommands = [translate('RTOC', 'Ger\xe4te'), translate('RTOC', 'Event/Signal erzeugen'), translate('RTOC', 'Automatisierung')]
         self.adminMenuCommands = [translate('RTOC', 'Einstellungen')]
 
         self.userActions = {}
@@ -105,9 +106,13 @@ class telegramBot():
                 first_name = str(chat.first_name)
                 last_name = str(chat.last_name)
                 text = translate('RTOC', '{} {} hat sich zum ersten Mal mit {} verbunden.').format(first_name, last_name, self.logger.config['global']['name'])
-                self.send_message_to_all(text)
+                self.send_message_to_all(text, onlyAdmin=True)
                 logging.info('TELEGRAM BOT: New client connected with ID: '+str(chat_id))
-                user = {'eventlevel': self.logger.config['telegram']['eventlevel'], 'shortcuts':[[], []], 'admin':False, 'first_name': first_name, 'last_name': last_name}
+                if len(self.logger.config['telegram']['chat_ids'].keys()) == 0:
+                    ad = 'admin'
+                else:
+                    ad = self.logger.config['telegram']['default_permission']
+                user = {'eventlevel': self.logger.config['telegram']['default_eventlevel'], 'shortcuts':[[], []], 'permission':ad, 'first_name': first_name, 'last_name': last_name}
                 self.logger.config['telegram']['chat_ids'][str(chat_id)] = user
                 self.logger.save_config()
             elif type(self.logger.config['telegram']['chat_ids'][str(chat_id)]) != dict:
@@ -119,9 +124,17 @@ class telegramBot():
                 # Transform old style to new style
                 evLevel = self.logger.config['telegram']['chat_ids'][str(chat_id)][0]
                 shortcuts = self.logger.config['telegram']['chat_ids'][str(chat_id)][1]
-                admin = False
-                user = {'eventlevel':evLevel,'shortcuts':shortcuts,'admin':admin, 'first_name': first_name, 'last_name': last_name}
+                user = {'eventlevel':evLevel,'shortcuts':shortcuts,'permission':'write', 'first_name': first_name, 'last_name': last_name}
                 self.logger.config['telegram']['chat_ids'][str(chat_id)] = user
+            elif type(self.logger.config['telegram']['chat_ids'][str(chat_id)]) == dict:
+                if 'admin' in self.logger.config['telegram']['chat_ids'][str(chat_id)].keys():
+                    ad = self.logger.config['telegram']['chat_ids'][str(chat_id)]['admin']
+                    if ad:
+                        ad = 'admin'
+                    else:
+                        ad = 'write'
+                    self.logger.config['telegram']['chat_ids'][str(chat_id)].pop('admin')
+                    self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] = ad
 
             if chat_id not in self.mode.keys():
                 self.mode[chat_id] = 'menu'
@@ -141,9 +154,10 @@ class telegramBot():
                 # except Exception:
                 #     self.bot.send_message(chat_id=int(id), text=message)
 
-    def send_message_to_all(self, message):
+    def send_message_to_all(self, message, onlyAdmin=False):
         for id in self.logger.config['telegram']['chat_ids'].keys():
-            self.send_message(chat_id=int(id), text=message, delete=False)
+            if onlyAdmin and  self.logger.config['telegram']['chat_ids'][id]['permission'] == 'admin':
+                self.send_message(chat_id=int(id), text=message, delete=False)
             # try:
             #     self.bot.send_message(chat_id=int(id), text=message,
             #                           parse_mode=ParseMode.MARKDOWN)
@@ -167,9 +181,9 @@ class telegramBot():
             start_handler = CommandHandler('start', self.startHandler)
             self.dispatcher.add_handler(start_handler)
             self.dispatcher.add_error_handler(self.error_callback)
-            if self.logger.config['telegram']['inlineMenu']:
-                menu_handler = CallbackQueryHandler(self.inlineMenuHandler)
-                self.dispatcher.add_handler(menu_handler)
+            # if self.logger.config['telegram']['inlineMenu']:
+            menu_handler = CallbackQueryHandler(self.inlineMenuHandler)
+            self.dispatcher.add_handler(menu_handler)
             self.updater.start_polling()
             logging.info('Telegram-Server successfully started!')
             # time.sleep(4)
@@ -235,10 +249,28 @@ class telegramBot():
             menu.append(footer_buttons)
         return menu
 
+    def _permissionCheck(self, chat_id):
+        if self.logger.config['telegram']['onlyAdmin'] and self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] != 'admin':
+            #logging.info('Aborted telegram answer, because telegram-option "onlyAdmin" is active.')
+            text = translate('RTOC', 'Der RTOC-Bot befindet sich im Wartungsmodus. Ein Administrator muss den Zugang freischalten.')
+            logging.info(text)
+            self.bot.send_message(
+                chat_id, text=text, disable_notification=False)
+            return False
+
+        if self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] == 'blocked':
+            text = translate('RTOC', 'Du hast für diesen Bot keine Berechtigungen.')
+            logging.info(text)
+            self.bot.send_message(
+                chat_id, text=text, disable_notification=False)
+            return False
+
+        return True
+
     def send_message(self, chat_id, text, parse_mode=ParseMode.MARKDOWN, disable_notification=True, delete=True):
-        if self.logger.config['telegram']['onlyAdmin'] and not self.logger.config['telegram']['chat_ids'][str(chat_id)]['admin']:
-            logging.info('Aborted telegram answer, because telegram-option "onlyAdmin" is active.')
+        if not self._permissionCheck(chat_id):
             return
+
         try:
             lastMessage = self.bot.send_message(
                 chat_id, text=text, disable_notification=True, parse_mode=ParseMode.MARKDOWN)
@@ -246,68 +278,74 @@ class telegramBot():
             print(traceback.format_exc())
             lastMessage = self.bot.send_message(
                 chat_id, text=text, disable_notification=True)
-        if chat_id not in self.last_messages.keys():
-            self.last_messages[chat_id] = [lastMessage.message_id]
 
         if delete:
-            self.last_messages[chat_id].append(lastMessage.message_id)
-        if len(self.last_messages[chat_id]) > 3:
-            message_id = self.last_messages[chat_id].pop(0)
-            self.bot.delete_message(chat_id, message_id)
+            self._deleteMessageIfOld(chat_id, lastMessage)
+        #     self.last_messages[chat_id].append(lastMessage.message_id)
+        # if len(self.last_messages[chat_id]) > 3:
+        #     message_id = self.last_messages[chat_id].pop(0)
+        #     self.bot.delete_message(chat_id, message_id)
 
-    def sendMenuMessage(self, bot, chat_id, buttonlist, text='', description_text='', n_cols=1, backButton=True):
-        if self.logger.config['telegram']['onlyAdmin'] and not self.logger.config['telegram']['chat_ids'][str(chat_id)]['admin']:
-            logging.info('Aborted telegram answer, because telegram-option "onlyAdmin" is active.')
+    def sendMenuMessage(self, bot, chat_id, buttonlist, text='', description_text='', n_cols=1, backButton=True, inline = False):
+        if not self._permissionCheck(chat_id):
             return
+
         if backButton:
             buttonlist.append(BACKBUTTON)
-        if not self.logger.config['telegram']['inlineMenu']:
-            button_list = [KeyboardButton(s) for s in buttonlist]
-        else:
-            button_list = [InlineKeyboardButton(s, callback_data=s) for s in buttonlist]
-        if not self.logger.config['telegram']['inlineMenu']:
-            reply_markup = ReplyKeyboardMarkup(self.build_menu(button_list, n_cols=n_cols))
-        else:
-            reply_markup = InlineKeyboardMarkup(self.build_menu(button_list, n_cols=n_cols))
+
         if description_text != '':
             text = description_text.replace('/n', '/n') + '\n' + text
 
-        if not self.logger.config['telegram']['inlineMenu']:
-            try:
-                lastMessage = self.bot.send_message(
-                    chat_id, text=text, reply_markup=reply_markup, disable_notification=True, parse_mode=ParseMode.MARKDOWN,)
-            except Exception:
-                lastMessage = self.bot.send_message(
-                    chat_id, text=text, reply_markup=reply_markup, disable_notification=True)
-            if chat_id not in self.last_messages.keys():
-                self.last_messages[chat_id] = [lastMessage.message_id]
-            else:
-                self.last_messages[chat_id].append(lastMessage.message_id)
-                if len(self.last_messages[chat_id]) > 3:
-                    message_id = self.last_messages[chat_id].pop(0)
-                    try:
-                        self.bot.delete_message(chat_id, message_id)
-                    except Exception:
-                        pass
+        if self.logger.config['telegram']['inlineMenu'] or inline:
+            self._sendMenuMessage_inline(bot, chat_id, buttonlist, text, n_cols)
         else:
-            # self.bot.send_message(
-            #     chat_id, text=text, reply_markup=reply_markup)
+            self._sendMenuMessage_keyboard(bot, chat_id, buttonlist, text, n_cols)
+
+
+    def _sendMenuMessage_inline(self, bot, chat_id, buttonlist, text, n_cols):
+        button_list = [InlineKeyboardButton(s, callback_data=s) for s in buttonlist]
+        reply_markup = InlineKeyboardMarkup(self.build_menu(button_list, n_cols=n_cols))
+
+        try:
+            lastMessage = self.bot.send_message(
+                chat_id, text=text, reply_markup=reply_markup, disable_notification=True, parse_mode=ParseMode.MARKDOWN,)
+
+            self._deleteMessageIfOld(chat_id, lastMessage)
+        except Exception:
             try:
                 lastMessage = self.bot.send_message(
-                    chat_id, text=text, reply_markup=reply_markup, disable_notification=True, parse_mode=ParseMode.MARKDOWN,)
-            except Exception:
-                lastMessage = self.bot.send_message(
                     chat_id, text=text, reply_markup=reply_markup, disable_notification=True)
-            if chat_id not in self.last_messages.keys():
-                self.last_messages[chat_id] = [lastMessage.message_id]
-            else:
-                self.last_messages[chat_id].append(lastMessage.message_id)
-                if len(self.last_messages[chat_id]) > 0:
-                    message_id = self.last_messages[chat_id].pop(0)
-                    try:
-                        self.bot.delete_message(chat_id, message_id)
-                    except Exception:
-                        pass
+
+                self._deleteMessageIfOld(chat_id, lastMessage)
+            except Exception:
+                self._sendMenuMessage_keyboard(nMessages=0)
+
+    def _sendMenuMessage_keyboard(self, bot, chat_id, buttonlist, text, n_cols):
+        button_list = [KeyboardButton(s) for s in buttonlist]
+        reply_markup = ReplyKeyboardMarkup(self.build_menu(button_list, n_cols=n_cols))
+
+        try:
+            lastMessage = self.bot.send_message(
+                chat_id, text=text, reply_markup=reply_markup, disable_notification=True, parse_mode=ParseMode.MARKDOWN,)
+        except Exception:
+            lastMessage = self.bot.send_message(
+                chat_id, text=text, reply_markup=reply_markup, disable_notification=True)
+
+        self._deleteMessageIfOld(chat_id, lastMessage)
+
+
+    def _deleteMessageIfOld(self, chat_id, lastMessage, nMessages=3):
+        if chat_id not in self.last_messages.keys():
+            self.last_messages[chat_id] = [lastMessage.message_id]
+        else:
+            self.last_messages[chat_id].append(lastMessage.message_id)
+            while len(self.last_messages[chat_id]) > nMessages:
+                message_id = self.last_messages[chat_id].pop(0)
+                try:
+                    self.bot.delete_message(chat_id, message_id)
+                except Exception:
+                    pass
+
 #################### Menu handler and answers #####################################
 
     def inlineMenuHandler(self, update, context):
@@ -392,16 +430,19 @@ class telegramBot():
         self.mode[chat_id] = 'menu'
         # commands = copy.deepcopy(list(self.userActions.keys()))
         commands = []
-        admin = self.logger.config['telegram']['chat_ids'][str(chat_id)]['admin']
-        for c in self.userActions.keys():
-            if c.startswith('_'):
-                if admin:
+        perm = self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission']
+        if perm not in ['read', 'blocked']:
+            for c in self.userActions.keys():
+                if c.startswith('_'):
+                    if perm == 'admin':
+                        commands += [c]
+                else:
                     commands += [c]
-            else:
-                commands += [c]
-        commands += self.createShortcutList(bot, chat_id)
+            commands += self.createShortcutList(bot, chat_id)
         commands += self.menuCommands
-        if self.logger.config['telegram']['chat_ids'][str(chat_id)]['admin']:
+        if perm in ['write', 'admin']:
+            commands += self.writeMenuCommands
+        if perm == 'admin':
             commands += self.adminMenuCommands
         self.sendMenuMessage(bot, chat_id, commands,
                              translate('RTOC', "*Hauptmen\xfc*"), '', 1, False)
@@ -416,20 +457,22 @@ class telegramBot():
                 self.menuHandler(bot, chat_id)
             elif idx == 2:
                 self.signalsHandler(bot, chat_id)
-            elif idx == 3:
-                self.devicesHandler(bot, chat_id)
-            elif idx == 4:
-                self.createEventHandler(bot, chat_id)
-            elif idx == 5:
-                self.automationHandler(bot, chat_id)
         elif strung in list(self.userActions.keys()):
             self.executeUserAction(bot, chat_id, strung)
         elif strung in self.createShortcutList(bot, chat_id):
             self.callShortcut(bot, chat_id, strung)
-        elif self.logger.config['telegram']['chat_ids'][str(chat_id)]['admin'] and strung in self.adminMenuCommands:
+        elif self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] == 'admin' and strung in self.adminMenuCommands:
                 idx = self.adminMenuCommands.index(strung)
                 if idx == 0:
                     self.settingsHandler(bot, chat_id)
+        elif self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] == 'write' and strung in self.writeMenuCommands:
+                idx = self.writeMenuCommands.index(strung)
+                if idx == 0:
+                    self.devicesHandler(bot, chat_id)
+                elif idx == 1:
+                    self.createEventHandler(bot, chat_id)
+                elif idx == 2:
+                    self.automationHandler(bot, chat_id)
         else:
             self.menuHandler(bot, chat_id)
 
@@ -455,7 +498,7 @@ class telegramBot():
 
 # send latest menu
     def sendLatest(self, bot, chat_id):
-        strung = translate('RTOC', "Name\t | Wert\t | Einheit\n -\t | -\t | -\t | -\n")
+        strung = translate('RTOC', "Name    |  Wert  | Einheit\n------- | ------- | -------\n")
         latest = self.logger.database.getLatest()
         names = list(latest.keys())
         names.sort()
@@ -713,7 +756,7 @@ class telegramBot():
         units = self.logger.database.getUniqueUnits()
         for unit in units:
             commands.append(translate('RTOC', 'Alle mit Einheit "{}" ausw\xe4hlen').format(unit))
-        if self.logger.config['telegram']['chat_ids'][str(chat_id)]['admin']:
+        if self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] == 'admin':
             commands.append(translate('RTOC', 'Ausgew\xe4hle Signale l\xf6schen!'))
             commands.append(translate('RTOC', 'Ausgew\xe4hlte Events l\xf6schen!'))
         commands.append(translate('RTOC', 'Ausgew\xe4hlte Signale herunterladen'))
@@ -760,7 +803,8 @@ class telegramBot():
                 dontplot_signals = []
                 for sig in self.signals_selected[chat_id]:
                     if sig == 'Events':
-                        pass
+                        # pass
+                        plot_signals.append(sig)
                     else:
                         names = sig.split('.')
                         sigID = self.logger.database.getSignalID(names[0], names[1])
@@ -797,8 +841,11 @@ class telegramBot():
                     idx = self.signals_selected[chat_id].index('Events')
                     self.signals_selected[chat_id].pop(idx)
                 # else:
-                self.send_message(chat_id=chat_id,
-                                  text=translate('RTOC', 'Events werden nicht dargestellt.'))
+                    self.send_message(chat_id=chat_id,
+                                      text=translate('RTOC', 'Events werden nicht dargestellt.'))
+                else:
+                    self.send_message(chat_id=chat_id,
+                                      text=translate('RTOC', 'Events waren garnicht ausgewählt.'))
             elif strung.startswith('x '):
                 strung = strung.replace('x ', '')
                 if strung in self.signals_selected[chat_id]:
@@ -1049,25 +1096,42 @@ class telegramBot():
             translate('RTOC', "Alle Daten l\xf6schen"),
             translate('RTOC', 'Aufzeichnungsdauer \xe4ndern'),
             translate('RTOC', 'Globale Samplerate \xe4ndern'),
-            translate('RTOC', '**Server neustarten**'),
-            translate('RTOC', 'Angemeldete Nutzer'),
             ]
+
+        if self.logger.config['postgresql']['active']:
+            commands += [
+            translate('RTOC', 'Datenbank resamplen'),
+            translate('RTOC', 'Datenbank herunterladen'),
+            ]
+
+        if self.logger.config['backup']['active']:
+            commands += [
+            translate('RTOC', 'Jetzt Backup erstellen'),
+            ]
+
         if self.logger.config['tcp']['active']:
             commands += [translate('RTOC', "TCP-Server: An")]
         else:
             commands += [translate('RTOC', "TCP-Server: Aus")]
 
-        if self.logger.config['postgresql']['active']:
-            commands += [translate('RTOC', 'Datenbank resamplen')]
-
-        if self.logger.config['telegram']['active']:
-            commands += [translate('RTOC', "*Telegram-Bot: An (!)*")]
+        if self.logger.config['telegram']['inlineMenu']:
+            commands += [translate('RTOC', "Telegram Bot: InlineMenu")]
         else:
-            commands += [translate('RTOC', "Telegram-Bot: Aus")]
+            commands += [translate('RTOC', "Telegram Bot: KeyboardMenu")]
+        # if self.logger.config['telegram']['active']:
+        #     commands += [translate('RTOC', "*Telegram-Bot: An (!)*")]
+        # else:
+        #     commands += [translate('RTOC', "Telegram-Bot: Aus")]
         if self.logger.config['telegram']['onlyAdmin']:
             commands += [translate('RTOC', "OnlyAdmin: An")]
         else:
             commands += [translate('RTOC', "OnlyAdmin: Aus")]
+
+
+        commands += [
+        translate('RTOC', 'Angemeldete Nutzer'),
+        translate('RTOC', 'Server neustarten'),
+        ]
         ipadress = urllib.request.urlopen('https://ident.me').read().decode('utf8')
         ipadress = translate('RTOC', '\nIP-Adresse: {}').format(ipadress)
         obj_Disk = psutil.disk_usage('/')
@@ -1077,7 +1141,6 @@ class telegramBot():
         diskspace = translate('RTOC', '\nEs sind noch {}GB von {}GB verf\xfcgbar.').format(free, total)
         size, maxsize, databaseSize = self.logger.database.getSignalSize()
         if self.logger.config['postgresql']['active']:
-            commands += [translate('RTOC', 'Datenbank herunterladen')]
             diskspace = diskspace + \
                 translate('RTOC', '\nMessdaten werden in SQL-Datenbank gesichert')
             diskspace += str(translate('RTOC', '\nDatenbank verwendet...\nGesamt: {}\nF\xfcr Signale: {}\nF\xfcr Events: {}').format(databaseSize[0],databaseSize[2],databaseSize[3]))
@@ -1106,33 +1169,56 @@ class telegramBot():
             self.helper[chat_id] = 'users'
             text = translate('RTOC', 'Derzeit angemeldete Telegram-Nutzer')
             commands = []
-            for id in self.logger.config['telegram']['chat_ids'].keys():
+            ids = self.logger.config['telegram']['chat_ids'].keys()
+            for id in ids:
+                self.check_chat_id(id)
+            for id in ids:
                 user = self.logger.config['telegram']['chat_ids'][id]
-                if self.logger.config['telegram']['chat_ids'][id]['admin']:
+                if self.logger.config['telegram']['chat_ids'][id]['permission'] == 'admin':
                     a = translate('RTOC', 'Admin')
-                else:
-                    a = translate('RTOC', 'User')
+                elif self.logger.config['telegram']['chat_ids'][id]['permission'] == 'read':
+                    a = translate('RTOC', 'Read')
+                elif self.logger.config['telegram']['chat_ids'][id]['permission'] == 'write':
+                    a = translate('RTOC', 'Write')
+                else:  # if self.logger.config['telegram']['chat_ids'][id]['permission'] == 'blocked':
+                    a = translate('RTOC', 'Blocked')
                 commands += [user['first_name']+' '+user['last_name']+': '+a]
             self.sendMenuMessage(bot, chat_id, commands, text)
             return
+        elif strung == translate('RTOC', 'Jetzt Backup erstellen'):
+            self.helper[chat_id] = None
+            self.logger.database.pushToDatabase()
+            self.send_message(chat_id, translate('RTOC', 'Backup wurde erstellt.'))
         elif self.helper[chat_id] == 'users':
             for id in self.logger.config['telegram']['chat_ids'].keys():
                 user = self.logger.config['telegram']['chat_ids'][id]
-                if self.logger.config['telegram']['chat_ids'][id]['admin']:
+                if user['permission'] == 'admin':
                     a = translate('RTOC', 'Admin')
-                    isAdmin = False
-                else:
-                    a = translate('RTOC', 'User')
-                    isAdmin = True
+                    next = 'write'
+                elif user['permission'] == 'write':
+                    a = translate('RTOC', 'Write')#
+                    next = 'read'
+                elif user['permission'] == 'read':
+                    a = translate('RTOC', 'Read')#
+                    next = 'blocked'
+                else:  # if self.logger.config['telegram']['chat_ids'][id]['permission'] == 'blocked':
+                    a = translate('RTOC', 'Blocked')
+                    next = 'admin'
                 command = user['first_name']+' '+user['last_name']+': '+a
                 if command == strung:
-                    self.logger.config['telegram']['chat_ids'][id]['admin'] = isAdmin
+                    if str(id) == str(chat_id):
+                        self.send_message(chat_id, translate('RTOC', 'Du kannst deine eigene Berechtigung nicht ändern.'))
+                        return
+                    if a == translate('RTOC', 'Blocked'):
+                        self.send_message(id, translate('RTOC', 'Du hast jetzt Zugang zu diesem Bot.'))
+                    self.logger.config['telegram']['chat_ids'][id]['permission'] = next
                     self.settingsHandlerAns(bot, chat_id, translate('RTOC', 'Angemeldete Nutzer'))
                     return
+            return
         elif strung == translate('RTOC', 'Globale Samplerate \xe4ndern'):
             self.globalSamplerateHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', '**Server neustarten**'):
+        elif strung == translate('RTOC', 'Server neustarten'):
             os.system('sudo reboot')
             time.sleep(5)
             text = translate('RTOC', '**Da hat etwas nicht geklappt.**\nEntweder fehlen mir die n\xf6tigen Rechte, oder mein Zuhause ist kein Linux-Ger\xe4t.')
@@ -1164,6 +1250,16 @@ class telegramBot():
             ok = True
             start = True
             name = 'OnlyAdmin-Modus'
+        elif strung == translate('RTOC', "Telegram Bot: InlineMenu"):
+            self.logger.config['telegram']['inlineMenu'] = False
+            ok = True
+            start = True
+            name = 'InlineMenu'
+        elif strung == translate('RTOC', "Telegram Bot: KeyboardMenu"):
+            self.logger.config['telegram']['inlineMenu'] = True
+            ok = True
+            start = True
+            name = 'KeyboardMenu'
         elif strung == translate('RTOC', 'Datenbank herunterladen'):
             path = self.logger.config['global']['documentfolder']+'/'
             filepathes = self.logger.database.exportCSV(path+'telegram_export', True)
@@ -1187,6 +1283,7 @@ class telegramBot():
             self.logger.database.resampleDatabase(samplerate)
             self.send_message(chat_id, translate('RTOC', 'Daten wurden resamplet.'))
             self.settingsHandler(bot, chat_id)
+            return
         else:
             self.settingsHandler(bot, chat_id)
             return
@@ -1502,10 +1599,11 @@ class telegramBot():
 
     def removeShortcut(self, bot, chat_id, strung):
         if self.current_call[chat_id] is not None:
-            strung = self.current_call[chat_id]
-            if strung in self.logger.config['telegram']['chat_ids'][str(chat_id)]['shortcuts'][0]:
+            strung = self.current_plugin[chat_id]+'.'+self.current_call[chat_id]
+            print(strung)
+            if strung in self.logger.config['telegram']['chat_ids'][str(chat_id)]['shortcuts'][1]:
                 idx = self.logger.config['telegram']['chat_ids'][str(
-                    chat_id)]['shortcuts'][0].index(strung)
+                    chat_id)]['shortcuts'][1].index(strung)
                 self.logger.config['telegram']['chat_ids'][str(
                     chat_id)]['shortcuts'][1].pop(idx)
                 self.logger.config['telegram']['chat_ids'][str(

@@ -1,5 +1,5 @@
 import time
-from threading import Thread
+# from threading import Thread
 import traceback
 import json
 import socket
@@ -145,8 +145,8 @@ class _SingleConnection(LoggerPlugin):
             if evID not in self.eventlist.keys():
                 # self.eventlist[evID] = newEventList[evID]
                 ev = newEventList[evID]
-                self.event(x=ev[4], text=ev[3], sname=str(ev[0]),
-                           dname=self.name+":"+str(ev[1]), priority=ev[6])
+                self.event(x=ev[4], text=ev[3], sname=str(ev[1]),
+                           dname=self.name+":"+str(ev[0]), priority=ev[6])
 
         self.eventlist = newEventList
 

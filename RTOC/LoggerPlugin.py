@@ -80,7 +80,7 @@ class LoggerPlugin:
 
         return packagedir
 
-    def stream(self, y, snames, dname=None, unit=None, x=None, slist=None, sdict=None):
+    def stream(self, y=[], snames=[], dname=None, unit=None, x=None, slist=None, sdict=None):
         """
         Use this function to send new measurements to RTOC. You can send multiple signals at once.
 
@@ -543,6 +543,8 @@ class LoggerPlugin:
 
 
 class _perpetualTimer():
+    thread_counter = 0
+
     def __init__(self, hFunction, samplerate=1, lock=None):
         self._samplerate = samplerate
         self._lock = lock
@@ -550,32 +552,46 @@ class _perpetualTimer():
         self._thread = None
 
     def _handle_function(self):
-        start = time.time()
+        self.thread_counter -= 1
+        if self.thread_counter != 0:
+            logging.warning('there should not be a running thread, but unfortunately it is.')
+            print(self.thread_counter)
+
         with self._lock:
+            start = time.time()
             self._hFunction()
-        diff = time.time() - start
-        timedelta = 1/self._samplerate - diff
-        if timedelta < 0:
-            timedelta = 0
+            diff = time.time() - start
+            timedelta = 1/self._samplerate - diff
+            if timedelta < 0:
+                timedelta = 0
         self._thread = Timer(timedelta, self._handle_function)
+        self.thread_counter += 1
         self._thread.start()
 
     def setSamplerate(self, rate):
         if rate != self._samplerate:
             self._samplerate = rate
-            if self._thread is not None:
-                self.cancel()
-            self._thread = Timer(1/self._samplerate, self._handle_function)
-            self._thread.start()
+            self.cancel()
+            if self.thread_counter == 0:
+                self._thread = Timer(1/self._samplerate, self._handle_function)
+                self.thread_counter += 1
+                self._thread.start()
+            else:
+                logging.warning('Thread should have stopped before changing samplerate, but it didnt.')
 
     def getSamplerate(self):
         return self._samplerate
 
     def start(self):
+        logging.info('Starting perpetual timer')
+        self.cancel()
         self._thread = Timer(0, self._handle_function)
+        self.thread_counter += 1
         self._thread.start()
 
     def cancel(self):
         if self._thread is not None:
-            self._thread.cancel()
-            self._thread = None
+            with self._lock:
+                self._thread.cancel()
+                self.thread_counter -= 1
+                self._thread = None

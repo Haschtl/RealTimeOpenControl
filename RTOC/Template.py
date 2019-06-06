@@ -1,7 +1,7 @@
 """
 This template shows, how to implement plugins in RTOC
 
-RTOC version 2.0.1
+RTOC version 2.0.2
 
 A plugin needs to import RTOC.LoggerPlugin to be recognized by RTOC.
 """

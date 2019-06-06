@@ -322,3 +322,5 @@ class DeviceFunctions:
                     origParName = "self.pluginObjects['"+name+"']."+str(element)
 
                     self.pluginParameters[name+"." +element] = origParName
+
+        # print(self.pluginFunctions)

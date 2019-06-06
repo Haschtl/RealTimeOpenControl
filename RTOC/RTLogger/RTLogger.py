@@ -82,7 +82,8 @@ defaultconfig = {
     "telegram": {
         "active": False,
         "token": "",
-        "eventlevel": 0,
+        "default_eventlevel": 0,
+        "default_permission": 'blocked', # or 'read' or 'write' or 'admin'
         "chat_ids": {},
         "inlineMenu": False,
         "onlyAdmin": False

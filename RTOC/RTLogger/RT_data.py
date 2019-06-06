@@ -772,12 +772,15 @@ class RT_data:
         Returns:
             dict: {EVENT_ID: [DEVICE_ID,SIGNAL_ID,EVENT_ID,TEXT,TIME,VALUE,PRIORITY, ID],...}
         """
-        ev = {}
-        for evID in self._events.keys():
-            name = self.getEventName(evID)
-            old = self._events[evID]
-            ev[evID]=[name[0],name[1],*old[2:]]
-        return ev
+        if beauty:
+            ev = {}
+            for evID in self._events.keys():
+                name = self.getEventName(evID)
+                old = self._events[evID]
+                ev[evID]=[name[0],name[1],*old[2:]]
+            return ev
+        else:
+            return dict(self._events)
 
     def signals(self):
         """
@@ -1123,11 +1126,12 @@ class RT_data:
         dev = self._SQLdeviceExists(devicename)
         if dev is False:
             self._SQLcreateDevice(signal[0], devicename)
-        sigID = self._SQLcreateSignal(sigID, signalname, devicename, x, y, unit)
+        if not self.signalExists(signalname, devicename):
+            sigID = self._SQLcreateSignal(sigID, signalname, devicename, x, y, unit)
         # add data
-        sql = 'UPDATE '+SIGNAL_TABLE_NAME+' SET X = ARRAY'+str(x)+' WHERE ID ='+str(sigID)+';'
+        sql = 'UPDATE '+SIGNAL_TABLE_NAME+' SET X = ARRAY'+str(x)+'::NUMERIC[] WHERE ID ='+str(sigID)+';'
         sql += '\nUPDATE '+SIGNAL_TABLE_NAME + \
-            ' SET Y = ARRAY'+str(y)+' WHERE ID ='+str(sigID)+';'
+            ' SET Y = ARRAY'+str(y)+'::NUMERIC[] WHERE ID ='+str(sigID)+';'
         sql += '\nUPDATE '+SIGNAL_TABLE_NAME+' SET UNIT = \'' + \
             str(unit)+'\' WHERE ID ='+str(sigID)+';'
         self._execute_n_commit(sql)
@@ -1193,10 +1197,11 @@ class RT_data:
         if check_devID == -1:
             self._SQLcreateDevice(devID, devicename)
             devID = self._SQLgetDeviceID(devicename)
-        check_sigID = self._SQLgetSignalID(devicename, signalname)
-        if check_sigID == -1:
-            self._SQLcreateSignal(sigID, devicename, signalname)
-            sigID = self._SQLgetSignalID(devicename, signalname)
+        # check_sigID = self._SQLgetSignalID(devicename, signalname)
+        # if check_sigID == -1:
+        if not self.signalExists(signalname, devicename):
+            sigID = self._SQLcreateSignal(sigID, devicename, signalname)
+            # sigID = self._SQLgetSignalID(devicename, signalname)
         if devID != -1 and sigID != -1:
             sql = '''INSERT INTO '''+EVENT_TABLE_NAME+'''(ID, TIME, TEXT, DEVICE_ID, SIGNAL_ID, PRIORITY, VALUE, EVENT_ID)
                     VALUES
@@ -1837,12 +1842,13 @@ class RT_data:
         #else:
         signal = self.getSignal(sigID)
         if signal is not None:
-            xminLocal = min(signal[2])
-            xmaxLocal = max(signal[2])
-            sigLenLocal = len(list(signal[2]))
-            xmin = min([xminLocal, xmin])
-            xmax = max([xmaxLocal, xmax])
-            sigLen = max([sigLenLocal, sigLen])
+            if len(signal[2])>0:
+                xminLocal = min(signal[2])
+                xmaxLocal = max(signal[2])
+                sigLenLocal = len(list(signal[2]))
+                xmin = min([xminLocal, xmin])
+                xmax = max([xmaxLocal, xmax])
+                sigLen = max([sigLenLocal, sigLen])
 
         return float(xmin), float(xmax), int(sigLen)
 
@@ -1978,24 +1984,37 @@ class RT_data:
         if xmin == None:
             xmin = 0
         if xmax == None:
-            xmax = time.time()*2
+            xmax = float(time.time())*2
 
+        signal = None
         if self.logger.config['postgresql']['active'] and database:
             signal = self._getSQLSignal(sigID, None,  xmin=xmin, xmax=xmax, maxN=maxN)  # sigLen)
             if signal == None:
                 logging.warning('Could not find {} in database'.format(sigID))
                 database = False
 
-        if database:
+        if sigID in self._signals:
+            # signal = copy.deepcopy(self._signals[sigID])
+            signal_local = list(self._signals[sigID])
+            if signal is None:
+                signal = signal_local
+            else:
+                for idx, x in enumerate(signal_local[2]):
+                    if x > signal[2][-1]:
+                        signal[2] += list(signal_local[2])[idx:]
+                        signal[3] += list(signal_local[3])[idx:]
+                        break
+
+        if signal is not None:
             for idx, x in enumerate(signal[2]):
                 if x > xmin:
-                    signal[2] = signal[2][idx:]
-                    signal[3] = signal[3][idx:]
+                    signal[2] = list(signal[2])[idx:]
+                    signal[3] = list(signal[3])[idx:]
                     break
             for idx, x in enumerate(signal[2]):
                 if x > xmax:
-                    signal[2] = signal[2][0:idx-1]
-                    signal[3] = signal[3][0:idx-1]
+                    signal[2] = list(signal[2])[0:idx-1]
+                    signal[3] = list(signal[3])[0:idx-1]
                     break
             if maxN != None and type(maxN) == int:
                 if len(signal[2]) > maxN:
@@ -2010,33 +2029,7 @@ class RT_data:
                     signal[3] = newY
             return signal
         else:
-            if sigID in self._signals:
-                # signal = copy.deepcopy(self._signals[sigID])
-                signal = list(self._signals[sigID])
-                for idx, x in enumerate(signal[2]):
-                    if x > xmin:
-                        signal[2] = list(signal[2])[idx:]
-                        signal[3] = list(signal[3])[idx:]
-                        break
-                for idx, x in enumerate(signal[2]):
-                    if x > xmax:
-                        signal[2] = list(signal[2])[0:idx-1]
-                        signal[3] = list(signal[3])[0:idx-1]
-                        break
-                if maxN != None and type(maxN) == int:
-                    if len(signal[2]) > maxN:
-                        overRatio = int(len(signal[2])/maxN)
-                        newX = []
-                        newY = []
-                        for idx, i in enumerate(signal[2]):
-                            if idx % overRatio == 0:
-                                newX.append(signal[2][idx])
-                                newY.append(signal[3][idx])
-                        signal[2] = newX
-                        signal[3] = newY
-                return signal
-            else:
-                return None
+            return None
 
     def getSignal_byName(self, devicename, signalname, xmin=None, xmax=None, database=False, maxN=None):
         """

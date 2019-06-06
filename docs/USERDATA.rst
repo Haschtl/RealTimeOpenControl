@@ -107,16 +107,17 @@ csv_profiles               {}                  dict        Allocation of importe
 telegram
 ++++++++++++++++++++
 
-=========================  =============  =========== =========================
+=========================  =============  ======================================= =========================
 Entry                      Default        Type        Information
-=========================  =============  =========== =========================
-active                     False          bool        De/activate telegram-bot
-token                      ""             str         Your telegram bot-token
-eventlevel                 0              0,1 or 2    Default eventlevel for new users
-chat_ids                   {}             dict        Information about telegram-clients is stored here: ``clientID={eventlevel=0, shortcuts=[[],[]], admin=False}``
-inlineMenu                 False          bool        Make the telegram menu inline or in KeyboardMarkup
-onlyAdmin                  False          bool        If True, only admins will be able to access the bot 
-=========================  =============  =========== =========================
+=========================  =============  ======================================= =========================
+active                     False          bool                                    De/activate telegram-bot
+token                      ""             str                                     Your telegram bot-token
+default_eventlevel         0              0,1 or 2                                Default eventlevel for new users
+default_permission         'blocked'      'blocked','read', 'write' or 'admin'    Default user permissions for new users. First user is always admin!
+chat_ids                   {}             dict                                    Information about telegram-clients is stored here: ``clientID={eventlevel=0, shortcuts=[[],[]], admin=False}``
+inlineMenu                 False          bool                                    Make the telegram menu inline or in KeyboardMarkup
+onlyAdmin                  False          bool                                    If True, only admins will be able to access the bot
+=========================  =============  ======================================= =========================
 
 tcp
 ++++++++++++++++++++

@@ -92,7 +92,7 @@ To get access to the settings, you need to connect your client with the bot once
 
 Telegram Custom-menu
 -----------------------------
-The file :ref:`telegramActions.json` contains dicts with actions, that will be shown in the main menu and can be executed by any user.
+The file :ref:`telegramActions.json` contains dicts with actions, that will be shown in the main menu and can be executed by any user. If the action-name (key) starts with '_' only admins will be able to see this button.
 
 Here is an example to send a screenshot
 
