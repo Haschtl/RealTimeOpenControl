@@ -19,6 +19,16 @@ Configure RTOC for Telegram
 +++++++++++++++++++++++++++++
 You can eather configure it in the settings of the RTOC GUI or edit the :ref:`config.json` file by yourself. Enter your Bot-Token there and activate it  (``active=True``).
 
+User permissions
++++++++++++++++++++++++++++++
+By default any new client connected to this bot will have no permissions. You can change the default behavior in :ref:`config.json`.
+
+The first client connected to the bot will automatically be admin. The admin has the permission to change the permissions of all users.
+
+- **blocked**: No permissions at all
+- **read**: Can receive event-notifications and plot signals
+- **write**: Can create global Events/Actions, send Events/Signals, access devices
+- **admin**: Full permissions. Can delete signals, access settings menu
 
 .. image:: ../screenshots/telegramBot.png
 
@@ -26,13 +36,13 @@ Mainmenu
 ------------
 
 - <USER_ACTIONS>
-- Set Event Notification
-- Latest values
-- Signals
-- Devices
-- Send event/signal
-- Automation
-- Settings (**only admin**)
+- Set Event Notification  [**read**,**write**,**admin**]
+- Latest values [**read**,**write**,**admin**]
+- Signals [**read**,**write**,**admin**]
+- Devices [**write**,**admin**]
+- Send event/signal [**write**,**admin**]
+- Automation [**write**,**admin**]
+- Settings [**admin**]
 
 Set Event Notification
 ++++++++++++++++++++++++
@@ -51,9 +61,9 @@ Contains a list of all signals. Clicking on a signal will select this signal. Yo
 
 ``Show/Hide events`` will show/hide events in the plot. Events are displayed as vertical lines with the event-text
 
-``Delete signals`` (**only admin**) will delete all selected data (signals and time-period).
+``Delete signals`` [**admin**] will delete all selected data (signals and time-period).
 
-``Delete events`` (**only admin**) will delete all selected events (time-period).
+``Delete events`` [**admin**] will delete all selected events (time-period).
 
 Devices
 +++++++++++++++++++++++
