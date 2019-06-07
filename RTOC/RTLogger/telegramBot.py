@@ -931,9 +931,7 @@ class telegramBot():
         xmin_s, xmax_s = self.signals_range[chat_id]
         xmin_s = dt.datetime.fromtimestamp(xmin_s).strftime("%d.%m.%Y %H:%M:%S")
         xmax_s = dt.datetime.fromtimestamp(xmax_s).strftime("%d.%m.%Y %H:%M:%S")
-        text = 'Hier kannst du einstellen, welchen Bereich ich darstellen soll.\nGib dazu jetzt das Startdatum und Enddatum in folgendem Format ein: "' + \
-            dt.datetime.fromtimestamp(time.time()-1000).strftime("%d.%m.%Y %H:%M:%S") + \
-            ' - '+dt.datetime.fromtimestamp(time.time()).strftime("%d.%m.%Y %H:%M:%S")+'"'
+        text = 'Hier kannst du einstellen, welchen Bereich ich darstellen soll.\nWenn du nur ein Datum angibst, gehe ich davon aus, du willst die Daten ab diesem Zeitpunkt bis jetzt haben.\nWenn du einen Zeitraum angeben willst, trenne zwei Zeitpunkte mit einem "-". Du musst keine Uhrzeit angeben.\nBeispiel: "16.05.19 - 13.06.19 14:33"'
         text += translate('RTOC', '\nAusgew\xe4hlter Zeitraum:\n{} - {}\nVerf\xfcgbarer Zeitraum:\n{} - {}\n').format(xmin_s, xmax_s, xmin, xmax)
         commands = [translate('RTOC', 'Letzte Minute'), translate('RTOC', 'Letzten 10 Minuten'), translate('RTOC', 'Letzte Stunde'), translate('RTOC', 'Letzte 24h'), translate('RTOC', 'Letzte Woche'), translate('RTOC', 'Letzter Monat'), translate('RTOC', 'Alles')]
         self.sendMenuMessage(bot, chat_id, commands, text)
@@ -964,56 +962,11 @@ class telegramBot():
                 xmin = self.logger.database.getGlobalXmin() -100
                 xmax = self.logger.database.getGlobalXmax() +100
             else:
-                if len(strung.split('-')) == 2:
-                    times = strung.split('-')
-                    while times[0].endswith(' '):
-                        times[0] = times[0][0:-1]
-                    while times[0].startswith(' '):
-                        times[0] = times[0][1:]
-                    while times[1].endswith(' '):
-                        times[1] = times[1][0:-1]
-                    while times[0].startswith(' '):
-                        times[1] = times[1][1:]
-                    foundXmin = False
-                    foundXmax = False
-                    for format in ['%d.%m.%Y %H:%M:%S', '%d.%m %H:%M:%S', '%d.%m %H:%M', '%d.%m.%Y %H:%M', '%d.%m.%Y', '%d.%m']:
-                        try:
-                            xmin = dt.datetime.strptime(times[0], format).timestamp()
-                            foundXmin = True
-                            break
-                        except Exception:
-                            pass
-                    for format in ['%d.%m.%Y %H:%M:%S', '%d.%m %H:%M:%S', '%d.%m %H:%M', '%d.%m.%Y %H:%M', '%d.%m.%Y', '%d.%m']:
-                        try:
-                            xmax = dt.datetime.strptime(times[1], format).timestamp()
-                            foundXmax = True
-                            break
-                        except Exception:
-                            pass
-
-                    if not foundXmin or not foundXmax:
-                        # print(traceback.format_exc())
-                        self.send_message(chat_id=chat_id,
-                                          text=translate('RTOC', 'Bitte sende mir einen Zeitraum, den ich verstehen kann:\n')+'"'+dt.datetime.fromtimestamp(time.time()-1000).strftime("%d.%m.%Y %H:%M:%S")+' - '+dt.datetime.fromtimestamp(time.time()).strftime("%d.%m.%Y %H:%M:%S")+'"')
-                        return
-                else:
-                    foundXmin = False
-                    while strung.endswith(' '):
-                        strung = strung[0:-1]
-                    while strung.startswith(' '):
-                        strung = strung[1:]
-                    for format in ['%d.%m.%Y %H:%M:%S', '%d.%m %H:%M:%S', '%d.%m %H:%M', '%d.%m.%Y %H:%M', '%d.%m.%Y', '%d.%m']:
-                        try:
-                            xmin = dt.datetime.strptime(strung, format).timestamp()
-                            xmax = time.time()
-                            foundXmin = True
-                            break
-                        except Exception:
-                            pass
-                    if not foundXmin:
-                        self.send_message(chat_id=chat_id,
-                                          text=translate('RTOC', 'Bitte sende mir einen Zeitraum, den ich verstehen kann:\n')+'"'+dt.datetime.fromtimestamp(time.time()-1000).strftime("%d.%m.%Y %H:%M:%S")+' - '+dt.datetime.fromtimestamp(time.time()).strftime("%d.%m.%Y %H:%M:%S")+'"')
-                        return
+                found, xmin, xmax = _strToTimerange(strung)
+                if not found:
+                    self.send_message(chat_id=chat_id,
+                                      text=translate('RTOC', 'Bitte sende mir einen Zeitraum, den ich verstehen kann.'))
+                    return
             self.signals_range[chat_id] = [xmin, xmax]
             xmin = dt.datetime.fromtimestamp(xmin).strftime("%d.%m.%Y %H:%M:%S")
             xmax = dt.datetime.fromtimestamp(xmax).strftime("%d.%m.%Y %H:%M:%S")
@@ -2030,3 +1983,52 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
         #                 Name angeben ...
         #
         # <--
+
+
+def _strToTimestamp(datetimestr):
+    while datetimestr.endswith(' '):
+        datetimestr = datetimestr[0:-1]
+    while datetimestr.startswith(' '):
+        datetimestr = datetimestr[1:]
+    formats = []
+    dates = ['%d.%m.%Y', '%d.%m', '%m.%Y', '%d.%m.%y', '%m/%d', '%m/%d/%y',
+             '%m/%d/%Y', '%m-%d-%y', '%m-%d-%Y', '%d. %B %Y', '%B %Y']
+    times = ['%H:%M:%S', '%H:%M']
+
+    for d in dates:
+        formats += [d]
+        for t in times:
+            formats += [t]
+            formats += [d+' '+t]
+            formats += [t+' '+d]
+
+    for format in formats:
+        try:
+            ts = dt.datetime.strptime(datetimestr, format)
+            if 'y' not in format.lower():
+                ts = ts.replace(year=2019)
+            ts = ts.timestamp()
+
+            return True, ts
+            break
+        except Exception:
+            pass
+    return False, None
+
+
+def _strToTimerange(rangestr):
+    if len(rangestr.split('-')) == 2:
+        times = rangestr.split('-')
+        foundXmin, xmin = _strToTimestamp(times[0])
+        foundXmax, xmax = _strToTimestamp(times[1])
+        if not foundXmin or not foundXmax:
+            return False, None, None
+        else:
+            return True, xmin, xmax
+    else:
+        xmax = time.time()
+        foundXmin, xmin = _strToTimestamp(rangestr)
+        if not foundXmin:
+            return False, None, None
+        else:
+            return True, xmin, xmax

@@ -1,4 +1,4 @@
-# jsonsocket.py v1.6
+# jsonsocket.py v1.7
 
 import json
 import socket
@@ -26,6 +26,7 @@ class NoPasswordProtectionError(Exception):
         expression -- input expression in which the error occurred
         message -- explanation of the error
     """
+
     def __init__(self, expression, message):
         self.expression = expression
         self.message = message
@@ -39,9 +40,10 @@ class WrongPasswordError(Exception):
         expression -- input expression in which the error occurred
         message -- explanation of the error
     """
+
     def __init__(self, expression, message):
-       self.expression = expression
-       self.message = message
+        self.expression = expression
+        self.message = message
 
 
 class PasswordProtectedError(Exception):
@@ -52,6 +54,7 @@ class PasswordProtectedError(Exception):
         expression -- input expression in which the error occurred
         message -- explanation of the error
     """
+
     def __init__(self, expression, message):
         self.expression = expression
         self.message = message
@@ -69,6 +72,7 @@ class PasswordProtectedError(Exception):
 #        self.expression = expression
 #        self.message = message
 
+BACKLOG = 5
 
 
 class Server(object):
@@ -83,11 +87,10 @@ class Server(object):
         reuse_port (bool): Enable/disable reuse_port (default: True)
     """
 
-    backlog = 5
-    client = None
-
     def __init__(self, host, port, keyword=None, reuse_port=True):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.client = None
+
         if reuse_port:
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
@@ -99,7 +102,7 @@ class Server(object):
         # self.socket.setblocking(0)
         self.socket.settimeout(5.0)
         self.socket.bind((host, port))
-        self.socket.listen(self.backlog)
+        self.socket.listen(BACKLOG)
 
         self.keyword = keyword
 
@@ -112,8 +115,8 @@ class Server(object):
         """
         self.keyword = keyword
 
-    def __del__(self):
-        self.close()
+    # def __del__(self):
+    #     self.close()
 
     def accept(self):
         """
@@ -181,9 +184,10 @@ class Client(object):
         keyword (str or None): Set a keyword for encrypted communication. Leaf blank for unsecure connection. (default: None)
     """
 
-    socket = None
-    keyword = None
-    host = None
+    def __init__(self):
+        self.socket = None
+        self.keyword = None
+        self.host = None
 
     def setKeyword(self, keyword=None):
         """
@@ -194,8 +198,8 @@ class Client(object):
         """
         self.keyword = keyword
 
-    def __del__(self):
-        self.close()
+    # def __del__(self):
+    #     self.close()
 
     def connect(self, host, port, keyword=None, reuse_port=True):
         """
@@ -208,6 +212,7 @@ class Client(object):
             reuse_port (bool): Enable/disable reuse_port (default: True)
         """
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
         if reuse_port:
             self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
@@ -312,10 +317,10 @@ def _recv(socket, key=None):
     # read the length of the data, letter by letter until we reach EOL
     length_str = b''
     try:
-        char = socket.recv(1)#.decode()
+        char = socket.recv(1)  # .decode()
         while char != b'\n':
             length_str += char
-            char = socket.recv(1)#.decode()
+            char = socket.recv(1)  # .decode()
     except Exception:
         print(traceback.format_exc())
         return False
@@ -328,7 +333,7 @@ def _recv(socket, key=None):
     total = 0
     tagTotal = 0
     nonceTotal = 0
-    if len(lens) ==1:
+    if len(lens) == 1:
         total = int(lens[0])
         # not encrypted
     elif len(lens) == 3:
@@ -364,7 +369,8 @@ def _recv(socket, key=None):
                 logging.error(tb)
                 raise WrongPasswordError("SOCKET PASSWORD ERROR, The provided password is wrong!")
         else:
-            raise NoPasswordProtectionError('SOCKET PASSWORD ERROR, No password provided!\nCannot receive data')
+            raise NoPasswordProtectionError(
+                'SOCKET PASSWORD ERROR, No password provided!\nCannot receive data')
     else:
         if len(tagView) == 0 and len(nonceView) == 0:
             try:
@@ -372,7 +378,8 @@ def _recv(socket, key=None):
             except (TypeError, ValueError):
                 tb = traceback.format_exc()
                 logging.debug(tb)
-                raise PasswordProtectedError('JSON SOCKET ERROR, Data received was not in JSON format. Maybe the RTOC-Server is password-protected')
+                raise PasswordProtectedError(
+                    'JSON SOCKET ERROR, Data received was not in JSON format. Maybe the RTOC-Server is password-protected')
         else:
             raise PasswordProtectedError('SOCKET ERROR, The server is password protected')
 

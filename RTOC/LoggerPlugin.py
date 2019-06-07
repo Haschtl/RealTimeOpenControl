@@ -1,4 +1,4 @@
-# LoggerPlugin v2.3
+# LoggerPlugin v2.4
 import traceback
 import time
 import sys

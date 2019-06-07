@@ -57,7 +57,9 @@ class _perpetualTimer():
     def _handle_function(self):
         try:
             self._hFunction()
-        except Exception:
+        except Exception as error:
+            logging.info(traceback.format_exc())
+            logging.info(error)
             logging.info('Backup failed')
         if QTimer is not None and self._useqtimer:
             self._thread = QTimer()
@@ -1126,7 +1128,7 @@ class RT_data:
         dev = self._SQLdeviceExists(devicename)
         if dev is False:
             self._SQLcreateDevice(signal[0], devicename)
-        if not self.signalExists(signalname, devicename):
+        if not self._SQLsignalExists(signalname, devicename):
             sigID = self._SQLcreateSignal(sigID, signalname, devicename, x, y, unit)
         # add data
         sql = 'UPDATE '+SIGNAL_TABLE_NAME+' SET X = ARRAY'+str(x)+'::NUMERIC[] WHERE ID ='+str(sigID)+';'
@@ -1139,6 +1141,16 @@ class RT_data:
     def _SQLdeviceExists(self, devicename):
         existtest = "SELECT EXISTS (select ID from "+DEVICE_TABLE_NAME + \
             " where NAME = '"+str(devicename)+"');"
+        sig = self._execute_n_fetchall(existtest)
+        if sig is not None and sig != []:
+            sig = bool(sig[0][0])
+        else:
+            sig = False
+        return sig
+
+    def _SQLsignalExists(self, signalname):
+        existtest = "SELECT EXISTS (select ID from "+SIGNAL_TABLE_NAME + \
+            " where NAME = '"+str(signalname)+"');"
         sig = self._execute_n_fetchall(existtest)
         if sig is not None and sig != []:
             sig = bool(sig[0][0])
@@ -1199,7 +1211,7 @@ class RT_data:
             devID = self._SQLgetDeviceID(devicename)
         # check_sigID = self._SQLgetSignalID(devicename, signalname)
         # if check_sigID == -1:
-        if not self.signalExists(signalname, devicename):
+        if not self._SQLsignalExists(signalname, devicename):
             sigID = self._SQLcreateSignal(sigID, devicename, signalname)
             # sigID = self._SQLgetSignalID(devicename, signalname)
         if devID != -1 and sigID != -1:
@@ -1308,7 +1320,7 @@ class RT_data:
         if len(x) == len(y):
             if not self._SQLdeviceExists(dname):
                 self._SQLcreateDevice(dname)
-            if not self.signalExists(sname, dname):
+            if not self._SQLsignalExists(sname, dname):
                 sigID = self._SQLcreateSignal(sname, dname)
                 self._SQLplotNewData(x, y, unit, dname, sname,
                                      c, hold, autoResize)
