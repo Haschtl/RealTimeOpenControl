@@ -63,8 +63,7 @@ class SettingsWidget(QtWidgets.QWidget):
 
         self.clearSignalStylesButton.clicked.connect(self.clearSignalStyles)
         self.clearLastEditedListButton.clicked.connect(partial(self.clear, 'lastSessions'))
-        self.clearTelegramClientListButton.clicked.connect(
-            partial(self.clear, ['telegram', 'chat_ids']))
+        self.clearTelegramClientListButton.clicked.connect(self.clearTelegram)
         self.clearTCPHostListButton.clicked.connect(partial(self.clear, ['tcp', 'knownHosts']))
 
         self.resetButton.clicked.connect(self.reset)
@@ -218,6 +217,13 @@ class SettingsWidget(QtWidgets.QWidget):
             self.config[key[0]][key[1]] = {}
         else:
             self.config[key] = {}
+
+    def clearTelegram(self):
+        userpath = self.config['global']['documentfolder']
+        if not os.path.exists(userpath):
+            os.mkdir(userpath)
+        if os.path.exists(userpath+"/telegram_clients.json"):
+            os.remove(userpath+"/telegram_clients.json")
 
     def toggle(self, button, key):
         value = button.isChecked()

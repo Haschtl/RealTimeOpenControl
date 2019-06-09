@@ -12,7 +12,7 @@ logging = log.getLogger(__name__)
 # __package__ = "RTOC"
 # __main__ = __name__
 name = "RTOC"
-__version__ = "2.0.2"
+__version__ = "2.0.3"
 
 
 def main():
@@ -36,7 +36,7 @@ def main():
                     'RTOC.py [-h] [-r <Remoteadress>]\n -h: Hilfe\n-r (--remote) <Remoteadresse>: TCP-Client zu RTOC-Server\nF\xfcr Optionen ohne GUI verwende "python3 -m RTOC.RTLogger -h"')
                 sys.exit(0)
             elif opt == '-v':
-                logging.info("2.0.2")
+                logging.info("2.0.3")
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)

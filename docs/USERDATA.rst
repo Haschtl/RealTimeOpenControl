@@ -24,6 +24,7 @@ It contains the following files
   ├── globalEvents.json
   ├── plotStyles.json
   ├── telegramActions.json
+  ├── telegram_clients.json
 
 backup (directory)
 ========================================
@@ -114,7 +115,6 @@ active                     False          bool                                  
 token                      ""             str                                     Your telegram bot-token
 default_eventlevel         0              0,1 or 2                                Default eventlevel for new users
 default_permission         'blocked'      'blocked','read', 'write' or 'admin'    Default user permissions for new users. First user is always admin!
-chat_ids                   {}             dict                                    Information about telegram-clients is stored here: ``clientID={eventlevel=0, shortcuts=[[],[]], admin=False}``
 inlineMenu                 False          bool                                    Make the telegram menu inline or in KeyboardMarkup
 onlyAdmin                  False          bool                                    If True, only admins will be able to access the bot
 =========================  =============  ======================================= =========================
@@ -145,6 +145,7 @@ autoIfFull                 True              bool        Automatically backup, i
 autoOnClose                True              bool        Automatically backup after closing RTOC
 loadOnOpen                 True              bool        Automatically load data after starting RTOC (if False, signals are still shown to make sure that IDs are allocated correctly)
 intervall                  240               float       Set backup-intervall in seconds
+resample                   0                 float         If != 0, signals will be resampled with given samplerate before creating backup
 =========================  ================  =========== =========================
 
 globalActions.json
@@ -162,3 +163,7 @@ This file contains all signal styles, which are used by the GUI. Delete it, to r
 telegramActions.json
 ========================================
 Use this file to add main-menu-entries in the telegram-bot. More information here: :ref:`Telegram Custom-menu`
+
+telegram_clients.json
+========================================
+Information about telegram-clients is stored here: ``clientID = {eventlevel = 0, shortcuts = [[],[]], first_name = "NAME", last_name = "NAME", permission = "admin", menu = "menu"}``

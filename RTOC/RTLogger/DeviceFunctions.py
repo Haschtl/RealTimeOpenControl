@@ -231,7 +231,7 @@ class DeviceFunctions:
                 return False
         except Exception:
             tb = traceback.format_exc()
-            logging.debug(tb)
+            logging.error(tb)
             logging.warning(
                 "PLUGIN FAILURE\nCould not get/set/call Plugin parameter/function'"+str(name)+"'\n")
             return False
@@ -249,28 +249,30 @@ class DeviceFunctions:
             kwargs (\*any): Keyworded parameters transmitted to the function
 
         Returns:
-            parameter (any): The value of the requested/setted parameter(s).
+            bool: True, if call was successfull
 
-            False, if any error occured, while trying to get/set parameter
+            parameter (any): The value of the requested/setted parameter(s).
         '''
         try:
             if name in self.pluginObjects.keys() and type(function) == str:
                 logging.debug(function)
                 logging.debug(name)
-                logging.debug(*args)
-                logging.debug(*kwargs)
+                # logging.debug(*args)
+                # logging.debug(*kwargs)
                 exec('self.func = self.pluginObjects["' +
                      name+'"].'+function)
-                return self.func(*args, **kwargs)
+
+                ans = self.func(*args, **kwargs)
+                return True, ans
             else:
                 logging.warning("Plugin "+name+" not found or started")
-                return False
+                return False, "Plugin "+name+" not found or started"
         except Exception:
             tb = traceback.format_exc()
-            logging.debug(tb)
+            logging.error(tb)
             logging.warning(
                 "PLUGIN FAILURE\nCould not get/set/call Plugin parameter/function'"+str(name)+"'\n")
-            return False
+            return False, tb
 
     def stopPlugin(self, name, remote=True):
         '''

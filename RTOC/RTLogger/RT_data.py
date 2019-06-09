@@ -14,6 +14,7 @@ import numpy as np
 import json
 import psutil
 import copy
+import gzip
 
 try:
     import xlsxwriter
@@ -955,10 +956,14 @@ class RT_data:
                         newData[sigID][4] = localData[sigID][4]
                         newData[sigID][2] = list(localData[sigID][2])[int(idx):]
                         newData[sigID][3] = list(localData[sigID][3])[int(idx):]
+                        if self.logger.config['backup']['resample'] != 0:
+                            newData[sigID][2], newData[sigID][3] = resample(newData[sigID][2], newData[sigID][3], self.logger.config['backup']['resample'])
                         # new = True
                         break
             else:
                 newSignals[sigID] = localData[sigID]
+                if self.logger.config['backup']['resample'] != 0:
+                    newSignals[sigID][2], newSignals[sigID][3] = resample(newSignals[sigID][2], newSignals[sigID][3], self.logger.config['backup']['resample'])
             # if not new:
             #     popIDs.append(sigID)
 
@@ -1099,6 +1104,7 @@ class RT_data:
                     logging.info("Error while execution+commit in PostgreSQL table")
                     logging.error(error)
                     logging.error(query)
+                    logging.error(traceback.format_exc())
                 ans = False
 
     def _getSQLSignalUnit(self, sigID):
@@ -1148,9 +1154,13 @@ class RT_data:
             sig = False
         return sig
 
-    def _SQLsignalExists(self, signalname):
+    def _SQLsignalExists(self, signalname, devicename):
+        if self._SQLdeviceExists(devicename):
+            devID = self._SQLgetDeviceID(devicename)
+        else:
+            return False
         existtest = "SELECT EXISTS (select ID from "+SIGNAL_TABLE_NAME + \
-            " where NAME = '"+str(signalname)+"');"
+            " where NAME = '"+str(signalname)+"' and DEVICE_ID = "+str(devID)+");"
         sig = self._execute_n_fetchall(existtest)
         if sig is not None and sig != []:
             sig = bool(sig[0][0])
@@ -1351,9 +1361,9 @@ class RT_data:
             logging.error('mergeY is NOT IMPLEMENTED YET for postgresql')
         else:
             sql = 'UPDATE '+SIGNAL_TABLE_NAME+' SET X = ARRAY' + \
-                str(x)+'::NUMERIC[] WHERE ID ='+str(sigID)+';'
+                str(list(x))+'::NUMERIC[] WHERE ID ='+str(sigID)+';'
             sql += '\nUPDATE '+SIGNAL_TABLE_NAME + \
-                ' SET Y = ARRAY'+str(y)+'::NUMERIC[] WHERE ID ='+str(sigID)+';'
+                ' SET Y = ARRAY'+str(list(y))+'::NUMERIC[] WHERE ID ='+str(sigID)+';'
             sql += '\nUPDATE '+SIGNAL_TABLE_NAME+' SET UNIT = \'' + \
                 str(dataunit)+'\' WHERE ID ='+str(sigID)+';'
         self._execute_n_commit(sql)
@@ -1362,8 +1372,13 @@ class RT_data:
     def _SQLExportCSV(self, filenamepart):
         filenames = []
         for table in [DEVICE_TABLE_NAME, SIGNAL_TABLE_NAME, EVENT_TABLE_NAME]:
-            filename = filenamepart+'_'+table+".csv"
-            sql = "COPY "+table+" TO '"+filename+"' DELIMITER ',' CSV HEADER;"
+            filename = filenamepart+'_'+table+".gz"
+            #sql = "COPY "+table+" TO '"+filename+"' DELIMITER ',' CSV HEADER;"
+            #ans = self._execute_n_fetchall(sql)
+            #print(ans)
+            with gzip.open(filename, 'wb') as gzip_file:
+                #cursor.copy_to(gzip_file, 'my_table')
+                self._cursor.copy_to(gzip_file, table, sep="|")
             filenames.append(filename)
         return filenames
 
@@ -1862,7 +1877,10 @@ class RT_data:
                 xmax = max([xmaxLocal, xmax])
                 sigLen = max([sigLenLocal, sigLen])
 
-        return float(xmin), float(xmax), int(sigLen)
+        if xmin is None or xmax is None or sigLen is None:
+            return 0,0,0
+        else:
+            return float(xmin), float(xmax), int(sigLen)
 
     def removeSignal(self, sigID, xmin=None, xmax=None, database=False):
         """
@@ -2011,10 +2029,15 @@ class RT_data:
             if signal is None:
                 signal = signal_local
             else:
-                for idx, x in enumerate(signal_local[2]):
-                    if x > signal[2][-1]:
-                        signal[2] += list(signal_local[2])[idx:]
-                        signal[3] += list(signal_local[3])[idx:]
+                # for idx, x in enumerate(signal_local[2]):
+                #     if x > signal[2][-1]:
+                #         signal[2] += list(signal_local[2])[idx:]
+                #         signal[3] += list(signal_local[3])[idx:]
+                #         break
+                for idx, x in enumerate(signal[2]):
+                    if signal_local[2][0] < x:
+                        signal[2] = signal[2][:idx]+list(signal_local[2])
+                        signal[3] = signal[3][:idx]+list(signal_local[3])
                         break
 
         if signal is not None:
@@ -2167,12 +2190,14 @@ class RT_data:
             signals = {signal[0]: list(signal)[1:] for signal in signals}
 
             for sigID in signals.keys():
+                signals[sigID][0] = [float(i) for i in signals[sigID][0]]
+                signals[sigID][1] = [float(i) for i in signals[sigID][1]]
                 s = signals[sigID]
                 if len(s[0])>2:
                     xrange = s[0][-1]-s[0][0]
-                    n = samplerate*xrange
+                    n = samplerate*float(xrange)
                     if len(s[0]) == len(s[1]):
-                        x = np.linspace(s[0][0], s[0][-1], n)
+                        x = np.linspace(float(s[0][0]), float(s[0][-1]), n)
                         y = np.interp(x, s[0], s[1])
 
                         self._SQLplot(x=x, y=y, sigID=sigID)
@@ -2202,3 +2227,13 @@ def column(matrix, i):
         if i < len(row):
             ans.append(row[i])
     return ans
+
+
+def resample(x,y, samplerate):
+    # xlen = len(x)
+    xtime = x[-1]-x[0]
+    n = samplerate*xtime
+    x2 = np.linspace(x[0], x[-1], n)
+    y = np.interp(x2, x, y)
+
+    return list(x2), list(y)

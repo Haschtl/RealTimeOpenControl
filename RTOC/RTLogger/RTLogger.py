@@ -84,7 +84,7 @@ defaultconfig = {
         "token": "",
         "default_eventlevel": 0,
         "default_permission": 'blocked', # or 'read' or 'write' or 'admin'
-        "chat_ids": {},
+        # "chat_ids": {},
         "inlineMenu": False,
         "onlyAdmin": False
     },
@@ -103,6 +103,7 @@ defaultconfig = {
         "autoOnClose": True,
         "loadOnOpen": True,
         "intervall": 240,
+        "resample": 0,
     },
 }
 
@@ -356,19 +357,20 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
 
         self.__config['global']['documentfolder'] = userpath
 
-        if type(self.__config['telegram']['chat_ids']) == list:
-            newdict = {}
-            for id in self.__config['telegram']['chat_ids']:
-                newdict[id] = self.__config['telegram']['eventlevel']
-            self.__config['telegram']['chat_ids'] = newdict
-            logging.warning('Telegram chat ids were saved as list, changed to dict.')
-        elif type(self.__config['telegram']['chat_ids']) == dict:
-            for id in self.__config['telegram']['chat_ids'].keys():
-                if type(self.__config['telegram']['chat_ids'][id]) == int:
-                    self.__config['telegram']['chat_ids'][id] = [
-                        self.__config['telegram']['chat_ids'][id], [[], []]]
-                    logging.warning(
-                        'Telegram chat ids were saved without shortcuts. Empty list added')
+        if 'chat_ids' in self.__config.keys():
+            if type(self.__config['telegram']['chat_ids']) == list:
+                newdict = {}
+                for id in self.__config['telegram']['chat_ids']:
+                    newdict[id] = self.__config['telegram']['eventlevel']
+                self.__config['telegram']['chat_ids'] = newdict
+                logging.warning('Telegram chat ids were saved as list, changed to dict.')
+            elif type(self.__config['telegram']['chat_ids']) == dict:
+                for id in self.__config['telegram']['chat_ids'].keys():
+                    if type(self.__config['telegram']['chat_ids'][id]) == int:
+                        self.__config['telegram']['chat_ids'][id] = [
+                            self.__config['telegram']['chat_ids'][id], [[], []]]
+                        logging.warning(
+                            'Telegram chat ids were saved without shortcuts. Empty list added')
 
         if type(self.__config['tcp']['knownHosts']) == list:
             newdict = {}

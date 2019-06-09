@@ -66,8 +66,8 @@ class telegramBot():
 
     def __init__(self, logger):
         self.logger = logger
-
-        self.mode = {}
+        self.telegram_clients = {}
+        self.loadClients()
         self.selectedSignalForEvent = None
         self.servername = self.logger.config['global']['name']
         self.token = self.logger.config['telegram']['token']
@@ -98,9 +98,37 @@ class telegramBot():
         self.token = token
         self.logger.config['telegram']['token'] = token
 
+    def saveClients(self):
+        with open(self.logger.config['global']['documentfolder']+"/telegram_clients.json", 'w', encoding="utf-8") as fp:
+            json.dump(self.telegram_clients, fp,  sort_keys=False, indent=4, separators=(',', ': '))
+
+    def loadClients(self):
+        self.telegram_clients = {}
+        if 'chat_ids' in self.logger.config['telegram'].keys():
+            self.telegram_clients = self.logger.config['telegram']['chat_ids']
+            self.logger.config['telegram'].pop('chat_ids')
+
+        userpath = self.logger.config['global']['documentfolder']
+        if not os.path.exists(userpath):
+            os.mkdir(userpath)
+        if os.path.exists(userpath+"/telegram_clients.json"):
+            try:
+                with open(userpath+"/telegram_clients.json", encoding="UTF-8") as jsonfile:
+                    self.telegram_clients = json.load(jsonfile, encoding="UTF-8")
+            except Exception:
+                self.telegram_clients = {}
+                logging.error('Error in Telegram_Clients-JSON-File')
+                return
+        else:
+            self.telegram_clients = {}
+            if 'chat_ids' in self.logger.config['telegram'].keys():
+                self.telegram_clients = self.logger.config['telegram']['chat_ids']
+                self.logger.config['telegram'].pop('chat_ids')
+            return
+
     def check_chat_id(self, chat_id):
         if chat_id is not None:
-            if str(chat_id) not in list(self.logger.config['telegram']['chat_ids'].keys()):
+            if str(chat_id) not in list(self.telegram_clients.keys()):
                 print('new telegram client connected')
                 chat = self.bot.get_chat(chat_id)
                 first_name = str(chat.first_name)
@@ -108,45 +136,50 @@ class telegramBot():
                 text = translate('RTOC', '{} {} hat sich zum ersten Mal mit {} verbunden.').format(first_name, last_name, self.logger.config['global']['name'])
                 self.send_message_to_all(text, onlyAdmin=True)
                 logging.info('TELEGRAM BOT: New client connected with ID: '+str(chat_id))
-                if len(self.logger.config['telegram']['chat_ids'].keys()) == 0:
+                if len(self.telegram_clients.keys()) == 0:
                     ad = 'admin'
                 else:
                     ad = self.logger.config['telegram']['default_permission']
-                user = {'eventlevel': self.logger.config['telegram']['default_eventlevel'], 'shortcuts':[[], []], 'permission':ad, 'first_name': first_name, 'last_name': last_name}
-                self.logger.config['telegram']['chat_ids'][str(chat_id)] = user
-                self.logger.save_config()
-            elif type(self.logger.config['telegram']['chat_ids'][str(chat_id)]) != dict:
-                print(self.logger.config['telegram']['chat_ids'][str(chat_id)])
+                user = {'eventlevel': self.logger.config['telegram']['default_eventlevel'], 'shortcuts':[[], []], 'permission':ad, 'first_name': first_name, 'last_name': last_name, 'mode': 'menu'}
+                self.telegram_clients[str(chat_id)] = user
+                self.saveClients()
+            elif type(self.telegram_clients[str(chat_id)]) != dict:
+                print(self.telegram_clients[str(chat_id)])
                 print('old telegram client updated')
                 chat = self.bot.get_chat(chat_id)
                 first_name = str(chat.first_name)
                 last_name = str(chat.last_name)
                 # Transform old style to new style
-                evLevel = self.logger.config['telegram']['chat_ids'][str(chat_id)][0]
-                shortcuts = self.logger.config['telegram']['chat_ids'][str(chat_id)][1]
+                evLevel = self.telegram_clients[str(chat_id)][0]
+                shortcuts = self.telegram_clients[str(chat_id)][1]
                 user = {'eventlevel':evLevel,'shortcuts':shortcuts,'permission':'write', 'first_name': first_name, 'last_name': last_name}
-                self.logger.config['telegram']['chat_ids'][str(chat_id)] = user
-            elif type(self.logger.config['telegram']['chat_ids'][str(chat_id)]) == dict:
-                if 'admin' in self.logger.config['telegram']['chat_ids'][str(chat_id)].keys():
-                    ad = self.logger.config['telegram']['chat_ids'][str(chat_id)]['admin']
+                self.telegram_clients[str(chat_id)] = user
+            elif type(self.telegram_clients[str(chat_id)]) == dict:
+                if 'admin' in self.telegram_clients[str(chat_id)].keys():
+                    ad = self.telegram_clients[str(chat_id)]['admin']
                     if ad:
                         ad = 'admin'
                     else:
                         ad = 'write'
-                    self.logger.config['telegram']['chat_ids'][str(chat_id)].pop('admin')
-                    self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] = ad
+                    self.telegram_clients[str(chat_id)].pop('admin')
+                    self.telegram_clients[str(chat_id)]['permission'] = ad
 
-            if chat_id not in self.mode.keys():
-                self.mode[chat_id] = 'menu'
-                self.current_plugin[chat_id] = None
-                self.current_call[chat_id] = None
+            if 'menu' not in self.telegram_clients[str(chat_id)].keys():
+                self.telegram_clients[str(chat_id)]['menu'] = 'menu'
+                self.saveClients()
+            if chat_id not in self.current_plugin.keys():
+                self.current_plugin[chat_id] = ''
+                self.current_call[chat_id] = ''
+                self.helper[chat_id] = None
+                self.signals_selected[chat_id] = []
+                self.signals_range[chat_id] = [time.time()-60*60*24,time.time()]
 
     def sendEvent(self, message, devicename, signalname, priority):
         ptext = ['_Information_', '*Warnung*', '*_Fehler_*'][priority]
         message = translate('RTOC', '{} von {}.{}:\n{}').format(ptext, devicename, signalname, message)
-        for id in self.logger.config['telegram']['chat_ids'].keys():
+        for id in self.telegram_clients.keys():
             self.check_chat_id(id)
-            if priority >= self.logger.config['telegram']['chat_ids'][id]['eventlevel']:
+            if priority >= self.telegram_clients[id]['eventlevel']:
                 self.send_message(chat_id=int(id), text=message, delete=False)
                 # try:
                 #     self.bot.send_message(chat_id=int(id), text=message,
@@ -155,8 +188,8 @@ class telegramBot():
                 #     self.bot.send_message(chat_id=int(id), text=message)
 
     def send_message_to_all(self, message, onlyAdmin=False):
-        for id in self.logger.config['telegram']['chat_ids'].keys():
-            if onlyAdmin and  self.logger.config['telegram']['chat_ids'][id]['permission'] == 'admin':
+        for id in self.telegram_clients.keys():
+            if onlyAdmin and  self.telegram_clients[id]['permission'] == 'admin':
                 self.send_message(chat_id=int(id), text=message, delete=False)
             # try:
             #     self.bot.send_message(chat_id=int(id), text=message,
@@ -189,7 +222,7 @@ class telegramBot():
             # time.sleep(4)
             #self.sendEvent(self.servername+' wurde gestartet', self.servername, '', 1)
             if WELCOME_MESSAGE:
-                for client in self.logger.config['telegram']['chat_ids'].keys():
+                for client in self.telegram_clients.keys():
                     self.send_message(
                         int(client), translate('RTOC', '{} wurde gestartet.').format(self.logger.config['global']['name']))
                     self.menuHandler(int(client), int(client))
@@ -250,7 +283,7 @@ class telegramBot():
         return menu
 
     def _permissionCheck(self, chat_id):
-        if self.logger.config['telegram']['onlyAdmin'] and self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] != 'admin':
+        if self.logger.config['telegram']['onlyAdmin'] and self.telegram_clients[str(chat_id)]['permission'] != 'admin':
             #logging.info('Aborted telegram answer, because telegram-option "onlyAdmin" is active.')
             text = translate('RTOC', 'Der RTOC-Bot befindet sich im Wartungsmodus. Ein Administrator muss den Zugang freischalten.')
             logging.info(text)
@@ -258,7 +291,7 @@ class telegramBot():
                 chat_id, text=text, disable_notification=False)
             return False
 
-        if self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] == 'blocked':
+        if self.telegram_clients[str(chat_id)]['permission'] == 'blocked':
             text = translate('RTOC', 'Du hast für diesen Bot keine Berechtigungen.')
             logging.info(text)
             self.bot.send_message(
@@ -379,45 +412,45 @@ class telegramBot():
         self.check_chat_id(chat_id)
         bot.send_chat_action(chat_id=chat_id,
                              action=ChatAction.TYPING)
-        if self.mode[chat_id] == "menu":
+        if self.telegram_clients[str(chat_id)]['menu'] == "menu":
             self.menuHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == "adjustEventNotification":
+        elif self.telegram_clients[str(chat_id)]['menu'] == "adjustEventNotification":
             self.adjustEventNotificationHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'plugins':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'plugins':
             self.devicesHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'plugin':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'plugin':
             self.deviceHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'pluginfunctions':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'pluginfunctions':
             self.deviceFunctionsHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'pluginsamplerate':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'pluginsamplerate':
             self.deviceSamplerateHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'pluginparameters':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'pluginparameters':
             self.deviceParametersHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'call' or self.mode[chat_id] == 'callShortcut':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'call' or self.telegram_clients[str(chat_id)]['menu'] == 'callShortcut':
             self.deviceCallHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'signals':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'signals':
             self.signalsHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'signalSelectRange':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'signalSelectRange':
             self.signalsSelectRangeHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == "createEvent":
+        elif self.telegram_clients[str(chat_id)]['menu'] == "createEvent":
             self.createEventHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'settings':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'settings':
             self.settingsHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'resize':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'resize':
             self.resizeHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == "shortcut":
+        elif self.telegram_clients[str(chat_id)]['menu'] == "shortcut":
             self.addShortcutAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'globalSamplerate':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'globalSamplerate':
             self.globalSamplerateHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'automation':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'automation':
             self.automationHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'globalEvents':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'globalEvents':
             self.globalEventsHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'globalEvent':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'globalEvent':
             self.globalEventHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'globalActions':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'globalActions':
             self.globalActionsHandlerAns(bot, chat_id, strung)
-        elif self.mode[chat_id] == 'globalAction':
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'globalAction':
             self.globalActionHandlerAns(bot, chat_id, strung)
         else:
             self.menuHandler(bot, chat_id)
@@ -427,10 +460,11 @@ class telegramBot():
 
 
     def menuHandler(self, bot, chat_id):
-        self.mode[chat_id] = 'menu'
+        self.telegram_clients[str(chat_id)]['menu'] = 'menu'
+        self.saveClients()
         # commands = copy.deepcopy(list(self.userActions.keys()))
         commands = []
-        perm = self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission']
+        perm = self.telegram_clients[str(chat_id)]['permission']
         if perm not in ['read', 'blocked']:
             for c in self.userActions.keys():
                 if c.startswith('_'):
@@ -461,11 +495,11 @@ class telegramBot():
             self.executeUserAction(bot, chat_id, strung)
         elif strung in self.createShortcutList(bot, chat_id):
             self.callShortcut(bot, chat_id, strung)
-        elif self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] == 'admin' and strung in self.adminMenuCommands:
+        elif self.telegram_clients[str(chat_id)]['permission'] == 'admin' and strung in self.adminMenuCommands:
                 idx = self.adminMenuCommands.index(strung)
                 if idx == 0:
                     self.settingsHandler(bot, chat_id)
-        elif self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] == 'write' and strung in self.writeMenuCommands:
+        elif self.telegram_clients[str(chat_id)]['permission'] in ['write','admin'] and strung in self.writeMenuCommands:
                 idx = self.writeMenuCommands.index(strung)
                 if idx == 0:
                     self.devicesHandler(bot, chat_id)
@@ -480,18 +514,19 @@ class telegramBot():
     adjustEventNotificationCommands = [translate('RTOC', "Keine Benachrichtigung"), translate('RTOC', "Nur Fehlermeldungen"), translate('RTOC', "Warnungen"), translate('RTOC', "Alle Benachrichtigungen")]
 
     def adjustEventNotificationHandler(self, bot, chat_id):
-        self.mode[chat_id] = "adjustEventNotification"
-        value = self.logger.config['telegram']['chat_ids'][str(chat_id)]['eventlevel']
+        self.telegram_clients[str(chat_id)]['menu'] = "adjustEventNotification"
+        self.saveClients()
+        value = self.telegram_clients[str(chat_id)]['eventlevel']
         value = self.adjustEventNotificationCommands[abs(value-3)]
-        self.sendMenuMessage(bot, chat_id, self.adjustEventNotificationCommands, translate('RTOC', '*Derzeitige Stufe: *{}*\n').format(value), translate('RTOC', 'W\xe4hle eine Benachrichtigungsstufe aus.'))
+        self.sendMenuMessage(bot, chat_id, self.adjustEventNotificationCommands, translate('RTOC', 'Derzeitige Stufe: *{}*\n').format(value), translate('RTOC', 'W\xe4hle eine Benachrichtigungsstufe aus.'))
 
     def adjustEventNotificationHandlerAns(self, bot, chat_id, strung):
         if strung in self.adjustEventNotificationCommands:
             i = self.adjustEventNotificationCommands.index(strung)
             if i <= 3:
                 i = abs(i-3)
-                self.logger.config['telegram']['chat_ids'][str(chat_id)]['eventlevel'] = i
-                self.logger.save_config()
+                self.telegram_clients[str(chat_id)]['eventlevel'] = i
+                self.saveClients()
                 self.send_message(chat_id=chat_id,
                                   text=translate('RTOC', 'Einstellung angepasst'))
         self.menuHandler(bot, chat_id)
@@ -515,7 +550,8 @@ class telegramBot():
 # plugins menu (list of devices)
     def devicesHandler(self, bot, chat_id):
         self.current_plugin[chat_id] = None
-        self.mode[chat_id] = "plugins"
+        self.telegram_clients[str(chat_id)]['menu'] = "plugins"
+        self.saveClients()
         commands = list(self.logger.devicenames)
         commands.sort()
         self.sendMenuMessage(bot, chat_id, commands,
@@ -529,7 +565,8 @@ class telegramBot():
 
     def deviceHandler(self, bot, chat_id, device):
         self.current_plugin[chat_id] = device
-        self.mode[chat_id] = 'plugin'
+        self.telegram_clients[str(chat_id)]['menu'] = 'plugin'
+        self.saveClients()
         if self.logger.pluginStatus[device] == True:
             commands = [translate('RTOC', "Ger\xe4t beenden")]
             samplestr = '\nSamplerate: '+str(self.logger.getPluginSamplerate(device))+' Hz'
@@ -557,13 +594,15 @@ class telegramBot():
         elif strung == translate('RTOC', "Samplerate \xe4ndern"):
             self.deviceSamplerateHandler(bot, chat_id)
         elif strung == BACKBUTTON:
-            self.mode[chat_id] = "plugins"
+            self.telegram_clients[str(chat_id)]['menu'] = "plugins"
+            self.saveClients()
             self.devicesHandler(bot, chat_id)
         else:
             self.deviceHandler(bot, chat_id, self.current_plugin[chat_id])
 
     def deviceSamplerateHandler(self, bot, chat_id):
-        self.mode[chat_id] = 'pluginsamplerate'
+        self.telegram_clients[str(chat_id)]['menu'] = 'pluginsamplerate'
+        self.saveClients()
         name = self.current_plugin[chat_id]
         commands = ['0.1', '0.5', '1', '2', '5', '10']
         samplerate = self.logger.getPluginSamplerate(name)
@@ -586,7 +625,8 @@ class telegramBot():
                                   translate('RTOC', 'Ich habe deine Nachricht nicht verstanden'))
 
     def deviceFunctionsHandler(self, bot, chat_id):
-        self.mode[chat_id] = 'pluginfunctions'
+        self.telegram_clients[str(chat_id)]['menu'] = 'pluginfunctions'
+        self.saveClients()
         name = self.current_plugin[chat_id]
         commands = []
         for fun in self.logger.pluginFunctions.keys():
@@ -611,7 +651,8 @@ class telegramBot():
             self.deviceFunctionsHandler(bot, chat_id)
 
     def deviceParametersHandler(self, bot, chat_id):
-        self.mode[chat_id] = 'pluginparameters'
+        self.telegram_clients[str(chat_id)]['menu'] = 'pluginparameters'
+        self.saveClients()
         name = self.current_plugin[chat_id]
         commands = []
         for fun in self.logger.pluginParameters.keys():
@@ -647,20 +688,22 @@ class telegramBot():
             pre = "callShortcut"
             commands = [translate('RTOC', "Shortcut entfernen")]
         else:
-            #self.mode[chat_id] = "shortcut"
+            #self.telegram_clients[str(chat_id)]['menu'] = "shortcut"
             #commands = [translate('RTOC', "Shortcut wie wo?")]
             pre = "callShortcut"
             commands = [translate('RTOC', "Shortcut entfernen")]
-        if "()" in self.current_call[chat_id]:
+        if self.current_call[chat_id].endswith(')'):
             infotext = translate('RTOC', "Bitte gib Parameter an, die der Funktion \xfcbergeben werden sollen. (Falls ben\xf6tigt)")
             commands += [translate('RTOC', "Keine Parameter")]
-            self.mode[chat_id] = pre
+            self.telegram_clients[str(chat_id)]['menu'] = pre
+            self.saveClients()
         else:
             value = self.logger.getPluginParameter(self.current_plugin[chat_id], "get", [
                                                    self.current_call[chat_id]])
             if value != False:
                 infotext = translate('RTOC', "Derzeitiger Wert: *{}*\nSchreib mir einen neuen Wert, wenn du diesen \xe4ndern willst.").format(value)
-                self.mode[chat_id] = pre
+                self.telegram_clients[str(chat_id)]['menu'] = pre
+                self.saveClients()
             else:
                 devtext = self.current_plugin[chat_id] + \
                     '.' + self.current_call[chat_id]
@@ -673,10 +716,10 @@ class telegramBot():
 
     def deviceCallHandlerAns(self, bot, chat_id, strung):
         if strung == BACKBUTTON:
-            if self.mode[chat_id] == 'callShortcut':
+            if self.telegram_clients[str(chat_id)]['menu'] == 'callShortcut':
                 self.menuHandler(bot, chat_id)
             else:
-                if "()" in self.current_call[chat_id]:
+                if self.current_call[chat_id].endswith(')'):
                     self.deviceFunctionsHandler(bot, chat_id)
                 else:
                     self.deviceParametersHandler(bot, chat_id)
@@ -690,7 +733,11 @@ class telegramBot():
                 self.temp = []
             else:
                 try:
-                    exec('self.temp = '+strung+'')
+                    if self.current_call[chat_id].endswith(')'):
+                        exec('self.temp = ['+strung+']')
+                    else:
+                        exec('self.temp = '+strung)
+                    print(self.temp)
                 except Exception:
                     logging.debug(traceback.format_exc())
                     logging.warning(chat_id, text='_'+strung +
@@ -698,17 +745,23 @@ class telegramBot():
                     self.send_message(chat_id, text='_'+strung +
                                       " ist kein g\xfcltiges Format._")
                     return
-            if "()" in self.current_call[chat_id]:
-                self.logger.callPluginFunction(
-                    self.current_plugin[chat_id], self.current_call[chat_id], *self.temp)
-                if self.mode[chat_id] == 'callShortcut':
+            if self.current_call[chat_id].endswith(')'):
+                func = self.current_call[chat_id][0:self.current_call[chat_id].index('(')]
+                ok, ans = self.logger.callPluginFunction(
+                    self.current_plugin[chat_id], func, *self.temp)
+                self.send_message(chat_id, ans)
+                if ok:
+                    self.send_message(chat_id, translate('RTOC', 'Funktion wurde ausgeführt.'))
+                else:
+                    self.send_message(chat_id, translate('RTOC', 'Fehler in Funktion.'))
+                if self.telegram_clients[str(chat_id)]['menu'] == 'callShortcut':
                     self.menuHandler(bot, chat_id)
                 else:
                     self.deviceFunctionsHandler(bot, chat_id)
             else:
                 self.logger.getPluginParameter(
                     self.current_plugin[chat_id], self.current_call[chat_id], self.temp)
-                if self.mode[chat_id] == 'callShortcut':
+                if self.telegram_clients[str(chat_id)]['menu'] == 'callShortcut':
                     self.menuHandler(bot, chat_id)
                 else:
                     self.deviceParametersHandler(bot, chat_id)
@@ -716,7 +769,8 @@ class telegramBot():
             #self.deviceHandler(bot, chat_id, self.current_plugin[chat_id])
 
     def signalsHandler(self, bot, chat_id, quiet=False):
-        self.mode[chat_id] = "signals"
+        self.telegram_clients[str(chat_id)]['menu'] = "signals"
+        self.saveClients()
         commands = []
         if chat_id not in self.signals_range.keys():
             xmin_abs = self.logger.database.getGlobalXmin(fast=True)
@@ -756,7 +810,7 @@ class telegramBot():
         units = self.logger.database.getUniqueUnits()
         for unit in units:
             commands.append(translate('RTOC', 'Alle mit Einheit "{}" ausw\xe4hlen').format(unit))
-        if self.logger.config['telegram']['chat_ids'][str(chat_id)]['permission'] == 'admin':
+        if self.telegram_clients[str(chat_id)]['permission'] == 'admin':
             commands.append(translate('RTOC', 'Ausgew\xe4hle Signale l\xf6schen!'))
             commands.append(translate('RTOC', 'Ausgew\xe4hlte Events l\xf6schen!'))
         commands.append(translate('RTOC', 'Ausgew\xe4hlte Signale herunterladen'))
@@ -863,8 +917,23 @@ class telegramBot():
                     else:
                         self.signals_selected[chat_id].append(strung)
                         t = 'Leeres Signal'
+
+                    evs = self.logger.database.getEvents(sigID)
+                    if evs == []:
+                        evtext = '0'
+                    else:
+                        evtext = str(len(evs))+translate('RTOC', '\nLetztes Event:\n')
+                        if evs[0][6] == 0:
+                            prio = translate('RTOC', 'Information')
+                        elif evs[0][6] == 1:
+                            prio = translate('RTOC', 'Warnung')
+                        else:
+                            prio = translate('RTOC', 'Fehler')
+
+                        evtext += prio+': '
+                        evtext += evs[0][3]+' am '+ dt.datetime.fromtimestamp(evs[0][4]).strftime("%d.%m.%Y %H:%M:%S")
                     self.send_message(chat_id,
-                                      translate('RTOC', 'Signal ausgew\xe4hlt:\n{}').format(t), ParseMode.MARKDOWN, True, False)
+                                      translate('RTOC', 'Signal ausgew\xe4hlt:\n{}\nEvents: {}').format(t, evtext), ParseMode.MARKDOWN, True, False)
             elif strung == translate('RTOC', 'Ausgew\xe4hle Signale l\xf6schen!'):
                 xmin, xmax = self.signals_range[chat_id]
                 for sigName in self.signals_selected[chat_id]:
@@ -923,7 +992,8 @@ class telegramBot():
             return
 
     def signalsSelectRangeHandler(self, bot, chat_id):
-        self.mode[chat_id] = "signalSelectRange"
+        self.telegram_clients[str(chat_id)]['menu'] = "signalSelectRange"
+        self.saveClients()
         xmin = self.logger.database.getGlobalXmin()
         xmax = self.logger.database.getGlobalXmax()
         xmin = dt.datetime.fromtimestamp(xmin).strftime("%d.%m.%Y %H:%M:%S")
@@ -978,7 +1048,8 @@ class telegramBot():
     # dt.datetime.fromtimestamp(time.time()).strftime("%d.%m.%Y %H:%M:%S")
 
     def createEventHandler(self, bot, chat_id, deviceselect=None, quiet=False):
-        self.mode[chat_id] = "createEvent"
+        self.telegram_clients[str(chat_id)]['menu'] = "createEvent"
+        self.saveClients()
         if deviceselect is None or quiet:
             commands = ['.'.join(a) for a in self.logger.database.signalNames()]
             commands.sort()
@@ -1043,7 +1114,8 @@ class telegramBot():
             self.menuHandler(bot, chat_id)
 
     def settingsHandler(self, bot, chat_id):
-        self.mode[chat_id] = "settings"
+        self.telegram_clients[str(chat_id)]['menu'] = "settings"
+        self.saveClients()
         self.helper[chat_id] = None
         commands = [
             translate('RTOC', "Alle Daten l\xf6schen"),
@@ -1115,25 +1187,26 @@ class telegramBot():
             self.sendMenuMessage(bot, chat_id, commands, text)
             return
         elif strung == translate('RTOC', 'Aufzeichnungsdauer \xe4ndern'):
-            self.mode[chat_id] = 'resize'
+            self.telegram_clients[str(chat_id)]['menu'] = 'resize'
+            self.saveClients()
             self.resizeHandler(bot, chat_id)
             return
         elif strung == translate('RTOC', 'Angemeldete Nutzer'):
             self.helper[chat_id] = 'users'
             text = translate('RTOC', 'Derzeit angemeldete Telegram-Nutzer')
             commands = []
-            ids = self.logger.config['telegram']['chat_ids'].keys()
+            ids = self.telegram_clients.keys()
             for id in ids:
                 self.check_chat_id(id)
             for id in ids:
-                user = self.logger.config['telegram']['chat_ids'][id]
-                if self.logger.config['telegram']['chat_ids'][id]['permission'] == 'admin':
+                user = self.telegram_clients[id]
+                if self.telegram_clients[id]['permission'] == 'admin':
                     a = translate('RTOC', 'Admin')
-                elif self.logger.config['telegram']['chat_ids'][id]['permission'] == 'read':
+                elif self.telegram_clients[id]['permission'] == 'read':
                     a = translate('RTOC', 'Read')
-                elif self.logger.config['telegram']['chat_ids'][id]['permission'] == 'write':
+                elif self.telegram_clients[id]['permission'] == 'write':
                     a = translate('RTOC', 'Write')
-                else:  # if self.logger.config['telegram']['chat_ids'][id]['permission'] == 'blocked':
+                else:  # if self.telegram_clients[id]['permission'] == 'blocked':
                     a = translate('RTOC', 'Blocked')
                 commands += [user['first_name']+' '+user['last_name']+': '+a]
             self.sendMenuMessage(bot, chat_id, commands, text)
@@ -1142,9 +1215,10 @@ class telegramBot():
             self.helper[chat_id] = None
             self.logger.database.pushToDatabase()
             self.send_message(chat_id, translate('RTOC', 'Backup wurde erstellt.'))
+            return
         elif self.helper[chat_id] == 'users':
-            for id in self.logger.config['telegram']['chat_ids'].keys():
-                user = self.logger.config['telegram']['chat_ids'][id]
+            for id in self.telegram_clients.keys():
+                user = self.telegram_clients[id]
                 if user['permission'] == 'admin':
                     a = translate('RTOC', 'Admin')
                     next = 'write'
@@ -1154,7 +1228,7 @@ class telegramBot():
                 elif user['permission'] == 'read':
                     a = translate('RTOC', 'Read')#
                     next = 'blocked'
-                else:  # if self.logger.config['telegram']['chat_ids'][id]['permission'] == 'blocked':
+                else:  # if self.telegram_clients[id]['permission'] == 'blocked':
                     a = translate('RTOC', 'Blocked')
                     next = 'admin'
                 command = user['first_name']+' '+user['last_name']+': '+a
@@ -1164,7 +1238,8 @@ class telegramBot():
                         return
                     if a == translate('RTOC', 'Blocked'):
                         self.send_message(id, translate('RTOC', 'Du hast jetzt Zugang zu diesem Bot.'))
-                    self.logger.config['telegram']['chat_ids'][id]['permission'] = next
+                    self.telegram_clients[id]['permission'] = next
+                    self.saveClients()
                     self.settingsHandlerAns(bot, chat_id, translate('RTOC', 'Angemeldete Nutzer'))
                     return
             return
@@ -1179,37 +1254,45 @@ class telegramBot():
             return
         elif strung == translate('RTOC', "TCP-Server: An"):
             ok = self.logger.toggleTcpServer(False)
+            self.logger.save_config()
             start = False
             name = 'TCP-Server'
         elif strung == translate('RTOC', "TCP-Server: Aus"):
             ok = self.logger.toggleTcpServer(True)
+            self.logger.save_config()
             start = True
             name = 'TCP-Server'
         elif strung == translate('RTOC', "*Telegram-Bot: An (!)*"):
             ok = self.logger.toggleTelegramBot(False)
+            self.logger.save_config()
             start = False
             name = 'Telegram-Bot'
         elif strung == translate('RTOC', "Telegram-Bot: Aus"):
             ok = self.logger.toggleTelegramBot(True)
+            self.logger.save_config()
             start = True
             name = 'Telegram-Bot'
         elif strung == translate('RTOC', "OnlyAdmin: An"):
             self.logger.config['telegram']['onlyAdmin'] = False
+            self.logger.save_config()
             ok = True
             start = False
             name = 'OnlyAdmin-Modus'
         elif strung == translate('RTOC', "OnlyAdmin: Aus"):
             self.logger.config['telegram']['onlyAdmin'] = True
+            self.logger.save_config()
             ok = True
             start = True
             name = 'OnlyAdmin-Modus'
         elif strung == translate('RTOC', "Telegram Bot: InlineMenu"):
             self.logger.config['telegram']['inlineMenu'] = False
+            self.logger.save_config()
             ok = True
             start = True
             name = 'InlineMenu'
         elif strung == translate('RTOC', "Telegram Bot: KeyboardMenu"):
             self.logger.config['telegram']['inlineMenu'] = True
+            self.logger.save_config()
             ok = True
             start = True
             name = 'KeyboardMenu'
@@ -1254,7 +1337,8 @@ class telegramBot():
         self.settingsHandler(bot, chat_id)
 
     def globalSamplerateHandler(self, bot, chat_id):
-        self.mode[chat_id] = 'globalSamplerate'
+        self.telegram_clients[str(chat_id)]['menu'] = 'globalSamplerate'
+        self.saveClients()
         commands = ['0.1', '0.5', '1', '2', '5', '10']
         self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Samplerate f\xfcr alle Ger\xe4te \xe4ndern*'))
 
@@ -1297,6 +1381,7 @@ class telegramBot():
             if value:
                 self.send_message(chat_id=chat_id, text=translate('RTOC', 'Aufzeichnungsdauer ge\xe4ndert'))
                 self.logger.database.resizeSignals(value)
+                self.logger.save_config()
                 self.settingsHandler(bot, chat_id)
             else:
                 self.send_message(chat_id=chat_id,
@@ -1442,21 +1527,10 @@ class telegramBot():
                     str(dt.timedelta(seconds=maxduration))
                 line2 = str(sigLen)+"/"+str(self.logger.config['global']['recordLength'])
 
-            line3 = str(round(sigLen/(xmax-xmin), 2)) + ' Hz'
-            # count = 20
-            # if sigLen <= count:
-            #     count = sigLen
-            # if count > 1:
-            #     meaner = sigLen[-count:]
-            #     diff = 0
-            #     for idx, m in enumerate(meaner[:-1]):
-            #         diff += meaner[idx+1]-m
-            #     if diff != 0:
-            #         line3 = str(round((len(meaner)-1)/diff, 2))+" Hz"
-            #     else:
-            #         line3 = "? Hz"
-            # else:
-            #     line3 = "? Hz"
+            if duration != 0:
+                line3 = str(round(sigLen/(duration), 2)) + ' Hz'
+            else:
+                line3 = translate('RTOC', 'Leeres Signal')
             return line1+"\n"+line2 + "\n" + line3
         except Exception:
             print(traceback.format_exc())
@@ -1502,7 +1576,7 @@ class telegramBot():
         pass
 
     def createShortcutList(self, bot, chat_id, idx=0):
-        liste = list(self.logger.config['telegram']['chat_ids'][str(chat_id)]['shortcuts'][idx])
+        liste = list(self.telegram_clients[str(chat_id)]['shortcuts'][idx])
         if idx == 1:
             for idx, name in enumerate(liste):
                 liste[idx] = name.split('.')[1]
@@ -1512,10 +1586,11 @@ class telegramBot():
         device = self.current_plugin[chat_id]
         call = self.current_call[chat_id]
         call = device+'.'+call
-        if call not in self.logger.config['telegram']['chat_ids'][str(
+        if call not in self.telegram_clients[str(
                 chat_id)]['shortcuts']:
 
-            self.mode[chat_id] = "shortcut"
+            self.telegram_clients[str(chat_id)]['menu'] = "shortcut"
+            self.saveClients()
             self.sendMenuMessage(bot, chat_id, [self.current_call[chat_id]], translate('RTOC', 'Bitte gib eine Bezeichnung f\xfcr diesen Shortcut an.'))
         else:
             self.send_message(chat_id, translate('RTOC', 'F\xfcr diese Funktionen/ diesen Parameter besteht bereits ein Shortcut!'))
@@ -1534,16 +1609,16 @@ class telegramBot():
             call = self.current_call[chat_id]
             call = device+'.'+call
             # logging.debug(call)
-            if call not in self.logger.config['telegram']['chat_ids'][str(chat_id)]['shortcuts']:
-                self.logger.config['telegram']['chat_ids'][str(chat_id)]['shortcuts'][0].append(strung)
-                self.logger.config['telegram']['chat_ids'][str(chat_id)]['shortcuts'][1].append(call)
+            if call not in self.telegram_clients[str(chat_id)]['shortcuts']:
+                self.telegram_clients[str(chat_id)]['shortcuts'][0].append(strung)
+                self.telegram_clients[str(chat_id)]['shortcuts'][1].append(call)
                 self.send_message(chat_id, translate('RTOC', 'Shortcut wurde erstellt'))
-                self.logger.save_config()
+                self.saveClients()
             else:
                 self.send_message(chat_id, translate('RTOC', 'F\xfcr diese Funktionen/ diesen Parameter besteht bereits ein Shortcut!'))
             self.deviceCallHandler(bot, chat_id, None)
             if self.current_call[chat_id] is not None:
-                if "()" in self.current_call[chat_id]:
+                if self.current_call[chat_id].endswith(')'):
                     self.deviceFunctionsHandler(bot, chat_id)
                 else:
                     self.deviceParametersHandler(bot, chat_id)
@@ -1554,16 +1629,16 @@ class telegramBot():
         if self.current_call[chat_id] is not None:
             strung = self.current_plugin[chat_id]+'.'+self.current_call[chat_id]
             print(strung)
-            if strung in self.logger.config['telegram']['chat_ids'][str(chat_id)]['shortcuts'][1]:
-                idx = self.logger.config['telegram']['chat_ids'][str(
+            if strung in self.telegram_clients[str(chat_id)]['shortcuts'][1]:
+                idx = self.telegram_clients[str(
                     chat_id)]['shortcuts'][1].index(strung)
-                self.logger.config['telegram']['chat_ids'][str(
+                self.telegram_clients[str(
                     chat_id)]['shortcuts'][1].pop(idx)
-                self.logger.config['telegram']['chat_ids'][str(
+                self.telegram_clients[str(
                     chat_id)]['shortcuts'][0].pop(idx)
                 self.current_call[chat_id] = None
                 self.menuHandler(bot, chat_id)
-                self.logger.save_config()
+                self.saveClients()
             else:
                 self.send_message(chat_id, translate('RTOC', 'Tut mir leid, ich konnte diesen Shortcut nicht finden!'))
                 self.menuHandler(bot, chat_id)
@@ -1572,10 +1647,10 @@ class telegramBot():
             self.menuHandler(bot, chat_id)
 
     def callShortcut(self, bot, chat_id, strung):
-        if strung in self.logger.config['telegram']['chat_ids'][str(chat_id)]['shortcuts'][0]:
-            idx = self.logger.config['telegram']['chat_ids'][str(
+        if strung in self.telegram_clients[str(chat_id)]['shortcuts'][0]:
+            idx = self.telegram_clients[str(
                 chat_id)]['shortcuts'][0].index(strung)
-            call = self.logger.config['telegram']['chat_ids'][str(
+            call = self.telegram_clients[str(
                 chat_id)]['shortcuts'][1][idx].split('.')
             self.current_plugin[chat_id] = call[0]
             self.current_call[chat_id] = call[1]
@@ -1609,7 +1684,8 @@ class telegramBot():
                 return False, None, None
 
     def automationHandler(self, bot, chat_id, quiet=False):
-        self.mode[chat_id] = "automation"
+        self.telegram_clients[str(chat_id)]['menu'] = "automation"
+        self.saveClients()
         commands = []
         if self.logger.config['global']['globalActionsActivated']:
             commands += [translate('RTOC', "Globale Aktionen: An")]
@@ -1658,7 +1734,8 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
         if chat_id not in self.signals_selected.keys():
             self.signals_selected[chat_id] = []
         self.helper[chat_id] = None
-        self.mode[chat_id] = "globalEvents"
+        self.telegram_clients[str(chat_id)]['menu'] = "globalEvents"
+        self.saveClients()
         commands = []
         text = translate('RTOC', 'Globale Events')
         commands += self.logger.printGlobalEvents()
@@ -1683,7 +1760,8 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
             self.globalEventsHandler(bot, chat_id)
 
     def globalEventHandler(self, bot, chat_id):
-        self.mode[chat_id] = "globalEvent"
+        self.telegram_clients[str(chat_id)]['menu'] = "globalEvent"
+        self.saveClients()
         name = self.signals_selected[chat_id].split(': ')
         event = self.logger.globalEvents[name[0]]
         # {'cond', 'text', 'priority', 'return', 'id', 'rising, 'sname', 'dname'}
@@ -1820,7 +1898,8 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
         if chat_id not in self.signals_selected.keys():
             self.signals_selected[chat_id] = []
         self.helper[chat_id] = None
-        self.mode[chat_id] = "globalActions"
+        self.telegram_clients[str(chat_id)]['menu'] = "globalActions"
+        self.saveClients()
         commands = []
         text = translate('RTOC', 'Globale Aktionen')
         commands += self.logger.printGlobalActions()
@@ -1846,7 +1925,8 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
             self.globalActionsHandler(bot, chat_id)
 
     def globalActionHandler(self, bot, chat_id):
-        self.mode[chat_id] = "globalAction"
+        self.telegram_clients[str(chat_id)]['menu'] = "globalAction"
+        self.saveClients()
         name = self.signals_selected[chat_id].split(' bei ')
         action = self.logger.globalActions[name[0]]
         # {'listenID', 'script', 'parameters'}

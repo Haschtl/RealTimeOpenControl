@@ -143,7 +143,7 @@ class EventActionFunctions:
         Loads global actions from file and stores them in dict 'self.globalActions'
         """
         print('Loading global actions from file')
-        userpath = os.path.expanduser('~/.RTOC')
+        userpath = self.config['global']['documentfolder']
         if not os.path.exists(userpath):
             os.mkdir(userpath)
         if os.path.exists(userpath+"/globalActions.json"):
