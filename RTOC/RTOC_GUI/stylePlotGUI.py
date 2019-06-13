@@ -4,11 +4,21 @@ from PyQt5 import QtWidgets, QtGui
 import pyqtgraph as pg
 import os
 import sys
+from PyQt5.QtCore import QCoreApplication
 
 from . import define as define
 import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
+
+if True:
+    translate = QCoreApplication.translate
+
+    def _(text):
+        return translate('signal', text)
+else:
+    import gettext
+    _ = gettext.gettext
 
 
 class plotStyler(QtWidgets.QDialog):
@@ -252,29 +262,29 @@ class plotStyler(QtWidgets.QDialog):
         symbol = {}
         brush = {}
         style = self.lineStyleComboBox.currentText()
-        if style in ["Linie", "Line"]:
+        if style == translate('RTOC', 'Line'):
             symbol["style"] = QtCore.Qt.SolidLine
-        elif style in ["Punkte (P)", "Dots (D)"]:
+        elif style == translate('RTOC', 'Dots (D)'):
             symbol["style"] = QtCore.Qt.DotLine
-        elif style in ["Striche (S)", "Stroke (S)"]:
+        elif style == translate('RTOC', 'Strokes (S)'):
             symbol["style"] = QtCore.Qt.DashLine
-        elif style in ["P S", "D S"]:
+        elif style == translate('RTOC', 'D S'):
             symbol["style"] = QtCore.Qt.DashDotLine
-        elif style in ["P P S", 'D D S']:
+        elif style == translate('RTOC', 'D D S'):
             symbol["style"] = QtCore.Qt.DashDotDotLine
         else:
             logging.warning('no style applied')
 
         style = self.shadowStyleComboBox.currentText()
-        if style in ["Linie", "Line"]:
+        if style == translate('RTOC', 'Line'):
             symbol["shadowStyle"] = QtCore.Qt.SolidLine
-        elif style in ["Punkte (P)", "Dots (D)"]:
+        elif style == translate('RTOC', 'Dots (D)'):
             symbol["shadowStyle"] = QtCore.Qt.DotLine
-        elif style in ["Striche (S)", "Stroke (S)"]:
+        elif style == translate('RTOC', 'Strokes (S)'):
             symbol["shadowStyle"] = QtCore.Qt.DashLine
-        elif style in ["P S", "D S"]:
+        elif style == translate('RTOC', 'D S'):
             symbol["shadowStyle"] = QtCore.Qt.DashDotLine
-        elif style in ["P P S", 'D D S']:
+        elif style == translate('RTOC', 'D D S'):
             symbol["shadowStyle"] = QtCore.Qt.DashDotDotLine
         else:
             symbol["shadowStyle"] = 0
@@ -288,15 +298,15 @@ class plotStyler(QtWidgets.QDialog):
         symbol["shadowColor"] = self.shadowColor
 
         style = self.symbolComboBox.currentText()
-        if style in ["Raute", "Rectangle"]:
+        if style in [translate('RTOC', 'Rectangle'), translate('RTOC', 'Diamond')]:
             brush["style"] = "d"
-        elif style in ["Kreis", "Circle"]:
+        elif style == translate('RTOC', 'Circle'):
             brush["style"] = "o"
         elif style == "X":
             brush["style"] = "x"
-        elif style in ["Quadrat", 'Square']:
+        elif style == translate('RTOC', 'Square'):
             brush["style"] = "s"
-        elif style in ["Dreieck", "Triangle"]:
+        elif style == translate('RTOC', 'Triangle'):
             brush["style"] = "t"
         elif style == "Plus":
             brush["style"] = "+"

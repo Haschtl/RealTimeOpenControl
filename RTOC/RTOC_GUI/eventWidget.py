@@ -71,7 +71,7 @@ class EventWidget(QtWidgets.QWidget):
         self.setmydata()
         database = False
         if self.logger.config['postgresql']['active']:
-            database = pyqtlib.alert_message(translate('RTOC', 'Aus Datenbank l\xf6schen'), translate('RTOC', 'M\xf6chtest du die Events auch aus der Datenbank entfernen?'), translate('RTOC', 'Signale bleiben bestehen'), "", translate('RTOC', "Ja"), translate('RTOC', "Nein"))
+            database = pyqtlib.alert_message(translate('RTOC', 'Delete from database'), translate('RTOC', 'Do you also remove the events from the database?'), translate('RTOC', 'Signals will remain'), "", translate('RTOC', "Yes"), translate('RTOC', "No"))
         self.logger.database.clear(False, False, True, database)
 
     def updateAllEvents(self):

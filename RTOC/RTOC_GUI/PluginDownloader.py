@@ -162,14 +162,14 @@ class PluginDownloader(QtWidgets.QWidget):
             self.removeButton.hide()
 
     def installPlugin(self):
-        strung = translate('RTOC', "Aktuelle Version: {}").format(self.pluginInfos[self.currentname]['version'])
+        strung = translate('RTOC', "Current version: {}").format(self.pluginInfos[self.currentname]['version'])
         if self.currentname in self.localPluginInfos.keys():
             self.installed = True
             if self.localPluginInfos[self.currentname] != False:
-                strung += translate('RTOC', ' (Installiert: {})').format(self.localPluginInfos[self.currentname]['version'])
+                strung += translate('RTOC', ' (Installed: {})').format(self.localPluginInfos[self.currentname]['version'])
             else:
-                strung += translate('RTOC', ' (Wurde nicht mit der RTOC-Repository installiert)')
-        ok = pyqtlib.alert_message(translate('RTOC', "Install plugin"), translate('RTOC', "M\xf6chtest du wirklich {} installieren?").format(self.currentname), strung)
+                strung += translate('RTOC', ' (Was not installed with the RTOC repository)')
+        ok = pyqtlib.alert_message(translate('RTOC', "Install plugin"), translate('RTOC', "Do you really want to install {}?").format(self.currentname), strung)
         if ok:
             logging.info('install')
             url = 'https://minhaskamal.github.io/DownGit/#/home?url=https://github.com/' + \
@@ -177,17 +177,17 @@ class PluginDownloader(QtWidgets.QWidget):
             logging.info(url)
             self.download_directory(self.currentname)
             logging.info('Download finished')
-            pyqtlib.info_message(translate('RTOC', "Fertig"), translate('RTOC', "Installation abgeschlossen"), translate('RTOC', "Bitte starte RTOC neu, um Fehler zu vermeiden"))
+            pyqtlib.info_message(translate('RTOC', "Finished"), translate('RTOC', "Installation completed"), translate('RTOC', "Please restart RTOC."))
             if self.self:
                 self.self.reloadDevices()
 
             if self.localPluginInfos[self.currentname] != False:
                 if self.localPluginInfos[self.currentname]['dependencies'] != []:
                     info = '\n'.join(self.localPluginInfos[self.currentname]['dependencies'])
-                    pyqtlib.info_message(translate('RTOC', 'Abh\xe4ngigkeiten'), translate('RTOC', "Dieses plugin ben\xf6tigt einige Abh\xe4ngigkeiten, die mittels 'pip3 install PACKAGE' installiert werden m\xfcssen."), info)
+                    pyqtlib.info_message(translate('RTOC', 'Dependencies'), translate('RTOC', "This plugin needs dependencies that can be installed using 'pip3 install PACKAGE'."), info)
 
     def removePlugin(self):
-        ok = pyqtlib.alert_message(translate('RTOC', "Plugin entfernen"), translate('RTOC', "M\xf6chtest du wirklich {} entfernen?").format(self.currentname), "")
+        ok = pyqtlib.alert_message(translate('RTOC', "Remove plugin"), translate('RTOC', "Dou you really want to remove {}?").format(self.currentname), "")
         if ok:
             logging.info('remove')
             if os.path.exists(self.userpath+"/devices/"+self.currentname):

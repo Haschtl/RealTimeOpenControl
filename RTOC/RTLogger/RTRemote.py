@@ -38,6 +38,10 @@ class _SingleConnection(LoggerPlugin):
         self.sigSelectList = []
         self.pluglist = []
         self.eventlist = {}
+
+        self.xmax = time.time() + 60*60
+        self.xmin = self.xmax - 60*60*24
+        self.maxN = 1000
         #self.createTCPClient(host, None, port)
         self.tcppassword = password
         self.updateRemoteCallback = None
@@ -92,7 +96,8 @@ class _SingleConnection(LoggerPlugin):
                         if i in self.sigSelectList and len(i[0].split(':')) == 1:
                             selection.append(".".join(i))
                     for s in selection:
-                        ans = self._sendTCP(getSignal=[s])
+                        ssplit = s.split('.')
+                        ans = self._sendTCP(getSignal={'dname':ssplit[0], 'sname':ssplit[1], 'xmin': self.xmin, 'xmax': self.xmax, 'maxN': self.maxN})
                         if ans != False:
                             if 'signals' in ans.keys():
                                 for sig in ans['signals'].keys():
@@ -167,11 +172,11 @@ class _SingleConnection(LoggerPlugin):
         # logging.debug(ans)
 
     def stop(self):
-        self.cancel()
+        self.close()
         self.siglist = []
         self.pluglist = []
         self.eventlist = {}
-        logging.info('Remote-Connection stopped')
+        logging.info('Remote-Connection to {} stopped'.format(self.host))
 
     def startTCPLogging(self):
         if self.run:

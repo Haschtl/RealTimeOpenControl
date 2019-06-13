@@ -87,7 +87,7 @@
         </sizepolicy>
        </property>
        <property name="statusTip">
-        <string>Skript in Datei speichern</string>
+        <string/>
        </property>
        <property name="text">
         <string/>

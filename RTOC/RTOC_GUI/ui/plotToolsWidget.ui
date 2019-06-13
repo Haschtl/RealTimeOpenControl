@@ -17,13 +17,13 @@
    <item>
     <widget class="QPushButton" name="crosshairButton">
      <property name="toolTip">
-      <string>Zeige Crosshair</string>
+      <string/>
      </property>
      <property name="statusTip">
-      <string>Zeige Crosshair</string>
+      <string/>
      </property>
      <property name="text">
-      <string>Fadenkreuz</string>
+      <string>Crosshair</string>
      </property>
      <property name="icon">
       <iconset>
@@ -43,13 +43,13 @@
    <item>
     <widget class="QPushButton" name="measureButton">
      <property name="toolTip">
-      <string>Öffne Mess-Rechteck in Plot</string>
+      <string/>
      </property>
      <property name="statusTip">
-      <string>Öffne Mess-Rechteck in Plot</string>
+      <string/>
      </property>
      <property name="text">
-      <string>Rechteck-Messwerkzeug</string>
+      <string>Rectangle-Tool</string>
      </property>
      <property name="icon">
       <iconset>
@@ -69,13 +69,13 @@
    <item>
     <widget class="QPushButton" name="cutButton">
      <property name="toolTip">
-      <string>Zeige Crosshair</string>
+      <string/>
      </property>
      <property name="statusTip">
-      <string>Zeige Crosshair</string>
+      <string/>
      </property>
      <property name="text">
-      <string>Schneide-Werkzeug</string>
+      <string>Cutting-Tool</string>
      </property>
      <property name="icon">
       <iconset>

@@ -1,4 +1,5 @@
 from PyQt5 import QtCore
+from PyQt5 import QtGui
 from PyQt5 import QtWidgets
 from PyQt5 import uic
 import time
@@ -90,16 +91,19 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.plotViewWidget.legendButton.setChecked(self.config['GUI']['plotLegendEnabled'])
         self.plotViewWidget.blinkingButton.setChecked(self.config['GUI']['blinkingIdentifier'])
         self.plotViewWidget.invertPlotButton.setChecked(self.config['GUI']['plotInverted'])
-        self.plotViewWidget.xTimeBaseButton.setChecked(self.config['GUI']['xTimeBase'])
+        self.plotViewWidget.xTimeBaseButton.setChecked(self.config['GUI']['xRelative'])
         self.plotViewWidget.timeAxisButton.setChecked(self.config['GUI']['timeAxis'])
 
         self.togglePlotLegend()
         self.togglePlotLabels()
         self.toggleInverted()
         self.togglePlotLabels()
-        self.toggleXTimeBase()
+        #self.toggleXTimeBase()
+        self.toggleXRelative()
         self.toggleAxisStyle()
         self.togglePlotGrid()
+
+        # menu = QMenu()
 
     def clear(self):
         while len(self.signalObjects) > 0:
@@ -236,7 +240,7 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
 
     def updateCountLabel(self):
         size, maxsize, databaseSize = self.logger.database.getSignalSize()
-        self.countLabel.setText(translate('RTOC', "Signale: {} ({}/{})").format(len(self.signalObjects), lib.bytes_to_str(size), lib.bytes_to_str(maxsize)))
+        self.countLabel.setText(translate('RTOC', "Signals: {} ({}/{})").format(len(self.signalObjects), lib.bytes_to_str(size), lib.bytes_to_str(maxsize)))
 
     def startDragTreeWidget(self, actions):
         self.self._drag_info = {"oldWidget": "", "newWidget": "", "signalObjects": []}

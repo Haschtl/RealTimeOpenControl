@@ -42,7 +42,7 @@
           <item>
            <widget class="QPushButton" name="pushAddRow">
             <property name="toolTip">
-             <string>Reihe einfügen</string>
+             <string>Insert row</string>
             </property>
             <property name="text">
              <string/>
@@ -62,7 +62,7 @@
           <item>
            <widget class="QPushButton" name="pushDeleteRow">
             <property name="toolTip">
-             <string>Reihe entfernen</string>
+             <string>Remove row</string>
             </property>
             <property name="text">
              <string/>
@@ -82,7 +82,7 @@
           <item>
            <widget class="QPushButton" name="pushAddColumn">
             <property name="toolTip">
-             <string>Spalte einfügen</string>
+             <string>Add column</string>
             </property>
             <property name="text">
              <string/>
@@ -102,7 +102,7 @@
           <item>
            <widget class="QPushButton" name="pushDeleteColumn">
             <property name="toolTip">
-             <string>Spalte entfernen</string>
+             <string>Remove column</string>
             </property>
             <property name="text">
              <string/>
@@ -122,7 +122,7 @@
           <item>
            <widget class="QPushButton" name="pushSwapXY">
             <property name="toolTip">
-             <string>X/Y tauschen</string>
+             <string>Swap X/Y</string>
             </property>
             <property name="text">
              <string/>
@@ -242,7 +242,7 @@
             <item row="0" column="0">
              <widget class="QLabel" name="label_3">
               <property name="text">
-               <string>Trennzeichen:</string>
+               <string>Seperator:</string>
               </property>
              </widget>
             </item>
@@ -252,7 +252,7 @@
                <bool>false</bool>
               </property>
               <property name="text">
-               <string>Reihentrennzeichen:</string>
+               <string>Row-seperator:</string>
               </property>
              </widget>
             </item>
@@ -317,7 +317,7 @@
           <item>
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Profile: </string>
+             <string>Profiles: </string>
             </property>
            </widget>
           </item>
@@ -417,7 +417,7 @@
            </size>
           </property>
           <property name="text">
-           <string>Signale</string>
+           <string>Signals</string>
           </property>
          </widget>
         </item>
@@ -436,7 +436,7 @@
         <item>
          <widget class="QPushButton" name="importButton">
           <property name="text">
-           <string>Daten importieren</string>
+           <string>Import signals</string>
           </property>
          </widget>
         </item>
@@ -475,27 +475,27 @@
   </widget>
   <action name="pushButtonLoad">
    <property name="text">
-    <string>CSV öffnen</string>
+    <string>Open CSV</string>
    </property>
   </action>
   <action name="pushClear">
    <property name="text">
-    <string>CSV schließen</string>
+    <string>Close CSV file</string>
    </property>
   </action>
   <action name="pushButtonWrite">
    <property name="text">
-    <string>CSV speichern</string>
+    <string>Save as CSV</string>
    </property>
   </action>
   <action name="pushButtonPreview">
    <property name="text">
-    <string>Druckvorschau</string>
+    <string>Print-Preview</string>
    </property>
   </action>
   <action name="pushButtonPrint">
    <property name="text">
-    <string>Drucken</string>
+    <string>Print</string>
    </property>
   </action>
  </widget>

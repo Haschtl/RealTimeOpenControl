@@ -120,8 +120,8 @@ class SignalEditWidget(QtWidgets.QWidget):
 
     def cutSignal(self):
         if not self.plotWidget.cutButton.isChecked():
-            pyqtlib.info_message(translate('RTOC', "Info"), translate('RTOC', "W\xe4hle zuerst das Schneide-Tool aus"),
-                                 translate('RTOC', "Du musst zuerst deine Schnittbereich festlegen"))
+            pyqtlib.info_message(translate('RTOC', "Info"), translate('RTOC', "Select cutting tool first"),
+                                 translate('RTOC', "You need to select the cutting area first."))
         else:
             x1 = self.plotWidget.cutVLine1.value()
             x2 = self.plotWidget.cutVLine2.value()
@@ -151,7 +151,7 @@ class SignalEditWidget(QtWidgets.QWidget):
                         break
                 if maxIdx > minIdx:
                     signalname = self.self.logger.database.getSignalName(self.id)[1] + \
-                        "_cut"+int(xmax-xmin)+'s'
+                        "_cut"+str(int(xmax-xmin))+'s'
                     devicename = self.self.logger.database.getSignalName(self.id)[0]
                     unit = signal[4]
                     x = list(signal[2])[minIdx:maxIdx]
@@ -164,19 +164,19 @@ class SignalEditWidget(QtWidgets.QWidget):
         fileBrowser = QtWidgets.QFileDialog(self)
         fileBrowser.setDirectory(dir_path)
         fileBrowser.setNameFilters(
-            [translate('RTOC', "CSV-Datei (*.csv)")])
+            [translate('RTOC', "CSV file (*.csv)")])
         fileBrowser.selectNameFilter("")
         fname, mask = fileBrowser.getSaveFileName(
-            self, translate('RTOC', "Export"), dir_path, translate('RTOC', "CSV-Datei (*.csv)"))
+            self, translate('RTOC', "Export"), dir_path, translate('RTOC', "CSV file (*.csv)"))
         # if fileBrowser.exec_():
         if fname:
             fileName = fname
-            if mask == translate('RTOC', 'CSV-Datei (*.csv)'):
+            if mask == translate('RTOC', 'CSV file (*.csv)'):
                 self.self.logger.database.exportSignal(fileName, self.self.logger.database.getSignal(self.id))
 
     def renameSignal(self):
         name, ok = pyqtlib.text_message(
-            self, translate('RTOC', "Umbenennen"), translate('RTOC', "Bitte gib einen neuen Namen an"), self.self.logger.database.getSignalName(self.id)[1])
+            self, translate('RTOC', "Rename"), translate('RTOC', "Please enter a new name"), self.self.logger.database.getSignalName(self.id)[1])
         if name != "" and ok:
             self.self.logger.database.renameSignal(self.id, name)
         self.self.updatePlot()
@@ -229,7 +229,7 @@ class SignalEditWidget(QtWidgets.QWidget):
 
     def submitModification(self):  # !!!
         ok = pyqtlib.alert_message(
-            translate('RTOC', "Achtung"), translate('RTOC', "Daten werden dauerhaft ge\xe4ndert"), "", "", translate('RTOC', "Ja"), translate('RTOC', "Nein"))
+            translate('RTOC', "Warning"), translate('RTOC', "Data will be changed permanently"))
         if ok:
             offsetX = self.self.signalModifications[0]
             offsetY = self.self.signalModifications[1]
@@ -262,7 +262,7 @@ class SignalEditWidget(QtWidgets.QWidget):
         for s in self.self.logger.config['tcp']['knownHosts'].keys():
             textlist.append(self.self.logger.config['tcp']['knownHosts'][s][0]+' ('+s+')')
         item, ok = pyqtlib.item_message(None, translate("RTOC",
-            'Host ausw\xe4hlen'), "Bitte w\xe4hle einen bekannten Remote-Host aus", textlist, stylesheet="")
+            'Select host'), "Please select a known host", textlist, stylesheet="")
         if ok:
             idx = textlist.index(item)
             for idx2, s in enumerate(self.self.logger.config['tcp']['knownHosts'].keys()):
@@ -276,5 +276,5 @@ class SignalEditWidget(QtWidgets.QWidget):
                         signal[3]), dname=self.self.logger.config['global']['name']+":"+name[0], sname=name[1], unit=signal[4])
                     if ans:
                         return
-        pyqtlib.info_message(translate('RTOC', "Fehler"), translate("RTOC",
-            'Signal konnte nicht gesendet werden.'), translate('RTOC', 'Fehler beim Herstellen der Verbindung'))
+        pyqtlib.info_message(translate('RTOC', "Error"), translate("RTOC",
+            'Signal could not be sent.'), translate('RTOC', 'Error connecting to remote RTOC'))

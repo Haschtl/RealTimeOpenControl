@@ -146,11 +146,11 @@ class RTPlotActions:
             useOpenGL=self.config['GUI']['openGL'], useWeave=self.config['GUI']['useWeave'], antialias=self.config['GUI']['antiAliasing'])
         self.plot = pg.PlotWidget()
         self.plot.setBackground(None)
-        self.plot.getPlotItem().setTitle(translate('RTOC', "Signale"))
+        self.plot.getPlotItem().setTitle(translate('RTOC', "Signals"))
         self.plot.getPlotItem().ctrlMenu = None  # get rid of 'Plot Options'
         axis = pyqtlib.TimeAxisItem(orientation='bottom')
         axis.attachToPlotItem(self.plot.getPlotItem())  # THIS LINE CREATES A WARNING
-        self.plot.getPlotItem().setLabel("bottom", translate('RTOC', "Vergangene Zeit"), "")
+        # self.plot.getPlotItem().setLabel("bottom", translate('RTOC', "Elapsed time"), "")
         self.plotLayout.addWidget(self.plot)
         self.legend = pg.LegendItem()
         self.legend.setParentItem(self.plot.getPlotItem())
@@ -201,7 +201,7 @@ class RTPlotActions:
         self.plotViewWidget.stylePlotsButton.clicked.connect(self.stylePlots)
         self.plotViewWidget.blinkingButton.clicked.connect(self.toggleBlinkingIndicator)
         self.plotViewWidget.invertPlotButton.clicked.connect(self.toggleInverted)
-        self.plotViewWidget.xTimeBaseButton.clicked.connect(self.toggleXTimeBase)
+        self.plotViewWidget.xTimeBaseButton.clicked.connect(self.toggleXRelative)
         self.plotViewWidget.globalXOffsetSpinBox.valueChanged.connect(self.changeGlobalXOffset)
         self.plotViewWidget.timeAxisButton.clicked.connect(self.toggleAxisStyle)
 
@@ -254,8 +254,8 @@ class RTPlotActions:
             self.config['GUI']['plotInverted'] = False
             self.plot.setBackground(None)
 
-    def toggleXTimeBase(self):
-        if self.plotViewWidget.xTimeBaseButton.isChecked():
+    def toggleXTimeBase(self, value):
+        if value:
             self.config['GUI']['xTimeBase'] = True
             for sig in self.signalObjects:
                 sig.xTimeBase = True
@@ -270,11 +270,26 @@ class RTPlotActions:
 
     def toggleAxisStyle(self):
         if self.plotViewWidget.timeAxisButton.isChecked():
-            axis = pyqtlib.TimeAxisItem(orientation='bottom')
+            if self.config['GUI']['xRelative']:
+                self.setXTicks(mode=0)
+            else:
+                self.setXTicks(mode=2)
+
+            self.config['GUI']['timeAxis'] = True
+            self.plot.getPlotItem().setLabel("bottom", translate('RTOC', "Elapsed time [s]"), "")
+            self.toggleXTimeBase(True)
+        else:
+            self.setXTicks(mode=1)
+            self.config['GUI']['timeAxis'] = False
+            self.toggleXTimeBase(False)
+
+    def setXTicks(self, mode=0):
+        if mode == 0:
+            axis = pyqtlib.TimeAxisItem(True, orientation='bottom')
             axis.attachToPlotItem(self.plot.getPlotItem())  # THIS LINE CREATES A WARNING
             self.config['GUI']['timeAxis'] = True
-            self.plot.getPlotItem().setLabel("bottom", "Vergangene Zeit", "")
-        else:
+            self.plot.getPlotItem().setLabel("bottom", translate('RTOC', "Elapsed time [s]"), "")
+        elif mode == 1:
             axis = pg.AxisItem(orientation='bottom')
             axis.setParentItem(self.plot.getPlotItem())
             viewBox = self.plot.getPlotItem().getViewBox()
@@ -286,7 +301,29 @@ class RTPlotActions:
             self.plot.getPlotItem().layout.addItem(axis, *pos)
             axis.setZValue(-1000)
             self.plot.getPlotItem().setLabel("bottom", "", "")
-            self.config['GUI']['timeAxis'] = False
+        elif mode == 2:
+            axis = pyqtlib.TimeAxisItem(False, orientation='bottom')
+            axis.attachToPlotItem(self.plot.getPlotItem())  # THIS LINE CREATES A WARNING
+            self.config['GUI']['timeAxis'] = True
+            self.plot.getPlotItem().setLabel("bottom", translate('RTOC', "Date/Time"), "")
+
+    def toggleXRelative(self):
+        if self.plotViewWidget.xTimeBaseButton.isChecked():
+            self.config['GUI']['xRelative'] = True
+            # for sig in self.signalObjects:
+                # sig.xTimeBase = True
+                # sig.editWidget.xTimeBaseButton.setChecked(True)
+            # self.xTimeBase = True
+            if self.config['GUI']['xTimeBase']:
+                self.setXTicks(mode=0)
+        else:
+            self.config['GUI']['xRelative'] = False
+            # for sig in self.signalObjects:
+                # sig.xTimeBase = False
+                # sig.editWidget.xTimeBaseButton.setChecked(False)
+            # self.xTimeBase = False
+            if self.config['GUI']['xTimeBase']:
+                self.setXTicks(mode=2)
 
     def initPlotToolsWidget(self):
         self.plotToolsWidget = QtWidgets.QWidget()

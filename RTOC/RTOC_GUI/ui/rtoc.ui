@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>883</width>
+    <width>867</width>
     <height>664</height>
    </rect>
   </property>
@@ -32,13 +32,19 @@
   </widget>
   <widget class="QDockWidget" name="deviceWidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+    <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
+   <property name="maximumSize">
+    <size>
+     <width>400</width>
+     <height>524287</height>
+    </size>
+   </property>
    <property name="statusTip">
-    <string>Geräte, für die PlugIns vorhanden sind, erscheinen hier</string>
+    <string/>
    </property>
    <property name="inputMethodHints">
     <set>Qt::ImhNone</set>
@@ -53,12 +59,18 @@
     <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
    </property>
    <property name="windowTitle">
-    <string>&amp;Geräte</string>
+    <string>Devices</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents_2">
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
+    </property>
     <layout class="QVBoxLayout" name="verticalLayout_3">
      <property name="spacing">
       <number>0</number>
@@ -77,8 +89,14 @@
      </property>
      <item>
       <widget class="QLineEdit" name="searchEdit">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="placeholderText">
-        <string>Suche Gerät</string>
+        <string>Search devices</string>
        </property>
        <property name="clearButtonEnabled">
         <bool>true</bool>
@@ -87,6 +105,12 @@
      </item>
      <item>
       <widget class="QScrollArea" name="scrollArea_2">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="minimumSize">
         <size>
          <width>180</width>
@@ -101,9 +125,15 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>435</width>
-          <height>85</height>
+          <width>398</width>
+          <height>97</height>
          </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
         </property>
         <property name="minimumSize">
          <size>
@@ -135,19 +165,6 @@
           </layout>
          </item>
          <item>
-          <spacer name="verticalSpacer_2">
-           <property name="orientation">
-            <enum>Qt::Vertical</enum>
-           </property>
-           <property name="sizeHint" stdset="0">
-            <size>
-             <width>20</width>
-             <height>0</height>
-            </size>
-           </property>
-          </spacer>
-         </item>
-         <item>
           <spacer name="verticalSpacer_3">
            <property name="orientation">
             <enum>Qt::Vertical</enum>
@@ -169,13 +186,13 @@
   </widget>
   <widget class="QDockWidget" name="pluginsWidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
    </property>
    <property name="statusTip">
-    <string>Falls ein Gerät ein GUI-PlugIn besitzt, erscheint dies hier</string>
+    <string></string>
    </property>
    <property name="floating">
     <bool>false</bool>
@@ -225,8 +242,8 @@
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>437</width>
-          <height>85</height>
+          <width>400</width>
+          <height>98</height>
          </rect>
         </property>
         <attribute name="label">
@@ -239,6 +256,12 @@
    </widget>
   </widget>
   <widget class="QDockWidget" name="scriptDockWidget">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
    <property name="floating">
     <bool>false</bool>
    </property>
@@ -246,7 +269,7 @@
     <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
-    <string>Skripte</string>
+    <string>Scripts</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -293,7 +316,7 @@
   </widget>
   <widget class="QDockWidget" name="eventWidgets">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+    <sizepolicy hsizetype="Expanding" vsizetype="Ignored">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -302,7 +325,7 @@
     <string>Events</string>
    </property>
    <attribute name="dockWidgetArea">
-    <number>8</number>
+    <number>2</number>
    </attribute>
    <widget class="QWidget" name="dockWidgetContents">
     <layout class="QVBoxLayout" name="verticalLayout_4">
@@ -318,7 +341,7 @@
   </widget>
   <widget class="QDockWidget" name="graphWidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <sizepolicy hsizetype="Expanding" vsizetype="Maximum">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -373,20 +396,20 @@
        <item>
         <widget class="QLabel" name="label_2">
          <property name="text">
-          <string>Aufzeichnungsdauer:</string>
+          <string>Recording length:</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QSpinBox" name="maxLengthSpinBox">
          <property name="toolTip">
-          <string>Ändere die Aufzeichnungsdauer</string>
+          <string></string>
          </property>
          <property name="statusTip">
-          <string>Ändere die Aufzeichnungsdauer</string>
+          <string></string>
          </property>
          <property name="suffix">
-          <string> Messwerte</string>
+          <string> Values</string>
          </property>
          <property name="maximum">
           <number>1000000000</number>
@@ -412,10 +435,10 @@
        <item>
         <widget class="QPushButton" name="clearButton">
          <property name="toolTip">
-          <string>Lösche alle Signale</string>
+          <string>Delete all signals</string>
          </property>
          <property name="statusTip">
-          <string>Lösche alle Signale</string>
+          <string>Delete all signals</string>
          </property>
          <property name="text">
           <string/>
@@ -434,6 +457,12 @@
        </item>
        <item>
         <widget class="QPushButton" name="createGraphButton">
+         <property name="toolTip">
+          <string>Open new graph</string>
+         </property>
+         <property name="statusTip">
+          <string>Open new graph</string>
+         </property>
          <property name="text">
           <string/>
          </property>
@@ -491,7 +520,7 @@
   </widget>
   <widget class="QDockWidget" name="deviceRAWWidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
+    <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -503,7 +532,7 @@
     <set>QDockWidget::AllDockWidgetFeatures</set>
    </property>
    <property name="windowTitle">
-    <string>Geräte RAW</string>
+    <string>Devices RAW</string>
    </property>
    <attribute name="dockWidgetArea">
     <number>1</number>
@@ -527,11 +556,17 @@
      </property>
      <item>
       <widget class="QLineEdit" name="pluginSearchInput">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="text">
         <string/>
        </property>
        <property name="placeholderText">
-        <string>Suche</string>
+        <string>Search</string>
        </property>
        <property name="clearButtonEnabled">
         <bool>true</bool>
@@ -540,6 +575,12 @@
      </item>
      <item>
       <widget class="QListWidget" name="pluginCallWidget">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Ignored" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
        <property name="alternatingRowColors">
         <bool>true</bool>
        </property>
@@ -559,19 +600,19 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>883</width>
+     <width>867</width>
      <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">
     <property name="statusTip">
-     <string>Öffnen, Speichern, Exportieren</string>
+     <string></string>
     </property>
     <property name="tearOffEnabled">
      <bool>true</bool>
     </property>
     <property name="title">
-     <string>&amp;Datei</string>
+     <string>File</string>
     </property>
     <property name="separatorsCollapsible">
      <bool>true</bool>
@@ -593,13 +634,13 @@
    </widget>
    <widget class="QMenu" name="menuFenster">
     <property name="statusTip">
-     <string>Unterfenster-Darstellung verwalten</string>
+     <string>Edit subwindows</string>
     </property>
     <property name="tearOffEnabled">
      <bool>true</bool>
     </property>
     <property name="title">
-     <string>&amp;Fenster</string>
+     <string>Subwindows</string>
     </property>
     <property name="separatorsCollapsible">
      <bool>true</bool>
@@ -618,7 +659,7 @@
      <bool>true</bool>
     </property>
     <property name="title">
-     <string>&amp;Hilfe</string>
+     <string>Help</string>
     </property>
     <property name="icon">
      <iconset>
@@ -643,7 +684,7 @@
      <bool>true</bool>
     </property>
     <property name="title">
-     <string>Sprache</string>
+     <string>Language</string>
     </property>
     <property name="separatorsCollapsible">
      <bool>true</bool>
@@ -659,7 +700,7 @@
      <bool>true</bool>
     </property>
     <property name="title">
-     <string>Geräte</string>
+     <string>Devices</string>
     </property>
     <property name="separatorsCollapsible">
      <bool>true</bool>
@@ -674,7 +715,7 @@
      <bool>true</bool>
     </property>
     <property name="title">
-     <string>Netzwerk</string>
+     <string>Network</string>
     </property>
     <property name="separatorsCollapsible">
      <bool>true</bool>
@@ -707,14 +748,14 @@
     </widget>
     <widget class="QMenu" name="menuMit_Remotehost_verbinden">
      <property name="title">
-      <string>Mit Remotehost verbinden</string>
+      <string>Connect to remote host</string>
      </property>
      <addaction name="actionNeuer_HOst"/>
      <addaction name="separator"/>
     </widget>
     <widget class="QMenu" name="menuAktive_Verbindungen">
      <property name="title">
-      <string>Aktive Verbindungen</string>
+      <string>Active connections</string>
      </property>
      <addaction name="actionkeine_3"/>
     </widget>
@@ -730,7 +771,7 @@
    </widget>
    <widget class="QMenu" name="menuDatenbank">
     <property name="title">
-     <string>Datenbank</string>
+     <string>Database</string>
     </property>
     <addaction name="pullFromDatabaseAction"/>
     <addaction name="pushToDatabaseAction"/>
@@ -746,36 +787,36 @@
   </widget>
   <action name="exportDataAction">
    <property name="text">
-    <string>&amp;Daten exportieren</string>
+    <string>Export data</string>
    </property>
    <property name="statusTip">
-    <string>Bitte nutze RECHTSKLICK auf Plotbereich</string>
+    <string>Please use RIGHT CLICK in graph</string>
    </property>
   </action>
   <action name="actionBeenden">
    <property name="text">
-    <string>&amp;Beenden</string>
+    <string>Quit</string>
    </property>
   </action>
   <action name="stylePlotsAction">
    <property name="text">
-    <string>&amp;Plot anpassen</string>
+    <string>Edit plot</string>
    </property>
    <property name="statusTip">
-    <string>Plot-Darstellung</string>
+    <string></string>
    </property>
   </action>
   <action name="actionPlot_exportieren">
    <property name="text">
-    <string>&amp;Plot exportieren</string>
+    <string>Export plot</string>
    </property>
    <property name="statusTip">
-    <string>Bitte nutze RECHTSKLICK auf Plotbereich</string>
+    <string>Please use RIGHT CLICK in graph</string>
    </property>
   </action>
   <action name="actionFenster">
    <property name="text">
-    <string>Fenster</string>
+    <string>Windows</string>
    </property>
   </action>
   <action name="signalWidgetToggle">
@@ -786,10 +827,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Signale</string>
+    <string>Signals</string>
    </property>
    <property name="statusTip">
-    <string>Signale-Unterfenster</string>
+    <string>Signals-Subwindow</string>
    </property>
   </action>
   <action name="deviceWidgetToggle">
@@ -800,10 +841,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Geräte</string>
+    <string>Devices</string>
    </property>
    <property name="statusTip">
-    <string>Geräte-Unterfenster</string>
+    <string/>
    </property>
   </action>
   <action name="pluginsWidgetToggle">
@@ -811,10 +852,10 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>&amp;Plugins</string>
+    <string>Plugins</string>
    </property>
    <property name="statusTip">
-    <string>Plugins-Unterfenster</string>
+    <string/>
    </property>
   </action>
   <action name="scriptWidgetToggle">
@@ -822,56 +863,56 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>S&amp;kript</string>
+    <string>Scripts</string>
    </property>
    <property name="statusTip">
-    <string>Skripte-Unterfenster</string>
+    <string/>
    </property>
   </action>
   <action name="loadScriptAction">
    <property name="text">
-    <string>&amp;Skript laden</string>
+    <string>Load script</string>
    </property>
    <property name="statusTip">
-    <string>Skript aus Datei laden</string>
+    <string>Load script from file</string>
    </property>
   </action>
   <action name="saveScriptAction">
    <property name="text">
-    <string>S&amp;kript speichern</string>
+    <string>Save script</string>
    </property>
    <property name="statusTip">
-    <string>Skript in Datei speichern</string>
+    <string>Save script to file</string>
    </property>
   </action>
   <action name="saveSessionAction">
    <property name="text">
-    <string>S&amp;ession speichern</string>
+    <string>Save session</string>
    </property>
   </action>
   <action name="actionZuletzt_geladen">
    <property name="text">
-    <string>Zuletzt geladen</string>
+    <string>Last edited</string>
    </property>
   </action>
   <action name="loadSessionAction">
    <property name="text">
-    <string>Session &amp;laden</string>
+    <string>Load session</string>
    </property>
   </action>
   <action name="helpAction">
    <property name="text">
-    <string>&amp;Hilfe zu RTOC</string>
+    <string>RTOC Help</string>
    </property>
   </action>
   <action name="aboutAction">
    <property name="text">
-    <string>Über RTOC</string>
+    <string>About RTOC</string>
    </property>
   </action>
   <action name="importDataAction">
    <property name="text">
-    <string>Daten &amp;importieren</string>
+    <string>Import data</string>
    </property>
   </action>
   <action name="systemTrayAction">
@@ -919,7 +960,7 @@
   </action>
   <action name="actionBotToken">
    <property name="text">
-    <string>Bot-Token eingeben</string>
+    <string>Enter bot-token</string>
    </property>
   </action>
   <action name="actionTelegramBot">
@@ -927,7 +968,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Aktiviert</string>
+    <string>Activate</string>
    </property>
   </action>
   <action name="HTMLServerAction">
@@ -943,17 +984,17 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Aktivieren</string>
+    <string>Activate</string>
    </property>
   </action>
   <action name="actionTCPPassword">
    <property name="text">
-    <string>Passwort-Schutz</string>
+    <string>Password protection</string>
    </property>
   </action>
   <action name="checkUpdatesAction">
    <property name="text">
-    <string>Auf Updates prüfen</string>
+    <string>Check for updates</string>
    </property>
   </action>
   <action name="actionTCPPort">
@@ -963,7 +1004,7 @@
   </action>
   <action name="clearCacheAction">
    <property name="text">
-    <string>Cache leeren</string>
+    <string>Clear cache</string>
    </property>
   </action>
   <action name="pluginRepoAction">
@@ -973,7 +1014,7 @@
   </action>
   <action name="getPluginsButton">
    <property name="text">
-    <string>Geräte hinzufügen/entfernen</string>
+    <string>Add/remove devices</string>
    </property>
   </action>
   <action name="actionTCPServer_2">
@@ -981,12 +1022,12 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Aktivieren</string>
+    <string>Activate</string>
    </property>
   </action>
   <action name="actionTCPPassword_2">
    <property name="text">
-    <string>Passwort-Schutz</string>
+    <string>Password protection</string>
    </property>
   </action>
   <action name="actionTCPPort_2">
@@ -1007,32 +1048,32 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Aktiviert</string>
+    <string>Active</string>
    </property>
   </action>
   <action name="actionBotToken_2">
    <property name="text">
-    <string>Bot-Token eingeben</string>
+    <string>Enter Bot-Token</string>
    </property>
   </action>
   <action name="action0_St_ndlich">
    <property name="text">
-    <string>Backup-Intervall einstellen</string>
+    <string>Set Backup-Interval</string>
    </property>
   </action>
   <action name="action0_T_glich">
    <property name="text">
-    <string>Täglich</string>
+    <string>Daily</string>
    </property>
   </action>
   <action name="actionSetBackupDir">
    <property name="text">
-    <string>Backup-Verzeichnis festlegen</string>
+    <string>Set Backup-Path</string>
    </property>
   </action>
   <action name="actionDeleteBackups">
    <property name="text">
-    <string>Backups löschen</string>
+    <string>Delete Backups</string>
    </property>
   </action>
   <action name="actionBackup_1">
@@ -1042,17 +1083,17 @@
   </action>
   <action name="actionBackupSettings">
    <property name="text">
-    <string>Einstellungen</string>
+    <string>Settings</string>
    </property>
   </action>
   <action name="actionNeuer_Host">
    <property name="text">
-    <string>Neuer Host</string>
+    <string>New Host</string>
    </property>
   </action>
   <action name="actionkeine">
    <property name="text">
-    <string>keine</string>
+    <string>None</string>
    </property>
   </action>
   <action name="actionUpdate_Rate_1_Hz">
@@ -1062,12 +1103,12 @@
   </action>
   <action name="actionRTOC_Server_suchen">
    <property name="text">
-    <string>RTOC-Server suchen</string>
+    <string>Search RTOC-Servers</string>
    </property>
   </action>
   <action name="actionSetBackupIntervall">
    <property name="text">
-    <string>Backout-Intervall: täglich</string>
+    <string>Backout-Interval: daily</string>
    </property>
   </action>
   <action name="deviceRAWWidgetToggle">
@@ -1075,7 +1116,7 @@
     <bool>true</bool>
    </property>
    <property name="text">
-    <string>Geräte RAW</string>
+    <string>Devices RAW</string>
    </property>
   </action>
   <action name="actionUpdate_Rate_1Hz">
@@ -1102,9 +1143,15 @@
    <property name="text">
     <string>Update-Rate: 1Hz</string>
    </property>
+   <property name="toolTip">
+    <string>Update-Rate: 1Hz</string>
+   </property>
   </action>
   <action name="actionNeuer_HOst">
    <property name="text">
+    <string>Neuer Host</string>
+   </property>
+   <property name="toolTip">
     <string>Neuer Host</string>
    </property>
   </action>
@@ -1112,10 +1159,16 @@
    <property name="text">
     <string>keine</string>
    </property>
+   <property name="toolTip">
+    <string>keine</string>
+   </property>
   </action>
   <action name="actionSearchRTOCServer">
    <property name="text">
-    <string>RTOC-Server suchen</string>
+    <string>Search RTOC-Server</string>
+   </property>
+   <property name="toolTip">
+    <string>Search RTOC-Server</string>
    </property>
   </action>
   <action name="ConsoleWidgetToggle">
@@ -1128,22 +1181,22 @@
   </action>
   <action name="settingsAction">
    <property name="text">
-    <string>Einstellungen</string>
+    <string>Settings</string>
    </property>
   </action>
   <action name="pullFromDatabaseAction">
    <property name="text">
-    <string>Lokale Daten in Datenbank laden</string>
+    <string>Push local data to database (backup)</string>
    </property>
   </action>
   <action name="pushToDatabaseAction">
    <property name="text">
-    <string>Lokale Daten durch Datenbank ersetzen</string>
+    <string>Replace local data with data from database</string>
    </property>
   </action>
   <action name="exportDatabaseAction">
    <property name="text">
-    <string>Datenbank exportieren</string>
+    <string>Export database</string>
    </property>
   </action>
  </widget>

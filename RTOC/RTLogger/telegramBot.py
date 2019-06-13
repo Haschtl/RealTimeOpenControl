@@ -33,7 +33,7 @@ except (ImportError, SystemError):
         'Could not import matplotlib.pyplot\nThis happens if matplotlib or tkinker isn\'t installed. \nReceiving plots via telegram is disabled.')
     plt = None
 
-# Bot.answer_callback_query(callback_query_id, text=None, show_alert=False, url=None, cache_time=None, timeout=None, **kwargs) f\xfcr Teilen
+# Bot.answer_callback_query(callback_query_id, text=None, show_alert=False, url=None, cache_time=None, timeout=None, **kwargs) for sharing
 # Bot.delete_message(chat_id, message_id, timeout=None, **kwargs)
 
 
@@ -54,7 +54,6 @@ else:
 
 __imports__ = ['python-telegram-bot']
 
-BACKBUTTON = translate('RTOC', '<-- Zur\xfcck')
 DPI = 300
 WELCOME_MESSAGE = False
 
@@ -65,6 +64,7 @@ class telegramBot():
     """
 
     def __init__(self, logger):
+        self.BACKBUTTON = '\u2190'+translate('RTOC', ' Back')
         self.logger = logger
         self.telegram_clients = {}
         self.loadClients()
@@ -80,9 +80,9 @@ class telegramBot():
         self.helper = {}
         self._teleThreads = []
         self.busy = False
-        self.menuCommands = [translate('RTOC', 'Event-Benachrichtigung festlegen'), translate('RTOC', 'Letzte Messwerte'), translate('RTOC', 'Signale')]
-        self.writeMenuCommands = [translate('RTOC', 'Ger\xe4te'), translate('RTOC', 'Event/Signal erzeugen'), translate('RTOC', 'Automatisierung')]
-        self.adminMenuCommands = [translate('RTOC', 'Einstellungen')]
+        self.menuCommands = [translate('RTOC', 'Latest values'), translate('RTOC', 'Signals'), translate('RTOC', 'Settings')]
+        self.writeMenuCommands = [translate('RTOC', 'Devices'), translate('RTOC', 'Create Event/Signal'), translate('RTOC', 'Automation')]
+        self.adjustEventNotificationCommands = [translate('RTOC', "No notifications"), translate('RTOC', "Only errors"), translate('RTOC', "Warnings"), translate('RTOC', "All events")]
 
         self.userActions = {}
         userpath = self.logger.config['global']['documentfolder']
@@ -133,7 +133,7 @@ class telegramBot():
                 chat = self.bot.get_chat(chat_id)
                 first_name = str(chat.first_name)
                 last_name = str(chat.last_name)
-                text = translate('RTOC', '{} {} hat sich zum ersten Mal mit {} verbunden.').format(first_name, last_name, self.logger.config['global']['name'])
+                text = translate('RTOC', '{} {} joined {} for the first time.').format(first_name, last_name, self.logger.config['global']['name'])
                 self.send_message_to_all(text, onlyAdmin=True)
                 logging.info('TELEGRAM BOT: New client connected with ID: '+str(chat_id))
                 if len(self.telegram_clients.keys()) == 0:
@@ -175,8 +175,8 @@ class telegramBot():
                 self.signals_range[chat_id] = [time.time()-60*60*24,time.time()]
 
     def sendEvent(self, message, devicename, signalname, priority):
-        ptext = ['_Information_', '*Warnung*', '*_Fehler_*'][priority]
-        message = translate('RTOC', '{} von {}.{}:\n{}').format(ptext, devicename, signalname, message)
+        ptext = [translate('RTOC','_Information_'), translate('RTOC','*Warning*'), translate('RTOC','*_Error_*')][priority]
+        message = translate('RTOC', '{} from {}.{}:\n{}').format(ptext, devicename, signalname, message)
         for id in self.telegram_clients.keys():
             self.check_chat_id(id)
             if priority >= self.telegram_clients[id]['eventlevel']:
@@ -224,7 +224,7 @@ class telegramBot():
             if WELCOME_MESSAGE:
                 for client in self.telegram_clients.keys():
                     self.send_message(
-                        int(client), translate('RTOC', '{} wurde gestartet.').format(self.logger.config['global']['name']))
+                        int(client), translate('RTOC', '{} was started.').format(self.logger.config['global']['name']))
                     self.menuHandler(int(client), int(client))
             # self.updater.idle()
             return True
@@ -270,7 +270,7 @@ class telegramBot():
     def startHandler(self, bot, update):
         self.check_chat_id(update.message.chat_id)
         chat = bot.get_chat(update.message.chat_id)
-        bot.send_message(update.message.chat_id, text=translate('RTOC', '*Hallo {}!*\nIch bin dein {}-Bot.\nIch helfe dir dabei die Ger\xe4te zu verwalten, die du bei mir angelegt hast. Ausserdem kann ich dir die Messdaten zeigen und dich bei Events benachrichtigen.').format(chat.first_name, self.logger.config['global']['name']), parse_mode=ParseMode.MARKDOWN)
+        bot.send_message(update.message.chat_id, text=translate('RTOC', '*Hello {}!*\nI\'m your {}-bot.\nI will help you to manage the devices you installed. I can also show you the measurement data and notify you at events.').format(chat.first_name, self.logger.config['global']['name']), parse_mode=ParseMode.MARKDOWN)
         self.menuHandler(bot, update.message.chat_id)
 #################### Menu helper #################################################
 
@@ -285,14 +285,14 @@ class telegramBot():
     def _permissionCheck(self, chat_id):
         if self.logger.config['telegram']['onlyAdmin'] and self.telegram_clients[str(chat_id)]['permission'] != 'admin':
             #logging.info('Aborted telegram answer, because telegram-option "onlyAdmin" is active.')
-            text = translate('RTOC', 'Der RTOC-Bot befindet sich im Wartungsmodus. Ein Administrator muss den Zugang freischalten.')
+            text = translate('RTOC', 'The RTOC bot is in maintenance mode. An administrator must unlock the access.')
             logging.info(text)
             self.bot.send_message(
                 chat_id, text=text, disable_notification=False)
             return False
 
         if self.telegram_clients[str(chat_id)]['permission'] == 'blocked':
-            text = translate('RTOC', 'Du hast für diesen Bot keine Berechtigungen.')
+            text = translate('RTOC', 'You don\'t have permission for this bot.')
             logging.info(text)
             self.bot.send_message(
                 chat_id, text=text, disable_notification=False)
@@ -324,7 +324,7 @@ class telegramBot():
             return
 
         if backButton:
-            buttonlist.append(BACKBUTTON)
+            buttonlist.append(self.BACKBUTTON)
 
         if description_text != '':
             text = description_text.replace('/n', '/n') + '\n' + text
@@ -396,7 +396,7 @@ class telegramBot():
             t = Thread(target=self._thr, args=(fun, *args, *kwargs,))
             t.start()
         else:
-            self.send_message(chat_id, translate('RTOC', 'Ich bin gerade besch\xe4ftigt, bitte lasse mir mehr Zeit.'))
+            self.send_message(chat_id, translate('RTOC', 'I\'m busy right now, please give me more time.'))
 
     def _thr(self, fun, *args, **kwargs):
         fun(*args, *kwargs)
@@ -436,12 +436,20 @@ class telegramBot():
             self.createEventHandlerAns(bot, chat_id, strung)
         elif self.telegram_clients[str(chat_id)]['menu'] == 'settings':
             self.settingsHandlerAns(bot, chat_id, strung)
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'settingsGeneral':
+            self.settingsGeneralHandlerAns(bot, chat_id, strung)
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'settingsBot':
+            self.settingsBotHandlerAns(bot, chat_id, strung)
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'settingsBackup':
+            self.settingsBackupHandlerAns(bot, chat_id, strung)
         elif self.telegram_clients[str(chat_id)]['menu'] == 'resize':
             self.resizeHandlerAns(bot, chat_id, strung)
         elif self.telegram_clients[str(chat_id)]['menu'] == "shortcut":
             self.addShortcutAns(bot, chat_id, strung)
         elif self.telegram_clients[str(chat_id)]['menu'] == 'globalSamplerate':
             self.globalSamplerateHandlerAns(bot, chat_id, strung)
+        elif self.telegram_clients[str(chat_id)]['menu'] == 'backupResampling':
+            self.backupResamplingHandlerAns(bot, chat_id, strung)
         elif self.telegram_clients[str(chat_id)]['menu'] == 'automation':
             self.automationHandlerAns(bot, chat_id, strung)
         elif self.telegram_clients[str(chat_id)]['menu'] == 'globalEvents':
@@ -452,6 +460,8 @@ class telegramBot():
             self.globalActionsHandlerAns(bot, chat_id, strung)
         elif self.telegram_clients[str(chat_id)]['menu'] == 'globalAction':
             self.globalActionHandlerAns(bot, chat_id, strung)
+        elif self.telegram_clients[str(chat_id)]['menu'].endswith(":signals"):
+            self.signalsDeviceSubHandlerAns(bot, chat_id, strung)
         else:
             self.menuHandler(bot, chat_id)
 
@@ -475,30 +485,24 @@ class telegramBot():
             commands += self.createShortcutList(bot, chat_id)
         commands += self.menuCommands
         if perm in ['write', 'admin']:
-            commands += self.writeMenuCommands
-        if perm == 'admin':
-            commands += self.adminMenuCommands
+            commands = commands[:-1] + self.writeMenuCommands + [commands[-1]]
         self.sendMenuMessage(bot, chat_id, commands,
-                             translate('RTOC', "*Hauptmen\xfc*"), '', 1, False)
+                             translate('RTOC', "*Mainmenu*"), '', 1, False)
 
     def menuHandlerAns(self, bot, chat_id, strung):
         if strung in self.menuCommands:
             idx = self.menuCommands.index(strung)
             if idx == 0:
-                self.adjustEventNotificationHandler(bot, chat_id)
-            elif idx == 1:
                 self.sendLatest(bot, chat_id)
                 self.menuHandler(bot, chat_id)
-            elif idx == 2:
+            elif idx == 1:
                 self.signalsHandler(bot, chat_id)
+            elif idx == 2:
+                self.settingsHandler(bot, chat_id)
         elif strung in list(self.userActions.keys()):
             self.executeUserAction(bot, chat_id, strung)
         elif strung in self.createShortcutList(bot, chat_id):
             self.callShortcut(bot, chat_id, strung)
-        elif self.telegram_clients[str(chat_id)]['permission'] == 'admin' and strung in self.adminMenuCommands:
-                idx = self.adminMenuCommands.index(strung)
-                if idx == 0:
-                    self.settingsHandler(bot, chat_id)
         elif self.telegram_clients[str(chat_id)]['permission'] in ['write','admin'] and strung in self.writeMenuCommands:
                 idx = self.writeMenuCommands.index(strung)
                 if idx == 0:
@@ -511,14 +515,13 @@ class telegramBot():
             self.menuHandler(bot, chat_id)
 
 # adjust eventNotification menu
-    adjustEventNotificationCommands = [translate('RTOC', "Keine Benachrichtigung"), translate('RTOC', "Nur Fehlermeldungen"), translate('RTOC', "Warnungen"), translate('RTOC', "Alle Benachrichtigungen")]
-
     def adjustEventNotificationHandler(self, bot, chat_id):
+        self.adjustEventNotificationCommands = [translate('RTOC', "No notifications"), translate('RTOC', "Only errors"), translate('RTOC', "Warnings"), translate('RTOC', "All events")]
         self.telegram_clients[str(chat_id)]['menu'] = "adjustEventNotification"
         self.saveClients()
         value = self.telegram_clients[str(chat_id)]['eventlevel']
         value = self.adjustEventNotificationCommands[abs(value-3)]
-        self.sendMenuMessage(bot, chat_id, self.adjustEventNotificationCommands, translate('RTOC', 'Derzeitige Stufe: *{}*\n').format(value), translate('RTOC', 'W\xe4hle eine Benachrichtigungsstufe aus.'))
+        self.sendMenuMessage(bot, chat_id, self.adjustEventNotificationCommands, translate('RTOC', 'Current level: *{}*\n').format(value), translate('RTOC', 'Choose an notification level.'))
 
     def adjustEventNotificationHandlerAns(self, bot, chat_id, strung):
         if strung in self.adjustEventNotificationCommands:
@@ -528,12 +531,12 @@ class telegramBot():
                 self.telegram_clients[str(chat_id)]['eventlevel'] = i
                 self.saveClients()
                 self.send_message(chat_id=chat_id,
-                                  text=translate('RTOC', 'Einstellung angepasst'))
-        self.menuHandler(bot, chat_id)
+                                  text=translate('RTOC', 'Settings applied'))
+        self.settingsHandler(bot, chat_id)
 
 # send latest menu
     def sendLatest(self, bot, chat_id):
-        strung = translate('RTOC', "Name    |  Wert  | Einheit\n------- | ------- | -------\n")
+        strung = translate('RTOC', "Name    |  Value  | Unit\n------- | ------- | -------\n")
         latest = self.logger.database.getLatest()
         names = list(latest.keys())
         names.sort()
@@ -544,7 +547,7 @@ class telegramBot():
             strung = strung+name+'\t | ' + \
                 str(round(value, 2))+"\t | "+str(unit)+"\n"
         if strung == "":
-            strung = translate('RTOC', "Keine Messwerte vorhanden")
+            strung = translate('RTOC', "No signals available")
         self.send_message(chat_id=chat_id, text=strung)
 
 # plugins menu (list of devices)
@@ -555,7 +558,7 @@ class telegramBot():
         commands = list(self.logger.devicenames)
         commands.sort()
         self.sendMenuMessage(bot, chat_id, commands,
-                             translate('RTOC', '*Ger\xe4te*'))
+                             translate('RTOC', '*Devices*'))
 
     def devicesHandlerAns(self, bot, chat_id, strung):
         if strung in self.logger.devicenames.keys():
@@ -567,33 +570,37 @@ class telegramBot():
         self.current_plugin[chat_id] = device
         self.telegram_clients[str(chat_id)]['menu'] = 'plugin'
         self.saveClients()
-        if self.logger.pluginStatus[device] == True:
-            commands = [translate('RTOC', "Ger\xe4t beenden")]
-            samplestr = '\nSamplerate: '+str(self.logger.getPluginSamplerate(device))+' Hz'
-            commands += [translate('RTOC', "Funktionen"), translate('RTOC', "Parameter"), translate('RTOC', "Samplerate \xe4ndern")]
-        elif self.logger.pluginStatus[device] == False:
-            commands = [translate('RTOC', "Ger\xe4t starten")]
-            samplestr = ''
+        if device in self.logger.pluginStatus.keys():
+            if self.logger.pluginStatus[device] == True:
+                commands = [translate('RTOC', "Stop device")]
+                samplestr = '\nSamplerate: '+str(self.logger.getPluginSamplerate(device))+' Hz'
+                commands += [translate('RTOC', "Functions"), translate('RTOC', "Parameters"), translate('RTOC', "Change samplerate")]
+            elif self.logger.pluginStatus[device] == False:
+                commands = [translate('RTOC', "Start device")]
+                samplestr = ''
+            else:
+                commands = [translate('RTOC', "Device-error")]
+                samplestr = ''
         else:
-            commands = [translate('RTOC', "Ger\xe4tefehler")]
-            samplestr = ''
+            commands = []
+            samplestr = translate('RTOC', 'Unknown device')
 
         self.sendMenuMessage(bot, chat_id, commands, device+samplestr)
 
     def deviceHandlerAns(self, bot, chat_id, strung):
-        if strung == translate('RTOC', "Ger\xe4t beenden"):
+        if strung == translate('RTOC', "Stop device"):
             self.logger.stopPlugin(self.current_plugin[chat_id])
             self.deviceHandler(bot, chat_id, self.current_plugin[chat_id])
-        elif strung == translate('RTOC', "Ger\xe4t starten"):
+        elif strung == translate('RTOC', "Start device"):
             self.logger.startPlugin(self.current_plugin[chat_id])
             self.deviceHandler(bot, chat_id, self.current_plugin[chat_id])
-        elif strung == translate('RTOC', "Funktionen"):
+        elif strung == translate('RTOC', "Functions"):
             self.deviceFunctionsHandler(bot, chat_id)
-        elif strung == translate('RTOC', "Parameter"):
+        elif strung == translate('RTOC', "Parameters"):
             self.deviceParametersHandler(bot, chat_id)
-        elif strung == translate('RTOC', "Samplerate \xe4ndern"):
+        elif strung == translate('RTOC', "Change samplerate"):
             self.deviceSamplerateHandler(bot, chat_id)
-        elif strung == BACKBUTTON:
+        elif strung == self.BACKBUTTON:
             self.telegram_clients[str(chat_id)]['menu'] = "plugins"
             self.saveClients()
             self.devicesHandler(bot, chat_id)
@@ -606,23 +613,23 @@ class telegramBot():
         name = self.current_plugin[chat_id]
         commands = ['0.1', '0.5', '1', '2', '5', '10']
         samplerate = self.logger.getPluginSamplerate(name)
-        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Samplerate \xe4ndern*\nDerzeitige Samplerate: {} Hz').format(samplerate))
+        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Change samplerate\nCurrent samplerate: {} Hz').format(samplerate))
 
     def deviceSamplerateHandlerAns(self, bot, chat_id, strung):
         name = self.current_plugin[chat_id]
-        if strung == BACKBUTTON:
+        if strung == self.BACKBUTTON:
             self.deviceHandler(bot, chat_id, self.current_plugin[chat_id])
         else:
             try:
                 samplerate = float(strung)
                 self.logger.setPluginSamplerate(name, samplerate)
                 self.send_message(chat_id,
-                                  translate('RTOC', 'Samplerate wurde ge\xe4ndert'))
+                                  translate('RTOC', 'Samplerate was changed'))
                 self.deviceHandler(bot, chat_id, name)
             except:
                 print(traceback.format_exc())
                 self.send_message(chat_id,
-                                  translate('RTOC', 'Ich habe deine Nachricht nicht verstanden'))
+                                  translate('RTOC', 'I did not understand your message'))
 
     def deviceFunctionsHandler(self, bot, chat_id):
         self.telegram_clients[str(chat_id)]['menu'] = 'pluginfunctions'
@@ -636,11 +643,11 @@ class telegramBot():
                 parStr = ', '.join(self.logger.pluginFunctions[fun][1])
                 commands += [fun.replace(name+".", '')+'('+parStr+')']
         commands.sort()
-        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Funktionen*'))
+        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Functions*'))
 
     def deviceFunctionsHandlerAns(self, bot, chat_id, strung):
         name = self.current_plugin[chat_id]
-        if strung == BACKBUTTON:
+        if strung == self.BACKBUTTON:
             self.deviceHandler(bot, chat_id, self.current_plugin[chat_id])
         else:
             for fun in self.logger.pluginFunctions.keys():
@@ -661,12 +668,12 @@ class telegramBot():
             if fun.startswith(name+".") and fun not in hiddenParams:
                 commands += [fun.replace(name+".", '')]
         commands.sort()
-        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Parameter*'))
+        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Parameters*'))
 
     def deviceParametersHandlerAns(self, bot, chat_id, strung):
         commands = []
         name = self.current_plugin[chat_id]
-        if strung == BACKBUTTON:
+        if strung == self.BACKBUTTON:
             self.current_call[chat_id] = None
             self.deviceHandler(bot, chat_id, self.current_plugin[chat_id])
         else:
@@ -681,41 +688,50 @@ class telegramBot():
             pre = "call"
             self.current_call[chat_id] = strung
             if strung in self.createShortcutList(bot, chat_id, 1):
-                commands = [translate('RTOC', "Shortcut entfernen")]
+                commands = [translate('RTOC', "Remove shortcut")]
             else:
-                commands = [translate('RTOC', "Shortcut erstellen")]
+                commands = [translate('RTOC', "Create shortcut")]
         elif strung == 'SHORTCUT':
             pre = "callShortcut"
-            commands = [translate('RTOC', "Shortcut entfernen")]
+            commands = [translate('RTOC', "Remove shortcut")]
         else:
             #self.telegram_clients[str(chat_id)]['menu'] = "shortcut"
             #commands = [translate('RTOC', "Shortcut wie wo?")]
             pre = "callShortcut"
-            commands = [translate('RTOC', "Shortcut entfernen")]
+            commands = [translate('RTOC', "Remove shortcut")]
         if self.current_call[chat_id].endswith(')'):
-            infotext = translate('RTOC', "Bitte gib Parameter an, die der Funktion \xfcbergeben werden sollen. (Falls ben\xf6tigt)")
-            commands += [translate('RTOC', "Keine Parameter")]
+            infotext = translate('RTOC', "Please specify the parameters to be passed to the function. (If necessary)")
+            commands += [translate('RTOC', "No parameters")]
             self.telegram_clients[str(chat_id)]['menu'] = pre
             self.saveClients()
         else:
             value = self.logger.getPluginParameter(self.current_plugin[chat_id], "get", [
                                                    self.current_call[chat_id]])
-            if value != False:
-                infotext = translate('RTOC', "Derzeitiger Wert: *{}*\nSchreib mir einen neuen Wert, wenn du diesen \xe4ndern willst.").format(value)
+            if value == False:
+                devtext = self.current_plugin[chat_id] + \
+                '.' + self.current_call[chat_id]
+                infotext = translate('RTOC', "*Error*. \nParameter {} not found or device {} not started.").format(devtext, self.current_plugin[chat_id])
+                self.sendMenuMessage(bot, chat_id, commands, infotext)
+                return
+
+            if type(value) == list:
+                if len(value) == 1:
+                    value = value[0]
+            infotext = translate('RTOC', "Current value: *{}*\nWrite me a new value if you want to change it.").format(value)
+            self.telegram_clients[str(chat_id)]['menu'] = pre
+            self.saveClients()
+
+            if strung == 'SHORTCUT':
+                #self.send_message(chat_id, infotext)
                 self.telegram_clients[str(chat_id)]['menu'] = pre
                 self.saveClients()
-            else:
-                devtext = self.current_plugin[chat_id] + \
-                    '.' + self.current_call[chat_id]
-                infotext = translate('RTOC', "*Fehler*. \nParameter {} nicht gefunden bzw. Ger\xe4t {} nicht gestartet.").format(devtext, self.current_plugin[chat_id])
-                if strung == 'SHORTCUT':
-                    self.send_message(chat_id, infotext)
-                    self.menuHandler(bot, chat_id)
-                    return
+                self.sendMenuMessage(bot, chat_id, commands, infotext)
+                #self.menuHandler(bot, chat_id)
+                return
         self.sendMenuMessage(bot, chat_id, commands, infotext)
 
     def deviceCallHandlerAns(self, bot, chat_id, strung):
-        if strung == BACKBUTTON:
+        if strung == self.BACKBUTTON:
             if self.telegram_clients[str(chat_id)]['menu'] == 'callShortcut':
                 self.menuHandler(bot, chat_id)
             else:
@@ -723,13 +739,13 @@ class telegramBot():
                     self.deviceFunctionsHandler(bot, chat_id)
                 else:
                     self.deviceParametersHandler(bot, chat_id)
-        elif strung == translate('RTOC', "Shortcut erstellen"):
+        elif strung == translate('RTOC', "Create shortcut"):
             self.addShortcut(bot, chat_id, strung)
-        elif strung == translate('RTOC', "Shortcut entfernen"):
+        elif strung == translate('RTOC', "Remove shortcut"):
             self.removeShortcut(bot, chat_id, strung)
         else:
             self.temp = []
-            if strung == translate('RTOC', "Keine Parameter"):
+            if strung == translate('RTOC', "No parameters"):
                 self.temp = []
             else:
                 try:
@@ -741,9 +757,8 @@ class telegramBot():
                 except Exception:
                     logging.debug(traceback.format_exc())
                     logging.warning(chat_id, text='_'+strung +
-                                    " ist kein g\xfcltiges Format._")
-                    self.send_message(chat_id, text='_'+strung +
-                                      " ist kein g\xfcltiges Format._")
+                                    " ist not a valid Format._")
+                    self.send_message(chat_id, text=translate('RTOC', '_{} is not a valid format._').format(strung))
                     return
             if self.current_call[chat_id].endswith(')'):
                 func = self.current_call[chat_id][0:self.current_call[chat_id].index('(')]
@@ -751,9 +766,9 @@ class telegramBot():
                     self.current_plugin[chat_id], func, *self.temp)
                 self.send_message(chat_id, ans)
                 if ok:
-                    self.send_message(chat_id, translate('RTOC', 'Funktion wurde ausgeführt.'))
+                    self.send_message(chat_id, translate('RTOC', 'Function was executed.'))
                 else:
-                    self.send_message(chat_id, translate('RTOC', 'Fehler in Funktion.'))
+                    self.send_message(chat_id, translate('RTOC', 'Error in function.'))
                 if self.telegram_clients[str(chat_id)]['menu'] == 'callShortcut':
                     self.menuHandler(bot, chat_id)
                 else:
@@ -768,20 +783,27 @@ class telegramBot():
             #self.current_call[chat_id] = None
             #self.deviceHandler(bot, chat_id, self.current_plugin[chat_id])
 
+    def get_telegram_client(self, chat_id, entry, alt):
+        if entry in self.telegram_clients[str(chat_id)].keys():
+            return self.telegram_clients[str(chat_id)][entry]
+        else:
+            self.telegram_clients[str(chat_id)][entry]=alt
+            return alt
+
     def signalsHandler(self, bot, chat_id, quiet=False):
         self.telegram_clients[str(chat_id)]['menu'] = "signals"
         self.saveClients()
         commands = []
         if chat_id not in self.signals_range.keys():
             xmin_abs = self.logger.database.getGlobalXmin(fast=True)
-            xmax = self.logger.database.getGlobalXmax(fast=True)
+            xmax = time.time() + 60
             xmin = xmax - 60*60*24
             if xmin_abs > xmin:
                 xmin = xmin_abs
             self.signals_range[chat_id] = [xmin-100, xmax+100]
         elif self.signals_range[chat_id] == []:
             xmin_abs = self.logger.database.getGlobalXmin(fast=True)
-            xmax = self.logger.database.getGlobalXmax(fast=True)
+            xmax = time.time() + 60
             xmin = xmax - 60*60*24
             if xmin_abs > xmin:
                 xmin = xmin_abs
@@ -794,28 +816,34 @@ class telegramBot():
             sname = '.'.join(signalname)
             if sname in self.signals_selected[chat_id]:
                 commands.append('x '+sname)
-            else:
+            elif not self.get_telegram_client(chat_id, 'signalSubmenu', True):
                 commands.append(sname)
+            elif not signalname[0] in commands and self.get_telegram_client(chat_id, 'signalSubmenu', True):
+                commands.append(signalname[0])
         commands.sort()
-        commands.insert(0, translate('RTOC', 'Graph anfordern'))
-        commands.insert(1, translate('RTOC', 'Zeitraum w\xe4hlen'))
+        commands.insert(0, translate('RTOC', 'Request graph'))
+        commands.insert(1, translate('RTOC', 'Select period'))
         if 'Events' in self.signals_selected[chat_id]:
-            commands.insert(2, translate('RTOC', 'Events ausblenden'))
+            commands.insert(2, translate('RTOC', 'Hide events'))
         else:
-            commands.insert(2, translate('RTOC', 'Events anzeigen'))
+            commands.insert(2, translate('RTOC', 'Show events'))
         if self.signals_selected[chat_id] == ['.'.join(s) for s in availableSignals]:
-            commands.append(translate('RTOC', 'Alle abw\xe4hlen'))
+            commands.append(translate('RTOC', 'Deselect all'))
         else:
-            commands.append(translate('RTOC', 'Alle ausw\xe4hlen'))
+            commands.append(translate('RTOC', 'Select all'))
         units = self.logger.database.getUniqueUnits()
         for unit in units:
-            commands.append(translate('RTOC', 'Alle mit Einheit "{}" ausw\xe4hlen').format(unit))
+            commands.append(translate('RTOC', 'Select all with unit "{}"').format(unit))
         if self.telegram_clients[str(chat_id)]['permission'] == 'admin':
-            commands.append(translate('RTOC', 'Ausgew\xe4hle Signale l\xf6schen!'))
-            commands.append(translate('RTOC', 'Ausgew\xe4hlte Events l\xf6schen!'))
-        commands.append(translate('RTOC', 'Ausgew\xe4hlte Signale herunterladen'))
+            commands.append(translate('RTOC', 'Delete selected signals!'))
+            commands.append(translate('RTOC', 'Delete selected events!'))
+        commands.append(translate('RTOC', 'Download selected signals!'))
+        if self.get_telegram_client(chat_id, 'signalSubmenu', True):
+            commands.append(translate('RTOC', 'View: Devices'))
+        else:
+            commands.append(translate('RTOC', 'View: Signals'))
         if quiet:
-            text = translate('RTOC', 'Signale')
+            text = translate('RTOC', 'Signals')
         else:
             xmin = self.logger.database.getGlobalXmin(fast=True)
             xmax = self.logger.database.getGlobalXmax(fast=True)
@@ -827,20 +855,18 @@ class telegramBot():
             xminSel = dt.datetime.fromtimestamp(xminSel).strftime("%d.%m.%Y %H:%M:%S")
             xmaxSel = dt.datetime.fromtimestamp(xmaxSel).strftime("%d.%m.%Y %H:%M:%S")
             text = translate('RTOC', '''
-            *Signale*\n
-            Hier bekommst du Infos \xfcber Signale und ich kann dir einen Graphen schicken. \n
-            W\xe4hle dazu zuerst ein oder mehrere Signale aus und klicke auf "''')+translate('RTOC', 'Graph anfordern')+translate('RTOC', '''".\n
-            Ich kann auch die Events im Plot darstellen und ausgew\xe4hlte Signale oder Events l\xf6schen.\n
-            Ausgew\xe4hlter Zeitraum:\n{} - {}\nVerf\xfcgbarer Zeitraum:\n{} - {}''').format(xminSel, xmaxSel, xmin, xmax)
+*Signals*\n
+Here you can get information about signals and I can send you a graph. \n
+First select one or more signals and click on "''')+translate('RTOC', 'Request graph')+translate('RTOC', '''".\n
+I can also display the events in the plot and delete selected signals or events.\n
+Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSel, xmin, xmax)
         self.sendMenuMessage(bot, chat_id, commands, text)
 
-    # tooltip sofort anzeigen, for neuen Tooltip x min und x max, l\xe4ngen
-    # text braucht mean(y)
     def signalsHandlerAns(self, bot, chat_id, strung):
         chat_id = chat_id
         if chat_id not in self.signals_selected.keys():
             self.signals_selected[chat_id] = []
-        if strung == BACKBUTTON:
+        if strung == self.BACKBUTTON:
             self.signals_selected[chat_id] = []
             self.signals_range[chat_id] = []
             self.menuHandler(bot, chat_id)
@@ -850,9 +876,9 @@ class telegramBot():
             multiSelectorList = []
             for unit in units:
                 multiSelectorList.append(
-                    translate('RTOC', 'Alle mit Einheit "{}" ausw\xe4hlen').format(unit))
+                    translate('RTOC', 'Select all with unit "{}"').format(unit))
 
-            if strung == translate('RTOC', 'Graph anfordern'):
+            if strung == translate('RTOC', 'Request graph'):
                 plot_signals = []
                 dontplot_signals = []
                 for sig in self.signals_selected[chat_id]:
@@ -868,13 +894,13 @@ class telegramBot():
                             dontplot_signals.append(sig)
                 if dontplot_signals != []:
                     self.send_message(chat_id=chat_id,
-                                      text=translate('RTOC', '{} k\xf6nnen nicht dargestellt werden.').format(','.join(dontplot_signals)))
+                                      text=translate('RTOC', '{} can not be plotted.').format(','.join(dontplot_signals)))
                 if plot_signals != []:
                     # self.sendSignalPlot(
                     #    bot, chat_id, self.signals_selected[chat_id], *self.signals_range[chat_id])
                     range = list(self.signals_range[chat_id])
                     self.send_message(chat_id=chat_id,
-                                      text=translate('RTOC', 'Ich erzeuge jetzt einen Graphen mit {} Signalen.\nDas kann eine Weile dauern').format(len(plot_signals)))
+                                      text=translate('RTOC', 'I\'m going to create a graph with {} signals. This may take a while.').format(len(plot_signals)))
                     # t = Thread(target=self.sendSignalPlot, args=(
                     #     bot, chat_id, plot_signals, *range))
                     # t.start()
@@ -883,31 +909,31 @@ class telegramBot():
                     # self.signalsHandler(bot, chat_id)
                 else:
                     self.send_message(chat_id=chat_id,
-                                      text=translate('RTOC', 'Keine Signale ausgew\xe4hlt.'))
-            elif strung == translate('RTOC', 'Events anzeigen'):
+                                      text=translate('RTOC', 'No signals selected.'))
+            elif strung == translate('RTOC', 'Show events'):
                 if 'Events' not in self.signals_selected[chat_id]:
                     self.signals_selected[chat_id].append('Events')
                 # else:
                 self.send_message(chat_id=chat_id,
-                                  text=translate('RTOC', 'Events werden dargestellt.'))
-            elif strung == translate('RTOC', 'Events ausblenden'):
+                                  text=translate('RTOC', 'Events will be plotted.'))
+            elif strung == translate('RTOC', 'Hide events'):
                 if 'Events' in self.signals_selected[chat_id]:
                     idx = self.signals_selected[chat_id].index('Events')
                     self.signals_selected[chat_id].pop(idx)
                 # else:
                     self.send_message(chat_id=chat_id,
-                                      text=translate('RTOC', 'Events werden nicht dargestellt.'))
+                                      text=translate('RTOC', 'Events will not be plotted.'))
                 else:
                     self.send_message(chat_id=chat_id,
-                                      text=translate('RTOC', 'Events waren garnicht ausgewählt.'))
+                                      text=translate('RTOC', 'You can\'t hide events, they are already hidden!'))
             elif strung.startswith('x '):
                 strung = strung.replace('x ', '')
                 if strung in self.signals_selected[chat_id]:
                     idx = self.signals_selected[chat_id].index(strung)
                     self.signals_selected[chat_id].pop(idx)
                     self.send_message(chat_id=chat_id,
-                                      text=translate('RTOC', 'Signal aus Auswahl entfernt.'))
-            elif len(a) == 2:
+                                      text=translate('RTOC', 'Signal removed from selection.'))
+            elif len(a) == 2:  # and not self.get_telegram_client(chat_id, 'signalSubmenu', True):
                 if strung not in self.signals_selected[chat_id]:
                     sigID = self.logger.database.getSignalID(a[0], a[1])
                     xmin, xmax, sigLen = self.logger.database.getSignalInfo(sigID)
@@ -916,25 +942,28 @@ class telegramBot():
                         t = self.createPlotToolTip(xmin, xmax, sigLen)
                     else:
                         self.signals_selected[chat_id].append(strung)
-                        t = 'Leeres Signal'
+                        t = translate('RTOC', 'Empty signal')
 
                     evs = self.logger.database.getEvents(sigID)
                     if evs == []:
                         evtext = '0'
                     else:
-                        evtext = str(len(evs))+translate('RTOC', '\nLetztes Event:\n')
+                        evtext = str(len(evs))+translate('RTOC', '\nLatest Event:\n')
                         if evs[0][6] == 0:
                             prio = translate('RTOC', 'Information')
                         elif evs[0][6] == 1:
-                            prio = translate('RTOC', 'Warnung')
+                            prio = translate('RTOC', 'Warning')
                         else:
-                            prio = translate('RTOC', 'Fehler')
+                            prio = translate('RTOC', 'Error')
 
                         evtext += prio+': '
-                        evtext += evs[0][3]+' am '+ dt.datetime.fromtimestamp(evs[0][4]).strftime("%d.%m.%Y %H:%M:%S")
+                        evtext += evs[0][3]+': '+ dt.datetime.fromtimestamp(evs[0][4]).strftime("%d.%m.%Y %H:%M:%S")
                     self.send_message(chat_id,
-                                      translate('RTOC', 'Signal ausgew\xe4hlt:\n{}\nEvents: {}').format(t, evtext), ParseMode.MARKDOWN, True, False)
-            elif strung == translate('RTOC', 'Ausgew\xe4hle Signale l\xf6schen!'):
+                                      translate('RTOC', 'Signal selected:\n{}\nEvents: {}').format(t, evtext), ParseMode.MARKDOWN, True, False)
+            elif self.get_telegram_client(chat_id, 'signalSubmenu', True) and strung in self.logger.database.deviceNames():
+                self.signalsDeviceSubHandler(bot, chat_id, strung)
+                return
+            elif strung == translate('RTOC', 'Delete selected signals!'):
                 xmin, xmax = self.signals_range[chat_id]
                 for sigName in self.signals_selected[chat_id]:
                     if sigName != 'Events':
@@ -943,8 +972,8 @@ class telegramBot():
                             self.logger.database.removeSignal(sigID, xmin, xmax, True)
                 self.signals_selected[chat_id] = []
                 self.send_message(chat_id=chat_id,
-                                  text=translate('RTOC', 'Ausgew\xe4hlte Signale wurden gel\xf6scht'))
-            elif strung == translate('RTOC', 'Ausgew\xe4hlte Events l\xf6schen!'):
+                                  text=translate('RTOC', 'Selected signals have been deleted!'))
+            elif strung == translate('RTOC', 'Delete selected events!'):
                 xmin, xmax = self.signals_range[chat_id]
                 for sigName in self.signals_selected[chat_id]:
                     if sigName != 'Events':
@@ -952,15 +981,15 @@ class telegramBot():
                         if sigID != -1:
                             self.logger.database.removeEvents(sigID, xmin, xmax, True)
                 self.send_message(chat_id=chat_id,
-                                  text=translate('RTOC', 'Events der ausgew\xe4hlten Signale wurden gel\xf6scht'))
-            elif strung == translate('RTOC', 'Zeitraum w\xe4hlen'):
+                                  text=translate('RTOC', 'Events of selected signals have been deleted!'))
+            elif strung == translate('RTOC', 'Select period'):
                 self.signalsSelectRangeHandler(bot, chat_id)
                 return
-            elif strung == translate('RTOC', 'Alle ausw\xe4hlen'):
+            elif strung == translate('RTOC', 'Select all'):
                 self.signals_selected[chat_id] == []
                 self.signals_selected[chat_id] = [
                     '.'.join(s) for s in self.logger.database.signalNames()]
-            elif strung == translate('RTOC', 'Alle abw\xe4hlen'):
+            elif strung == translate('RTOC', 'Deselect all'):
                 self.signals_selected[chat_id] = []
             elif strung in multiSelectorList:
                 for unit in units:
@@ -970,11 +999,11 @@ class telegramBot():
                             '.'.join(s) for s in self.logger.database.signalNames(units=[unit])]
                 self.signalsHandler(bot, chat_id, True)
                 return
-            elif strung == translate('RTOC', 'Ausgew\xe4hlte Signale herunterladen'):
+            elif strung == translate('RTOC', 'Download selected signals!'):
                 bot.send_chat_action(chat_id=chat_id,
                                      action=ChatAction.UPLOAD_DOCUMENT)
                 self.send_message(chat_id=chat_id,
-                                  text=translate('RTOC', 'Daten werden bereitgestellt...'))
+                                  text=translate('RTOC', 'I\'m collecting the data now...'))
                 sigIDs = [self.logger.database.getSignalID(
                     *i.split('.')) for i in self.signals_selected[chat_id]]
                 xmin, xmax = self.signals_range[chat_id]
@@ -985,15 +1014,72 @@ class telegramBot():
                     dir+'/telegram_export.csv', 'rb'))
                 bot.send_document(chat_id=chat_id, document=open(
                     dir+'/telegram_export.txt', 'rb'))
+            elif strung == translate('RTOC', 'View: Devices'):
+                self.telegram_clients[str(chat_id)]['signalSubmenu'] = False
+                self.saveClients()
+            elif translate('RTOC', 'View: Signals'):
+                self.telegram_clients[str(chat_id)]['signalSubmenu'] = True
+                self.saveClients()
             else:
                 self.send_message(chat_id=chat_id,
-                                  text=translate('RTOC', 'Signalnamen bestehen aus \n<Ger\xe4t>.<Signal>\n. Deine Nachricht sah nicht so aus.\n'))
+                                  text=translate('RTOC', 'Signal names consist of\n<Device>.<Signal>\nYour message didn\'t look that way.\n'))
             self.signalsHandler(bot, chat_id, True)
             return
 
+    def signalsDeviceSubHandler(self, bot, chat_id, device):
+        self.telegram_clients[str(chat_id)]['menu'] = device+":signals"
+        # self.saveClients()
+        commands = []
+        availableSignals = self.logger.database.signalNames(devices=[device])
+        for signalname in availableSignals:
+            sname = '.'.join(signalname)
+            if sname not in self.signals_selected[chat_id]:
+                commands.append(sname)
+        text = translate('RTOC', 'Signals of {}').format(device)
+        commands.sort()
+        self.sendMenuMessage(bot, chat_id, commands, text)
+
+    def signalsDeviceSubHandlerAns(self, bot, chat_id, strung):
+        a = strung.split('.')
+        if strung == self.BACKBUTTON:
+            self.signalsHandler(bot, chat_id, True)
+            return
+        if len(a) == 2:
+            if strung not in self.signals_selected[chat_id]:
+                sigID = self.logger.database.getSignalID(a[0], a[1])
+                xmin, xmax, sigLen = self.logger.database.getSignalInfo(sigID)
+                if xmin != None:
+                    self.signals_selected[chat_id].append(strung)
+                    t = self.createPlotToolTip(xmin, xmax, sigLen)
+                else:
+                    self.signals_selected[chat_id].append(strung)
+                    t = translate('RTOC', 'Empty signal')
+
+                evs = self.logger.database.getEvents(sigID)
+                if evs == []:
+                    evtext = '0'
+                else:
+                    evtext = str(len(evs))+translate('RTOC', '\nLatest Event:\n')
+                    if evs[0][6] == 0:
+                        prio = translate('RTOC', 'Information')
+                    elif evs[0][6] == 1:
+                        prio = translate('RTOC', 'Warning')
+                    else:
+                        prio = translate('RTOC', 'Error')
+
+                    evtext += prio+': '
+                    evtext += evs[0][3]+' am '+ dt.datetime.fromtimestamp(evs[0][4]).strftime("%d.%m.%Y %H:%M:%S")
+                self.send_message(chat_id,
+                                  translate('RTOC', 'Signal selected:\n{}\nEvents: {}').format(t, evtext), ParseMode.MARKDOWN, True, False)
+        else:
+            self.send_message(chat_id=chat_id,
+                              text=translate('RTOC', 'Signal names consist of\n<Device>.<Signal>\nYour message didn\'t look that way.\n'))
+        device = self.telegram_clients[str(chat_id)]['menu'].split(':')[0]
+        self.signalsDeviceSubHandler(bot, chat_id, device)
+
     def signalsSelectRangeHandler(self, bot, chat_id):
         self.telegram_clients[str(chat_id)]['menu'] = "signalSelectRange"
-        self.saveClients()
+        # self.saveClients()
         xmin = self.logger.database.getGlobalXmin()
         xmax = self.logger.database.getGlobalXmax()
         xmin = dt.datetime.fromtimestamp(xmin).strftime("%d.%m.%Y %H:%M:%S")
@@ -1001,49 +1087,50 @@ class telegramBot():
         xmin_s, xmax_s = self.signals_range[chat_id]
         xmin_s = dt.datetime.fromtimestamp(xmin_s).strftime("%d.%m.%Y %H:%M:%S")
         xmax_s = dt.datetime.fromtimestamp(xmax_s).strftime("%d.%m.%Y %H:%M:%S")
-        text = 'Hier kannst du einstellen, welchen Bereich ich darstellen soll.\nWenn du nur ein Datum angibst, gehe ich davon aus, du willst die Daten ab diesem Zeitpunkt bis jetzt haben.\nWenn du einen Zeitraum angeben willst, trenne zwei Zeitpunkte mit einem "-". Du musst keine Uhrzeit angeben.\nBeispiel: "16.05.19 - 13.06.19 14:33"'
-        text += translate('RTOC', '\nAusgew\xe4hlter Zeitraum:\n{} - {}\nVerf\xfcgbarer Zeitraum:\n{} - {}\n').format(xmin_s, xmax_s, xmin, xmax)
-        commands = [translate('RTOC', 'Letzte Minute'), translate('RTOC', 'Letzten 10 Minuten'), translate('RTOC', 'Letzte Stunde'), translate('RTOC', 'Letzte 24h'), translate('RTOC', 'Letzte Woche'), translate('RTOC', 'Letzter Monat'), translate('RTOC', 'Alles')]
+        text = translate('RTOC', 'Here you can set which range I should display.\nIf you only specify one date, I assume you want to have the dates from that point until now.\nIf you want to specify a time period, separate two times with a "-". You don\'t have to give a time.\nExample: "16.05.19 - 13.06.19 14:33"')
+        text += translate('RTOC', '\nSelected period:\n{} - {}\nAvailable period:\n{} - {}\n').format(xmin_s, xmax_s, xmin, xmax)
+        commands = [translate('RTOC', 'Last minute'), translate('RTOC', 'Last 10 minutes'), translate('RTOC', 'Last hour'), translate('RTOC', 'Last 24h'), translate('RTOC', 'Last week'), translate('RTOC', 'Last month'), translate('RTOC', 'All')]
         self.sendMenuMessage(bot, chat_id, commands, text)
 
     def signalsSelectRangeHandlerAns(self, bot, chat_id, strung):
-        if strung == BACKBUTTON:
-            self.signalsHandler(bot, chat_id)
+        if strung == self.BACKBUTTON:
+            self.signalsHandler(bot, chat_id, True)
         else:
-            if strung == translate('RTOC', 'Letzte Minute'):
+            if strung == translate('RTOC', 'Last minute'):
                 xmax = time.time()
                 xmin = xmax-60*1
-            elif strung == translate('RTOC', 'Letzten 10 Minuten'):
+            elif strung == translate('RTOC', 'Last 10 minutes'):
                 xmax = time.time()
                 xmin = xmax-60*10
-            elif strung == translate('RTOC', 'Letzte Stunde'):
+            elif strung == translate('RTOC', 'Last hour'):
                 xmax = time.time()
                 xmin = xmax-60*60*1
-            elif strung == translate('RTOC', 'Letzte 24h'):
+            elif strung == translate('RTOC', 'Last 24h'):
                 xmax = time.time()
                 xmin = xmax-60*60*24
-            elif strung == translate('RTOC', 'Letzte Woche'):
+            elif strung == translate('RTOC', 'Last week'):
                 xmax = time.time()
                 xmin = xmax-60*60*24*7
-            elif strung == translate('RTOC', 'Letzter Monat'):
+            elif strung == translate('RTOC', 'Last month'):
                 xmax = time.time()
                 xmin = xmax-60*60*24*31
-            elif strung == translate('RTOC', 'Alles'):
+            elif strung == translate('RTOC', 'All'):
                 xmin = self.logger.database.getGlobalXmin() -100
-                xmax = self.logger.database.getGlobalXmax() +100
+                # xmax = self.logger.database.getGlobalXmax() +100
+                xmax = time.time()+60
             else:
                 found, xmin, xmax = _strToTimerange(strung)
                 if not found:
                     self.send_message(chat_id=chat_id,
-                                      text=translate('RTOC', 'Bitte sende mir einen Zeitraum, den ich verstehen kann.'))
+                                      text=translate('RTOC', 'Please send me a period I can understand.'))
                     return
             self.signals_range[chat_id] = [xmin, xmax]
             xmin = dt.datetime.fromtimestamp(xmin).strftime("%d.%m.%Y %H:%M:%S")
             xmax = dt.datetime.fromtimestamp(xmax).strftime("%d.%m.%Y %H:%M:%S")
-            text = translate('RTOC', 'Ausgew\xe4hlter Zeitraum:\n{} - {}').format(xmin, xmax)
+            text = translate('RTOC', 'Selected period:\n{} - {}').format(xmin, xmax)
             self.send_message(chat_id=chat_id,
                               text=text)
-            self.signalsHandler(bot, chat_id)
+            self.signalsHandler(bot, chat_id, True)
 
     # dt.datetime.fromtimestamp(time.time()).strftime("%d.%m.%Y %H:%M:%S")
 
@@ -1056,23 +1143,24 @@ class telegramBot():
             if quiet:
                 text = deviceselect
             else:
-                text = translate('RTOC', '''*Event oder Messwert erzeugen*\n
-                Sende mir eine Nachricht, um ein Event zu erzeugen \n
-                Schreibe die Nachricht Fett (*Text*) f\xfcr eine Fehlermeldung und kursiv (_Text_) f\xfcr eine Warnung. Normaler Text hat die Priorit\xe4t 'Information'\n
-                Du kannst mir auch Messwerte schicken (z.B. '5 V'). \n
-                *Du kannst das Event/den Messwert auch einem Signal zuordnen, indem du ein Signal aus der Liste ausw\xe4hlst oder indem du einen Signalnamen angibst ('Beispiel.Signal').\n
+                text = translate('RTOC', '''
+*Create event or signal*\n
+Send me a message to create an event\n
+Write the message bold (*Text*) for an error message and italic (_Text_) for a warning. Normal text has the priority  'Information'\n
+You can also send me measured values (e.g. '5 V'). \n
+*You can also assign the event/measurement to a signal by selecting a signal from the list or by specifying a signal name ('Device.Signal').\n
                 ''')
             self.sendMenuMessage(bot, chat_id, commands, text)
         else:
             self.selectedSignalForEvent = deviceselect
-            bot.send_message(chat_id, text=translate('RTOC', "Signal ausgew\xe4hlt: {}.").format(deviceselect))
+            bot.send_message(chat_id, text=translate('RTOC', "Signal selected: {}.").format(deviceselect))
 
     def createEventHandlerAns(self, bot, chat_id, strung):
         if strung in ['.'.join(a) for a in self.logger.database.signalNames()]:
             self.createEventHandler(bot, chat_id, strung, False)
         elif len(strung.split('.')) == 2:
             self.createEventHandler(bot, chat_id, strung, False)
-        elif strung == BACKBUTTON:
+        elif strung == self.BACKBUTTON:
             self.selectedSignalForEvent = None
             self.menuHandler(bot, chat_id)
         else:
@@ -1094,7 +1182,7 @@ class telegramBot():
                     y=value, unit=[unit], dname=device, snames=[signal])
                 # self.send_message(chat_id=chat_id,
                 #                   text=translate('RTOC', 'Messwert gesendet.'))
-                self.createEventHandler(bot, chat_id, translate('RTOC', 'Messwert gesendet.'), True)
+                self.createEventHandler(bot, chat_id, translate('RTOC', 'Value transmitted.'), True)
                 return
             else:
                 if strung.startswith('*') and strung.endswith('*'):
@@ -1109,7 +1197,7 @@ class telegramBot():
 
                 # self.send_message(chat_id=chat_id,
                 #                   text=translate('RTOC', 'Event gesendet.'))
-                self.createEventHandler(bot, chat_id, translate('RTOC', 'Event gesendet.'), True)
+                self.createEventHandler(bot, chat_id, translate('RTOC', 'Event transmitted.'), True)
                 return
             self.menuHandler(bot, chat_id)
 
@@ -1117,83 +1205,85 @@ class telegramBot():
         self.telegram_clients[str(chat_id)]['menu'] = "settings"
         self.saveClients()
         self.helper[chat_id] = None
-        commands = [
-            translate('RTOC', "Alle Daten l\xf6schen"),
-            translate('RTOC', 'Aufzeichnungsdauer \xe4ndern'),
-            translate('RTOC', 'Globale Samplerate \xe4ndern'),
-            ]
+        commands = [translate('RTOC', 'Set notification level')]
 
+        if self.telegram_clients[str(chat_id)]['permission'] in ['write','admin']:
+            commands += [translate('RTOC', 'General')]
+        if self.telegram_clients[str(chat_id)]['permission'] == 'admin':
+            commands += [
+                translate('RTOC', 'Telegram-Bot'),
+                translate('RTOC', 'Backup'),
+            ]
+        ipadress = urllib.request.urlopen('https://ident.me').read().decode('utf8')
+        ipadress = translate('RTOC', '\nIP-Adress: {}').format(ipadress)
+        obj_Disk = psutil.disk_usage('/')
+        total = str(round(obj_Disk.total / (1024.0 ** 3), 3))
+        used = str(round(obj_Disk.used / (1024.0 ** 3), 3))
+        free = str(round(obj_Disk.free / (1024.0 ** 3), 3))
+        diskspace = translate('RTOC', '\nThere are {}GB of {}GB available.').format(free, total)
+        size, maxsize, databaseSize = self.logger.database.getSignalSize()
         if self.logger.config['postgresql']['active']:
-            commands += [
-            translate('RTOC', 'Datenbank resamplen'),
-            translate('RTOC', 'Datenbank herunterladen'),
-            ]
-
-        if self.logger.config['backup']['active']:
-            commands += [
-            translate('RTOC', 'Jetzt Backup erstellen'),
-            ]
-
-        if self.logger.config['tcp']['active']:
-            commands += [translate('RTOC', "TCP-Server: An")]
+            diskspace = diskspace + \
+                translate('RTOC', '\nData is beeing saved in PostgreSQL-database')
+            diskspace += str(translate('RTOC', '\nDatabase uses...\nTotal: {}\nFor signals: {}\nFor events: {}').format(databaseSize[0],databaseSize[2],databaseSize[3]))
         else:
-            commands += [translate('RTOC', "TCP-Server: Aus")]
+            diskspace += translate('RTOC', '\nThere are {} of {} available').format(size, maxsize)
+        self.sendMenuMessage(bot, chat_id, commands, '*'+self.logger.config['global']['name']+translate('RTOC', '-Settings*')+ipadress+diskspace)
 
+    def settingsHandlerAns(self, bot, chat_id, strung):
+        if strung == self.BACKBUTTON:
+            self.menuHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Set notification level'):
+            self.adjustEventNotificationHandler(bot, chat_id)
+        elif strung == translate('RTOC', 'General') and self.telegram_clients[str(chat_id)]['permission'] in ['write','admin']:
+            self.settingsGeneralHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Telegram-Bot') and self.telegram_clients[str(chat_id)]['permission'] == 'admin':
+            self.settingsBotHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Backup') and self.telegram_clients[str(chat_id)]['permission'] == 'admin':
+            self.settingsBackupHandler(bot, chat_id)
+            return
+        else:
+            self.settingsHandler(bot, chat_id)
+            return
+
+    def settingsBotHandler(self, bot, chat_id):
+        self.telegram_clients[str(chat_id)]['menu'] = "settingsBot"
+        self.saveClients()
+        self.helper[chat_id] = None
+        commands = []
         if self.logger.config['telegram']['inlineMenu']:
             commands += [translate('RTOC', "Telegram Bot: InlineMenu")]
         else:
             commands += [translate('RTOC', "Telegram Bot: KeyboardMenu")]
         # if self.logger.config['telegram']['active']:
-        #     commands += [translate('RTOC', "*Telegram-Bot: An (!)*")]
+        #     commands += [translate('RTOC', "*Telegram-Bot: On (!)*")]
         # else:
-        #     commands += [translate('RTOC', "Telegram-Bot: Aus")]
+        #     commands += [translate('RTOC', "Telegram-Bot: Off")]
         if self.logger.config['telegram']['onlyAdmin']:
-            commands += [translate('RTOC', "OnlyAdmin: An")]
+            commands += [translate('RTOC', "OnlyAdmin: On")]
         else:
-            commands += [translate('RTOC', "OnlyAdmin: Aus")]
-
-
+            commands += [translate('RTOC', "OnlyAdmin: Off")]
         commands += [
-        translate('RTOC', 'Angemeldete Nutzer'),
-        translate('RTOC', 'Server neustarten'),
+        translate('RTOC', 'Registered users'),
         ]
-        ipadress = urllib.request.urlopen('https://ident.me').read().decode('utf8')
-        ipadress = translate('RTOC', '\nIP-Adresse: {}').format(ipadress)
-        obj_Disk = psutil.disk_usage('/')
-        total = str(round(obj_Disk.total / (1024.0 ** 3), 3))
-        used = str(round(obj_Disk.used / (1024.0 ** 3), 3))
-        free = str(round(obj_Disk.free / (1024.0 ** 3), 3))
-        diskspace = translate('RTOC', '\nEs sind noch {}GB von {}GB verf\xfcgbar.').format(free, total)
-        size, maxsize, databaseSize = self.logger.database.getSignalSize()
-        if self.logger.config['postgresql']['active']:
-            diskspace = diskspace + \
-                translate('RTOC', '\nMessdaten werden in SQL-Datenbank gesichert')
-            diskspace += str(translate('RTOC', '\nDatenbank verwendet...\nGesamt: {}\nF\xfcr Signale: {}\nF\xfcr Events: {}').format(databaseSize[0],databaseSize[2],databaseSize[3]))
-        else:
-            diskspace += translate('RTOC', '\nEs sind {} von {} verf\xfcgbar').format(size, maxsize)
-        self.sendMenuMessage(bot, chat_id, commands, '*'+self.logger.config['global']['name']+translate('RTOC', '-Einstellungen*')+ipadress+diskspace)
 
-    def settingsHandlerAns(self, bot, chat_id, strung):
-        if strung == BACKBUTTON:
-            self.menuHandler(bot, chat_id)
+        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Telegram-Bot settings*'))
+
+    def settingsBotHandlerAns(self, bot, chat_id, strung):
+        if strung == self.BACKBUTTON and self.helper[chat_id] == 'users':
+            self.helper[chat_id] = None
+            self.settingsBotHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', '**Alle Daten l\xf6schen**'):
-            self.logger.clear(True)
+        elif strung == self.BACKBUTTON:
+            self.helper[chat_id] = None
+            self.settingsHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', 'Alle Daten l\xf6schen'):
-            #self.settingsHandler(bot, chat_id)
-            text = translate('RTOC', 'M\xf6chtest du wirklich alle Daten l\xf6schen?')
-            commands = [translate('RTOC', '**Alle Daten l\xf6schen**')]
-            self.sendMenuMessage(bot, chat_id, commands, text)
-            return
-        elif strung == translate('RTOC', 'Aufzeichnungsdauer \xe4ndern'):
-            self.telegram_clients[str(chat_id)]['menu'] = 'resize'
-            self.saveClients()
-            self.resizeHandler(bot, chat_id)
-            return
-        elif strung == translate('RTOC', 'Angemeldete Nutzer'):
+        elif strung == translate('RTOC', 'Registered users'):
             self.helper[chat_id] = 'users'
-            text = translate('RTOC', 'Derzeit angemeldete Telegram-Nutzer')
+            text = translate('RTOC', 'Currently registered telegram-users')
             commands = []
             ids = self.telegram_clients.keys()
             for id in ids:
@@ -1210,11 +1300,6 @@ class telegramBot():
                     a = translate('RTOC', 'Blocked')
                 commands += [user['first_name']+' '+user['last_name']+': '+a]
             self.sendMenuMessage(bot, chat_id, commands, text)
-            return
-        elif strung == translate('RTOC', 'Jetzt Backup erstellen'):
-            self.helper[chat_id] = None
-            self.logger.database.pushToDatabase()
-            self.send_message(chat_id, translate('RTOC', 'Backup wurde erstellt.'))
             return
         elif self.helper[chat_id] == 'users':
             for id in self.telegram_clients.keys():
@@ -1234,128 +1319,358 @@ class telegramBot():
                 command = user['first_name']+' '+user['last_name']+': '+a
                 if command == strung:
                     if str(id) == str(chat_id):
-                        self.send_message(chat_id, translate('RTOC', 'Du kannst deine eigene Berechtigung nicht ändern.'))
+                        self.send_message(chat_id, translate('RTOC', 'You can\'t change your own permissions.'))
                         return
                     if a == translate('RTOC', 'Blocked'):
-                        self.send_message(id, translate('RTOC', 'Du hast jetzt Zugang zu diesem Bot.'))
+                        self.send_message(id, translate('RTOC', 'You now have access to this bot.'))
                     self.telegram_clients[id]['permission'] = next
                     self.saveClients()
-                    self.settingsHandlerAns(bot, chat_id, translate('RTOC', 'Angemeldete Nutzer'))
+                    self.settingsBotHandlerAns(bot, chat_id, translate('RTOC', 'Registered users'))
                     return
             return
-        elif strung == translate('RTOC', 'Globale Samplerate \xe4ndern'):
-            self.globalSamplerateHandler(bot, chat_id)
-            return
-        elif strung == translate('RTOC', 'Server neustarten'):
-            os.system('sudo reboot')
-            time.sleep(5)
-            text = translate('RTOC', '**Da hat etwas nicht geklappt.**\nEntweder fehlen mir die n\xf6tigen Rechte, oder mein Zuhause ist kein Linux-Ger\xe4t.')
-            self.send_message(chat_id, text)
-            return
-        elif strung == translate('RTOC', "TCP-Server: An"):
-            ok = self.logger.toggleTcpServer(False)
-            self.logger.save_config()
-            start = False
-            name = 'TCP-Server'
-        elif strung == translate('RTOC', "TCP-Server: Aus"):
-            ok = self.logger.toggleTcpServer(True)
-            self.logger.save_config()
-            start = True
-            name = 'TCP-Server'
-        elif strung == translate('RTOC', "*Telegram-Bot: An (!)*"):
-            ok = self.logger.toggleTelegramBot(False)
-            self.logger.save_config()
-            start = False
-            name = 'Telegram-Bot'
-        elif strung == translate('RTOC', "Telegram-Bot: Aus"):
-            ok = self.logger.toggleTelegramBot(True)
-            self.logger.save_config()
-            start = True
-            name = 'Telegram-Bot'
-        elif strung == translate('RTOC', "OnlyAdmin: An"):
+        elif strung == translate('RTOC', "OnlyAdmin: On"):
             self.logger.config['telegram']['onlyAdmin'] = False
             self.logger.save_config()
-            ok = True
-            start = False
-            name = 'OnlyAdmin-Modus'
-        elif strung == translate('RTOC', "OnlyAdmin: Aus"):
+            self.sendStartStopMessage(chat_id, 'OnlyAdmin-Mode', False, True)
+            self.settingsBotHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', "OnlyAdmin: Off"):
             self.logger.config['telegram']['onlyAdmin'] = True
             self.logger.save_config()
-            ok = True
-            start = True
-            name = 'OnlyAdmin-Modus'
+            self.sendStartStopMessage(chat_id, 'OnlyAdmin-Mode', True, True)
+            self.settingsBotHandler(bot, chat_id)
+            return
         elif strung == translate('RTOC', "Telegram Bot: InlineMenu"):
             self.logger.config['telegram']['inlineMenu'] = False
             self.logger.save_config()
-            ok = True
-            start = True
-            name = 'InlineMenu'
+            self.sendStartStopMessage(chat_id, 'InlineMenu', True, True)
+            self.settingsBotHandler(bot, chat_id)
+            return
         elif strung == translate('RTOC', "Telegram Bot: KeyboardMenu"):
             self.logger.config['telegram']['inlineMenu'] = True
             self.logger.save_config()
-            ok = True
-            start = True
-            name = 'KeyboardMenu'
-        elif strung == translate('RTOC', 'Datenbank herunterladen'):
+            self.sendStartStopMessage(chat_id, 'KeyboardMenu', True, True)
+            self.settingsBotHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', "Telegram-Bot: On"):
+            ok = self.logger.toggleTelegramBot(False)
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, 'Telegram-Bot', False, ok)
+            self.settingsGeneralHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', "Telegram-Bot: Off"):
+            ok = self.logger.toggleTelegramBot(True)
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, 'Telegram-Bot', True, ok)
+            self.settingsGeneralHandler(bot, chat_id)
+            return
+        else:
+            self.settingsBotHandler(bot, chat_id)
+            return
+
+    def sendStartStopMessage(self, chat_id, name, start=True, ok=True):
+        if start:
+            start = translate('RTOC', '**started**')
+        else:
+            start = translate('RTOC', '**stopped**')
+        if ok:
+            text =  translate('RTOC', "{} was {}.").format(name, start)
+        else:
+            text = translate('RTOC', "{} could not be {}.").format(name, start)
+
+        self.send_message(chat_id, text)
+
+    def settingsBackupHandler(self, bot, chat_id):
+        self.telegram_clients[str(chat_id)]['menu'] = "settingsBackup"
+        self.saveClients()
+        self.helper[chat_id] = None
+        commands = []
+        if self.logger.config['backup']['active']:
+            commands += [
+            translate('RTOC', "Backup: On"),
+            translate('RTOC', 'Create backup now'),]
+            if self.logger.config['backup']['resample'] == 0:
+                commands.append(translate('RTOC', 'Auto-resampling: Off'))
+            else:
+                commands.append(translate('RTOC', 'Auto-resampling: {} Hz').format(self.logger.config['backup']['resample']))
+            if self.logger.config['backup']['autoIfFull']:
+                commands.append(translate('RTOC', 'Backup, if full: On'))
+            else:
+                commands.append(translate('RTOC', 'Backup, if full: Off'))
+            if self.logger.config['backup']['autoOnClose']:
+                commands.append(translate('RTOC', 'Backup on close: On'))
+            else:
+                commands.append(translate('RTOC', 'Backup on close: Off'))
+            if self.logger.config['backup']['loadOnOpen']:
+                commands.append(translate('RTOC', 'Load backup on start: On'))
+            else:
+                commands.append(translate('RTOC', 'Load backup on start: Off'))
+
+            commands.append(translate('RTOC','Backup-Interval: {}s').format(self.logger.config['backup']['intervall']))
+        else:
+            commands += [translate('RTOC', "Backup: Off")]
+
+        if self.logger.config['postgresql']['active']:
+            commands += [
+            translate('RTOC', 'Resample database'),
+            translate('RTOC', 'Download database'),
+            ]
+        commands += [
+            translate('RTOC', "Delete all data"),
+            ]
+
+
+        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Backup settings*'))
+
+    def settingsBackupHandlerAns(self, bot, chat_id, strung):
+        if strung == self.BACKBUTTON and self.helper[chat_id] != None:
+            self.helper[chat_id] = None
+            self.settingsBackupHandler(bot, chat_id)
+            return
+        elif strung == self.BACKBUTTON:
+            self.helper[chat_id] = None
+            self.settingsHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', '**Delete all data**'):
+            self.logger.clear(True)
+            return
+        elif strung == translate('RTOC', 'Delete all data'):
+            text = translate('RTOC', 'Do you really want to delete all data (signals + events)?')
+            commands = [translate('RTOC', '**Delete all data**')]
+            self.sendMenuMessage(bot, chat_id, commands, text)
+            return
+        elif strung == translate('RTOC', 'Create backup now'):
+            self.helper[chat_id] = None
+            self.logger.database.pushToDatabase()
+            self.send_message(chat_id, translate('RTOC', 'Backup was created.'))
+            return
+        elif strung == translate('RTOC', 'Auto-resampling: {} Hz').format(self.logger.config['backup']['resample']) or strung == translate('RTOC', 'Auto-resampling: Off'):
+            self.backupResamplingHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', "Backup: On"):
+            ok = self.logger.config['backup']['active']=False
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, 'Backup', False, ok)
+            self.settingsBackupHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', "Backup: Off"):
+            ok = self.logger.config['backup']['active']=True
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, 'Backup', True, ok)
+            self.settingsBackupHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Download database'):
             path = self.logger.config['global']['documentfolder']+'/'
             filepathes = self.logger.database.exportCSV(path+'telegram_export', True)
             for file in filepathes:
                 bot.send_document(chat_id=chat_id, document=open(
                     file, 'rb'))
 
-            self.send_message(chat_id, translate('RTOC', 'Datenbank \xfcbertragen'))
+            self.send_message(chat_id, translate('RTOC', 'Database sent.'))
             return
-        elif strung == translate('RTOC', 'Datenbank resamplen'):
-            self.sendMenuMessage(bot, chat_id, ['0.01','0.1','0.5','1','5'], translate('RTOC', 'In welcher Samplerate sollen die Daten resampled werden?'))
+        elif strung == translate('RTOC', 'Resample database'):
+            self.sendMenuMessage(bot, chat_id, ['0.01','0.1','0.5','1','5'], translate('RTOC', 'In which samplerate should the data be resampled?'))
             self.helper[chat_id] = 'resample'
             return
         elif self.helper[chat_id] == 'resample':
             try:
                 samplerate = float(strung)
             except:
-                self.send_message(chat_id, translate('RTOC', 'Das war keine g\xfcltige Eingabe'))
+                self.send_message(chat_id, translate('RTOC', 'That wasn\'t a valid input.'))
                 return
-            self.send_message(chat_id, translate('RTOC', 'Daten werden jetzt resamplet.\nDies kann eine ganze Weile in Anspruch nehmen, je nach Gr\xf6sse der Datenbank.'))
+            self.send_message(chat_id, translate('RTOC', 'Signals are now beeing resampled.\This can take quite a while, depending on the size of the database.'))
             self.logger.database.resampleDatabase(samplerate)
-            self.send_message(chat_id, translate('RTOC', 'Daten wurden resamplet.'))
-            self.settingsHandler(bot, chat_id)
-            return
-        else:
-            self.settingsHandler(bot, chat_id)
+            self.send_message(chat_id, translate('RTOC', 'Signals have been resampled.'))
+            self.settingsBackupHandler(bot, chat_id)
             return
 
-        if start:
-            start = translate('RTOC', '**gestartet**')
+        elif strung == translate('RTOC', 'Backup, if full: On'):
+            ok = self.logger.config['backup']['autoIfFull']=False
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, translate('RTOC', 'Backup, if full'), False, ok)
+            self.settingsBackupHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Backup, if full: Off'):
+            ok = self.logger.config['backup']['autoIfFull']=True
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, translate('RTOC', 'Backup, if full'), True, ok)
+            self.settingsBackupHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Backup on close: On'):
+            ok = self.logger.config['backup']['autoOnClose']=False
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, translate('RTOC', 'Backup on close'), False, ok)
+            self.settingsBackupHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Backup on close: Off'):
+            ok = self.logger.config['backup']['autoOnClose']=True
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, translate('RTOC', 'Backup on close'), True, ok)
+            self.settingsBackupHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Load backup on start: On'):
+            ok = self.logger.config['backup']['loadOnOpen']=False
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, translate('RTOC', 'Load backup on start'), False, ok)
+            self.settingsBackupHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Load backup on start: Off'):
+            ok = self.logger.config['backup']['loadOnOpen']=True
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, translate('RTOC', 'Load backup on start'), True, ok)
+            self.settingsBackupHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC','Backup-Interval: {}s').format(self.logger.config['backup']['intervall']):
+            liset = [
+                translate('RTOC', 'Off'),
+                translate('RTOC', '1x per minute'),
+                translate('RTOC', '2x per hour'),
+                translate('RTOC', '1x per hour'),
+                translate('RTOC', '2x per day'),
+                translate('RTOC', '1x per day'),
+                translate('RTOC', '2x per week'),
+                translate('RTOC', '1x per week'),
+            ]
+            self.sendMenuMessage(bot, chat_id, liset, translate('RTOC', 'At what intervals should backups be performed? Give me the seconds or select an element from the list.\nBackup interval and local recording duration should match the signal sampling rates.'))
+            self.helper[chat_id] = 'resample'
+            self.helper[chat_id] = 'Backup-Interval'
+            return
+        elif self.helper[chat_id] == 'Backup-Interval':
+            if strung == translate('RTOC', 'Off'):
+                seconds = 0
+            elif strung == translate('RTOC', '1x per minute'):
+                seconds = 60
+            elif strung == translate('RTOC', '2x per hour'):
+                seconds = 60*30
+            elif strung == translate('RTOC', '1x per hour'):
+                seconds = 60*60
+            elif strung == translate('RTOC', '2x per day'):
+                seconds = 60*60*12
+            elif strung == translate('RTOC', '1x per day'):
+                seconds = 60*60*24
+            elif strung == translate('RTOC', '2x per week'):
+                seconds = 60*60*24*3.5
+            elif strung == translate('RTOC', '1x per week'):
+                seconds = 60*60*24*7
+            else:
+                try:
+                    seconds = float(strung)
+                except:
+                    self.send_message(chat_id, translate('RTOC', 'That wasn\'t a valid input.'))
+                    return
+            self.logger.config['backup']['intervall'] = seconds
+            self.send_message(chat_id, translate('RTOC', 'Backup-Interval changed.'))
+            self.settingsBackupHandler(bot, chat_id)
+            return
         else:
-            start = translate('RTOC', '**beendet**')
-        if ok:
-            text =  translate('RTOC', "{} wurde {}.").format(name, start)
-        else:
-            text = translate('RTOC', "{} konnte nicht {} werden.").format(name, start)
+            self.settingsBackupHandler(bot, chat_id)
+            return
 
-        self.send_message(chat_id, text)
-        self.settingsHandler(bot, chat_id)
+    def settingsGeneralHandler(self, bot, chat_id):
+        self.telegram_clients[str(chat_id)]['menu'] = "settingsGeneral"
+        self.saveClients()
+        self.helper[chat_id] = None
+        commands = [
+            translate('RTOC', 'Change recording length'),
+            translate('RTOC', 'Change global samplerate'),
+            ]
+
+        if self.logger.config['tcp']['active']:
+            commands += [translate('RTOC', "TCP-Server: On")]
+        else:
+            commands += [translate('RTOC', "TCP-Server: Off")]
+        commands += [translate('RTOC', 'Restart server')]
+
+        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*General settings*'))
+
+    def settingsGeneralHandlerAns(self, bot, chat_id, strung):
+        if strung == self.BACKBUTTON:
+            self.settingsHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Change recording length'):
+            self.telegram_clients[str(chat_id)]['menu'] = 'resize'
+            self.saveClients()
+            self.resizeHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Change global samplerate'):
+            self.globalSamplerateHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', 'Restart server'):
+            os.system('sudo reboot')
+            time.sleep(5)
+            text = translate('RTOC', '**Something didn\'t work.**\nEither I don\'t have the necessary rights, or my home is not a Linux device.')
+            self.send_message(chat_id, text)
+            return
+        elif strung == translate('RTOC', "TCP-Server: On"):
+            ok = self.logger.toggleTcpServer(False)
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, 'TCP-Server', False, ok)
+            self.settingsGeneralHandler(bot, chat_id)
+            return
+        elif strung == translate('RTOC', "TCP-Server: Off"):
+            ok = self.logger.toggleTcpServer(True)
+            self.logger.save_config()
+            self.sendStartStopMessage(chat_id, 'TCP-Server', True, ok)
+            self.settingsGeneralHandler(bot, chat_id)
+            return
+        else:
+            self.settingsGeneralHandler(bot, chat_id)
+            return
+
+    def backupResamplingHandler(self, bot, chat_id):
+        self.telegram_clients[str(chat_id)]['menu'] = 'backupResampling'
+        commands = [translate('RTOC', 'Off'), '0.1', '0.5', '1', '2', '5', '10']
+
+        resample = self.logger.config['backup']['resample']
+        if resample == 0:
+            resample = translate('RTOC', 'Off')
+        else:
+            resample = str(resample)+' Hz'
+        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Change database resampling*\nCurrent resampling: {}').format(resample))
+
+
+    def backupResamplingHandlerAns(self, bot, chat_id, strung):
+        if strung == self.BACKBUTTON:
+            self.settingsBackupHandler(bot, chat_id)
+        else:
+            if strung == translate('RTOC', 'Off'):
+                self.logger.config['backup']['resample'] = 0
+                self.logger.save_config()
+                self.send_message(chat_id,
+                                  translate('RTOC', 'Resampling has been deactivated'))
+                self.settingsBackupHandler(bot, chat_id)
+            try:
+                samplerate = float(strung)
+                self.logger.config['backup']['resample'] = samplerate
+                self.logger.save_config()
+                self.send_message(chat_id,
+                                  translate('RTOC', 'Resampling has been changed'))
+                self.settingsBackupHandler(bot, chat_id)
+            except:
+                print(traceback.format_exc())
+                self.send_message(chat_id,
+                                  translate('RTOC', 'I did not understand your message'))
 
     def globalSamplerateHandler(self, bot, chat_id):
         self.telegram_clients[str(chat_id)]['menu'] = 'globalSamplerate'
         self.saveClients()
         commands = ['0.1', '0.5', '1', '2', '5', '10']
-        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Samplerate f\xfcr alle Ger\xe4te \xe4ndern*'))
+        self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*Change samplerate for all running devices*'))
 
     def globalSamplerateHandlerAns(self, bot, chat_id, strung):
-        if strung == BACKBUTTON:
-            self.settingsHandler(bot, chat_id)
+        if strung == self.BACKBUTTON:
+            self.settingsGeneralHandler(bot, chat_id)
         else:
             try:
                 samplerate = float(strung)
                 self.logger.setAllSamplerates(samplerate)
                 self.send_message(chat_id,
-                                  translate('RTOC', 'Samplerate wurde ge\xe4ndert'))
-                self.settingsHandler(bot, chat_id)
+                                  translate('RTOC', 'Samplerate has been changed'))
+                self.settingsGeneralHandler(bot, chat_id)
             except:
                 print(traceback.format_exc())
                 self.send_message(chat_id,
-                                  translate('RTOC', 'Ich habe deine Nachricht nicht verstanden'))
+                                  translate('RTOC', 'I did not understand your message'))
 
     def resizeHandler(self, bot, chat_id):
         commands = ['1', '10', '100', '1000', '10000',
@@ -1363,14 +1678,14 @@ class telegramBot():
         plotLen = self.logger.config['global']['recordLength']
         size, maxsize, databaseSize = self.logger.database.getSignalSize()
         if self.logger.config['postgresql']['active']:
-            text = translate('RTOC', "Die Aufzeichnungsdauer beeinflusst nicht die Aufzeichnungsl\xe4nge in der Datenbank. Diese ist unbegrenzt. \nDerzeitige Aufzeichnungsdauer: {}").format(plotLen)
+            text = translate('RTOC', "The recording length does not affect the recording lenght of the database, which is unlimited. \nCurrent recording length: {}").format(plotLen)
         else:
-            text = translate('RTOC', "Derzeitige Aufzeichnungsdauer: {}").format(self.logger.config['global']['recordLength'])
+            text = translate('RTOC', "Current recording length: {}").format(self.logger.config['global']['recordLength'])
         self.sendMenuMessage(bot, chat_id, commands, text)
 
     def resizeHandlerAns(self, bot, chat_id, strung):
-        if strung == BACKBUTTON:
-            self.settingsHandler(bot, chat_id)
+        if strung == self.BACKBUTTON:
+            self.settingsGeneralHandler(bot, chat_id)
         else:
             try:
                 value = int(strung)
@@ -1379,19 +1694,19 @@ class telegramBot():
                 logging.error('Not a valid user input')
                 value = None
             if value:
-                self.send_message(chat_id=chat_id, text=translate('RTOC', 'Aufzeichnungsdauer ge\xe4ndert'))
+                self.send_message(chat_id=chat_id, text=translate('RTOC', 'Recording length has been changed'))
                 self.logger.database.resizeSignals(value)
                 self.logger.save_config()
-                self.settingsHandler(bot, chat_id)
+                self.settingsGeneralHandler(bot, chat_id)
             else:
                 self.send_message(chat_id=chat_id,
-                                  text=translate('RTOC', 'Fehlerhafte Eingabe'))
-                self.settingsHandler(bot, chat_id)
+                                  text=translate('RTOC', 'Invalid input'))
+                self.settingsGeneralHandler(bot, chat_id)
 
     def sendSignalPlot(self, bot, chat_id, signalnames, xmin_plot, xmax_plot):
         if plt is None:
             self.send_message(chat_id=chat_id,
-                              text=translate('RTOC', '**Ich konnte kein Bild erstellen.**\nDu musst auf meinem Server "matplotlib" und "tkinker" installieren.'))
+                              text=translate('RTOC', '**I couldn\'t create a plot.**\nYou need to install "matplotlib" and "tkinker" on my server.**'))
             return
         # bio = BytesIO()
         # bio.name = 'image.png'
@@ -1420,47 +1735,48 @@ class telegramBot():
             # bot.send_chat_action(chat_id=chat_id,
             #                      action=ChatAction.UPLOAD_PHOTO)
             if signal is not None:
-                if min(signal[2]) < xmin:
-                    xmin = min(signal[2])
-                if max(signal[2]) > xmax:
-                    xmax = max(signal[2])
-                if max(signal[3]) > ymax:
-                    ymax = max(signal[3])
-                if min(signal[3]) > ymin:
-                    ymin = min(signal[3])
-                if len(signal[2]) > maxLen:
-                    maxLen = len(signal[2])
-                if signal[4] not in units:
-                    units.append(signal[4])
-                if len(signal[2]) != len(signal[3]):
-                    diff = abs(len(signal[3]) - len(signal[2]))
-                    if len(signal[2]) > len(signal[3]):
-                        signal[3] += [signal[3][-1]] * diff
-                    else:
-                        signal[2] += [signal[2][-1]] * diff
-                try:
-                    #dates = [dt.datetime.fromtimestamp(float(ts)) for ts in list(signal[2])]
-                    dates = []
-                    for ts in list(signal[2]):
-                        if type(ts) == list:
-                            print(ts)
-                        dates.append(dt.datetime.fromtimestamp(float(ts)))
-                    if abs(signal[2][0]-signal[2][-1]) > 5*60:
-                        xfmt = mdates.DateFormatter(translate('RTOC', '%d.%m %H:%M'))
-                    else:
-                        xfmt = mdates.DateFormatter(translate('RTOC', '%d.%m %H:%M:%S'))
-                    plt.plot(dates, list(signal[3]), label=signalname + '['+signal[4]+']')  # ,'-x')
-                except Exception as error:
-                    print(error)
-                    print(traceback.format_exc())
-                    logging.error(traceback.format_exc())
+                if len(signal[2])>0:
+                    if min(signal[2]) < xmin:
+                        xmin = min(signal[2])
+                    if max(signal[2]) > xmax:
+                        xmax = max(signal[2])
+                    if max(signal[3]) > ymax:
+                        ymax = max(signal[3])
+                    if min(signal[3]) > ymin:
+                        ymin = min(signal[3])
+                    if len(signal[2]) > maxLen:
+                        maxLen = len(signal[2])
+                    if signal[4] not in units:
+                        units.append(signal[4])
+                    if len(signal[2]) != len(signal[3]):
+                        diff = abs(len(signal[3]) - len(signal[2]))
+                        if len(signal[2]) > len(signal[3]):
+                            signal[3] += [signal[3][-1]] * diff
+                        else:
+                            signal[2] += [signal[2][-1]] * diff
+                    try:
+                        #dates = [dt.datetime.fromtimestamp(float(ts)) for ts in list(signal[2])]
+                        dates = []
+                        for ts in list(signal[2]):
+                            if type(ts) == list:
+                                print(ts)
+                            dates.append(dt.datetime.fromtimestamp(float(ts)))
+                        if abs(signal[2][0]-signal[2][-1]) > 5*60:
+                            xfmt = mdates.DateFormatter(translate('RTOC', '%d.%m %H:%M'))
+                        else:
+                            xfmt = mdates.DateFormatter(translate('RTOC', '%d.%m %H:%M:%S'))
+                        plt.plot(dates, list(signal[3]), label=signalname + '['+signal[4]+']')  # ,'-x')
+                    except Exception as error:
+                        print(error)
+                        print(traceback.format_exc())
+                        logging.error(traceback.format_exc())
 
             proc = (idx+1)/len(signalnames)*100
             self.send_message(chat_id=chat_id,
-                              text=translate('RTOC', 'Plot zu {}% abgeschlossen').format(round(proc)))
+                              text=translate('RTOC', 'Plot completed at {}%.').format(round(proc)))
 
         ax = plt.gca()
-        plt.xlabel(translate('RTOC', 'Zeit [s]'))
+        plt.xlabel(translate('RTOC', 'Time [s]'))
         plt.ylabel(', '.join(units))
         plt.grid()
         plt.title(', '.join(signalnames))
@@ -1520,8 +1836,8 @@ class telegramBot():
         duration = round(xmax-xmin)
         try:
             if self.logger.config['postgresql']['active']:
-                line1 = translate('RTOC', 'Dauer: {}').format(dt.timedelta(seconds=duration))
-                line2 = str(sigLen) + translate('RTOC', ' Messwerte')
+                line1 = translate('RTOC', 'Duration: {}').format(dt.timedelta(seconds=duration))
+                line2 = str(sigLen) + translate('RTOC', ' values')
             else:
                 line1 = str(dt.timedelta(seconds=duration)) + '/ ~ ' + \
                     str(dt.timedelta(seconds=maxduration))
@@ -1530,7 +1846,7 @@ class telegramBot():
             if duration != 0:
                 line3 = str(round(sigLen/(duration), 2)) + ' Hz'
             else:
-                line3 = translate('RTOC', 'Leeres Signal')
+                line3 = translate('RTOC', 'Empty signal')
             return line1+"\n"+line2 + "\n" + line3
         except Exception:
             print(traceback.format_exc())
@@ -1543,8 +1859,8 @@ class telegramBot():
         duration = round(x[-1]-x[0])
         try:
             if self.logger.config['postgresql']['active']:
-                line1 = translate('RTOC', 'Dauer: {}').format(dt.timedelta(seconds=duration))
-                line2 = str(len(list(x))) + translate('RTOC', ' Messwerte')
+                line1 = translate('RTOC', 'Duration: {}').format(dt.timedelta(seconds=duration))
+                line2 = str(len(list(x))) + translate('RTOC', ' values')
             else:
                 line1 = str(dt.timedelta(seconds=duration)) + '/ ~ ' + \
                     str(dt.timedelta(seconds=maxduration))
@@ -1570,7 +1886,7 @@ class telegramBot():
             print(traceback.format_exc())
             logging.debug(traceback.format_exc())
             logging.error('Formatting signal information failed.')
-            return translate('RTOC', 'Ich konnte leider keine Info zu diesem Signal erzeugen.')
+            return translate('RTOC', 'I could not create any info for this signal.')
 
     def checkShortcutButton(self):
         pass
@@ -1591,18 +1907,18 @@ class telegramBot():
 
             self.telegram_clients[str(chat_id)]['menu'] = "shortcut"
             self.saveClients()
-            self.sendMenuMessage(bot, chat_id, [self.current_call[chat_id]], translate('RTOC', 'Bitte gib eine Bezeichnung f\xfcr diesen Shortcut an.'))
+            self.sendMenuMessage(bot, chat_id, [self.current_call[chat_id]], translate('RTOC', 'Please enter a name for this shortcut.'))
         else:
-            self.send_message(chat_id, translate('RTOC', 'F\xfcr diese Funktionen/ diesen Parameter besteht bereits ein Shortcut!'))
+            self.send_message(chat_id, translate('RTOC', 'For this function/this parameter already exists a shortcut!'))
             self.deviceCallHandler(bot, chat_id, self.current_call[chat_id])
 
     def addShortcutAns(self, bot, chat_id, strung):
-        if strung == BACKBUTTON:
+        if strung == self.BACKBUTTON:
             self.deviceCallHandler(bot, chat_id, self.current_call[chat_id])
         elif strung in self.menuCommands:
-            self.send_message(chat_id, translate('RTOC', 'Du kannst den Shortcut nicht nach einem Eintrag im Hauptmen\xfc benennen.'))
+            self.send_message(chat_id, translate('RTOC', 'You cannot name the shortcut like an entry in the main menu.'))
         elif strung in self.createShortcutList(bot, chat_id):
-            self.send_message(chat_id, translate('RTOC', 'Bitte w\xe4hle eine andere Bezeichnung. Diese ist schon vergeben.'))
+            self.send_message(chat_id, translate('RTOC', 'Please choose a different name. This one is already in use.'))
         else:
             chat_id = chat_id
             device = self.current_plugin[chat_id]
@@ -1612,10 +1928,10 @@ class telegramBot():
             if call not in self.telegram_clients[str(chat_id)]['shortcuts']:
                 self.telegram_clients[str(chat_id)]['shortcuts'][0].append(strung)
                 self.telegram_clients[str(chat_id)]['shortcuts'][1].append(call)
-                self.send_message(chat_id, translate('RTOC', 'Shortcut wurde erstellt'))
+                self.send_message(chat_id, translate('RTOC', 'Shortcut has been created'))
                 self.saveClients()
             else:
-                self.send_message(chat_id, translate('RTOC', 'F\xfcr diese Funktionen/ diesen Parameter besteht bereits ein Shortcut!'))
+                self.send_message(chat_id, translate('RTOC', 'For this function/this parameter already exists a shortcut!'))
             self.deviceCallHandler(bot, chat_id, None)
             if self.current_call[chat_id] is not None:
                 if self.current_call[chat_id].endswith(')'):
@@ -1640,10 +1956,10 @@ class telegramBot():
                 self.menuHandler(bot, chat_id)
                 self.saveClients()
             else:
-                self.send_message(chat_id, translate('RTOC', 'Tut mir leid, ich konnte diesen Shortcut nicht finden!'))
+                self.send_message(chat_id, translate('RTOC', 'Sorry, I couldn\'t find that shortcut!'))
                 self.menuHandler(bot, chat_id)
         else:
-            self.send_message(chat_id, translate('RTOC', 'Tut mir leid, ich habe mich verlaufen!'))
+            self.send_message(chat_id, translate('RTOC', 'You reached the end of the universe'))
             self.menuHandler(bot, chat_id)
 
     def callShortcut(self, bot, chat_id, strung):
@@ -1656,7 +1972,7 @@ class telegramBot():
             self.current_call[chat_id] = call[1]
             self.deviceCallHandler(bot, chat_id, 'SHORTCUT')
         else:
-            self.send_message(chat_id, translate('RTOC', 'Tut mir leid, ich konnte diesen Shortcut nicht finden!'))
+            self.send_message(chat_id, translate('RTOC', 'Sorry, I couldn\'t find that shortcut!'))
 
     def calcMaxDuration(self, xmin, xmax, sigLen):
         if sigLen > 2:
@@ -1688,42 +2004,42 @@ class telegramBot():
         self.saveClients()
         commands = []
         if self.logger.config['global']['globalActionsActivated']:
-            commands += [translate('RTOC', "Globale Aktionen: An")]
+            commands += [translate('RTOC', "Global actions: On")]
         else:
-            commands += [translate('RTOC', "Globale Aktionen: Aus")]
+            commands += [translate('RTOC', "Global actions: Off")]
         if self.logger.config['global']['globalEventsActivated']:
-            commands += [translate('RTOC', "Globale Events: An")]
+            commands += [translate('RTOC', "Global events: On")]
         else:
-            commands += [translate('RTOC', "Globale Events: Aus")]
-        commands += [translate('RTOC', "Aktionen bearbeiten")]
-        commands += [translate('RTOC', "Events bearbeiten")]
-        text = '# Automation'
+            commands += [translate('RTOC', "Global events: Off")]
+        commands += [translate('RTOC', "Edit actions")]
+        commands += [translate('RTOC', "Edit events")]
+        text = '# '+translate('RTOC', "Automation")
         if not quiet:
             text += translate('RTOC', '''
 \n
-Hier kannst du globale Events und Aktionen ansehen und bearbeiten.\n
-Globale Events werden erzeugt, wenn eine angegebene Bedingung erf\xfcllt wird. Beispielsweise 'Temperatur an Sensor X \xfcbersteigt 80°C'. Ist die Bedingung erf\xfcllt, so wird das angegebene Event erzeugt. (Event=[Nachricht, Priorit\xe4t, ID])
+Here you can view and edit global events and actions.\n
+Global events are created when a specified condition is met. For example "Temperature at sensor X exceeds 80°C". If the condition is fulfilled, the specified event is created. (Event=[message, priority, ID])
 \n
-Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID erzeugt wurde. Die Aktion besteht aus einem St\xfcck Python-Code.
+Global actions are executed when an event with a specified ID has been created. The action consists of a piece of Python code.
         ''')
         self.sendMenuMessage(bot, chat_id, commands, text)
 
     def automationHandlerAns(self, bot, chat_id, strung):
-        if strung == BACKBUTTON:
+        if strung == self.BACKBUTTON:
             self.menuHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', "Globale Aktionen: An"):
+        elif strung == translate('RTOC', "Global actions: On"):
             self.logger.config['global']['globalActionsActivated'] = False
-        elif strung == translate('RTOC', "Globale Aktionen: Aus"):
+        elif strung == translate('RTOC', "Global actions: Off"):
             self.logger.config['global']['globalActionsActivated'] = True
-        elif strung == translate('RTOC', "Globale Events: An"):
+        elif strung == translate('RTOC', "Global events: On"):
             self.logger.config['global']['globalEventsActivated'] = False
-        elif strung == translate('RTOC', "Globale Events: Aus"):
+        elif strung == translate('RTOC', "Global events: Off"):
             self.logger.config['global']['globalEventsActivated'] = True
-        elif strung == translate('RTOC', "Aktionen bearbeiten"):
+        elif strung == translate('RTOC', "Edit actions"):
             ok = self.globalActionsHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', "Events bearbeiten"):
+        elif strung == translate('RTOC', "Edit events"):
             ok = self.globalEventsHandler(bot, chat_id)
             return
         self.automationHandler(bot, chat_id, quiet=True)
@@ -1737,13 +2053,13 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
         self.telegram_clients[str(chat_id)]['menu'] = "globalEvents"
         self.saveClients()
         commands = []
-        text = translate('RTOC', 'Globale Events')
+        text = translate('RTOC', 'Global events')
         commands += self.logger.printGlobalEvents()
-        commands += [translate('RTOC', 'Neues Event anlegen')]
+        commands += [translate('RTOC', 'Create new global event')]
         self.sendMenuMessage(bot, chat_id, commands, text)
 
     def globalEventsHandlerAns(self, bot, chat_id, strung):
-        if strung == BACKBUTTON:
+        if strung == self.BACKBUTTON:
             self.signals_selected[chat_id] = []
             self.automationHandler(bot, chat_id)
             return
@@ -1751,8 +2067,8 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
             self.signals_selected[chat_id] = strung
             self.globalEventHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', 'Neues Event anlegen'):
-            text = 'Gib dem neuen Event einen Namen'
+        elif strung == translate('RTOC', 'Create new global event'):
+            text = translate('RTOC','Give the new event a name')
             self.send_message(chat_id, text)
         elif strung != '':
             self.logger.addGlobalEvent(strung)
@@ -1762,109 +2078,133 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
     def globalEventHandler(self, bot, chat_id):
         self.telegram_clients[str(chat_id)]['menu'] = "globalEvent"
         self.saveClients()
+        if type(self.signals_selected[chat_id])!= str:
+            self.menuHandler(bot, chat_id)
+            return
         name = self.signals_selected[chat_id].split(': ')
         event = self.logger.globalEvents[name[0]]
         # {'cond', 'text', 'priority', 'return', 'id', 'rising, 'sname', 'dname'}
         if event['priority'] == 0:
             prio = translate('RTOC', 'Information')
         elif event['priority'] == 1:
-            prio = translate('RTOC', 'Warnung')
+            prio = translate('RTOC', 'Warning')
         else:
-            prio = translate('RTOC', 'Fehler')
+            prio = translate('RTOC', 'Error')
         commands = []
-        text = translate('RTOC', '# Event: {}\nText: {}\nPriorit\xe4t: {}\nID: {}\nZuordnung: {}.{}\nBedingung: {}').format(name[0], event['text'], prio, event['id'], event['dname'], +event['sname'], event['cond'])
+        text = translate('RTOC', '# Event: {}\nText: {}\nPriority: {}\nID: {}\nSignal: {}.{}\nCondition: {}').format(name[0], event['text'], prio, event['id'], event['dname'], event['sname'], event['cond'])
         if event['active']:
-            commands += [translate('RTOC', 'Aktiv')]
+            commands += [translate('RTOC', 'Active')]
         else:
-            commands += [translate('RTOC', 'Inaktiv')]
-        commands += [translate('RTOC', 'Bedingung \xe4ndern')]
-        commands += [translate('RTOC', 'Signalzuordnung \xe4ndern')]
-        if event['rising']:
-            commands += [translate('RTOC', 'Rising')]
-        else:
-            commands += [translate('RTOC', 'Falling')]
-        commands += [translate('RTOC', 'ID vergeben')]
-        commands += [translate('RTOC', 'Text \xe4ndern')]
-        commands += [translate('RTOC', 'Priorit\xe4t: ')+prio]
-        commands += [translate('RTOC', 'L\xf6schen')]
-        commands += [translate('RTOC', 'Testen')]
+            commands += [translate('RTOC', 'Inactive')]
+        commands += [translate('RTOC', 'Edit condition')]
+        commands += [translate('RTOC', 'Set assigned signal')]
+        if event['trigger']=='rising':
+            commands += [translate('RTOC', 'Trigger: Rising')]
+        elif event['trigger']=='falling':
+            commands += [translate('RTOC', 'Trigger: Falling')]
+        elif event['trigger']=='both':
+            commands += [translate('RTOC', 'Trigger: Rising+Falling')]
+        elif event['trigger']=='true':
+            commands += [translate('RTOC', 'Trigger: True')]
+        elif event['trigger']=='false':
+            commands += [translate('RTOC', 'Trigger: False')]
+        commands += [translate('RTOC', 'Change event-ID')]
+        commands += [translate('RTOC', 'Change text')]
+        commands += [translate('RTOC', 'Priority: ')+prio]
+        commands += [translate('RTOC', 'Delete event')]
+        commands += [translate('RTOC', 'Test event')]
         self.sendMenuMessage(bot, chat_id, commands, text)
 
     def globalEventHandlerAns(self, bot, chat_id, strung):
+        if type(self.signals_selected[chat_id])!= str:
+            self.menuHandler(bot, chat_id)
+            return
         name = self.signals_selected[chat_id].split(': ')
         event = self.logger.globalEvents[name[0]]
         # {'cond', 'text', 'priority', 'return', 'id', 'rising, 'sname', 'dname'}
 
-        if strung == BACKBUTTON and self.helper[chat_id] == None:
+        if strung == self.BACKBUTTON and self.helper[chat_id] == None:
             self.helper[chat_id] = None
             self.globalEventsHandler(bot, chat_id)
             return
-        elif strung == BACKBUTTON:
+        elif strung == self.BACKBUTTON:
             self.helper[chat_id] = None
             self.globalEventHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', 'Aktiv'):
+        elif strung == translate('RTOC', 'Active'):
             self.logger.globalEvents[name[0]]['active'] = False
             self.logger.saveGlobalEvents()
-        elif strung == translate('RTOC', 'Inaktiv'):
+        elif strung == translate('RTOC', 'Inactive'):
             self.logger.globalEvents[name[0]]['active'] = True
             self.logger.saveGlobalEvents()
-        elif strung == translate('RTOC', 'Bedingung \xe4ndern'):
+        elif strung == translate('RTOC', 'Edit condition'):
             self.helper[chat_id] = 'changeCondition'
             signals = self.logger.database.signalNames()
-            text = translate('RTOC', 'Verf\xfcgbare Signale:\n')
+            text = translate('RTOC', 'Available signals:\n')
             text += '\n'.join(['.'.join(i)+'.latest' for i in signals])
             # self.send_message(chat_id, text)
             self.sendMenuMessage(bot, chat_id, [], text)
             return
-        elif strung == translate('RTOC', 'Signalzuordnung \xe4ndern'):
+        elif strung == translate('RTOC', 'Set assigned signal'):
             self.helper[chat_id] = 'selectSignal'
             commands = ['.'.join(a) for a in self.logger.database.signalNames()]
             commands.sort()
-            text = translate('RTOC', 'W\xe4hle ein Signal aus oder gib einen neuen Signalnamen an.')
+            text = translate('RTOC', 'Select a signal or enter a new signalname.')
             self.sendMenuMessage(bot, chat_id, commands, text)
             return
-        elif strung == translate('RTOC', 'Falling'):
+        elif strung == translate('RTOC', 'Trigger: Falling'):
             self.helper[chat_id] = None
-            self.logger.globalEvents[name[0]]['rising'] = True
+            self.logger.globalEvents[name[0]]['trigger'] = 'rising'
             self.logger.saveGlobalEvents()
-        elif strung == translate('RTOC', 'Rising'):
+        elif strung == translate('RTOC', 'Trigger: Rising'):
             self.helper[chat_id] = None
-            self.logger.globalEvents[name[0]]['rising'] = False
+            self.logger.globalEvents[name[0]]['trigger'] = 'both'
             self.logger.saveGlobalEvents()
-        elif strung == translate('RTOC', 'ID vergeben'):
-            text = translate('RTOC', 'Gib jetzt eine EventID ein.')
+        elif strung == translate('RTOC', 'Trigger: Rising+Falling'):
+            self.helper[chat_id] = None
+            self.logger.globalEvents[name[0]]['trigger'] = 'false'
+            self.logger.saveGlobalEvents()
+        elif strung == translate('RTOC', 'Trigger: False'):
+            self.helper[chat_id] = None
+            self.logger.globalEvents[name[0]]['trigger'] = 'true'
+            self.logger.saveGlobalEvents()
+        elif strung == translate('RTOC', 'Trigger: True'):
+            self.helper[chat_id] = None
+            self.logger.globalEvents[name[0]]['trigger'] = 'falling'
+            self.logger.saveGlobalEvents()
+        elif strung == translate('RTOC', 'Change event-ID'):
+            text = translate('RTOC', 'Enter an EventID now.')
             self.send_message(chat_id, text)
             self.helper[chat_id] = 'editEventID'
             return
-        elif strung == translate('RTOC', 'Text \xe4ndern'):
-            text = translate('RTOC', 'Gib jetzt den Benachrichtigungstext ein.')
+        elif strung == translate('RTOC', 'Change text'):
+            text = translate('RTOC', 'Enter the event text now.')
             self.send_message(chat_id, text)
             self.helper[chat_id] = 'editText'
             return
-        elif strung == translate('RTOC', 'Priorit\xe4t: ')+translate('RTOC', 'Information'):
+        elif strung == translate('RTOC', 'Priority: ')+translate('RTOC', 'Information'):
             self.helper[chat_id] = None
             self.logger.globalEvents[name[0]]['priority'] = 1
             self.logger.saveGlobalEvents()
-        elif strung == translate('RTOC', 'Priorit\xe4t: ')+translate('RTOC', 'Warnung'):
+        elif strung == translate('RTOC', 'Priority: ')+translate('RTOC', 'Warning'):
             self.helper[chat_id] = None
             self.logger.globalEvents[name[0]]['priority'] = 2
             self.logger.saveGlobalEvents()
-        elif strung == translate('RTOC', 'Priorit\xe4t: ')+translate('RTOC', 'Fehler'):
+        elif strung == translate('RTOC', 'Priority: ')+translate('RTOC', 'Error'):
             self.helper[chat_id] = None
             self.logger.globalEvents[name[0]]['priority'] = 0
             self.logger.saveGlobalEvents()
-        elif strung == translate('RTOC', 'L\xf6schen'):
+        elif strung == translate('RTOC', 'Delete event'):
             self.helper[chat_id] = None
             self.logger.removeGlobalEvent(name[0])
             self.logger.saveGlobalEvents()
             self.globalEventsHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', 'Testen'):
+        elif strung == translate('RTOC', 'Test event'):
             self.helper[chat_id] = None
             ok, text = self.logger.triggerGlobalEvent(name[0])
             if text is None:
-                text = translate('RTOC', 'Ich hatte nicht gedacht, dass du mich so in die Irre leiten kannst...')
+                text = translate('RTOC', 'You reached the end of the universe')
             self.send_message(chat_id, text)
         elif self.helper[chat_id] == 'editText':
             self.helper[chat_id] = None
@@ -1876,7 +2216,7 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
             self.logger.saveGlobalEvents()
         elif self.helper[chat_id] == 'changeCondition':
             self.helper[chat_id] = None
-            self.logger.globalEvents[name[0]]['condition'] = strung
+            self.logger.globalEvents[name[0]]['cond'] = strung
             self.logger.saveGlobalEvents()
         elif self.helper[chat_id] == 'selectSignal':
             self.helper[chat_id] = None
@@ -1901,14 +2241,14 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
         self.telegram_clients[str(chat_id)]['menu'] = "globalActions"
         self.saveClients()
         commands = []
-        text = translate('RTOC', 'Globale Aktionen')
+        text = translate('RTOC', 'Global actions')
         commands += self.logger.printGlobalActions()
 
-        commands += [translate('RTOC', 'Neue Aktion anlegen')]
+        commands += [translate('RTOC', 'Create new global action')]
         self.sendMenuMessage(bot, chat_id, commands, text)
 
     def globalActionsHandlerAns(self, bot, chat_id, strung):
-        if strung == BACKBUTTON:
+        if strung == self.BACKBUTTON:
             self.signals_selected[chat_id] = []
             self.automationHandler(bot, chat_id)
             return
@@ -1916,8 +2256,8 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
             self.signals_selected[chat_id] = strung
             self.globalActionHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', 'Neue Aktion anlegen'):
-            text = 'Gib der neuen Aktion einen Namen'
+        elif strung == translate('RTOC', 'Create new global action'):
+            text = translate('RTOC', 'Give the new action a name')
             self.send_message(chat_id, text)
         elif strung != '':
             self.logger.addGlobalAction(strung)
@@ -1927,77 +2267,80 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
     def globalActionHandler(self, bot, chat_id):
         self.telegram_clients[str(chat_id)]['menu'] = "globalAction"
         self.saveClients()
-        name = self.signals_selected[chat_id].split(' bei ')
+        name = self.signals_selected[chat_id].split(':')
         action = self.logger.globalActions[name[0]]
         # {'listenID', 'script', 'parameters'}
         commands = []
-        text = translate('RTOC', '# Aktion: {}\nEvent-ListenIDs: {}\nScript: \n{}\n').format(name[0], ', '.join(action['listenID']), action['script'])
+        text = translate('RTOC', '# Action: {}\nEvent-ListenIDs: {}\nScript: \n{}\n').format(name[0], ', '.join(action['listenID']), action['script'])
         if action['active']:
-            commands += [translate('RTOC', 'Aktiv')]
+            commands += [translate('RTOC', 'Active')]
         else:
-            commands += [translate('RTOC', 'Inaktiv')]
-        commands += [translate('RTOC', 'Code \xe4ndern')]
-        commands += [translate('RTOC', 'ID ausw\xe4hlen')]
-        commands += [translate('RTOC', 'L\xf6schen')]
-        commands += [translate('RTOC', 'Testen')]
+            commands += [translate('RTOC', 'Inactive')]
+        commands += [translate('RTOC', 'Edit code')]
+        commands += [translate('RTOC', 'Select eventID')]
+        commands += [translate('RTOC', 'Delete action')]
+        commands += [translate('RTOC', 'Test action')]
         self.sendMenuMessage(bot, chat_id, commands, text)
 
     def globalActionHandlerAns(self, bot, chat_id, strung):
-        name = self.signals_selected[chat_id].split(' bei ')
+        if type(self.signals_selected[chat_id]) != str:
+            self.globalActionsHandler(bot, chat_id)
+            return
+        name = self.signals_selected[chat_id].split(':')
         action = self.logger.globalActions[name[0]]
 
-        if strung == BACKBUTTON and self.helper[chat_id] == None:
+        if strung == self.BACKBUTTON and self.helper[chat_id] == None:
             self.helper[chat_id] = None
             self.globalActionsHandler(bot, chat_id)
             return
-        elif strung == BACKBUTTON:
+        elif strung == self.BACKBUTTON:
             self.helper[chat_id] = None
             self.globalActionHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', 'Aktiv'):
+        elif strung == translate('RTOC', 'Active'):
             self.helper[chat_id] = None
             self.logger.globalActions[name[0]]['active'] = False
             self.logger.saveGlobalActions()
-        elif strung == translate('RTOC', 'Inaktiv'):
+        elif strung == translate('RTOC', 'Inactive'):
             self.helper[chat_id] = None
             self.logger.globalActions[name[0]]['active'] = True
             self.logger.saveGlobalActions()
-        elif strung == translate('RTOC', 'Code \xe4ndern'):
+        elif strung == translate('RTOC', 'Edit code'):
             self.helper[chat_id] = 'changeCode'
             plugins = self.logger.getPluginDict()
             signals = self.logger.database.signalNames()
-            text = translate('RTOC', 'Verf\xfcgbare Signale:\n')
+            text = translate('RTOC', 'Available signals:\n')
             text += '\n'.join(['.'.join(i)+'.latest' for i in signals])
             self.send_message(chat_id, text)
             for name in plugins.keys():
                 if plugins[name]['status'] is True:
-                    text = translate('RTOC', '{} Parameter:\n').format(name)
+                    text = translate('RTOC', '{} parameters:\n').format(name)
                     text += '\n'.join([i[0] for i in plugins[name]['parameters']])
-                    text += translate('RTOC', '\n\n{} Funktionen:\n').format(name)
+                    text += translate('RTOC', '\n\n{} functions:\n').format(name)
                     text += '\n'.join([i+'()' for i in plugins[name]['functions']])
                     self.send_message(chat_id, text)
-            self.sendMenuMessage(bot, chat_id, [], translate('RTOC', 'Code bearbeiten'))
+            self.sendMenuMessage(bot, chat_id, [], translate('RTOC', 'Edit code'))
             return
-        elif strung == translate('RTOC', 'ID ausw\xe4hlen'):
+        elif strung == translate('RTOC', 'Select eventID'):
             self.helper[chat_id] = 'selectIDs'
             events = self.logger.database.getUniqueEvents(False)
             commands = []
             for key in events.keys():
                 commands.append(key)
-            text = translate('RTOC', 'W\xe4hle Events aus, durch die diese Aktion ausgef\xfchrt werden soll.')
+            text = translate('RTOC', 'Select events to call this action.')
             self.sendMenuMessage(bot, chat_id, commands, text)
             return
-        elif strung == translate('RTOC', 'L\xf6schen'):
+        elif strung == translate('RTOC', 'Delete action'):
             self.helper[chat_id] = None
             self.logger.removeGlobalAction(name[0])
             self.logger.saveGlobalActions()
             self.globalActionsHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', 'Testen'):
+        elif strung == translate('RTOC', 'Test action'):
             self.helper[chat_id] = None
             ok, text = self.logger.triggerGlobalAction(name[0])
             if text is None:
-                text = translate('RTOC', 'Ich hatte nicht gedacht, dass du mich so in die Irre leiten kannst...')
+                text = translate('RTOC', 'You reached the end of the universe')
             self.send_message(chat_id, text)
             return
         elif self.helper[chat_id] == 'selectIDs':
@@ -2017,7 +2360,7 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
         ok, ans = self.logger.executeScript(action)
         if ok and len(ans) == 2:
             try:
-                text = translate('RTOC', 'Aktion erfolgreich ausgef\xfchrt')
+                text = translate('RTOC', 'Action has been executed')
                 if ans[0] == 'picture':
                     bot.send_photo(chat_id=chat_id, photo=open(ans[1], 'rb'))
                 elif ans[0] == 'document':
@@ -2026,44 +2369,11 @@ Globale Aktionen werden ausgef\xfchrt, wenn ein Event mit einer angegebenen ID e
                 elif ans[0] == 'text':
                     self.send_message(chat_id, ans[1])
             except:
-                text = translate('RTOC', 'Aktion ist fehlerhaft')
+                text = translate('RTOC', 'Action is incorrect')
                 self.send_message(chat_id, text)
         else:
-            text = translate('RTOC', 'Aktion ist fehlerhaft')
+            text = translate('RTOC', 'Action is incorrect')
             self.send_message(chat_id, text)
-
-        # Globale Events aktiv
-        # Globale Aktionen aktiv
-        # Events bearbeiten
-        #         'Das ist das Event', wenn '4>1'
-        #                 Bedingung \xe4ndern ... Texteingabe, Infos anfordern
-        #                 Signalzuordnung \xe4ndern ... Liste mit Signalen
-        #                 Rising/Falling True/False
-        #                 ID vergeben ... IDs aller bekannten Events
-        #                 Text \xe4ndern ... Textingabe
-        #                 Priorit\xe4t 0/1/2
-        #                 l\xf6schen
-        #                 testen
-        #         ...
-        #         ...
-        #         ...
-        #         Neues Globales Event erzeugen
-        #                 Name angeben ...
-        #
-        # Aktionen bearbeiten
-        #         'Aktionsname', ausf\xfchren bei ID 'testEvent'
-        #                 Code \xe4ndern ... Texteingabe
-        #                 IDs ausw\xe4hlen ... Auswahl und manuelle Eingabe
-        #                 l\xf6schen
-        #                 testen
-        #         ...
-        #         ...
-        #         ...
-        #         Neues Globales Event erzeugen
-        #                 Name angeben ...
-        #
-        # <--
-
 
 def _strToTimestamp(datetimestr):
     while datetimestr.endswith(' '):

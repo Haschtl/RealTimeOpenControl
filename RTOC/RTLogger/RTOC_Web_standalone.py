@@ -54,7 +54,7 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets, sharing=Tru
 app.config['suppress_callback_exceptions'] = True
 # server = app.server
 
-eventTableTitle = [translate('RTOC', 'Zeitpunkt'), translate('RTOC', 'Typ'), translate('RTOC', 'Ger\xe4t'), translate('RTOC', 'Signal'), translate('RTOC', 'Inhalt'), translate('RTOC', 'ID'), translate('RTOC', 'R\xfcckgabewert')]
+eventTableTitle = [translate('RTOC', 'Time'), translate('RTOC', 'Type'), translate('RTOC', 'Device'), translate('RTOC', 'Signal'), translate('RTOC', 'Content'), translate('RTOC', 'ID'), translate('RTOC', 'Return')]
 from .RT_data import RT_data
 
 # @server.route('/favicon.ico')
@@ -66,13 +66,13 @@ from .RT_data import RT_data
 
 app.layout = html.Div([
     dcc.Tabs(id="tabs", children=[
-        dcc.Tab(label='Signale', children=[
+        dcc.Tab(label=translate('RTOC','Signals'), children=[
             html.Div([
                 html.Div([
                     dcc.Checklist(
                         id='activeCheck',
                         options=[
-                            {'label': translate('RTOC', 'Plot aktiv'), 'value': 'PLOT'},
+                            {'label': translate('RTOC', 'Plot active'), 'value': 'PLOT'},
                         ],
                         values=['PLOT']
                     ),
@@ -87,7 +87,7 @@ app.layout = html.Div([
                         options=[],
                         searchable=True,
                         clearable=True,
-                        placeholder=translate('RTOC', "W\xe4hle Signale aus, um sie darzustellen."),
+                        placeholder=translate('RTOC', "Select signals to be displayed."),
                         multi=True,
                         # value=""
                     ), ],
@@ -102,7 +102,7 @@ app.layout = html.Div([
             ],
                 id='signals_div')
         ]),
-        dcc.Tab(label=translate('RTOC', 'Mitteilungen'), children=[
+        dcc.Tab(label=translate('RTOC', 'Events'), children=[
                 dash_table.DataTable(
                     id='datatable-interactivity',
                     columns=[{"name": i, "id": i} for i in eventTableTitle],
@@ -133,13 +133,13 @@ app.layout = html.Div([
 ])
 
 signals = [
-    [[1, 2, 3, 4, 5], [4, 3, 2, 6, 7], 'E.Temperatur', '°C'],
-    [[1, 2, 3, 4, 5], [4, 3, 2, 6, 7], 'E.Feuchtigkeit', '%'],
-    [[1, 2, 3, 4, 5], [4, 3, 2, 6, 7], 'E.Temperatur3', '°C'],
-    [[1, 2, 3, 4, 5], [4, 3, 2, 6, 7], 'E.CO2', 'ppm'],
-    [[1, 2, 3, 4, 5], [4, 3, 2, 6, 7], 'E.Temperatur2', '°C'],
+    [[1, 2, 3, 4, 5], [4, 3, 2, 6, 7], 'Sensor.Temperature', '°C'],
+    [[1, 2, 3, 4, 5], [4, 3, 2, 6, 7], 'Sensor.Humidity', '%'],
+    [[1, 2, 3, 4, 5], [4, 3, 2, 6, 7], 'Sensor.Temperature3', '°C'],
+    [[1, 2, 3, 4, 5], [4, 3, 2, 6, 7], 'Sensor.CO2', 'ppm'],
+    [[1, 2, 3, 4, 5], [4, 3, 2, 6, 7], 'Sensor.Temperature2', '°C'],
 ]
-events = [['heute', 'Warnung', 'E', 'Temperatur', 'Temperatur zu hoch', '34666', '3']]
+events = [['today', 'Warning', 'Sensor', 'Temperature', 'Temperature too high', '34666', '3']]
 
 lastSignals = []
 
@@ -283,7 +283,7 @@ def update_graph_live(n_intervals, lastPlot, active, relayout_data, selection, m
                 'type': 'scatter'
             }, idx+1, 1)
         fig['layout']['yaxis'+str(idx+1)].update(title='['+unit+']', showgrid=True)
-        fig['layout']['xaxis'+str(idx+1)].update(title=translate('RTOC', 'Vergangene Zeit [s]'), showgrid=True)
+        fig['layout']['xaxis'+str(idx+1)].update(title=translate('RTOC', 'Elapsed time [s]'), showgrid=True)
         fig['layout']['xaxis'+str(idx+1)]['tickformat'] = '%d.%m %H:%M'
         if relayout_data:
             if 'xaxis'+str(idx+1)+'.range[0]' in relayout_data:
@@ -301,7 +301,7 @@ def update_graph_live(n_intervals, lastPlot, active, relayout_data, selection, m
             fig['layout']['xaxis']['tickformat'] = '%d.%m %H:%M'
             # fig['layout']['xaxis']['tickangle'] = 45
             fig['layout']['yaxis'].update(title='['+unit+']', showgrid=True)
-            fig['layout']['xaxis'].update(title=translate('RTOC', 'Vergangene Zeit [s]'), showgrid=True)
+            fig['layout']['xaxis'].update(title=translate('RTOC', 'Elapsed time [s]'), showgrid=True)
             if relayout_data:
                 if 'xaxis.range[0]' in relayout_data:
                     fig['layout']['xaxis']['range'] = [
@@ -332,10 +332,10 @@ def update_output(n_intervals):
         if event[6] == 0:
             text = translate('RTOC', "Information")
         elif event[6] == 1:
-            text = translate('RTOC', "Warnung")
+            text = translate('RTOC', "Warning")
         else:
-            text = translate('RTOC', "Fehler")
-        event_dict[eventTableTitle[1]] = text # ['Zeitpunkt', 'Typ', 'Ger\xe4t', 'Signal', 'Inhalt', 'ID', 'R\xfcckgabewert']
+            text = translate('RTOC', "Error")
+        event_dict[eventTableTitle[1]] = text # ['Time', 'Type', 'Device', 'Signal', 'Content', 'ID', 'Return']
         event_dict[eventTableTitle[2]] = name[0]
         event_dict[eventTableTitle[3]] = name[1]
         event_dict[eventTableTitle[4]] = event[3]

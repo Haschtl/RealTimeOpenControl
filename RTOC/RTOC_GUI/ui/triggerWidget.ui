@@ -52,7 +52,7 @@
         <item row="0" column="0">
          <widget class="QRadioButton" name="sampleRadio">
           <property name="statusTip">
-           <string>Samplerate-Triggered: Skript wird mit definierter Samplerate ausgefürt</string>
+           <string>Sample Rate-Triggered: Script is executed at a defined sample rate</string>
           </property>
           <property name="text">
            <string>Samplerate-Triggered</string>
@@ -65,7 +65,7 @@
         <item row="1" column="0">
          <widget class="QRadioButton" name="signalRadio">
           <property name="statusTip">
-           <string>Signal-Triggered: Script wird mit Geräte-Samplerate verknüpft und ausgeführt</string>
+           <string>Signal-Triggered: Script is linked to device sample rate and executed</string>
           </property>
           <property name="whatsThis">
            <string/>
@@ -98,7 +98,7 @@
           </property>
           <item>
            <property name="text">
-            <string>Keines</string>
+            <string>None</string>
            </property>
           </item>
          </widget>

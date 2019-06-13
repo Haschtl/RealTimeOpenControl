@@ -71,6 +71,7 @@ defaultconfig = {
         "plotInverted": False,
         "xTimeBase": True,
         "timeAxis": True,
+        "xRelative": True,
         "systemTray": False,
         "signalInactivityTimeout": 2,
         "autoShowGraph": False,

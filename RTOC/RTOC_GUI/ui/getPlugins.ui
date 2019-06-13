@@ -77,14 +77,14 @@
        <item>
         <widget class="QPushButton" name="installButton">
          <property name="text">
-          <string>Installieren</string>
+          <string>Install</string>
          </property>
         </widget>
        </item>
        <item>
         <widget class="QPushButton" name="removeButton">
          <property name="text">
-          <string>Entfernen</string>
+          <string>Remove</string>
          </property>
         </widget>
        </item>

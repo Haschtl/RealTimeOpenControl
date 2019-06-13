@@ -41,10 +41,10 @@ def main():
         for opt, arg in opts:
             if opt == '-h':
                 logging.info(
-                    'RTOC.py [-h] [-r <Remoteadress>]\n -h: Hilfe\n-r (--remote) <Remoteadresse>: TCP-Client zu RTOC-Server\nF\xfcr Optionen ohne GUI verwende "python3 -m RTOC.RTLogger -h"')
+                    'RTOC.py [-h] [-r <Remoteadress>]\n -h: Help\n-r (--remote) <Remoteadress>: TCP client for RTOC server\nFor options without GUI, run "python3 -m RTOC.RTLogger -h"')
                 sys.exit(0)
             elif opt == '-v':
-                logging.info("2.0.3")
+                logging.info("2.1.0")
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)
@@ -222,7 +222,7 @@ def startRemoteRTOC(remotepath):
             config = {'global': {'language': 'en'}}
     else:
         config = {'global': {'language': 'en'}}
-    if config['global']['language'] == 'en':
+    if config['global']['language'] == 'de':
         translator = QtCore.QTranslator()
         if getattr(sys, 'frozen', False):
             # frozen
@@ -230,7 +230,7 @@ def startRemoteRTOC(remotepath):
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
-        translator.load(packagedir+"/locales/en_en.qm")
+        translator.load(packagedir+"/locales/de_de.qm")
         app.installTranslator(translator)
 
         # import gettext
@@ -272,7 +272,7 @@ def startRTOC(tcp=None, port=None, local =False):
             config = {'global': {'language': 'en'}}
     else:
         config = {'global': {'language': 'en'}}
-    if config['global']['language'] == 'en':
+    if config['global']['language'] == 'de':
         translator = QtCore.QTranslator()
         if getattr(sys, 'frozen', False):
             # frozen
@@ -280,7 +280,7 @@ def startRTOC(tcp=None, port=None, local =False):
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
-        translator.load(packagedir+"/locales/en_en.qm")
+        translator.load(packagedir+"/locales/de_de.qm")
         app.installTranslator(translator)
 
         # import gettext

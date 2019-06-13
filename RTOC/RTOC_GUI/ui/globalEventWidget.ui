@@ -55,7 +55,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Rückgabewert</string>
+            <string>Return</string>
            </property>
           </widget>
          </item>
@@ -70,17 +70,17 @@
           <widget class="QComboBox" name="comboBox_4">
            <item>
             <property name="text">
-             <string>Mitteilung</string>
+             <string>Information</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>Warnung</string>
+             <string>Warning</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>Fehler</string>
+             <string>Error</string>
             </property>
            </item>
           </widget>
@@ -101,7 +101,7 @@
          <item row="2" column="1">
           <widget class="QLineEdit" name="lineEdit_3">
            <property name="text">
-            <string>Gerät.Signal &gt;= Gerät.Signal2</string>
+            <string>Device.Signal &gt;= Device.Signal2</string>
            </property>
           </widget>
          </item>
@@ -122,7 +122,7 @@
          <item row="1" column="1">
           <widget class="QLineEdit" name="lineEdit">
            <property name="text">
-            <string>Gerät.Signal &gt;= 6</string>
+            <string>Device.Signal &gt;= 6</string>
            </property>
           </widget>
          </item>
@@ -136,7 +136,7 @@
          <item row="0" column="4">
           <widget class="QLabel" name="label_9">
            <property name="text">
-            <string>Priorität</string>
+            <string>Priority</string>
            </property>
           </widget>
          </item>
@@ -149,7 +149,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Bedingung</string>
+            <string>Condition</string>
            </property>
           </widget>
          </item>
@@ -157,17 +157,17 @@
           <widget class="QComboBox" name="comboBox_3">
            <item>
             <property name="text">
-             <string>Warnung</string>
+             <string>Warning</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>Mitteilung</string>
+             <string>Information</string>
             </property>
            </item>
            <item>
             <property name="text">
-             <string>Fehler</string>
+             <string>Error</string>
             </property>
            </item>
           </widget>
@@ -182,21 +182,21 @@
          <item row="1" column="3">
           <widget class="QLineEdit" name="lineEdit_5">
            <property name="text">
-            <string>Gerät.Signal</string>
+            <string>Device.Signal</string>
            </property>
           </widget>
          </item>
          <item row="1" column="2">
           <widget class="QLineEdit" name="lineEdit_7">
            <property name="text">
-            <string>Wert über 6</string>
+            <string>Value bigger than 6</string>
            </property>
           </widget>
          </item>
          <item row="2" column="2">
           <widget class="QLineEdit" name="lineEdit_8">
            <property name="text">
-            <string>Wert größer als anderer</string>
+            <string>Value bigger than</string>
            </property>
           </widget>
          </item>
@@ -209,7 +209,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Inhalt</string>
+            <string>Content</string>
            </property>
           </widget>
          </item>

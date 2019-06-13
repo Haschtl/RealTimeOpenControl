@@ -48,7 +48,9 @@ class RemoteWidget(QtWidgets.QWidget):
         self.listWidget.customContextMenuRequested.connect(self.listItemRightClicked)
 
         self.disconnectButton.clicked.connect(self.disconnect)
-        self.maxLengthSpinBox.editingFinished.connect(self.resizeRemoteLogger)
+        self.maxLengthSpinBox.editingFinished.connect(self.updateDataWindow)
+        self.toDateTimeEdit.editingFinished.connect(self.updateDataWindow)
+        self.fromDateTimeEdit.editingFinished.connect(self.updateDataWindow)
         self.clearButton.clicked.connect(self.clear)
         self.pauseButton.clicked.connect(self.pause)
         self.saveButton.clicked.connect(self.saveRemoteSession)
@@ -56,7 +58,7 @@ class RemoteWidget(QtWidgets.QWidget):
         self.remote.updateRemoteCallback = self.update.emit
         self.update.connect(self.updateRemote)
         if self.remote is not None:
-            self.maxLengthSpinBox.setValue(self.remote.maxLength)
+            # self.maxLengthSpinBox.setValue(self.remote.maxLength)
             self.updateList()
             self.pauseButton.setChecked(self.remote.pause)
             self.setStatusLabel()
@@ -68,6 +70,7 @@ class RemoteWidget(QtWidgets.QWidget):
 
         self.scriptWidget = ScriptWidget(self.self.logger)
         self.scriptLayout.addWidget(self.scriptWidget)
+        self.initDataWindow()
 
         self.editLayout.hide()
 
@@ -89,19 +92,19 @@ class RemoteWidget(QtWidgets.QWidget):
 
     def setStatusLabel(self):
         if self.remote.status == "connected":
-            self.statusLabel.setText(translate('RTOC', 'Verbunden'))
+            self.statusLabel.setText(translate('RTOC', 'Connected'))
             self.statusLabel.setStyleSheet('background-color: rgb(0, 82, 17)')
         elif self.remote.status == "disconnected":
-            self.statusLabel.setText(translate('RTOC', 'Fehler'))
+            self.statusLabel.setText(translate('RTOC', 'Error'))
             self.statusLabel.setStyleSheet('background-color: rgb(98, 1, 1)')
         elif self.remote.status == "wrongPassword":
-            self.statusLabel.setText(translate('RTOC', 'Falsches Passwort'))
+            self.statusLabel.setText(translate('RTOC', 'Wrong password'))
             self.statusLabel.setStyleSheet('background-color: rgb(98, 1, 1)')
         elif self.remote.status == "error":
-            self.statusLabel.setText(translate('RTOC', 'Fehler'))
+            self.statusLabel.setText(translate('RTOC', 'Error'))
             self.statusLabel.setStyleSheet('background-color: rgb(98, 1, 1)')
         elif self.remote.status == "protected":
-            self.statusLabel.setText(translate('RTOC', 'Passwortgesch\xfctzt'))
+            self.statusLabel.setText(translate('RTOC', 'Protected'))
             self.statusLabel.setStyleSheet('background-color: rgb(98, 1, 1)')
 
     def disconnect(self):
@@ -109,15 +112,35 @@ class RemoteWidget(QtWidgets.QWidget):
             self.toggleEditView(False)
             self.editButton.setChecked(False)
         else:
-            ans = pyqtlib.alert_message(translate('RTOC', 'Verbindung trennen'), translate('RTOC', 'M\xf6chtest du die Verbindung zu {} trennen?').format(self.hostname), translate('RTOC', '\xdcbertragene Signale bleiben bestehen'), "", translate('RTOC', "Ja"), translate('RTOC', "Nein"))
+            ans = pyqtlib.alert_message(translate('RTOC', 'Disconnect'), translate('RTOC', 'Do you want to disconnect {}?').format(self.hostname), translate('RTOC', 'Transferred signals will remain.'), "", translate('RTOC', "Yes"), translate('RTOC', "No"))
             if ans:
                 ans = self.self.logger.remote.disconnect(self.hostname)
                 if ans is False:
-                    ans = pyqtlib.info_message(translate('RTOC', 'Fehler'), translate('RTOC', 'Konnte die Verbindung zu {} nicht trennen.').format(self.hostname), '')
+                    ans = pyqtlib.info_message(translate('RTOC', 'Error'), translate('RTOC', 'Could not disconnect from {}.').format(self.hostname), '')
                 self.close()
 
-    def resizeRemoteLogger(self):
-        self.self.logger.remote.resize(self.name, self.maxLengthSpinBox.value())
+    def updateDataWindow(self):
+        my_time = self.fromDateTimeEdit.dateTime()
+        xmin = my_time.toTime_t()
+        my_time = self.toDateTimeEdit.dateTime()
+        xmax = my_time.toTime_t()
+        if xmax < xmin:
+            xmax = xmin
+            date = QtCore.QDateTime()  # (secs=self.remote.xmax)
+            date.setMSecsSinceEpoch(xmax*1000)
+            self.toDateTimeEdit.setDateTime(date)
+        self.remote.xmax = xmax
+        self.remote.xmin = xmin
+        self.remote.maxN = self.maxLengthSpinBox.value()
+
+    def initDataWindow(self):
+        date = QtCore.QDateTime()  # (secs=self.remote.xmax)
+        date.setMSecsSinceEpoch(self.remote.xmax*1000)
+        self.toDateTimeEdit.setDateTime(date)
+        date = QtCore.QDateTime()  # (secs=self.remote.xmax)
+        date.setMSecsSinceEpoch(self.remote.xmin*1000)
+        self.fromDateTimeEdit.setDateTime(date)
+        self.maxLengthSpinBox.setValue(self.remote.maxN)
     #
     # def something(self):
     #     if self.checkBox.isChecked():
@@ -164,7 +187,7 @@ class RemoteWidget(QtWidgets.QWidget):
 
     def listItemRightClicked(self, QPos):
         self.listMenu = QtGui.QMenu()
-        menu_item = self.listMenu.addAction(translate('RTOC', "Signal l\xf6schen"))
+        menu_item = self.listMenu.addAction(translate('RTOC', "Delete signal"))
         menu_item.triggered.connect(self.menuItemClicked)
         parentPosition = self.listWidget.mapToGlobal(QtCore.QPoint(0, 0))
         self.listMenu.move(parentPosition + QPos)
@@ -178,7 +201,12 @@ class RemoteWidget(QtWidgets.QWidget):
         self.self.logger.remote.clearHost(self.hostname, 'all')
 
     def pause(self, value):
-        self.self.logger.remote.pauseHost(self.hostname, value)
+        # self.self.logger.remote.pauseHost(self.hostname, value)
+        self.remote.pause = value
+        if value:
+            self.pauseButton.setStyleSheet("background-color: rgb(114, 29, 29)")
+        else:
+            self.pauseButton.setStyleSheet("")
 
     def saveRemoteSession(self):
         if self.editButton.isChecked():
@@ -191,15 +219,15 @@ class RemoteWidget(QtWidgets.QWidget):
             self.toggleEditView(False)
             self.editButton.setChecked(False)
         else:
-            title = translate('RTOC', "Session speichern")
+            title = translate('RTOC', "Save session")
             examplename = "RTOC-RemoteSession"
             fileName, _ = QtWidgets.QFileDialog.getSaveFileName(self, title,
                                                                 (QtCore.QDir.homePath() + "/" + examplename + ".json"), "JSON Files (*.json)")
             if fileName:
                 self.self.logger.remote.downloadSession(self.hostname, fileName)
-                pyqtlib.info_message(translate('RTOC', 'Download abgeschlossen'), translate('RTOC', 'Session wurde erfolgreich heruntergeladen.'), '')
+                pyqtlib.info_message(translate('RTOC', 'Download completed'), translate('RTOC', 'Session downloaded successfully.'), '')
 
     def updateRemote(self):
         self.updateList()
-        self.maxLengthSpinBox.setValue(self.remote.maxLength)
+        # self.maxLengthSpinBox.setValue(self.remote.maxLength)
         self.setStatusLabel()

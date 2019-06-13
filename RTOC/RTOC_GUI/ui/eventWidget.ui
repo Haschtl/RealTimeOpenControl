@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1053</width>
-    <height>433</height>
+    <height>417</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -153,10 +153,10 @@
            <item>
             <widget class="QPushButton" name="clearButton">
              <property name="toolTip">
-              <string>Lösche alle Signale</string>
+              <string>Delete all events</string>
              </property>
              <property name="statusTip">
-              <string>Lösche alle Signale</string>
+              <string>Delete all events</string>
              </property>
              <property name="text">
               <string/>
@@ -217,17 +217,17 @@
          </attribute>
          <column>
           <property name="text">
-           <string>Zeitpunkt</string>
+           <string>Time</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Inhalt</string>
+           <string>Content</string>
           </property>
          </column>
          <column>
           <property name="text">
-           <string>Gerät</string>
+           <string>Device</string>
           </property>
          </column>
          <column>
@@ -237,7 +237,7 @@
          </column>
          <column>
           <property name="text">
-           <string>Rückgabewert</string>
+           <string>Return</string>
           </property>
          </column>
          <column>
@@ -251,7 +251,7 @@
      </widget>
      <widget class="QToolBox" name="toolBox">
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="page">
        <property name="geometry">
@@ -259,11 +259,11 @@
          <x>0</x>
          <y>0</y>
          <width>1053</width>
-         <height>85</height>
+         <height>157</height>
         </rect>
        </property>
        <attribute name="label">
-        <string>Globale Events</string>
+        <string>Global Events</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <property name="spacing">
@@ -292,11 +292,11 @@
          <x>0</x>
          <y>0</y>
          <width>1053</width>
-         <height>85</height>
+         <height>157</height>
         </rect>
        </property>
        <attribute name="label">
-        <string>Globale Aktionen</string>
+        <string>Global Aktions</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <property name="spacing">

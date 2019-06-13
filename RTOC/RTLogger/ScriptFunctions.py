@@ -33,12 +33,10 @@ class ScriptFunctions:
         for host in self.remote.devices.keys():
             for device in self.remote.devices[host].keys():
                 for parameter in self.remote.devices[host][device]['parameters']:
-                    # wenn Parameter zugewiesen wird
                     #value = self.remote.getParam(self, host, device, parameter[0])
                     value = parameter[1]
                     s = s.replace(host+':'+device+'.'+parameter[0], str(value))
 
-                    # wenn Parameter ver\xe4ndert werden soll
                     # self.remote.callFuncOrParam(self, host, device, parameter[], value)
         for parameter in self.pluginParameters.keys():
             s = s.replace(parameter, self.pluginParameters[parameter])

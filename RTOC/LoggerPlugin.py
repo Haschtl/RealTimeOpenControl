@@ -1,4 +1,4 @@
-# LoggerPlugin v2.4
+# LoggerPlugin v2.5
 import traceback
 import time
 import sys
@@ -543,53 +543,69 @@ class LoggerPlugin:
 
 
 class _perpetualTimer():
-    thread_counter = 0
 
     def __init__(self, hFunction, samplerate=1, lock=None):
+        self.thread_counter = 0
         self._samplerate = samplerate
         self._lock = lock
+        self._cancel = True
         self._hFunction = hFunction
         self._thread = None
+        self._correction = -0.006
+        self._lastStart = 0
 
     def _handle_function(self):
+        start = time.time()
+        self._lastStart = time.perf_counter()
         self.thread_counter -= 1
         if self.thread_counter != 0:
             logging.warning('there should not be a running thread, but unfortunately it is.')
             print(self.thread_counter)
 
-        with self._lock:
-            start = time.time()
-            self._hFunction()
-            diff = time.time() - start
-            timedelta = 1/self._samplerate - diff
-            if timedelta < 0:
-                timedelta = 0
-        self._thread = Timer(timedelta, self._handle_function)
-        self.thread_counter += 1
-        self._thread.start()
+        if not self._cancel:
+            with self._lock:
+                self._hFunction()
+                diff = time.time() - start  # self._lastStart  # - start
+                diff2 = time.perf_counter()-self._lastStart
+                timedelta = 1/self._samplerate - diff2
+                timedelta = timedelta + self._correction
+                if timedelta < 0:
+                    timedelta = 0
+        if not self._lock.locked() and not self._cancel:
+            self._thread = Timer(timedelta, self._handle_function)
+            self.thread_counter += 1
+            self._thread.start()
 
     def setSamplerate(self, rate):
-        if rate != self._samplerate:
+        if rate != self._samplerate and not self._cancel:
             self._samplerate = rate
-            self.cancel()
-            if self.thread_counter == 0:
-                self._thread = Timer(1/self._samplerate, self._handle_function)
-                self.thread_counter += 1
-                self._thread.start()
-            else:
-                logging.warning('Thread should have stopped before changing samplerate, but it didnt.')
+            # self.start(1/self._samplerate)
+            if not self._lock.locked():
+                self.start(0)
+            # else:
+            #     print('Samplerate changed, but not restarted')
 
     def getSamplerate(self):
         return self._samplerate
 
-    def start(self):
+    def start(self, delayed=0):
         logging.info('Starting perpetual timer')
         self.cancel()
-        self._thread = Timer(0, self._handle_function)
-        self.thread_counter += 1
-        self._thread.start()
+        self._cancel = False
+        with self._lock:
+            if self.thread_counter <= 0:
+                self._thread = Timer(delayed, self._handle_function)
+                self.thread_counter += 1
+                self._thread.start()
+                if self.thread_counter<0:
+                    logging.warning('Something is not right...')
+            else:
+                logging.warning('You cannot start a second perpetual timer.')
+                print(self.thread_counter)
+
 
     def cancel(self):
+        self._cancel = True
         if self._thread is not None:
             with self._lock:
                 self._thread.cancel()

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1101</width>
-    <height>313</height>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -47,10 +47,10 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Zeige Crosshair</string>
+             <string>Show crosshair</string>
             </property>
             <property name="statusTip">
-             <string>Zeige Crosshair</string>
+             <string>Show crosshair</string>
             </property>
             <property name="text">
              <string/>
@@ -79,10 +79,10 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Öffne Mess-Rechteck in Plot</string>
+             <string>Open measure-rectangle in graph</string>
             </property>
             <property name="statusTip">
-             <string>Öffne Mess-Rechteck in Plot</string>
+             <string>Open measure-rectangle in graph</string>
             </property>
             <property name="text">
              <string/>
@@ -111,10 +111,10 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Zeige Crosshair</string>
+             <string>Open cutting tool</string>
             </property>
             <property name="statusTip">
-             <string>Zeige Crosshair</string>
+             <string>Open cutting tool</string>
             </property>
             <property name="text">
              <string/>
@@ -171,7 +171,7 @@
              </size>
             </property>
             <property name="text">
-             <string>Darstellung</string>
+             <string>View</string>
             </property>
             <property name="checkable">
              <bool>false</bool>
@@ -235,7 +235,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Plot pausieren/fortsetzen</string>
+             <string>Pause plot</string>
             </property>
             <property name="text">
              <string/>
@@ -264,7 +264,7 @@
              </sizepolicy>
             </property>
             <property name="toolTip">
-             <string>Plot pausieren/fortsetzen</string>
+             <string/>
             </property>
             <property name="text">
              <string/>
@@ -316,7 +316,7 @@
           <item>
            <widget class="QLineEdit" name="searchEdit">
             <property name="placeholderText">
-             <string>Suche Signal; ...</string>
+             <string>Search signal; ...</string>
             </property>
             <property name="clearButtonEnabled">
              <bool>true</bool>
@@ -328,6 +328,9 @@
             <property name="acceptDrops">
              <bool>true</bool>
             </property>
+            <property name="autoScrollMargin">
+             <number>16</number>
+            </property>
             <property name="dragEnabled">
              <bool>true</bool>
             </property>
@@ -337,11 +340,17 @@
             <property name="defaultDropAction">
              <enum>Qt::CopyAction</enum>
             </property>
+            <property name="alternatingRowColors">
+             <bool>false</bool>
+            </property>
             <property name="selectionMode">
              <enum>QAbstractItemView::ExtendedSelection</enum>
             </property>
             <property name="autoExpandDelay">
              <number>1</number>
+            </property>
+            <property name="indentation">
+             <number>0</number>
             </property>
             <property name="uniformRowHeights">
              <bool>false</bool>
@@ -352,32 +361,44 @@
             <property name="animated">
              <bool>true</bool>
             </property>
+            <property name="allColumnsShowFocus">
+             <bool>false</bool>
+            </property>
+            <property name="wordWrap">
+             <bool>true</bool>
+            </property>
             <property name="headerHidden">
              <bool>false</bool>
             </property>
+            <attribute name="headerVisible">
+             <bool>true</bool>
+            </attribute>
             <attribute name="headerCascadingSectionResizes">
              <bool>true</bool>
             </attribute>
             <attribute name="headerDefaultSectionSize">
-             <number>200</number>
+             <number>160</number>
             </attribute>
-            <attribute name="headerMinimumSectionSize">
-             <number>5</number>
-            </attribute>
-            <attribute name="headerShowSortIndicator" stdset="0">
+            <attribute name="headerHighlightSections">
              <bool>true</bool>
             </attribute>
-            <attribute name="headerStretchLastSection">
+            <attribute name="headerMinimumSectionSize">
+             <number>0</number>
+            </attribute>
+            <attribute name="headerShowSortIndicator" stdset="0">
              <bool>false</bool>
+            </attribute>
+            <attribute name="headerStretchLastSection">
+             <bool>true</bool>
             </attribute>
             <column>
              <property name="text">
-              <string>Signale</string>
+              <string>Signals</string>
              </property>
             </column>
             <column>
              <property name="text">
-              <string>Wert</string>
+              <string>Value</string>
              </property>
             </column>
            </widget>
@@ -385,7 +406,7 @@
           <item>
            <widget class="QLabel" name="countLabel">
             <property name="text">
-             <string>Signale: 0</string>
+             <string>Signals: 0</string>
             </property>
             <property name="alignment">
              <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

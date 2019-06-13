@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>735</width>
-    <height>573</height>
+    <height>606</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Einstellungen</string>
+   <string>Settings</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <item>
@@ -21,7 +21,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox">
          <property name="title">
-          <string>Allgemein</string>
+          <string>General</string>
          </property>
          <layout class="QGridLayout" name="gridLayout">
           <item row="3" column="1">
@@ -34,7 +34,7 @@
           <item row="3" column="0">
            <widget class="QLabel" name="label_4">
             <property name="text">
-             <string>Plot-Aktualisierungsrate</string>
+             <string>Plot-Updaterate</string>
             </property>
            </widget>
           </item>
@@ -55,7 +55,7 @@
           <item row="0" column="0">
            <widget class="QLabel" name="label">
             <property name="text">
-             <string>Sprache</string>
+             <string>Language</string>
             </property>
            </widget>
           </item>
@@ -85,7 +85,7 @@
           <item>
            <widget class="QCheckBox" name="backupCheckbox">
             <property name="text">
-             <string>Backup aktivieren</string>
+             <string>Activate backup</string>
             </property>
            </widget>
           </item>
@@ -97,7 +97,7 @@
             <item>
              <widget class="QLabel" name="label_16">
               <property name="text">
-               <string>Backup-Intervall</string>
+               <string>Backup-Interval</string>
               </property>
              </widget>
             </item>
@@ -135,14 +135,14 @@
             <item>
              <widget class="QLabel" name="label_17">
               <property name="text">
-               <string>Backup-Verzeichnis</string>
+               <string>Backup-Path</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QPushButton" name="backupDirButton">
               <property name="text">
-               <string>Verzeichnis ändern</string>
+               <string>Change path</string>
               </property>
              </widget>
             </item>
@@ -151,28 +151,28 @@
           <item>
            <widget class="QCheckBox" name="backupIfFullCheckbox">
             <property name="text">
-             <string>Auto-Backup wenn voll</string>
+             <string>Auto-Backup, if local is full</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="backupAutoOnCloseCheckbox">
             <property name="text">
-             <string>Auto-Backup beim Beenden von RTOC</string>
+             <string>Auto-Backup on close</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="backupLoadOnOpenCheckbox">
             <property name="text">
-             <string>Backup beim Start automatisch laden</string>
+             <string>Load backup on startup</string>
             </property>
            </widget>
           </item>
           <item>
            <widget class="QCheckBox" name="backupClearCheckbox">
             <property name="text">
-             <string>Daten aus Sitzung leeren nach Backup</string>
+             <string>Clear local data after backup</string>
             </property>
            </widget>
           </item>
@@ -182,62 +182,62 @@
        <item>
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
-          <string>Aufräumen</string>
+          <string>Clear</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_2">
           <item row="0" column="0">
            <widget class="QLabel" name="label_2">
             <property name="text">
-             <string>Gespeicherte Signal-Stile leeren</string>
+             <string>Clear saved plotstyles</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_3">
             <property name="text">
-             <string>Liste 'Zuletzt bearbeitet' leeren</string>
+             <string>Clear 'Last edited' list</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QPushButton" name="clearSignalStylesButton">
             <property name="text">
-             <string>Signal-Stile löschen</string>
+             <string>Clear plotstyles</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QPushButton" name="clearTelegramClientListButton">
             <property name="text">
-             <string>Telegram-Verbindungen beenden</string>
+             <string>Clear Telegram-data</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_6">
             <property name="text">
-             <string>Telegram-Client-Liste leeren</string>
+             <string>Clear Telegram-data</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QPushButton" name="clearLastEditedListButton">
             <property name="text">
-             <string>'Zuletzt bearbeitet' leeren</string>
+             <string>Clear 'Last edited'</string>
             </property>
            </widget>
           </item>
           <item row="3" column="0">
            <widget class="QLabel" name="label_7">
             <property name="text">
-             <string>Liste 'Bekannte TCP-Hosts' leeren</string>
+             <string>Clear 'Known hosts' list</string>
             </property>
            </widget>
           </item>
           <item row="3" column="1">
            <widget class="QPushButton" name="clearTCPHostListButton">
             <property name="text">
-             <string>'Bekannte TCP-Hosts' leeren</string>
+             <string>Clear all known TCP-hosts</string>
             </property>
            </widget>
           </item>
@@ -251,7 +251,7 @@
        <item>
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
-          <string>Ansicht</string>
+          <string>View</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
           <item row="6" column="0">
@@ -278,7 +278,7 @@
           <item row="4" column="1">
            <widget class="QCheckBox" name="openGLCheckBox">
             <property name="text">
-             <string>Aus</string>
+             <string>Off</string>
             </property>
            </widget>
           </item>
@@ -292,14 +292,14 @@
           <item row="8" column="0">
            <widget class="QLabel" name="label_9">
             <property name="text">
-             <string>Signal-Dropdownmenü</string>
+             <string>Signal-Dropdownmenu</string>
             </property>
            </widget>
           </item>
           <item row="2" column="0">
            <widget class="QLabel" name="label_10">
             <property name="text">
-             <string>Neue Signale sofort darstellen</string>
+             <string>Auto-Show new signals</string>
             </property>
            </widget>
           </item>
@@ -313,14 +313,14 @@
           <item row="5" column="1">
            <widget class="QCheckBox" name="weaveCheckBox">
             <property name="text">
-             <string>Aus</string>
+             <string>Off</string>
             </property>
            </widget>
           </item>
           <item row="2" column="1">
            <widget class="QCheckBox" name="autoShowCheckBox">
             <property name="text">
-             <string>Aus</string>
+             <string>Off</string>
             </property>
            </widget>
           </item>
@@ -334,35 +334,35 @@
           <item row="3" column="1">
            <widget class="QCheckBox" name="antialiasingCheckBox">
             <property name="text">
-             <string>Aus</string>
+             <string>Off</string>
             </property>
            </widget>
           </item>
           <item row="0" column="1">
            <widget class="QCheckBox" name="darkmodeCheckBox">
             <property name="text">
-             <string>Aus</string>
+             <string>Off</string>
             </property>
            </widget>
           </item>
           <item row="1" column="0">
            <widget class="QLabel" name="label_14">
             <property name="text">
-             <string>Fensterposition wiederherstellen</string>
+             <string>Restore window positions</string>
             </property>
            </widget>
           </item>
           <item row="0" column="0">
            <widget class="QLabel" name="label_8">
             <property name="text">
-             <string>Dunkle Darstellung</string>
+             <string>Darkmode</string>
             </property>
            </widget>
           </item>
           <item row="1" column="1">
            <widget class="QCheckBox" name="restoreWidgetPositionCheckBox">
             <property name="text">
-             <string>Aus</string>
+             <string>Off</string>
             </property>
            </widget>
           </item>
@@ -379,13 +379,13 @@
        <item>
         <widget class="QGroupBox" name="groupBox_5">
          <property name="title">
-          <string>PostgreSQL Datenbank</string>
+          <string>PostgreSQL Database</string>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_5">
           <item>
            <widget class="QCheckBox" name="postgresqlCheckbox">
             <property name="text">
-             <string>PostgreSQL aktivieren</string>
+             <string>Activate PostgreSQL</string>
             </property>
            </widget>
           </item>
@@ -397,7 +397,7 @@
             <item>
              <widget class="QLabel" name="label_18">
               <property name="text">
-               <string>Nutzername</string>
+               <string>Username   </string>
               </property>
              </widget>
             </item>
@@ -414,7 +414,7 @@
             <item>
              <widget class="QLabel" name="label_19">
               <property name="text">
-               <string>Passwort    </string>
+               <string>Password    </string>
               </property>
              </widget>
             </item>
@@ -469,7 +469,7 @@
             <item>
              <widget class="QLabel" name="label_22">
               <property name="text">
-               <string>Datenbankname</string>
+               <string>Database name</string>
               </property>
              </widget>
             </item>
@@ -481,7 +481,7 @@
           <item>
            <widget class="QPushButton" name="postgresqlCheckButton">
             <property name="text">
-             <string>Verbindung testen</string>
+             <string>Test connection</string>
             </property>
            </widget>
           </item>
@@ -510,21 +510,21 @@
      <item>
       <widget class="QPushButton" name="resetButton">
        <property name="text">
-        <string>Zurücksetzen</string>
+        <string>Reset</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="abortButton">
        <property name="text">
-        <string>Abbrechen</string>
+        <string>Abort</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="saveButton">
        <property name="text">
-        <string>Speichern</string>
+        <string>Save</string>
        </property>
       </widget>
      </item>

@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>250</width>
-    <height>464</height>
+    <height>493</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -41,16 +41,16 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>Signal löschen</string>
+      <string/>
      </property>
      <property name="statusTip">
-      <string>Signal löschen</string>
+      <string/>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Signal löschen</string>
+      <string>Delete signal</string>
      </property>
      <property name="icon">
       <iconset>
@@ -73,16 +73,16 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>Plotdarstellung pausieren</string>
+      <string/>
      </property>
      <property name="statusTip">
-      <string>Plotdarstellung pausieren</string>
+      <string/>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Plot pausieren</string>
+      <string>Pause plot</string>
      </property>
      <property name="icon">
       <iconset>
@@ -108,16 +108,16 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>Signal als CSV-Datei exportieren</string>
+      <string/>
      </property>
      <property name="statusTip">
-      <string>Signal als CSV-Datei exportieren</string>
+      <string/>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>als CSV exportieren</string>
+      <string>export to CSV</string>
      </property>
      <property name="icon">
       <iconset>
@@ -140,16 +140,16 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>Signal als CSV-Datei exportieren</string>
+      <string/>
      </property>
      <property name="statusTip">
-      <string>Signal als CSV-Datei exportieren</string>
+      <string/>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>an Remote-RTOC senden</string>
+      <string>send to Remote-RTOC</string>
      </property>
      <property name="icon">
       <iconset>
@@ -172,16 +172,16 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>Signal zuschneiden</string>
+      <string/>
      </property>
      <property name="statusTip">
-      <string>Signal zuschneiden</string>
+      <string/>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Signal zuschneiden</string>
+      <string>Cut signal</string>
      </property>
      <property name="icon">
       <iconset>
@@ -204,16 +204,16 @@
       </sizepolicy>
      </property>
      <property name="toolTip">
-      <string>Signal duplizieren</string>
+      <string/>
      </property>
      <property name="statusTip">
-      <string>Signal duplizieren</string>
+      <string/>
      </property>
      <property name="layoutDirection">
       <enum>Qt::LeftToRight</enum>
      </property>
      <property name="text">
-      <string>Signal duplizieren</string>
+      <string>Duplicate signal</string>
      </property>
      <property name="icon">
       <iconset>
@@ -230,7 +230,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox_2">
      <property name="title">
-      <string>Darstellung</string>
+      <string>View</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
       <property name="spacing">
@@ -260,7 +260,7 @@
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>Signal-Events ein/ausblenden</string>
+         <string>Show/hide events</string>
         </property>
         <property name="icon">
          <iconset>
@@ -289,16 +289,16 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Label anzeigen/ausblenden</string>
+         <string/>
         </property>
         <property name="statusTip">
-         <string>Label anzeigen/ausblenden</string>
+         <string/>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>Label ein/ausblenden</string>
+         <string>Show/hide labels</string>
         </property>
         <property name="icon">
          <iconset>
@@ -324,16 +324,16 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Aktivieren, X-Achse time.time()+x ist</string>
+         <string/>
         </property>
         <property name="statusTip">
-         <string>Aktivieren, X-Achse time.time()+x ist</string>
+         <string/>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>Zeitsignal</string>
+         <string>Time-based signal</string>
         </property>
         <property name="icon">
          <iconset>
@@ -362,16 +362,16 @@
          </sizepolicy>
         </property>
         <property name="toolTip">
-         <string>Plotstil anpassen</string>
+         <string/>
         </property>
         <property name="statusTip">
-         <string>Plotstil anpassen</string>
+         <string/>
         </property>
         <property name="layoutDirection">
          <enum>Qt::LeftToRight</enum>
         </property>
         <property name="text">
-         <string>Signalstil anpassen</string>
+         <string>Change plotstyle</string>
         </property>
         <property name="icon">
          <iconset>
@@ -391,10 +391,10 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="statusTip">
-      <string>Änderungen werden erst mit &quot;Anwenden&quot; in die Daten geschrieben</string>
+      <string></string>
      </property>
      <property name="title">
-      <string>Modifikation</string>
+      <string>Modifications</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_2">
       <property name="spacing">
@@ -608,7 +608,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>X-Y vertauschen</string>
+           <string>Swap X-Y</string>
           </property>
           <property name="icon">
            <iconset>
@@ -634,10 +634,10 @@
            </sizepolicy>
           </property>
           <property name="toolTip">
-           <string>Signal umbenennen</string>
+           <string/>
           </property>
           <property name="statusTip">
-           <string>Signal umbenennen (neue Daten werden nicht umgeleitet!)</string>
+           <string/>
           </property>
           <property name="text">
            <string>Rename</string>
@@ -659,13 +659,13 @@
       <item>
        <widget class="QPushButton" name="submitModificationButton">
         <property name="toolTip">
-         <string>Modifikationen in Daten schreiben</string>
+         <string/>
         </property>
         <property name="statusTip">
-         <string>Modifikationen in Daten schreiben, Daten werden überschrieben</string>
+         <string/>
         </property>
         <property name="text">
-         <string>Anwenden</string>
+         <string>Apply</string>
         </property>
        </widget>
       </item>

@@ -3,10 +3,20 @@
 This module contains some helper functions for PyQT4 or PyQT5 (and pyqtgraph)
 """
 import time
+import datetime as dt
 import pyqtgraph as pg
 from PyQt5 import QtCore
 from PyQt5 import QtWidgets, QtGui, Qt
 
+
+if True:
+    translate = QtCore.QCoreApplication.translate
+
+    def _(text):
+        return translate('rtoc', text)
+else:
+    import gettext
+    _ = gettext.gettext
 
 try:
     _fromUtf8 = QtCore.QString.fromUtf8
@@ -67,7 +77,7 @@ def getListWidgets(QListWidget):
 # Message Functions
 
 
-def alert_message(title, text, info, stylesheet="", okbutton="OK", cancelbutton="Abbrechen"):
+def alert_message(title, text, info, stylesheet="", okbutton=None, cancelbutton=None):
     """
     Creates an alert message. Can be accepted or canceled
 
@@ -82,6 +92,10 @@ def alert_message(title, text, info, stylesheet="", okbutton="OK", cancelbutton=
     Returns:
         bool
     """
+    if okbutton is None:
+        okbutton = translate('lib','Ok')
+    if cancelbutton is None:
+        cancelbutton = translate('lib','Cancel')
     msg = QtWidgets.QMessageBox()
     msg.setIcon(QtWidgets.QMessageBox.Warning)
 
@@ -102,7 +116,7 @@ def alert_message(title, text, info, stylesheet="", okbutton="OK", cancelbutton=
         return False
 
 
-def tri_message(title, text, info, stylesheet="", okbutton="Ja", nobutton="Nein", cancelbutton="Abbrechen"):
+def tri_message(title, text, info, stylesheet="", okbutton=None, nobutton=None, cancelbutton=None):
     """
     Creates an tri-state message. Has three buttons the user can click
 
@@ -118,6 +132,12 @@ def tri_message(title, text, info, stylesheet="", okbutton="Ja", nobutton="Nein"
     Returns:
         bool
     """
+    if okbutton is None:
+        okbutton = translate('lib','Yes')
+    if nobutton is None:
+        nobutton = translate('lib','No')
+    if cancelbutton is None:
+        cancelbutton = translate('lib','Cancel')
     msg = QtWidgets.QMessageBox()
     msg.setIcon(QtWidgets.QMessageBox.Warning)
 
@@ -266,10 +286,11 @@ class TimeAxisItem(pg.AxisItem):
     A custom AxisItem for pyqtgraph.
     Formats elapsed seconds to readable text
     """
-    def __init__(self, *args, **kwargs):
+    def __init__(self, relative=True, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.setLabel(text='Time', units=None)
         self.enableAutoSIPrefix(False)
+        self._relative = relative
 
     def tickStrings(self, values, scale, spacing):
         # return [datetime.datetime.fromtimestamp(value).strftime("%H:%M") for value in values]
@@ -281,25 +302,41 @@ class TimeAxisItem(pg.AxisItem):
                 sign = ""
             # if abs(value)<60:
             #    list.append(time.strftime("%S", time.gmtime(abs(value))))
-            if abs(value) < 60*60:
-
-                list.append(sign+self.formatTime(value))
-            elif abs(value) < 60*60*24:
-                list.append(sign+self.formatTime(value, "%H:%M:%S"))
-            elif abs(value) < 60*60*24*31:
-                list.append(sign+time.strftime("%dT %H:%M", time.gmtime(abs(value))))
+            if self._relative:
+                list.append(sign+str(dt.timedelta(seconds=abs(value))))
+                # if abs(value) < 60*60:
+                #
+                #     list.append(sign+self.formatTime(value))
+                # elif abs(value) < 60*60*24:
+                #     list.append(sign+self.formatTime(value, "%H:%M:%S"))
+                # elif abs(value) < 60*60*24*31:
+                #     list.append(sign+time.strftime("%dT %H:%M", time.gmtime(abs(value))))
+                # else:
+                #     list.append(sign+time.strftime("%mM %dT", time.gmtime(abs(value))))
             else:
-                list.append(sign+time.strftime("%mM %dT", time.gmtime(abs(value))))
+                #list.append(sign+self.formatTime(value, "%d.%m %H:%M:%S"))
+                list.append(self.formatTime(value))
         # return [time.strftime("%H:%M:%S", time.gmtime(int(value))) for value in values]
         return list
 
-    def formatTime(self, value, format="%M:%S"):
+    def formatTime(self, value):
+        if value <= 86400:
+            return '-->'
         if int(value) == value:
-            return time.strftime(format, time.gmtime(abs(value)))
+            try:
+                format = dt.datetime.fromtimestamp(float(value))
+                format = format.strftime("%d.%m.%Y %H:%M:%S")
+                # return time.strftime(format, time.gmtime(abs(value)))
+                return format
+            except:
+                print(value)
         else:
-            a = time.strftime(format, time.gmtime(abs(value)))
-            a = a + " " + str(int(value % 1*1000))+"ms"
-            return a
+            # a = time.strftime(format, time.gmtime(abs(value)))
+            # a = a + " " + str(int(value % 1*1000))+"ms"
+            format = dt.datetime.fromtimestamp(float(value))
+            format = format.strftime("%H:%M:%S.%f")
+            # return time.strftime(format, time.gmtime(abs(value)))
+            return format
 
     def attachToPlotItem(self, plotItem):
         """Add this axis to the given PlotItem

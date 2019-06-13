@@ -55,8 +55,10 @@ RTOC/RTLogger/__pycache__/loggerlib.cpython-36.pyc
 RTOC/RTLogger/__pycache__/scriptLibrary.cpython-36.pyc
 RTOC/RTLogger/__pycache__/telegramBot.cpython-36.pyc
 RTOC/RTLogger/plugins/Generator.py
+RTOC/RTLogger/plugins/test.py
 RTOC/RTLogger/plugins/Funktionsgenerator/gen_function.ui
 RTOC/RTLogger/plugins/__pycache__/Generator.cpython-36.pyc
+RTOC/RTLogger/plugins/__pycache__/test.cpython-36.pyc
 RTOC/RTOC_GUI/Actions.py
 RTOC/RTOC_GUI/PluginDownloader.py
 RTOC/RTOC_GUI/RTOC_Import.py
@@ -118,7 +120,6 @@ RTOC/RTOC_GUI/ui/scriptHelpWidget.ui
 RTOC/RTOC_GUI/ui/scriptSubWidget.ui
 RTOC/RTOC_GUI/ui/scriptWidget.ui
 RTOC/RTOC_GUI/ui/settingsWidget.ui
-RTOC/RTOC_GUI/ui/signalWidget.ui
 RTOC/RTOC_GUI/ui/signalWidget2.ui
 RTOC/RTOC_GUI/ui/stylePlotDialog.ui
 RTOC/RTOC_GUI/ui/stylePlotDialog2.ui
@@ -164,6 +165,7 @@ RTOC/RTOC_GUI/ui/icons/icons8-transfer.png
 RTOC/RTOC_GUI/ui/icons/icons8-viele-bearbeiten-filled-100.png
 RTOC/RTOC_GUI/ui/icons/internet.png
 RTOC/RTOC_GUI/ui/icons/invert.png
+RTOC/RTOC_GUI/ui/icons/invisible.png
 RTOC/RTOC_GUI/ui/icons/labels.png
 RTOC/RTOC_GUI/ui/icons/left_arrow.png
 RTOC/RTOC_GUI/ui/icons/left_arrow_disabled.png
@@ -206,6 +208,7 @@ RTOC/RTOC_GUI/ui/icons/swap.png
 RTOC/RTOC_GUI/ui/icons/up_arrow.png
 RTOC/RTOC_GUI/ui/icons/up_arrow_disabled.png
 RTOC/RTOC_GUI/ui/icons/view.png
+RTOC/RTOC_GUI/ui/icons/visible.png
 RTOC/RTOC_GUI/ui/icons/x.png
 RTOC/RTOC_GUI/ui/icons/xaxislabel.png
 RTOC/RTOC_GUI/ui/icons/xtimebase.png
@@ -227,7 +230,5 @@ RTOC/lib/pyqt_customlib.py
 RTOC/lib/__pycache__/__init__.cpython-36.pyc
 RTOC/lib/__pycache__/general_lib.cpython-36.pyc
 RTOC/lib/__pycache__/pyqt_customlib.cpython-36.pyc
-RTOC/locales/en_en _fertig.ts
-RTOC/locales/en_en.qm
-RTOC/locales/en_en.ts
-RTOC/locales/en_en_double.ts
+RTOC/locales/de_de.qm
+RTOC/locales/de_de.ts

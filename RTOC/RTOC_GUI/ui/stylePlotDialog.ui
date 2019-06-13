@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Stile anpassen</string>
+   <string>Set multiple plotstyles</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -49,21 +49,21 @@
      <item>
       <widget class="QPushButton" name="cancelButton">
        <property name="text">
-        <string>Abbrechen</string>
+        <string>Abort</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="styleAllButton">
        <property name="text">
-        <string>Auf alle anwenden</string>
+        <string>Apply to all</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QPushButton" name="styleSelectedButton">
        <property name="text">
-        <string>Auf Auswahl anwenden</string>
+        <string>Apply to selection</string>
        </property>
       </widget>
      </item>

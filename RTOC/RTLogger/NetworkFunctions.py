@@ -207,18 +207,18 @@ class NetworkFunctions:
                     self.tcp.client = None
             #     self.tcp.close()
 
-    def createTcpSignal(self, name):
+    def createTcpSignal(self, dname, sname, xmin=None, xmax=None, database=False, maxN = None):
         """
         Returns signal for :meth:`.getSignal`, which is used in tcp-requests
 
         Args:
-            name (str): Device.Signalname of signal
+            dname (str): Devicename of signal
+            sname (str): Signalname
 
         Returns:
             list: [x, y, unit]
         """
-        dev = name.split('.')
-        sig = self.database.getSignal_byName(dev[0], dev[1])
+        sig = self.database.getSignal_byName(dname, sname, xmin=xmin, xmax=xmax, database=database, maxN=maxN)
         unit = sig[4]
         ans = [list(sig[2]), list(sig[3]), unit]
         # if self.config['postgresql']['active'] and len(ans[0]) > self.config['global']['recordLength']:
@@ -409,11 +409,28 @@ class NetworkFunctions:
         if type(sigList) == list:
             for device in sigList:
                 if type(device) == str:
-                    ans[device] = self.createTcpSignal(device)
+                    ans[device] = self.createTcpSignal(*device.split('.'))
+        elif type(sigList) == dict:
+            kwargs = {
+                'dname': None,
+                'sname': None,
+                'xmin': None,
+                'xmax': None,
+                'database': True,
+                'maxN': None,
+            }
+
+            for s in kwargs.keys():
+                if s in sigList.keys():
+                    kwargs[s] = sigList[s]
+
+            if kwargs['dname'] is None or kwargs['sname'] is None:
+                return False
+            device = kwargs['dname']+'.'+kwargs['sname']
+            ans[device] = self.createTcpSignal(kwargs['dname'], kwargs['sname'], xmin=kwargs['xmin'], xmax=kwargs['xmax'], database=kwargs['database'], maxN=kwargs['maxN'])
         elif sigList == 'all':
             for dev in self.database.signalNames():
-                device = '.'.join(dev)
-                ans[device] = self.createTcpSignal(device)
+                ans[device] = self.createTcpSignal(*dev)
         return ans
 
     def getLatest(self, latList):
@@ -433,8 +450,8 @@ class NetworkFunctions:
             for device in latList:
                 dev = device.split('.')
                 sig = self.database.getSignal_byName(dev[0], dev[1])
-                if len(sig[0]) > 0:
-                    ans[device] = [sig[0][-1], sig[1][-1]]
+                if len(sig[2]) > 0:
+                    ans[device] = [sig[2][-1], sig[3][-1], sig[4]]
         elif latList is True:
             latest = self.database.getLatest()
             ans = latest

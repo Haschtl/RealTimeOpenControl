@@ -144,7 +144,7 @@ Example
       "return": " ",
       "priority": 0,
       "id": "testID",
-      'rising': True,
+      'trigger': 'rising',
       'sname': '',
       'dname': '',
       'active': True
@@ -159,7 +159,7 @@ This JSON-file contains dicts - each describing one event.
 Parameter         Datatype            Definition
 ===============   =================== =========================================================
 ``cond``          ``str``             The condition triggering the event.
-``rising``        ``bool``            If True, the event will be triggered if cond changes from ``False`` to ``True``. If False, the other way around.
+``trigger``        ``str``            Change trigger-mode. ``rising``, ``falling``, ``both``,``true``, ``false``. If ``rising``, the event will be triggered if cond changes from ``False`` to ``True``. If ``falling``, the other way around. ``both`` for rising and falling. ``true`` for always, if condition is true. ``false`` for always, if condition is false.
 ``active``        ``bool``            If True, this event will be active.
 ``id``            ``str``             The event-ID used to trigger actions.
 ``return``        ``str``             Unused

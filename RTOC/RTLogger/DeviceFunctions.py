@@ -52,14 +52,17 @@ class DeviceFunctions:
                 # for root, dirs, files in os.walklevel(list(devices.__path__)[0], level=1):
                 for files in os.listdir(list(devices.__path__)[0]+"/"+folder):
                     if files.endswith('.py'):
-                        name = devices.__name__+'.'+folder+"."+files.replace('.py', '')
-                        namesplit = name.split('.')
-                        logging.info(name)
+                        file = ''
+                        with open(list(devices.__path__)[0]+"/"+folder+'/'+files, mode='r') as f:
+                            file = f.readlines()
+                        if 'class Plugin(' in ''.join(file):
+                            name = devices.__name__+'.'+folder+"."+files.replace('.py', '')
+                            logging.info(name)
 
-                        devname = namesplit[-1].replace('.', 'Dot').replace(':', 'DDot')
-                        if devname not in ["LoggerPlugin"]:
-                            self.devicenames[devname] = name
-                            self.pluginStatus[devname] = False
+                            devname = files.replace('.py', '').replace('.', 'Dot').replace(':', 'DDot')
+                            if devname not in ["LoggerPlugin"]:
+                                self.devicenames[devname] = name
+                                self.pluginStatus[devname] = False
 
     # Plugin functions ############################################################
 
@@ -90,8 +93,6 @@ class DeviceFunctions:
                 self.analysePlugin(self.pluginObjects[name], name)
                 self.pluginStatus[name] = True
                 logging.info("PLUGIN: " + name+' connected\n')
-                # self.database.addNewEvent(text=translate('RTLogger', "Plugin gestartet: ") +
-                #                 name, sname="", dname="RTOC", priority=0)
                 if self.startDeviceCallback and remote:
                     self.startDeviceCallback(name)
                 return True, ""
@@ -292,8 +293,6 @@ class DeviceFunctions:
                 self.pluginStatus[name] = False
                 self.pluginObjects[name].close()
                 logging.info("PLUGIN: " + name+' disconnected\n')
-                # self.database.addNewEvent(text=translate('RTLogger', "Plugin gestoppt: ") +
-                #                 name, sname="", dname="RTOC", priority=0)
             # else:
             #    logging.debug("Plugin "+name+" not loaded")
             if self.stopDeviceCallback and remote:

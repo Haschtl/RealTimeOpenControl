@@ -169,17 +169,17 @@ class SettingsWidget(QtWidgets.QWidget):
                     logging.error("Error while connecting to PostgreSQL", error)
                     ok = False
                 if ok:
-                    title = translate('RTOC', 'Verbunden')
-                    strung = translate('RTOC', 'PostgreSQL korrekt eingerichtet')
+                    title = translate('RTOC', 'Connected')
+                    strung = translate('RTOC', 'PostgreSQL connection ok.')
                 else:
-                    title = translate('RTOC', 'Fehler')
-                    strung = translate('RTOC', 'Fehler in PostgreSQL-Konfiguration\nVielleicht ist PostgreSQL auf Ihrem Rechner nicht installiert bzw. die Datenbank existiert nicht oder die Logindaten/Port sind falsch.')
+                    title = translate('RTOC', 'Error')
+                    strung = translate('RTOC', 'Error in PostgreSQL configuration\nMaybe PostgreSQL is not installed on your computer, or the database does not exist or the login data/port is incorrect.')
             else:
-                title = translate('RTOC', 'Import-Fehler')
-                strung = translate('RTOC', 'Pythonbibliothek psycopg2 ist nicht installiert.\nBitte installiere es mit "pip3 install psycopg2" und versichere, dass PostgreSQL korrekt eingerichtet ist.')
+                title = translate('RTOC', 'Import error')
+                strung = translate('RTOC', 'Python library psycopg2 is not installed.\nPlease install it with "pip3 install psycopg2" and make sure that PostgreSQL is set up correctly.')
         else:
-            title = translate('RTOC', 'PostgreSQL deaktiviert')
-            strung = translate('RTOC', 'PostgreSQL ist deaktiviert. Bitte schalte PostgreSQL an.')
+            title = translate('RTOC', 'PostgreSQL deactivated')
+            strung = translate('RTOC', 'PostgreSQL is deactivated. Please enable postgreSQL first.')
         pyqtlib.info_message(title, strung, '')
 
     def setLang(self, value):
@@ -263,7 +263,7 @@ class SettingsWidget(QtWidgets.QWidget):
         # fname, mask = fileBrowser.getSaveFileName(
         #    self, translate('RTOC', "Backup-Verzeichnis festlegen"), dir_path, "JSON-Datei (*.json)")
         fname, mask = fileBrowser.getExistingDirectory(
-            self, translate('RTOC', "Backup-Verzeichnis festlegen"), dir_path)
+            self, translate('RTOC', "Set backup path"), dir_path)
 
         # if self.dir_name:
         #     self.btn_file.setText(self.dir_name)
@@ -291,15 +291,15 @@ class SettingsWidget(QtWidgets.QWidget):
 
     def toggleButtonText(self, button, value):
         if value:
-            button.setText(translate('RTOC', 'An'))
+            button.setText(translate('RTOC', 'On'))
         else:
-            button.setText(translate('RTOC', 'Aus'))
+            button.setText(translate('RTOC', 'Off'))
 
     def abort(self):
         self.close()
 
     def save(self):
-        ok = pyqtlib.alert_message(translate('RTOC', 'Speichern'), translate('RTOC', 'Wollen Sie die Einstellungen wirklich \xfcberschreiben?'), translate('RTOC', 'Danach sollte RTOC neu gestartet werden.'), "", translate('RTOC', 'Speichern'), translate('RTOC', 'Abbrechen'))
+        ok = pyqtlib.alert_message(translate('RTOC', 'Save'), translate('RTOC', 'Do you really want to overwrite the settings?'), translate('RTOC', 'RTOC needs to be restarted afterwards.'), "", translate('RTOC', 'Save'), translate('RTOC', 'Cancel'))
         if ok:
             self.self.config = self.config
             self.close()

@@ -177,7 +177,7 @@ class ScriptSubWidget(QtWidgets.QWidget):
             fileBrowser.setNameFilters(["Python (*.py)"])
             fileBrowser.selectNameFilter("")
             self.filepath, mask = fileBrowser.getSaveFileName(
-                self, translate('RTOC', "Skript speichern unter"), self.filepath, "Python (*.py)")
+                self, translate('RTOC', "Save script as..."), self.filepath, "Python (*.py)")
         if self.filepath:
             fileName = self.filepath
             text = self.scriptEdit.toPlainText()
@@ -336,8 +336,8 @@ class ScriptSubWidget(QtWidgets.QWidget):
             self.run = False
             super(ScriptSubWidget, self).closeEvent(event)
         else:
-            ok = pyqtlib.alert_message(translate('RTOC', "Warnung"), translate('RTOC',
-                "Wollen sie die Datei speichern?"), "", "", translate('RTOC', "Ja"), translate('RTOC', "Nein"))
+            ok = pyqtlib.alert_message(translate('RTOC', "Warning"), translate('RTOC',
+                "Do you want to save the script?"), "", "", translate('RTOC', "Yes"), translate('RTOC', "No"))
             if ok is not None:
                 if ok is True:
                     self.saveScript()

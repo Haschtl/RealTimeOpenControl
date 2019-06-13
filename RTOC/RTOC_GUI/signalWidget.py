@@ -4,6 +4,8 @@ from PyQt5 import QtWidgets
 import pyqtgraph as pg
 import random
 import time
+import os
+import sys
 from functools import partial
 from datetime import timedelta
 import traceback
@@ -35,6 +37,31 @@ def mouseClickEventPlotCurveItem(self, ev):
         return
     ev.accept()
     self.sigClicked.emit(self)
+
+
+def widgets_at(pos):
+    """Return ALL widgets at `pos`
+
+    Arguments:
+        pos (QPoint): Position at which to get widgets
+
+    """
+
+    widgets = []
+    widget_at = QtWidgets.qApp.widgetAt(pos)
+
+    while widget_at:
+        widgets.append(widget_at)
+
+        # Make widget invisible to further enquiries
+        widget_at.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents)
+        widget_at = QtWidgets.qApp.widgetAt(pos)
+
+    # Restore attribute
+    for widget in widgets:
+        widget.setAttribute(QtCore.Qt.WA_TransparentForMouseEvents, False)
+
+    return widgets
 
 
 class QLine(QtWidgets.QLabel):
@@ -145,17 +172,36 @@ class SignalWidget(QtWidgets.QWidget):
         super(SignalWidget, self).__init__()
         sizePolicy = QtGui.QSizePolicy(
             QtGui.QSizePolicy.Fixed, QtGui.QSizePolicy.Fixed)
+
+        if getattr(sys, 'frozen', False):
+            # frozen
+            self.packagedir = os.path.dirname(sys.executable)+'/RTOC/RTOC_GUI'
+        else:
+            # unfrozen
+            self.packagedir = os.path.dirname(os.path.realpath(__file__))
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         self.layout = QtWidgets.QHBoxLayout()
         self.setLayout(self.layout)
         # self.legend = QtWidgets.QLabel('-')
     #    self.legend.setSizePolicy(sizePolicy)
+        self.visibleIcon = QtWidgets.QLabel(self)
+        self.visibleIcon.setGeometry(0, 0, 5, 5)
+        #self.icon.setGeometry(0, 0, 10, 10)
+        #use full ABSOLUTE path to the image, not relative
+        pixmap = QtGui.QPixmap(self.packagedir + "/ui/icons/visible.png")
+        pixmap = pixmap.scaledToHeight(20)
+        self.visibleIcon.setPixmap(pixmap)
+        self.visibleIcon.setSizePolicy(sizePolicy)
         self.legend2 = QLine()
-        self.button = QtWidgets.QToolButton()
+        self.button = QtWidgets.QToolButton()  # QPushButton()
+        self.text = QtWidgets.QLabel(signalname)
         # self.layout.addWidget(self.legend)
+        self.layout.addWidget(self.visibleIcon)
         self.layout.addWidget(self.legend2)
         self.layout.addWidget(self.button)
+        self.layout.addWidget(self.text)
+        self.visibleIcon.show()
         self.clicked = self.button.clicked
 
         sizePolicy = QtGui.QSizePolicy(
@@ -166,10 +212,8 @@ class SignalWidget(QtWidgets.QWidget):
         self.button.setSizePolicy(sizePolicy)
         self.setCheckable(True)
 
-        self.setText(signalname)
-        self.setChecked(logger.config['GUI']['autoShowGraph'])
         self.clicked.connect(self.toggleSignal)
-        self.setStyleSheet("QToolButton{background-color: rgb(44, 114, 29)}")
+        #self.setStyleSheet("QToolButton{background-color: rgb(44, 114, 29)}")
 
         self.hidden = False
         self.logger = logger
@@ -227,20 +271,61 @@ class SignalWidget(QtWidgets.QWidget):
         self.signalModifications = [0, 0, 1, 1]
 
         self.updateLegend()
+        self.setText(signalname)
         self.toggleSignal()
+        self.setChecked(logger.config['GUI']['autoShowGraph'])
         self.remoteHost = None
 
         if remotehost is not None:
             self.remoteHost = remotehost
+
+        #self.treeWidget.mousePressEvent = self.mousePressEventTreeWidget
+        #self.treeWidget.itemClicked.connect(self.signalClicked)
+        #self.treeWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+        #self.treeWidget.customContextMenuRequested.connect(self._open_menu)
+
+    # def signalClicked(self, event):
+    #     self.toggleDevice(event.child(0), event)
+    #
+    # def _open_menu(self, lisi):
+    #     print(lisi)
+    #     indexes = self.treeWidget.selectedIndexes()
+    #     print(indexes)
+    #     print(indexes[0].model())
+    #     for ix in self.treeWidget.selectedIndexes():
+    #         text = ix.data() # or ix.data()
+    #         print(text)
+    #     if len(indexes) == 0:
+    #         return
+
+    def mousePressEvent(self, event):
+        if event.button() == QtCore.Qt.RightButton:
+
+            pos = self.text.mapToGlobal(self.visibleIcon.pos())
+            x = pos.x()
+            y = pos.y()
+            diff = self.frameGeometry().width()
+            self.button.menu().show()
+            self.button.menu().move(x-diff+40,y+20)
+        # elif event.button() == QtCore.Qt.LeftButton:
+        else:
+            if self.isChecked():
+                self.button.setChecked(False)
+            else:
+                self.button.setChecked(True)
+            self.toggleSignal()
+        QtWidgets.QWidget.mousePressEvent(self, event)
 
     def setCheckable(self, value):
         self.button.setCheckable(value)
 
     def setText(self, signalname):
         self.button.setText(signalname)
+        self.text.setText(signalname)
 
     def setChecked(self, value):
         self.button.setChecked(value)
+        self.toggleSignal()
 
     def isChecked(self):
         return self.button.isChecked()
@@ -250,8 +335,8 @@ class SignalWidget(QtWidgets.QWidget):
     def menu(self):
         return self.button.menu()
 
-    def setStyleSheet(self, stylesheet):
-        self.button.setStyleSheet(stylesheet)
+    # def setStyleSheet(self, stylesheet):
+    #     self.button.setStyleSheet(stylesheet)
 
     def setMinimumHeight(self, height):
         self.button.setMinimumHeight(height)
@@ -262,6 +347,12 @@ class SignalWidget(QtWidgets.QWidget):
     def updateLegend(self):
         symbol, brush = getPlotStyle(self.plot)
         self.legend2.styleIt(symbol, brush)
+
+    def toggleEditWidget(self, value=None):
+        if value:
+            self.editWidget.show()
+        else:
+            self.editWidget.hide()
 
     def setLegendType(self, line='-', symbol=''):
         if line == 1 or line == 0:
@@ -329,8 +420,17 @@ class SignalWidget(QtWidgets.QWidget):
         self.editWidget = SignalEditWidget(self, self.id, self.plotWidget)
         action.setDefaultWidget(self.editWidget)
         self.button.menu().addAction(action)
+        self.button.hide()
 
     def newDataIncoming(self):
+        signal = self.logger.database.getSignal(self.id)
+        if signal is None or signal == []:
+            return
+        clock = list(signal[2])
+        y = list(signal[3])
+        if len(clock) > 0 and len(y) > 0:
+            self.updateLabel(clock, y, signal[4])
+
         if self.plotWidget.plotViewWidget.blinkingButton.isChecked():
             self.animation_thread.start()
 
@@ -397,10 +497,10 @@ class SignalWidget(QtWidgets.QWidget):
 
             self.setToolTip(self.createToolTip(self.id, x))
 
-        lastTimestamp = self.plotWidget.lastUpdate - x[-1]
-        if lastTimestamp >= self.signalTimeOut and self.label.styleSheet() != "background-color: rgb(113, 100, 29)":
+        delayed = time.time() - x[-1]
+        if delayed >= self.signalTimeOut and self.label.styleSheet() != "background-color: rgb(113, 100, 29)":
             self.label.setStyleSheet("background-color: rgb(113, 100, 29)")
-        elif lastTimestamp < self.signalTimeOut and self.label.styleSheet() == "background-color: rgb(113, 100, 29)":
+        elif delayed < self.signalTimeOut and self.label.styleSheet() == "background-color: rgb(113, 100, 29)":
             self.label.setStyleSheet("background-color: #232629")
 
     def updateEvents(self, offsetX, offsetY, scaleX, scaleY, ctime, current_time):
@@ -441,7 +541,7 @@ class SignalWidget(QtWidgets.QWidget):
 
         for idx, eventItem in enumerate(self.eventItems):
             if eventItem.id not in found_ids:
-                # wenn nicht in datenbank l\xf6schen
+                # if not delete in database
                 self.eventItems[idx].hide()
                 self.eventItems[idx].vLine.hide()
                 logging.debug('Not deleted, but hidden')
@@ -480,7 +580,8 @@ class SignalWidget(QtWidgets.QWidget):
                 self.updateLabel(clock, y, signal[4])
                 self.updateEvents(offsetX, offsetY, scaleX, scaleY, ctime, current_time)
                 if self.active:
-                    if clock[len(clock)-1] <= current_time+10000 and clock[len(clock)-1] > current_time-10000:
+                    # if clock[len(clock)-1] <= current_time+10000 and clock[len(clock)-1] > current_time-10000:
+                    if self.logger.config['GUI']['xRelative']:
                         for idx2 in range(len(clock)):
                             clock[idx2] = scaleX*(clock[idx2]-ctime+offsetX)
                         data = y
@@ -521,7 +622,13 @@ class SignalWidget(QtWidgets.QWidget):
             self.active = True
             self.plotWidget.legend.addItem(
                 self.plot, self.legendName)
-            self.setStyleSheet("QToolButton{background-color: rgb(44, 114, 29)}")
+            #self.setStyleSheet("background-color: rgb(44, 114, 29)")
+            pixmap = QtGui.QPixmap(self.packagedir + "/ui/icons/visible.png")
+
+            pixmap = pixmap.scaledToHeight(20)
+            self.visibleIcon.setPixmap(pixmap)
+            #
+            # self.visibleIcon.show()
             self.labelItem.show()
             self.updatePlot()
             if self.showEvents and self.logger.config['GUI']['showEvents']:
@@ -532,7 +639,10 @@ class SignalWidget(QtWidgets.QWidget):
             self.active = False
             self.plot.clear()
             self.plotWidget.legend.removeItem(self.legendName)
-            self.setStyleSheet("QToolButton{background-color: rgb(114, 29, 29)}")
+            pixmap = QtGui.QPixmap(self.packagedir + "/ui/icons/invisible.png")
+
+            pixmap = pixmap.scaledToHeight(20)
+            self.visibleIcon.setPixmap(pixmap)
             self.labelItem.hide()
             for event in self.eventItems:
                 event.hide()
@@ -541,12 +651,13 @@ class SignalWidget(QtWidgets.QWidget):
     def remove(self, cb=True, total=True, force = True):
         database = False
         if self.logger.config['postgresql']['active'] and not force:
-            database = pyqtlib.alert_message(translate('RTOC', 'Aus Datenbank entfernen'), translate('RTOC', 'M\xf6chtest du dieses Signal auch aus der Datenbank entfernen?'), translate('RTOC', 'Dabei werden auch die Events gel\xf6scht, die dem Signal zugeordnet sind'), "", translate('RTOC', "Ja"), translate('RTOC', "Nein"))
+            database = pyqtlib.alert_message(translate('RTOC', 'Remove from database'), translate('RTOC', 'Do you want to remove that signal from the database, too?'), translate('RTOC', 'The events that are assigned to the signal are also deleted.'))
         self.plotWidget.legend.removeItem(self.legendName)
         if total:
             self.logger.database.removeSignal(self.id, None, None, database)
         self.labelItem.hide()
         self.button.menu().hide()
+        # self.editWidget.hide()
         self.hide()
         self.close()
 

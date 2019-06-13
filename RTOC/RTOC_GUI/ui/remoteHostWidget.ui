@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>718</width>
-    <height>583</height>
+    <height>609</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -61,32 +61,6 @@
       </spacer>
      </item>
      <item>
-      <widget class="QLabel" name="label_2">
-       <property name="text">
-        <string>Dauer:</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QSpinBox" name="maxLengthSpinBox">
-       <property name="toolTip">
-        <string>Ändere die Aufzeichnungsdauer</string>
-       </property>
-       <property name="statusTip">
-        <string>Ändere die Aufzeichnungsdauer</string>
-       </property>
-       <property name="suffix">
-        <string> Messwerte</string>
-       </property>
-       <property name="maximum">
-        <number>10000000</number>
-       </property>
-       <property name="value">
-        <number>0</number>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QPushButton" name="editButton">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -95,7 +69,7 @@
         </sizepolicy>
        </property>
        <property name="toolTip">
-        <string>Verbindung bearbeiten</string>
+        <string>Edit connection</string>
        </property>
        <property name="text">
         <string/>
@@ -118,7 +92,7 @@
      <item>
       <widget class="QPushButton" name="pauseButton">
        <property name="toolTip">
-        <string>Übertragung pausieren</string>
+        <string>Pause data transmittion</string>
        </property>
        <property name="text">
         <string/>
@@ -141,7 +115,7 @@
      <item>
       <widget class="QPushButton" name="saveButton">
        <property name="toolTip">
-        <string>Session des RemoteRTOCs herunterladen</string>
+        <string>Download session</string>
        </property>
        <property name="text">
         <string/>
@@ -161,10 +135,10 @@
      <item>
       <widget class="QPushButton" name="clearButton">
        <property name="toolTip">
-        <string>Alle Signale auf RemoteRTOC löschen</string>
+        <string>Delete all signals</string>
        </property>
        <property name="statusTip">
-        <string>Lösche alle Signale</string>
+        <string>Delete all signals</string>
        </property>
        <property name="text">
         <string/>
@@ -184,7 +158,7 @@
      <item>
       <widget class="QPushButton" name="disconnectButton">
        <property name="toolTip">
-        <string>Verbindung trennen</string>
+        <string>Close connection</string>
        </property>
        <property name="text">
         <string/>
@@ -200,6 +174,85 @@
         </size>
        </property>
       </widget>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <layout class="QHBoxLayout" name="horizontalLayout_5">
+     <property name="spacing">
+      <number>0</number>
+     </property>
+     <item>
+      <spacer name="horizontalSpacer_4">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_12">
+       <property name="text">
+        <string>From </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateTimeEdit" name="fromDateTimeEdit"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_13">
+       <property name="text">
+        <string>  to </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QDateTimeEdit" name="toDateTimeEdit"/>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_11">
+       <property name="text">
+        <string>, Maximum: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QSpinBox" name="maxLengthSpinBox">
+       <property name="toolTip">
+        <string>Change the recording length</string>
+       </property>
+       <property name="statusTip">
+        <string>Change the recording length</string>
+       </property>
+       <property name="suffix">
+        <string> Values</string>
+       </property>
+       <property name="maximum">
+        <number>10000000</number>
+       </property>
+       <property name="value">
+        <number>0</number>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_5">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>0</width>
+         <height>0</height>
+        </size>
+       </property>
+      </spacer>
      </item>
     </layout>
    </item>
@@ -252,7 +305,7 @@
         <item row="3" column="0">
          <widget class="QLabel" name="label_4">
           <property name="text">
-           <string>Passwort:</string>
+           <string>Password:</string>
           </property>
          </widget>
         </item>
@@ -276,7 +329,7 @@
         <item row="5" column="1">
          <widget class="QCheckBox" name="checkBox">
           <property name="text">
-           <string>Deaktiviert</string>
+           <string>Off</string>
           </property>
          </widget>
         </item>
@@ -290,7 +343,7 @@
         <item row="6" column="1">
          <widget class="QCheckBox" name="checkBox_2">
           <property name="text">
-           <string>Deaktiviert</string>
+           <string>Off</string>
           </property>
          </widget>
         </item>
@@ -317,7 +370,7 @@
         <item row="7" column="1">
          <widget class="QCheckBox" name="checkBox_3">
           <property name="text">
-           <string>Deaktiviert</string>
+           <string>Off</string>
           </property>
          </widget>
         </item>
@@ -355,7 +408,7 @@
         <item row="8" column="0">
          <widget class="QLabel" name="label_9">
           <property name="text">
-           <string>Backup-Intervall</string>
+           <string>Backup-Interval</string>
           </property>
          </widget>
         </item>
@@ -382,7 +435,7 @@
      </widget>
      <widget class="QToolBox" name="toolBox">
       <property name="currentIndex">
-       <number>0</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="page">
        <property name="geometry">
@@ -394,7 +447,7 @@
         </rect>
        </property>
        <attribute name="label">
-        <string>Globale Events</string>
+        <string>Global events</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <property name="spacing">
@@ -427,7 +480,7 @@
         </rect>
        </property>
        <attribute name="label">
-        <string>Globale Aktionen</string>
+        <string>Global actions</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_6">
         <property name="spacing">
@@ -460,7 +513,7 @@
         </rect>
        </property>
        <attribute name="label">
-        <string>Skripte</string>
+        <string>Scripts</string>
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_4">
         <property name="spacing">

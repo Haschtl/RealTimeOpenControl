@@ -56,7 +56,7 @@ def main():
                     'RTOC.RTLogger [-h, -s, -l, -w]\n -h: Hilfe\n-s (--server) [COMMAND]: TCP-Server ohne GUI\n\t- start: Starts the RTOC-daemon\n\t- stop: Stops the RTOC-daemon\n\t- restart: Restarts the RTOC-daemon\n-w Startet RTLogger mit Website\n-p (--port): Starte TCP-Server auf anderem Port (Standart: 5050)\n-c (--config [OPTION=value]): Configure RTOC, type "-c list" to see all options')
                 sys.exit(0)
             elif opt == '-v':
-                logging.info("2.0.3")
+                logging.info("2.1.0")
             elif opt in ('-s', '--server'):
                 if os.name == 'nt':
                     logging.info(

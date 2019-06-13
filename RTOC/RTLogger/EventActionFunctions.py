@@ -51,7 +51,7 @@ class EventActionFunctions:
                     "return": " ",
                     "priority": 0,
                     "id": "testID",
-                    'rising': True,
+                    'trigger': 'rising',
                     'sname': '',
                     'dname': '',
                     'active': True
@@ -65,7 +65,7 @@ class EventActionFunctions:
             "return": " ",
             "priority": 0,
             "id": "",
-            'rising': True,
+            'trigger': 'rising',
             'sname': '',
             'dname': '',
             'active': False
@@ -124,15 +124,25 @@ class EventActionFunctions:
                         self.activeGlobalEvents[key]['latest'] = None
                         print('First time for  this event')
 
-                    if cond is True and self.activeGlobalEvents[key]['latest'] is not True:
-                        if event['rising']:
-                            self.database.addNewEvent(
-                                text=event['text'], sname=event['sname'], dname=event['dname'], value=event['return'], priority=event['priority'], id=event['id'])
-                    elif cond is False and self.activeGlobalEvents[key]['latest'] is True:
-                        logging.info('Event-Ende: '+devicename+"."+signalname+': '+event['text'])
-                        if not event['rising']:
-                            self.database.addNewEvent(
-                                text=event['text'], sname=event['sname'], dname=event['dname'], value=event['return'], priority=event['priority'], id=event['id'])
+                    triggered = False
+                    if event['trigger']=='true':
+                        if cond is True:
+                            triggered = True
+                    elif event['trigger'] == 'false':
+                        if cond is False:
+                            triggered = True
+                    else:
+                        if cond is True and self.activeGlobalEvents[key]['latest'] is not True:
+                            if event['trigger']=='rising' or event['trigger']=='both':
+                                triggered = True
+                        elif cond is False and self.activeGlobalEvents[key]['latest'] is True:
+                            logging.info('Event-Ende: '+devicename+"."+signalname+': '+event['text'])
+                            if event['trigger']=='falling' or event['trigger']=='both':
+                                triggered = True
+
+                    if triggered:
+                        self.database.addNewEvent(
+                            text=event['text'], sname=event['sname'], dname=event['dname'], value=event['return'], priority=event['priority'], id=event['id'])
 
                     self.activeGlobalEvents[key]['latest'] = cond
                 else:
@@ -218,14 +228,14 @@ class EventActionFunctions:
             if action['errors'] is False:
                 for actionId in action['listenID']:
                     if actionId == id and action['active']:
-                        # Aktion ausf\xfchren
+                        # Execute action
                         ok, prints = self.executeScript(action['script'])
                         print('Performing global action for eventID: ' +
                               str(id)+' with value: '+str(value))
                         print('Action is: '+str(action)+', Execution: '+str(ok))
                         print('Returns:' + str(prints))
 
-    def addGlobalEvent(self, name='testEvent', cond='', text='TestEvent', priority=0, retur='', id='testID', rising=True, sname='', dname='', active=True):
+    def addGlobalEvent(self, name='testEvent', cond='', text='TestEvent', priority=0, retur='', id='testID', trigger='rising', sname='', dname='', active=True):
         countname = name
         i = 2
         while countname in self.globalEvents.keys():
@@ -233,7 +243,7 @@ class EventActionFunctions:
             i += 1
         name = countname
         self.globalEvents[name] = {'cond': cond, 'text': text,
-                                   'priority': priority, 'return': retur, 'id': id, 'rising': rising, 'sname': sname, 'dname': dname, 'active': active}
+                                   'priority': priority, 'return': retur, 'id': id, 'trigger': trigger, 'sname': sname, 'dname': dname, 'active': active}
 
     def addGlobalAction(self, name='testAction', listenID='testID', script='', parameters='', active=True):
         countname = name
@@ -270,7 +280,7 @@ class EventActionFunctions:
             if event['cond'] != '':
                 strung.append(name+': '+event['cond'])
             else:
-                strung.append(name+': Ohne Bedingung')
+                strung.append(name+': '+translate('RTOC', 'No condition'))
         return strung
 
     def printGlobalActions(self):
@@ -278,9 +288,9 @@ class EventActionFunctions:
         for name in self.globalActions.keys():
             event = self.globalActions[name]
             if event['listenID'] != []:
-                strung.append(name+' bei '+', '.join(event['listenID']))
+                strung.append(name+': '+', '.join(event['listenID']))
             else:
-                strung.append(name+': Ohne Zuordnung')
+                strung.append(name+': '+translate('RTOC', 'No event connected'))
         return strung
 
     def triggerGlobalEvent(self, key):
@@ -289,12 +299,12 @@ class EventActionFunctions:
             ok, cond = self.checkCondition(event['cond'])
             if ok:
                 # cond = bool(cond)
-                text = translate('RTOC', 'Bedingung ist in Ordnung\nAntwort: ')+str(cond)
+                text = translate('RTOC', 'Condition is valid\nAnswer: ')+str(cond)
                 self.database.addNewEvent(text=event['text'], sname=event['sname'], dname=event['dname'],
                                           value=event['return'], priority=event['priority'], id=event['id'])
                 return True, text
             else:
-                text = translate('RTOC', 'Bedingung ist ung\xfcltig\nAntwort: ')+str(cond)
+                text = translate('RTOC', 'Condition is invalid!\nAnswer: ')+str(cond)
                 return False, text
         return False, None
 
@@ -303,9 +313,9 @@ class EventActionFunctions:
             action = self.globalActions[key]
             ok, prints = self.executeScript(action['script'])
             if ok:
-                text = translate('RTOC', 'Aktion ist in Ordnung\nAntwort: ')+str(prints)
+                text = translate('RTOC', 'Action is valid\nAnswer: ')+str(prints)
                 return True, text
             else:
-                text = translate('RTOC', 'Aktion ist ung\xfcltig\nAntwort: ')+str(prints)
+                text = translate('RTOC', 'Action is invalid!\nAnswer: ')+str(prints)
                 return False, text
         return False, None

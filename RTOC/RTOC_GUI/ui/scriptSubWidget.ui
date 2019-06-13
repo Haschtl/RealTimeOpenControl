@@ -114,7 +114,7 @@
        </sizepolicy>
       </property>
       <property name="statusTip">
-       <string>Python Skript Bereich</string>
+       <string>Python script area</string>
       </property>
       <property name="plainText">
        <string>trig Funktionsgenerator.Square.latest == 1:
@@ -135,7 +135,7 @@
        <bool>true</bool>
       </property>
       <property name="plainText">
-       <string>Zuerst Script starten
+       <string>Start script first
 </string>
       </property>
      </widget>

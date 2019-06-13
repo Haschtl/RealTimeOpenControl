@@ -17,14 +17,14 @@
    <item>
     <widget class="QCheckBox" name="xCheckbox">
      <property name="text">
-      <string>X-Linien</string>
+      <string>X-Lines</string>
      </property>
     </widget>
    </item>
    <item>
     <widget class="QCheckBox" name="yCheckbox">
      <property name="text">
-      <string>Y-Linien</string>
+      <string>Y-Lines</string>
      </property>
     </widget>
    </item>

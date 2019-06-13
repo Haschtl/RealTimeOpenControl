@@ -117,7 +117,7 @@
             </sizepolicy>
            </property>
            <property name="text">
-            <string>Skript</string>
+            <string>Script</string>
            </property>
           </widget>
          </item>

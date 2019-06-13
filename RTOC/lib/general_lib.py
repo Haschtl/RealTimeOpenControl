@@ -18,6 +18,16 @@ log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 # Type functions
 
+if True:
+    from PyQt5 import QtCore 
+    translate = QtCore.QCoreApplication.translate
+
+    def _(text):
+        return translate('rtoc', text)
+else:
+    import gettext
+    _ = gettext.gettext
+
 define = ""
 
 

@@ -12,7 +12,7 @@ logging = log.getLogger(__name__)
 # __package__ = "RTOC"
 # __main__ = __name__
 name = "RTOC"
-__version__ = "2.0.3"
+__version__ = "2.1.0"
 
 
 def main():
@@ -33,10 +33,10 @@ def main():
         for opt, arg in opts:
             if opt == '-h':
                 logging.info(
-                    'RTOC.py [-h] [-r <Remoteadress>]\n -h: Hilfe\n-r (--remote) <Remoteadresse>: TCP-Client zu RTOC-Server\nF\xfcr Optionen ohne GUI verwende "python3 -m RTOC.RTLogger -h"')
+                    'RTOC.py [-h] [-r <Remoteadress>]\n -h: Help\n-r (--remote) <Remoteadress>: TCP client for RTOC server\nFor options without GUI, run "python3 -m RTOC.RTLogger -h"')
                 sys.exit(0)
             elif opt == '-v':
-                logging.info("2.0.3")
+                logging.info("")
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)
@@ -164,7 +164,7 @@ def setLanguage(app):
             config = {'global': {'language': 'en'}}
     else:
         config = {'global': {'language': 'en'}}
-    if config['global']['language'] == 'en':
+    if config['global']['language'] == 'de':
         translator = QtCore.QTranslator()
         if getattr(sys, 'frozen', False):
             # frozen
@@ -172,10 +172,10 @@ def setLanguage(app):
         else:
             # unfrozen
             packagedir = os.path.dirname(os.path.realpath(__file__))
-        translator.load(packagedir+"/locales/en/en_en.qm")
+        translator.load(packagedir+"/locales/de_de.qm")
         app.installTranslator(translator)
 
-        el = gettext.translation('base', localedir='locales', languages=['en'])
+        el = gettext.translation('base', localedir='locales', languages=['de'])
         el.install()
         _ = el.gettext
     # more info here: http://kuanyui.github.io/2014/09/03/pyqt-i18n/

@@ -16,6 +16,8 @@ import psutil
 import copy
 import gzip
 
+from PyQt5.QtCore import QTimer
+
 try:
     import xlsxwriter
 except ImportError:
@@ -24,22 +26,13 @@ except ImportError:
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
-try:
-    from PyQt5.QtCore import QCoreApplication, QTimer
-    translate = QCoreApplication.translate
-except ImportError:
-    QTimer = None
-
-    # def translate(id, text):
-    #     return text
-
 DEVICE_TABLE_NAME = 'devices'
 SIGNAL_TABLE_NAME = 'signals'
 EVENT_TABLE_NAME = 'events'
 
 lock = Lock()
 localLock = Lock()
-
+localEventLock = Lock()
 
 class _perpetualTimer():
 
@@ -671,7 +664,7 @@ class RT_data:
             force (bool): Unused
 
         Returns:
-            dict: {'dname.sname':[x,y],...}
+            dict: {'dname.sname':[x,y,unit],...}
         """
         ans = {}
         # print(self._signals.keys())
@@ -718,9 +711,10 @@ class RT_data:
         if x is None:
             x = time.time()
 
-        eventID = self.getNewEventID()
-        event = [devID, sigID, eventID, text, x, value, priority, id]
-        self._events[eventID] = event
+        with localEventLock:
+            eventID = self.getNewEventID()
+            event = [devID, sigID, eventID, text, x, value, priority, id]
+            self._events[eventID] = event
 
         if self._newEventCallback:
             self._newEventCallback(x, text, dname, sname, priority, value, id, eventID)
@@ -777,10 +771,11 @@ class RT_data:
         """
         if beauty:
             ev = {}
-            for evID in self._events.keys():
-                name = self.getEventName(evID)
-                old = self._events[evID]
-                ev[evID]=[name[0],name[1],*old[2:]]
+            with localEventLock:
+                for evID in self._events.keys():
+                    name = self.getEventName(evID)
+                    old = self._events[evID]
+                    ev[evID]=[name[0],name[1],*old[2:]]
             return ev
         else:
             return dict(self._events)
@@ -794,12 +789,13 @@ class RT_data:
         """
         return self._signals
 
-    def signalNames(self, units=[]):
+    def signalNames(self, units=[], devices=[]):
         """
-        Returns all signalNames with given units. Returns all signalNames, if units == []
+        Returns all signalNames with given units and devices. Returns all signalNames, if units == [] and devices == [].
 
         Args:
             units (list)
+            devices (list)
 
         Returns:
             list: [[dname,sname],...]
@@ -810,9 +806,18 @@ class RT_data:
             devID = self._signals[sigID][0]
             unit = self._signals[sigID][4]
             devname = self.getDeviceName(devID)
-            if units == [] or unit in units:
+            if (units == [] or unit in units) and (devices == [] or devname in devices):
                 names.append([devname, signame])
         return names
+
+    def deviceNames(self):
+        """
+        Returns all deviceNames.
+
+        Returns:
+            list: [dname,...]
+        """
+        return list(self._devices.values())
 
 # Datenbank und backupJSON
 
@@ -938,35 +943,40 @@ class RT_data:
         for sigID in self._signals.keys():
             sig = self._getSQLSignal(sigID, 1)
             if sig is not None:
-                latest[sigID] = [sig[2][-1], sig[3][-1]]
+                if len(sig[2])>0:
+                    latest[sigID] = [sig[2][-1], sig[3][-1]]
 
-        localData = self._signals
-        newData = {}
-        newSignals = {}
-        # popIDs = []
-        for sigID in localData.keys():
-            signal = localData[sigID]
-            # new = False
-            if sigID in latest.keys():
-                for idx, x in enumerate(signal[2]):
-                    if x > latest[sigID][0]:
-                        newData[sigID] = [-1,'',[],[],'']
-                        newData[sigID][0] = localData[sigID][0]
-                        newData[sigID][1] = localData[sigID][1]
-                        newData[sigID][4] = localData[sigID][4]
-                        newData[sigID][2] = list(localData[sigID][2])[int(idx):]
-                        newData[sigID][3] = list(localData[sigID][3])[int(idx):]
-                        if self.logger.config['backup']['resample'] != 0:
-                            newData[sigID][2], newData[sigID][3] = resample(newData[sigID][2], newData[sigID][3], self.logger.config['backup']['resample'])
-                        # new = True
-                        break
-            else:
-                newSignals[sigID] = localData[sigID]
-                if self.logger.config['backup']['resample'] != 0:
+        with localLock:
+            localData = dict(self._signals)
+            newData = {}
+            newSignals = {}
+            # popIDs = []
+            for sigID in localData.keys():
+                signal = localData[sigID]
+                # new = False
+                if sigID in latest.keys():
+                    for idx, x in enumerate(signal[2]):
+                        if x > latest[sigID][0]:
+                            newData[sigID] = [-1,'',[],[],'']
+                            newData[sigID][0] = localData[sigID][0]
+                            newData[sigID][1] = localData[sigID][1]
+                            newData[sigID][4] = localData[sigID][4]
+                            newData[sigID][2] = list(localData[sigID][2])[int(idx):]
+                            newData[sigID][3] = list(localData[sigID][3])[int(idx):]
+
+                            # new = True
+                            break
+                else:
+                    newSignals[sigID] = localData[sigID]
+                # if not new:
+                #     popIDs.append(sigID)
+
+        if self.logger.config['backup']['resample'] != 0:
+            for sigID in newData.keys():
+                    newData[sigID][2], newData[sigID][3] = resample(newData[sigID][2], newData[sigID][3], self.logger.config['backup']['resample'])
+
+            for sigID in newSignals.keys():
                     newSignals[sigID][2], newSignals[sigID][3] = resample(newSignals[sigID][2], newSignals[sigID][3], self.logger.config['backup']['resample'])
-            # if not new:
-            #     popIDs.append(sigID)
-
         # for sigID in popIDs:
         #     newData.pop(sigID)
 
@@ -1396,7 +1406,7 @@ class RT_data:
             else:
                 logging.warning(
                     'Database-service is enabled, but backup intervall was set to zero! Will not update database')
-        # backup service f\xfcr upload und download
+        # backup service for upload and download
 
     def __updateT(self):
         if self.config['postgresql']['active']:
@@ -1790,8 +1800,13 @@ class RT_data:
                 ans = 0
             ans = min(ans)
         else:
-            x = column(list(self._signals), 2)
-            ans = min(min(x))
+            ans = time.time()
+        #else:
+        x_local = column(self._signals.values(), 2)
+        x_local = [x for l in list(x_local) for x in l]
+        if list(x_local) != []:
+            ans = min(min(list(x_local)), ans)
+
         return ans
 
     def getGlobalXmax(self, database=True, fast=False):
@@ -1821,8 +1836,16 @@ class RT_data:
                 ans = 0
             ans = max(ans)
         else:
-            x = column(list(self._signals), 2)
-            ans = max(max(x))
+            ans = 0
+
+        # x_local = column(self._signals.values(), 2)
+        # ans = max(max(x_local), ans)
+
+        x_local = column(self._signals.values(), 2)
+        x_local = [x for l in list(x_local) for x in l]
+        if list(x_local) != []:
+            ans = max(max(list(x_local)), ans)
+
         return ans
 
     def getSignalInfo(self, sigID, database=True):
@@ -2029,16 +2052,20 @@ class RT_data:
             if signal is None:
                 signal = signal_local
             else:
-                # for idx, x in enumerate(signal_local[2]):
-                #     if x > signal[2][-1]:
-                #         signal[2] += list(signal_local[2])[idx:]
-                #         signal[3] += list(signal_local[3])[idx:]
-                #         break
-                for idx, x in enumerate(signal[2]):
-                    if signal_local[2][0] < x:
-                        signal[2] = signal[2][:idx]+list(signal_local[2])
-                        signal[3] = signal[3][:idx]+list(signal_local[3])
-                        break
+                overlapping = False
+                if len(list(signal_local[2]))>0:
+                    for idx, x in enumerate(signal[2]):
+                        if signal_local[2][0] < x:
+                            overlapping = True
+                            signal[2] = signal[2][:idx]+list(signal_local[2])
+                            signal[3] = signal[3][:idx]+list(signal_local[3])
+                            break
+                    if not overlapping:
+                        for idx, x in enumerate(signal_local[2]):
+                            if x > signal[2][-1]:
+                                signal[2] += list(signal_local[2])[idx:]
+                                signal[3] += list(signal_local[3])[idx:]
+                                break
 
         if signal is not None:
             for idx, x in enumerate(signal[2]):
@@ -2051,7 +2078,8 @@ class RT_data:
                     signal[2] = list(signal[2])[0:idx-1]
                     signal[3] = list(signal[3])[0:idx-1]
                     break
-            if maxN != None and type(maxN) == int:
+            if maxN != None and type(maxN) == int or type(maxN) == float:
+                maxN = int(maxN)
                 if len(signal[2]) > maxN:
                     overRatio = int(len(signal[2])/maxN)
                     newX = []
@@ -2094,7 +2122,7 @@ class RT_data:
                 devicename, signalname = id.split('.')
                 id = self.getSignalId(devicename, signalname)
             else:
-                return
+                return None
         if length is not None:
             sigLen = self._execute_n_fetchall(
                 "select array_upper(X,1) from "+SIGNAL_TABLE_NAME+" where ID = "+str(id)+"")
@@ -2223,17 +2251,21 @@ def column(matrix, i):
     Returns eevery i-th element in array [[i1,...],[i2,...]...]
     """
     ans = []
-    for row in matrix:
-        if i < len(row):
-            ans.append(row[i])
+    for row in list(matrix):
+        if type(row) == list or type(row) == deque:
+            if i < len(list(row)):
+                ans.append(row[i])
     return ans
 
 
 def resample(x,y, samplerate):
     # xlen = len(x)
-    xtime = x[-1]-x[0]
-    n = samplerate*xtime
-    x2 = np.linspace(x[0], x[-1], n)
-    y = np.interp(x2, x, y)
+    if len(x) == len(y) and len(x)>0:
+        xtime = x[-1]-x[0]
+        n = samplerate*xtime
+        x2 = np.linspace(x[0], x[-1], n)
+        y = np.interp(x2, x, y)
 
-    return list(x2), list(y)
+        return list(x2), list(y)
+    else:
+        return x, y
