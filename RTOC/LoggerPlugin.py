@@ -1,4 +1,4 @@
-# LoggerPlugin v2.5
+# LoggerPlugin v2.6
 import traceback
 import time
 import sys
@@ -40,18 +40,20 @@ class LoggerPlugin:
         event (method): The callback-method for the event-method
 
     """
-    def __init__(self, stream=None, plot=None, event=None):
+    def __init__(self, stream=None, plot=None, event=None, telegramBot=None, *args, **kwargs):
         # Plugin setup
         # self.setDeviceName()
         self._deviceName = "noDevice"
         self._cb = stream
         self._ev = event
         self._plt = plot
+        self._bot = telegramBot
         self._sock = None
         self._tcppassword = ''
         self._tcpport = 5050
         self._tcpaddress = ''
         self._tcpthread = False
+        self.widget = None
         self._pluginThread = None
         self._oldPerpetualTimer = False
         self.lockPerpetialTimer = Lock()
@@ -159,12 +161,12 @@ class LoggerPlugin:
                                     unit.append(sdict[dev][sig][1])
                                     x.append(now)
                                 else:
-                                    logging.error('STREAM ERROR, signal has not this format: [y, "unit"]')
+                                    logging.error('STREAM ERROR, signal {}.{} has not this format: [y, "unit"]'.format(dname, sig))
                             else:
-                                logging.error('STREAM_ERROR: One signal was malformed')
+                                logging.error('STREAM_ERROR:signal {}.{} was malformed.'.format(dname, sig))
                         self._cb(y=y, snames=snames, dname=dname, unit=unit, x=x)
                     else:
-                        logging.error('STREAM_ERROR: One device was malformed')
+                        logging.error('STREAM_ERROR: device {} was malformed.'.format(dname))
                 return True
             else:
                 logging.error('STREAM_ERROR: The data you provided with in your plugin was wrong."')
@@ -265,7 +267,7 @@ class LoggerPlugin:
             self._tcppassword = password
             self._sock.setKeyword(password)
 
-    def sendTCP(self, y=None, sname=None, dname=None, unit=None, x=None, getSignal=None, getLatest=None, getEvent=None, getSignalList=False, getEventList=False, getPluginList=False, getSession=False, plot=False, event=None, remove=None, plugin=None, logger=None, stream=None):
+    def sendTCP(self, y=None, sname=None, dname=None, unit=None, x=None, getSignal=None, getLatest=None, getEvent=None, getSignalList=False, getEventList=False, getPluginList=False, getSession=False, plot=False, event=None, remove=None, plugin=None, logger=None, stream=None, timeout=5):
         """
         Use any of the arguments described in :doc:`TCP`.
 
@@ -289,6 +291,7 @@ class LoggerPlugin:
             getEventList: :py:meth:`.NetworkFunctions.getEventList`
             getPluginList: :py:meth:`.NetworkFunctions.getPluginList`
             getSession: :py:meth:`.RT_data.generateSessionJSON`
+            timeout: TCP-Client Timeout (Default: 5s)
 
         Returns:
             tcp_response (dict), if createTCPClient(threaded=False)
@@ -297,12 +300,12 @@ class LoggerPlugin:
 
         """
         if self._tcpthread:
-            t = Thread(target=self._sendTCP, args=(y, sname, dname, unit, x, getSignal, getLatest, getEvent, getSignalList, getEventList, getPluginList, getSession, plot, event, remove, plugin, logger, stream,))
+            t = Thread(target=self._sendTCP, args=(y, sname, dname, unit, x, getSignal, getLatest, getEvent, getSignalList, getEventList, getPluginList, getSession, plot, event, remove, plugin, logger, stream, timeout))
             t.start()
         else:
-            return self._sendTCP(y, sname, dname, unit, x, getSignal, getLatest, getEvent, getSignalList, getEventList, getPluginList, getSession, plot, event, remove, plugin, logger, stream)
+            return self._sendTCP(y, sname, dname, unit, x, getSignal, getLatest, getEvent, getSignalList, getEventList, getPluginList, getSession, plot, event, remove, plugin, logger, stream, timeout)
 
-    def _sendTCP(self, y=None, sname=None, dname=None, unit=None, x=None, getSignal=None, getLatest=None, getEvent=None, getSignalList=False, getEventList=False, getPluginList=False, getSession=False, plot=False, event=None, remove=None, plugin=None, logger=None, stream=None):
+    def _sendTCP(self, y=None, sname=None, dname=None, unit=None, x=None, getSignal=None, getLatest=None, getEvent=None, getSignalList=False, getEventList=False, getPluginList=False, getSession=False, plot=False, event=None, remove=None, plugin=None, logger=None, stream=None, timeout=5):
         with lock:
 
             if x is None and y is not None and not plot:
@@ -343,7 +346,7 @@ class LoggerPlugin:
                 # dicti['password'] = hex_dig
             if self._sock:
                 try:
-                    self._sock.connect(self._tcpaddress, self._tcpport, self._tcppassword)
+                    self._sock.connect(self._tcpaddress, self._tcpport, self._tcppassword, timeout=timeout)
                     self._sock.send(dicti)
                     response = self._sock.recv()
                     # self._sock.close()
@@ -540,6 +543,45 @@ class LoggerPlugin:
             func()
             diff = (time.time() - start_time)
 
+    def telegram_send_message(self, text, onlyAdmin=False):
+        """
+        Sends a message to all clients (or only admins).
+
+        Args:
+            text (str): Text to be send to the clients.
+            onlyAdmin (bool): If True, only admins will get this message
+        """
+        if self._bot is not None:
+            self._bot.send_message_to_all(text, onlyAdmin)
+        else:
+            logging.warning('TelegramBot is not enabled or wrong configured! Can not send message "{}"'.format(text))
+
+    def telegram_send_photo(self, path, onlyAdmin=False):
+        """
+        Sends the picture at a given path to all clients (or only admins).
+
+        Args:
+            path (str): Path to the picture to send.
+            onlyAdmin (bool): If True, only admins will get this message
+        """
+        if self._bot is not None:
+            self._bot.send_photo(path, onlyAdmin)
+        else:
+            logging.warning('TelegramBot is not enabled or wrong configured! Can not send photo "{}"'.format(path))
+
+    def telegram_send_document(self, path, onlyAdmin=False):
+        """
+        Sends any document at a given path to all clients (or only admins).
+
+        Args:
+            path (str): Path to the file to send.
+            onlyAdmin (bool): If True, only admins will get this message
+        """
+        if self._bot is not None:
+            self._bot.send_document(path, onlyAdmin)
+        else:
+            logging.warning('TelegramBot is not enabled or wrong configured! Can not send file "{}"'.format(path))
+
 
 
 class _perpetualTimer():
@@ -571,7 +613,8 @@ class _perpetualTimer():
                 timedelta = timedelta + self._correction
                 if timedelta < 0:
                     timedelta = 0
-        if not self._lock.locked() and not self._cancel:
+        if not self._cancel and not self._lock.locked():
+            # with self._lock:
             self._thread = Timer(timedelta, self._handle_function)
             self.thread_counter += 1
             self._thread.start()

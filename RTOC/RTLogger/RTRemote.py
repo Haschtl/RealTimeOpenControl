@@ -97,7 +97,7 @@ class _SingleConnection(LoggerPlugin):
                             selection.append(".".join(i))
                     for s in selection:
                         ssplit = s.split('.')
-                        ans = self._sendTCP(getSignal={'dname':ssplit[0], 'sname':ssplit[1], 'xmin': self.xmin, 'xmax': self.xmax, 'maxN': self.maxN})
+                        ans = self._sendTCP(getSignal={'dname':ssplit[0], 'sname':ssplit[1], 'xmin': self.xmin, 'xmax': self.xmax, 'maxN': self.maxN}, timeout=20)
                         if ans != False:
                             if 'signals' in ans.keys():
                                 for sig in ans['signals'].keys():
@@ -280,15 +280,17 @@ class RTRemote():
         self.connections.append(newConnection)
         self.getRemoteDeviceList()
 
-    def disconnect(self, hostname):
+    def disconnect(self, hostname, port):
         if len(hostname.split(':')) == 2:
             hostname = hostname.split(':')[0]
 
+        index = -1
         for idx, c in enumerate(self.connections):
-            if c.host == hostname:
+            if c.host == hostname and c.port ==port:
                 self.connections[idx].stop()
-                self.connections.pop(idx)
                 self.devices.pop(c.name)
+                # self.devicenames.pop(c.name)
+                # self.pluginStatus.pop(c.name)
                 devs = []
                 for dev in self.devicenames.keys():
                     namesplit = dev.split(':')
@@ -299,12 +301,17 @@ class RTRemote():
                     self.pluginStatus.pop(dev)
                 if self.logger.reloadDevicesCallback is not None:
                     self.logger.reloadDevicesCallback()
-                return True
-        return False
+                index = idx
+                break
+        if index != -1:
+            self.connections.pop(index)
+            return True
+        else:
+            return False
 
-    def getConnection(self, host):
+    def getConnection(self, host, port):
         for idx, c in enumerate(self.connections):
-            if host == c.host:
+            if host == c.host and port == c.port:
                 return self.connections[idx]
         return None
 

@@ -459,29 +459,33 @@ class SignalWidget(QtWidgets.QWidget):
             maxduration = self.calcDuration(list(xdata))
             duration = xdata[-1]-xdata[0]
             try:
-                if self.logger.config['postgresql']['active']:
-                    line1 = str(timedelta(seconds=duration))
-                    line2 = str(len(list(xdata)))
-                else:
-                    line1 = str(timedelta(seconds=duration)) + '/ ~ ' + \
-                        str(timedelta(seconds=maxduration))
-                    line2 = str(
-                        len(list(xdata)))+"/"+str(self.logger.config['global']['recordLength'])
+                # if self.logger.config['postgresql']['active']:
+                #     line1 = translate('RTOC', 'Duration: ')+str(timedelta(seconds=duration))
+                #     line2 = translate('RTOC', 'Values: ')+str(len(list(xdata)))
+                # else:
+                line1 = translate('RTOC', 'Duration: {}/~{}').format(str(timedelta(seconds=round(duration))), str(timedelta(seconds=round(maxduration))))
+                line2 = translate('RTOC', 'Values: {}/{}').format(len(list(xdata)), str(self.logger.config['global']['recordLength']))
                 count = 20
                 if len(xdata) <= count:
                     count = len(xdata)
                 if count > 1:
                     meaner = list(xdata)[-count:]
                     diff = 0
-                    for idx, m in enumerate(meaner[:-1]):
-                        diff += meaner[idx+1]-m
+                    # for idx, m in enumerate(meaner[:-1]):
+                    #     diff += meaner[idx+1]-m
+                    diff = meaner[-1]-meaner[0]
+                    diff2 = xdata[-1]-xdata[0]
                     if diff != 0:
-                        line3 = str(round((len(meaner)-1)/diff, 2))+" Hz"
+                        latestSamplerate = str(round((len(meaner)-1)/diff, 2))
+                        samplerate = str(round((len(xdata)-1)/diff2, 2))
                     else:
-                        line3 = "? Hz"
+                        latestSamplerate = "?"
+                        samplerate = "?"
                 else:
-                    line3 = "? Hz"
-                return line1+"\n"+line2 + "\n" + line3
+                    latestSamplerate = "?"
+                    samplerate = "?"
+                line3 = translate('RTOC', 'Samplerate (latest): {} ({}) Hz').format(samplerate, latestSamplerate)
+                return self.devicename+'.'+self.signalname+'\n'+line1+"\n"+line2 + "\n" + line3
             except Exception:
                 logging.debug(traceback.format_exc())
                 print(traceback.format_exc())

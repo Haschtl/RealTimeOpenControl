@@ -10,6 +10,12 @@
     <height>664</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
   <property name="windowTitle">
    <string>RealTime OpenControl</string>
   </property>
@@ -88,20 +94,44 @@
       <number>0</number>
      </property>
      <item>
-      <widget class="QLineEdit" name="searchEdit">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Ignored" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
+      <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <property name="topMargin">
+        <number>0</number>
        </property>
-       <property name="placeholderText">
-        <string>Search devices</string>
-       </property>
-       <property name="clearButtonEnabled">
-        <bool>true</bool>
-       </property>
-      </widget>
+       <item>
+        <widget class="QLineEdit" name="searchEdit">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Ignored" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="placeholderText">
+          <string>Search devices</string>
+         </property>
+         <property name="clearButtonEnabled">
+          <bool>true</bool>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="refreshDevicesButton">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="icon">
+          <iconset>
+           <normaloff>icons/blinking.png</normaloff>icons/blinking.png</iconset>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </item>
      <item>
       <widget class="QScrollArea" name="scrollArea_2">
@@ -126,7 +156,7 @@
           <x>0</x>
           <y>0</y>
           <width>398</width>
-          <height>97</height>
+          <height>88</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -192,7 +222,7 @@
     </sizepolicy>
    </property>
    <property name="statusTip">
-    <string></string>
+    <string/>
    </property>
    <property name="floating">
     <bool>false</bool>
@@ -403,10 +433,10 @@
        <item>
         <widget class="QSpinBox" name="maxLengthSpinBox">
          <property name="toolTip">
-          <string></string>
+          <string/>
          </property>
          <property name="statusTip">
-          <string></string>
+          <string/>
          </property>
          <property name="suffix">
           <string> Values</string>
@@ -606,7 +636,7 @@
    </property>
    <widget class="QMenu" name="menuDatei">
     <property name="statusTip">
-     <string></string>
+     <string/>
     </property>
     <property name="tearOffEnabled">
      <bool>true</bool>
@@ -728,7 +758,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>188</width>
+       <width>196</width>
        <height>126</height>
       </rect>
      </property>
@@ -803,7 +833,7 @@
     <string>Edit plot</string>
    </property>
    <property name="statusTip">
-    <string></string>
+    <string/>
    </property>
   </action>
   <action name="actionPlot_exportieren">

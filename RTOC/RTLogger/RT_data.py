@@ -1128,9 +1128,9 @@ class RT_data:
 
     def _appendSQLSignal(self, sigID, x, y):
         sql = 'UPDATE '+SIGNAL_TABLE_NAME + \
-            ' SET X = array_cat(X, ARRAY'+str(list(x))+') WHERE ID ='+str(sigID)+';'
+            ' SET X = array_cat(X, ARRAY'+str(list(x))+'::NUMERIC[]) WHERE ID ='+str(sigID)+';'
         sql += '\nUPDATE '+SIGNAL_TABLE_NAME + \
-            ' SET Y = array_cat(Y,ARRAY'+str(list(y))+') WHERE ID ='+str(sigID)+';'
+            ' SET Y = array_cat(Y,ARRAY'+str(list(y))+'::NUMERIC[]) WHERE ID ='+str(sigID)+';'
         # sql += '\nUPDATE '+SIGNAL_TABLE_NAME+' SET UNIT = \'' + \
         #     str(dataunit)+'\' WHERE ID ='+str(sigID)+';'
         self._execute_n_commit(sql)
@@ -1360,9 +1360,9 @@ class RT_data:
             logging.warning('autoResize is DEPRECATED for postgresql')
         if hold == 'on':
             sql = 'UPDATE '+SIGNAL_TABLE_NAME + \
-                ' SET X = array_cat(X, '+str(x)+') WHERE ID ='+str(sigID)+';'
+                ' SET X = array_cat(X, '+str(x)+'::NUMERIC[]) WHERE ID ='+str(sigID)+';'
             sql += '\nUPDATE '+SIGNAL_TABLE_NAME + \
-                ' SET Y = array_cat(Y,'+str(y)+') WHERE ID ='+str(sigID)+';'
+                ' SET Y = array_cat(Y,'+str(y)+'::NUMERIC[]) WHERE ID ='+str(sigID)+';'
             sql += '\nUPDATE '+SIGNAL_TABLE_NAME+' SET UNIT = \'' + \
                 str(dataunit)+'\' WHERE ID ='+str(sigID)+';'
         elif hold == 'mergeX':

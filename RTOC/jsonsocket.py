@@ -87,7 +87,7 @@ class Server(object):
         reuse_port (bool): Enable/disable reuse_port (default: True)
     """
 
-    def __init__(self, host, port, keyword=None, reuse_port=True):
+    def __init__(self, host, port, keyword=None, reuse_port=True, timeout=5):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client = None
 
@@ -100,7 +100,7 @@ class Server(object):
         #     self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPINTVL, 5 * 60)
         #     self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_KEEPCNT, 10)
         # self.socket.setblocking(0)
-        self.socket.settimeout(5.0)
+        self.socket.settimeout(timeout)
         self.socket.bind((host, port))
         self.socket.listen(BACKLOG)
 
@@ -201,7 +201,7 @@ class Client(object):
     # def __del__(self):
     #     self.close()
 
-    def connect(self, host, port, keyword=None, reuse_port=True):
+    def connect(self, host, port, keyword=None, reuse_port=True, timeout=5):
         """
         Establish a connection to a host (server)
 
@@ -218,7 +218,7 @@ class Client(object):
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
         self.socket.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
         # self.socket.setblocking(0)
-        self.socket.settimeout(5.0)
+        self.socket.settimeout(timeout)
         self.socket.connect((host, port))
         self.keyword = keyword
         self.host = host

@@ -1,6 +1,7 @@
 __pycache__/
 RTOC/__pycache__/
 RTOC/RTLogger/__pycache__/
+RTOC/RTLogger/plugins/test.py
 RTOC/RTLogger/plugins/__pycache__/
 RTOC/RTOC_GUI/__pycache__/
 RTOC/lib/__pycache__/

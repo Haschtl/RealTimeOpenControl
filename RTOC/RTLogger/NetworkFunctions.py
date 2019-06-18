@@ -343,7 +343,7 @@ class NetworkFunctions:
             dict[name]['parameters'] = []
             dict[name]['status'] = False
             for fun in self.pluginFunctions.keys():
-                hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir']
+                hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir', 'telegram_send_message', 'telegram_send_photo', 'telegram_send_document']
 
                 if fun.startswith(name+".") and fun not in [name+'.'+i for i in hiddenFuncs]:
                     dict[name]['functions'].append(fun.replace(name+".", ''))

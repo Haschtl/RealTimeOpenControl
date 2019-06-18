@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: RTOC
-Version: 2.1.0
+Version: 2.1.1
 Summary: RealTime OpenControl
 Home-page: https://github.com/Haschtl/RealTimeOpenControl
 Author: Sebastian Keller
@@ -8,10 +8,10 @@ Author-email: sebastiankeller@online.de
 License: GNU
 Description: # RealTime OpenControl (RTOC)
         
-        | [![Documentation Status](https://readthedocs.org/projects/realtimeopencontrol/badge/?version=latest)](https://realtimeopencontrol.readthedocs.io/en/latest/) | [![Builds 2.1.0v](https://img.shields.io/badge/Builds%20version-1.6-brightgreen.svg?style=flat)](https://github.com/Haschtl/RealTimeOpenControl/releases) | [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) | [![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) |
+        | [![Documentation Status](https://readthedocs.org/projects/realtimeopencontrol/badge/?version=latest)](https://realtimeopencontrol.readthedocs.io/en/latest/) | [![Builds 2.1.1v](https://img.shields.io/badge/Builds%20version-1.6-brightgreen.svg?style=flat)](https://github.com/Haschtl/RealTimeOpenControl/releases) | [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) | [![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) |
         
         
-        ### Version 2.1.0
+        ### Version 2.1.1
         ![Usecase](screenshots/RTOC-schematik.png)
         [Documentation](https://realtimeopencontrol.readthedocs.io/en/latest/)
         
@@ -160,6 +160,6 @@ Classifier: Topic :: Software Development :: User Interfaces
 Requires-Python: >=3
 Description-Content-Type: text/markdown
 Provides-Extra: Telegram
-Provides-Extra: ALL
 Provides-Extra: GUI
 Provides-Extra: Webserver
+Provides-Extra: ALL

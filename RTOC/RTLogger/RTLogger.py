@@ -347,9 +347,9 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
                             if key2 not in self.__config[key].keys():
                                 self.__config[key][key2] = defaultconfig[key][key2]
 
-            except Exception:
+            except Exception as error:
                 logging.debug(traceback.format_exc())
-                logging.error('Error loading config.json')
+                logging.error('Error loading config.json\n{}'.format(error))
                 self.__config = _Config(defaultconfig)
         else:
             logging.warning('No config-file found.')

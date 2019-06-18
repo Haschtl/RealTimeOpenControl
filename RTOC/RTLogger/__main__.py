@@ -24,6 +24,37 @@ logging = log.getLogger(__name__)
 __package__ = "RTOC.RTLogger"
 __main__ = __name__
 
+try:
+    from PyQt5 import QtCore
+
+    app = QtCore.QCoreApplication(sys.argv)
+    # from PyQt5 import QtWidgets
+    userpath = os.path.expanduser('~/.RTOC')
+    if os.path.exists(userpath+"/config.json"):
+        try:
+            with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
+                config = json.load(jsonfile, encoding="UTF-8")
+        except Exception:
+            logging.debug(traceback.format_exc())
+            config = {'global': {'language': 'en'}}
+    else:
+        config = {'global': {'language': 'en'}}
+    if config['global']['language'] == 'de':
+        translator = QtCore.QTranslator()
+        if getattr(sys, 'frozen', False):
+            # frozen
+            packagedir = os.path.dirname(sys.executable)
+        else:
+            # unfrozen
+            packagedir = os.path.dirname(os.path.realpath(__file__))
+        translator.load(packagedir+"/RTOC/locales/de_de.qm")
+        app.installTranslator(translator)
+        # QtCore.QCoreApplication.installTranslator(translator)
+        print('German language selected')
+except (ImportError, SystemError):
+    logging.warning('Cannot set language')
+
+
 
 class RTOCDaemon(Daemon):
     def __init__(self, pidfile, port=5050):
@@ -56,7 +87,7 @@ def main():
                     'RTOC.RTLogger [-h, -s, -l, -w]\n -h: Hilfe\n-s (--server) [COMMAND]: TCP-Server ohne GUI\n\t- start: Starts the RTOC-daemon\n\t- stop: Stops the RTOC-daemon\n\t- restart: Restarts the RTOC-daemon\n-w Startet RTLogger mit Website\n-p (--port): Starte TCP-Server auf anderem Port (Standart: 5050)\n-c (--config [OPTION=value]): Configure RTOC, type "-c list" to see all options')
                 sys.exit(0)
             elif opt == '-v':
-                logging.info("2.1.0")
+                logging.info("2.1.1")
             elif opt in ('-s', '--server'):
                 if os.name == 'nt':
                     logging.info(

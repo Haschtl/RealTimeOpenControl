@@ -189,13 +189,26 @@ class telegramBot():
 
     def send_message_to_all(self, message, onlyAdmin=False):
         for id in self.telegram_clients.keys():
-            if onlyAdmin and  self.telegram_clients[id]['permission'] == 'admin':
+            if (onlyAdmin and  self.telegram_clients[id]['permission'] == 'admin') or not onlyAdmin:
                 self.send_message(chat_id=int(id), text=message, delete=False)
-            # try:
-            #     self.bot.send_message(chat_id=int(id), text=message,
-            #                           parse_mode=ParseMode.MARKDOWN)
-            # except Exception:
-            #     self.bot.send_message(chat_id=int(id), text=message)
+
+    def send_photo(self, path, onlyAdmin=False):
+        try:
+            for id in self.telegram_clients.keys():
+                if (onlyAdmin and  self.telegram_clients[id]['permission'] == 'admin') or not onlyAdmin:
+                    self.bot.send_photo(chat_id=int(id), photo=open(path, 'rb'))
+        except Exception as error:
+            text = translate('RTOC', 'Error while sending photo:\n{}').format(error)
+            self.send_message_to_all(text, onlyAdmin)
+
+    def send_document(self, path, onlyAdmin=False):
+        try:
+            for id in self.telegram_clients.keys():
+                if (onlyAdmin and  self.telegram_clients[id]['permission'] == 'admin') or not onlyAdmin:
+                    self.bot.send_document(chat_id=int(id), document=open(path, 'rb'))
+        except Exception as error:
+            text = translate('RTOC', 'Error while sending file:\n{}').format(error)
+            self.send_message_to_all(text, onlyAdmin)
 
     def connect(self):
         idler = Thread(target=self.connectThread)
@@ -637,7 +650,7 @@ class telegramBot():
         name = self.current_plugin[chat_id]
         commands = []
         for fun in self.logger.pluginFunctions.keys():
-            hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir']
+            hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir','telegram_send_message', 'telegram_send_photo', 'telegram_send_document']
             hiddenFuncs = [name+'.'+i for i in hiddenFuncs]
             if fun.startswith(name+".") and fun not in hiddenFuncs:
                 parStr = ', '.join(self.logger.pluginFunctions[fun][1])

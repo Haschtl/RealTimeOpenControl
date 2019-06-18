@@ -13,8 +13,8 @@ Plugins are written in Python3 and need to follow some rules::
   from LoggerPlugin import LoggerPlugin # contains all plugin-functions
 
   class Plugin(LoggerPlugin):  # This must be the main class of your function
-  	def __init__(self, stream=None, plot= None, event=None):
-          super(Plugin, self).__init__(stream, plot, event))
+  	def __init__(self, *args, **kwargs):
+          super(Plugin, self).__init__(*args, **kwargs))
 
           # start your code here
 

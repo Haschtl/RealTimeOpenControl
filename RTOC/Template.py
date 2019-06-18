@@ -1,7 +1,7 @@
 """
 This template shows, how to implement plugins in RTOC
 
-RTOC version 2.1.0
+RTOC version 2.0
 
 A plugin needs to import RTOC.LoggerPlugin to be recognized by RTOC.
 """
@@ -26,8 +26,8 @@ SAMPLERATE = 1
 
 
 class Plugin(LoggerPlugin):
-    def __init__(self, stream=None, plot=None, event=None):
-        super(Plugin, self).__init__(stream, plot, event)
+    def __init__(self, *args, **kwargs):
+        super(Plugin, self).__init__(*args, **kwargs)
         """Call this to initialize RTOC.LoggerPlugin"""
 
         self.setDeviceName(DEVICENAME)
@@ -43,13 +43,10 @@ class Plugin(LoggerPlugin):
 
         self.setPerpetualTimer(self._updateT, samplerate=SAMPLERATE)
         """You will need to collect data periodically in many applications. You need to start that in a seperate thread.
-        RTOC provides a simple way to start a repeated thread with :py:meth:`.LoggerPlugin.setPerpetualTimer`.
 
-        The first parameter is the function, which collects data and sends it to RTOC.
+        RTOC provides a simple way to start a repeated thread with :py:meth:`.LoggerPlugin.setPerpetualTimer`. The first parameter is the function, which collects data and sends it to RTOC. You can define a ``samplerate`` or an ``interval`` to set the samplerate.
 
-        You can define a ``samplerate`` or an ``interval`` to set the samplerate.
-        You can still use normal threads to do the same thing, but in this way, the plugin can be stopped properly.
-        If you are using normal threads, make sure, to have a loop limited by '
+        You can still use normal threads to do the same thing, but in this way, the plugin can be stopped properly. If you are using normal threads, make sure, to have a loop limited by '
         ``self.run`` with ``while self.run:``.
         """
 
@@ -105,7 +102,26 @@ class Plugin(LoggerPlugin):
         """
         This example will load a QWidget designed with QDesigner
         """
+        self.widget.teleMessageButton.clicked.connect(self._teleMessageAction)
+        self.widget.telePhotoButton.clicked.connect(self._telePhotoAction)
+        self.widget.teleFileButton.clicked.connect(self._teleFileAction)
+        """
+        Connect GUI-buttons with python-functions
+        """
         return self.widget  # This function needs to return a QWidget
+
+    def _teleMessageAction(self):
+        text = 'Hello world!'
+        self.telegram_send_message(text, onlyAdmin=False)
+
+    def _telePhotoAction(self):
+        path = self.getDir(__file__)+'/examplePhoto.png'
+        self.telegram_send_photo(path, onlyAdmin=False)
+
+    def _teleFileAction(self):
+        path = self.getDir(__file__)+'/examplePhoto.png'
+        self.telegram_send_document(path, onlyAdmin=False)
+
 
 
 hasGUI = True  # If your plugin has a widget do this

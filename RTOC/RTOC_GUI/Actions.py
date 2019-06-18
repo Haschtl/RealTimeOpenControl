@@ -62,6 +62,7 @@ class Actions:
         self.scriptWidgetToggle.triggered.connect(self.toggleScriptWidget)
         self.eventWidgetToggle.triggered.connect(self.toggleEventWidget)
         self.deviceRAWWidgetToggle.triggered.connect(self.toggleRAWWidget)
+        self.refreshDevicesButton.clicked.connect(self.reloadDevices)
 
         self.actionDeutsch.triggered.connect(
             partial(self.toggleLanguage, "de", self.actionDeutsch, [self.actionEnglish], False))
@@ -578,9 +579,9 @@ class Actions:
                 return connected
         return False
 
-    def addRemoteHostWidget(self, host, name):
+    def addRemoteHostWidget(self, host, name, port):
         remoteHostWidget = QtWidgets.QDockWidget(name, self)
-        widget = RemoteWidget(self, host, remoteHostWidget, name)
+        widget = RemoteWidget(self, host, remoteHostWidget, name, port)
         remoteHostWidget.setWidget(widget)
         self.remoteHostWidgets.append(remoteHostWidget)
         self.tabifyDockWidget(self.graphWidget, self.remoteHostWidgets[-1])
@@ -621,15 +622,15 @@ class Actions:
         self.logger.remote.connect(host, port, name, password)
         retry = True
         host = hostsplit[0]
-        self.logger.remote.getConnection(host).tcppassword = password
+        self.logger.remote.getConnection(host, port).tcppassword = password
         while retry:
             retry = False
-            status = self.logger.remote.getConnection(host).status
+            status = self.logger.remote.getConnection(host, port).status
             if status == "protected":
                 text, ok2 = pyqtlib.text_message(None, translate('RTOC', 'Password'), translate('RTOC',
                     "The RTOC server {} is password-protected. Please enter your password.").format(hostname),  translate('RTOC', 'TCP-Password'))
                 if ok2:
-                    self.logger.remote.getConnection(host).tcppassword = text
+                    self.logger.remote.getConnection(host, port).tcppassword = text
                     self.logger.remote.connect(host, port, name, text)
                     retry = True
                     ok3 = pyqtlib.alert_message(translate('RTOC', 'Save password'), translate('RTOC',
@@ -640,12 +641,12 @@ class Actions:
                 pyqtlib.info_message(translate('RTOC', 'Connection established'), translate('RTOC',
                     'Connection to {} on port {} established.').format(host, port), '')
 
-                self.addRemoteHostWidget(host, name)
+                self.addRemoteHostWidget(host, name, port)
                 return True
             elif status == "wrongPassword":
                 text, ok = pyqtlib.text_message(None, translate('RTOC', 'Protected'), translate('RTOC', 'Connection to {} on port {} not established').format(host, port), translate('RTOC', 'Password is wrong.'))
                 if ok:
-                    self.logger.remote.getConnection(host).tcppassword = text
+                    self.logger.remote.getConnection(host, port).tcppassword = text
                     self.logger.remote.connect(host, port, name, text)
                     retry = True
                     ok3 = pyqtlib.alert_message(translate('RTOC', 'Save password'), translate('RTOC',
@@ -662,7 +663,7 @@ class Actions:
                 pyqtlib.info_message(translate('RTOC', 'Connection established'), translate('RTOC',
                     'Connection to {} on port {} established.').format(host, port), '')
 
-                self.addRemoteHostWidget(host, name)
+                self.addRemoteHostWidget(host, name, port)
                 return True
             else:
                 print(status)

@@ -78,9 +78,9 @@ except LookupError:
 path = os.path.split(__file__)[0]
 # sys.path.insert(0, os.path.join(path, 'tools'))
 
-version = "2.1.0"
-forcedVersion = "2.1.0"
-gitVersion = "2.1.0"
+version = "2.1.1"
+forcedVersion = "2.1.1"
+gitVersion = "2.1.1"
 initVersion = 1.0
 
 

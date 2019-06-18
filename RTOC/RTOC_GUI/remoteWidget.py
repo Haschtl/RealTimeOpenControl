@@ -27,7 +27,7 @@ else:
 class RemoteWidget(QtWidgets.QWidget):
     update = QtCore.pyqtSignal()
 
-    def __init__(self, selfself, remotehost="", parent=None, name="Remote"):
+    def __init__(self, selfself, remotehost="", parent=None, name="Remote", port=5050):
         super(RemoteWidget, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
@@ -44,6 +44,7 @@ class RemoteWidget(QtWidgets.QWidget):
         self.hostname = remotehost
         self.parent = parent
         self.name = name
+        self.port = port
         self.listWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.listWidget.customContextMenuRequested.connect(self.listItemRightClicked)
 
@@ -54,7 +55,7 @@ class RemoteWidget(QtWidgets.QWidget):
         self.clearButton.clicked.connect(self.clear)
         self.pauseButton.clicked.connect(self.pause)
         self.saveButton.clicked.connect(self.saveRemoteSession)
-        self.remote = self.self.logger.remote.getConnection(self.hostname)
+        self.remote = self.self.logger.remote.getConnection(self.hostname, self.port)
         self.remote.updateRemoteCallback = self.update.emit
         self.update.connect(self.updateRemote)
         if self.remote is not None:
@@ -114,7 +115,7 @@ class RemoteWidget(QtWidgets.QWidget):
         else:
             ans = pyqtlib.alert_message(translate('RTOC', 'Disconnect'), translate('RTOC', 'Do you want to disconnect {}?').format(self.hostname), translate('RTOC', 'Transferred signals will remain.'), "", translate('RTOC', "Yes"), translate('RTOC', "No"))
             if ans:
-                ans = self.self.logger.remote.disconnect(self.hostname)
+                ans = self.self.logger.remote.disconnect(self.hostname, self.port)
                 if ans is False:
                     ans = pyqtlib.info_message(translate('RTOC', 'Error'), translate('RTOC', 'Could not disconnect from {}.').format(self.hostname), '')
                 self.close()
