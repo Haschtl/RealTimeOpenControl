@@ -18,21 +18,7 @@ lock = Lock()
 
 class LoggerPlugin:
     """
-    This class is imported by any plugin written for RTOC.
-
-    It includes all functions to interact with RTOC. Every plugin must inherit this class! Your plugin must look like this:
-
-    ..  code-block:
-
-    ::
-
-        from RTOC.LoggerPlugin import LoggerPlugin
-
-        class Plugin(LoggerPlugin):
-            def __init__(self, stream=None, plot=None, event=None):
-                LoggerPlugin.__init__(self, stream, plot, event)
-                ...
-            ...
+    
 
     Args:
         stream (method): The callback-method for the stream-method
@@ -43,7 +29,7 @@ class LoggerPlugin:
     def __init__(self, stream=None, plot=None, event=None, telegramBot=None, *args, **kwargs):
         # Plugin setup
         # self.setDeviceName()
-        self._deviceName = "noDevice"
+        self._devicename = "noDevice"
         self._cb = stream
         self._ev = event
         self._plt = plot
@@ -120,7 +106,7 @@ class LoggerPlugin:
         if self._cb:
             now = time.time()
             if dname is None:
-                dname = self._deviceName
+                dname = self._devicename
             if slist is None and sdict is None:
                 if type(y) == int or type(y) == float:
                     y = [y]
@@ -205,7 +191,7 @@ class LoggerPlugin:
             y = x
             x = list(range(len(x)))
         if dname is None:
-            dname = self._deviceName
+            dname = self._devicename
         if self._plt:
             self._plt(x, y, sname, dname, unit, hold=hold, autoResize=autoResize)
             return True
@@ -236,7 +222,7 @@ class LoggerPlugin:
         if sname is None:
             sname = "unknownEvent"
         if dname is None:
-            dname = self._deviceName
+            dname = self._devicename
         if self._ev:
             self._ev(text, sname, dname, x, priority, value=value, id=id)
             return True
@@ -398,7 +384,7 @@ class LoggerPlugin:
         Returns:
             None
         """
-        self._deviceName = devicename    # Is shown in GUI
+        self._devicename = devicename    # Is shown in GUI
 
     def close(self):
         """
@@ -543,42 +529,45 @@ class LoggerPlugin:
             func()
             diff = (time.time() - start_time)
 
-    def telegram_send_message(self, text, onlyAdmin=False):
+    def telegram_send_message(self, text, priority=0, permission='write'):
         """
         Sends a message to all clients (or only admins).
 
         Args:
             text (str): Text to be send to the clients.
-            onlyAdmin (bool): If True, only admins will get this message
+            priority (int): Priority to decide, which allow each client to disable notifications (0: Information, 1: Warning, 2: Error)
+            permission (str): Choose user-permission (blocked, read, write, admin)
         """
         if self._bot is not None:
-            self._bot.send_message_to_all(text, onlyAdmin)
+            self._bot.send_message_to_all(self._devicename+': '+str(text), priority, permission)
         else:
             logging.warning('TelegramBot is not enabled or wrong configured! Can not send message "{}"'.format(text))
 
-    def telegram_send_photo(self, path, onlyAdmin=False):
+    def telegram_send_photo(self, path, priority=0, permission='write'):
         """
         Sends the picture at a given path to all clients (or only admins).
 
         Args:
             path (str): Path to the picture to send.
-            onlyAdmin (bool): If True, only admins will get this message
+            priority (int): Priority to decide, which allow each client to disable notifications (0: Information, 1: Warning, 2: Error)
+            permission (str): Choose user-permission (blocked, read, write, admin)
         """
         if self._bot is not None:
-            self._bot.send_photo(path, onlyAdmin)
+            self._bot.send_photo(path, priority, permission)
         else:
             logging.warning('TelegramBot is not enabled or wrong configured! Can not send photo "{}"'.format(path))
 
-    def telegram_send_document(self, path, onlyAdmin=False):
+    def telegram_send_document(self, path, priority=0, permission='write'):
         """
         Sends any document at a given path to all clients (or only admins).
 
         Args:
             path (str): Path to the file to send.
-            onlyAdmin (bool): If True, only admins will get this message
+            priority (int): Priority to decide, which allow each client to disable notifications (0: Information, 1: Warning, 2: Error)
+            permission (str): Choose user-permission (blocked, read, write, admin)
         """
         if self._bot is not None:
-            self._bot.send_document(path, onlyAdmin)
+            self._bot.send_document(path, priority, permission)
         else:
             logging.warning('TelegramBot is not enabled or wrong configured! Can not send file "{}"'.format(path))
 

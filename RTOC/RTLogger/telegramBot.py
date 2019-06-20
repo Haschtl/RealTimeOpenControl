@@ -134,7 +134,7 @@ class telegramBot():
                 first_name = str(chat.first_name)
                 last_name = str(chat.last_name)
                 text = translate('RTOC', '{} {} joined {} for the first time.').format(first_name, last_name, self.logger.config['global']['name'])
-                self.send_message_to_all(text, onlyAdmin=True)
+                self.send_message_to_all(text, permission='admin')
                 logging.info('TELEGRAM BOT: New client connected with ID: '+str(chat_id))
                 if len(self.telegram_clients.keys()) == 0:
                     ad = 'admin'
@@ -187,28 +187,40 @@ class telegramBot():
                 # except Exception:
                 #     self.bot.send_message(chat_id=int(id), text=message)
 
-    def send_message_to_all(self, message, onlyAdmin=False):
+    def check_permission_and_priority(self, chat_id, priority, permission):
+        self.check_chat_id(chat_id)
+        perms = ['blocked','read','write','admin']
+        if priority >= self.telegram_clients[chat_id]['eventlevel']:
+            if permission in perms:
+                idx = perms.index(self.telegram_clients[chat_id]['permission'])
+                idx2 = perms.index(permission)
+                if idx >= idx2:
+                    return True
+        return False
+
+
+    def send_message_to_all(self, message, priority=0, permission='write'):
         for id in self.telegram_clients.keys():
-            if (onlyAdmin and  self.telegram_clients[id]['permission'] == 'admin') or not onlyAdmin:
+            if self.check_permission_and_priority(id, priority, permission):
                 self.send_message(chat_id=int(id), text=message, delete=False)
 
-    def send_photo(self, path, onlyAdmin=False):
+    def send_photo(self, path, priority=0, permission='write'):
         try:
             for id in self.telegram_clients.keys():
-                if (onlyAdmin and  self.telegram_clients[id]['permission'] == 'admin') or not onlyAdmin:
+                if self.check_permission_and_priority(id, priority, permission):
                     self.bot.send_photo(chat_id=int(id), photo=open(path, 'rb'))
         except Exception as error:
             text = translate('RTOC', 'Error while sending photo:\n{}').format(error)
-            self.send_message_to_all(text, onlyAdmin)
+            self.send_message_to_all(text, priority, permission)
 
-    def send_document(self, path, onlyAdmin=False):
+    def send_document(self, path, priority=0, permission='write'):
         try:
             for id in self.telegram_clients.keys():
-                if (onlyAdmin and  self.telegram_clients[id]['permission'] == 'admin') or not onlyAdmin:
+                if self.check_permission_and_priority(id, priority, permission):
                     self.bot.send_document(chat_id=int(id), document=open(path, 'rb'))
         except Exception as error:
             text = translate('RTOC', 'Error while sending file:\n{}').format(error)
-            self.send_message_to_all(text, onlyAdmin)
+            self.send_message_to_all(text, priority, permission)
 
     def connect(self):
         idler = Thread(target=self.connectThread)
@@ -946,33 +958,7 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
                     self.signals_selected[chat_id].pop(idx)
                     self.send_message(chat_id=chat_id,
                                       text=translate('RTOC', 'Signal removed from selection.'))
-            elif len(a) == 2:  # and not self.get_telegram_client(chat_id, 'signalSubmenu', True):
-                if strung not in self.signals_selected[chat_id]:
-                    sigID = self.logger.database.getSignalID(a[0], a[1])
-                    xmin, xmax, sigLen = self.logger.database.getSignalInfo(sigID)
-                    if xmin != None:
-                        self.signals_selected[chat_id].append(strung)
-                        t = self.createPlotToolTip(xmin, xmax, sigLen)
-                    else:
-                        self.signals_selected[chat_id].append(strung)
-                        t = translate('RTOC', 'Empty signal')
 
-                    evs = self.logger.database.getEvents(sigID)
-                    if evs == []:
-                        evtext = '0'
-                    else:
-                        evtext = str(len(evs))+translate('RTOC', '\nLatest Event:\n')
-                        if evs[0][6] == 0:
-                            prio = translate('RTOC', 'Information')
-                        elif evs[0][6] == 1:
-                            prio = translate('RTOC', 'Warning')
-                        else:
-                            prio = translate('RTOC', 'Error')
-
-                        evtext += prio+': '
-                        evtext += evs[0][3]+': '+ dt.datetime.fromtimestamp(evs[0][4]).strftime("%d.%m.%Y %H:%M:%S")
-                    self.send_message(chat_id,
-                                      translate('RTOC', 'Signal selected:\n{}\nEvents: {}').format(t, evtext), ParseMode.MARKDOWN, True, False)
             elif self.get_telegram_client(chat_id, 'signalSubmenu', True) and strung in self.logger.database.deviceNames():
                 self.signalsDeviceSubHandler(bot, chat_id, strung)
                 return
@@ -1034,8 +1020,7 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
                 self.telegram_clients[str(chat_id)]['signalSubmenu'] = True
                 self.saveClients()
             else:
-                self.send_message(chat_id=chat_id,
-                                  text=translate('RTOC', 'Signal names consist of\n<Device>.<Signal>\nYour message didn\'t look that way.\n'))
+                self.selectSignal(bot, chat_id, strung)
             self.signalsHandler(bot, chat_id, True)
             return
 
@@ -1048,15 +1033,43 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
             sname = '.'.join(signalname)
             if sname not in self.signals_selected[chat_id]:
                 commands.append(sname)
+        commands = [translate('RTOC', 'All')] +commands
         text = translate('RTOC', 'Signals of {}').format(device)
         commands.sort()
         self.sendMenuMessage(bot, chat_id, commands, text)
 
     def signalsDeviceSubHandlerAns(self, bot, chat_id, strung):
-        a = strung.split('.')
         if strung == self.BACKBUTTON:
             self.signalsHandler(bot, chat_id, True)
             return
+        elif strung == translate('RTOC', 'All'):
+            dev = self.telegram_clients[str(chat_id)]['menu'].split(':')[0]
+            availableSignals = self.logger.database.signalNames(devices=[dev])
+            for signalname in availableSignals:
+                sname = '.'.join(signalname)
+                if sname not in self.signals_selected[chat_id] and dev in sname:
+                    self.signals_selected[chat_id].append(sname)
+            self.send_message(chat_id=chat_id,
+                              text=translate('RTOC', 'All signals of {} selected.').format(dev))
+        else:
+            self.selectSignal(bot, chat_id, strung)
+        device = self.telegram_clients[str(chat_id)]['menu'].split(':')[0]
+        self.signalsDeviceSubHandler(bot, chat_id, device)
+
+    def selectSignal(self, bot, chat_id, strung):
+        a = strung.split('.')
+        if len(a)>2:
+            self.send_message(chat_id, translate('RTOC', 'Please rename this signal. Signals should not contain "." and ":".'))
+            b=['.'.join(a[:-2]),a[-1]]
+            self.selectSignal2(bot, chat_id, strung, b)
+            b=[a[0],'.'.join(a[1:])]
+            self.selectSignal2(bot, chat_id, strung, b)
+        elif len(a) == 2:
+            self.selectSignal2(bot, chat_id, strung, a)
+
+
+    def selectSignal2(self, bot, chat_id, strung, a):
+        a = strung.split('.')
         if len(a) == 2:
             if strung not in self.signals_selected[chat_id]:
                 sigID = self.logger.database.getSignalID(a[0], a[1])
@@ -1084,11 +1097,10 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
                     evtext += evs[0][3]+' am '+ dt.datetime.fromtimestamp(evs[0][4]).strftime("%d.%m.%Y %H:%M:%S")
                 self.send_message(chat_id,
                                   translate('RTOC', 'Signal selected:\n{}\nEvents: {}').format(t, evtext), ParseMode.MARKDOWN, True, False)
+            return True
         else:
-            self.send_message(chat_id=chat_id,
-                              text=translate('RTOC', 'Signal names consist of\n<Device>.<Signal>\nYour message didn\'t look that way.\n'))
-        device = self.telegram_clients[str(chat_id)]['menu'].split(':')[0]
-        self.signalsDeviceSubHandler(bot, chat_id, device)
+            return False
+
 
     def signalsSelectRangeHandler(self, bot, chat_id):
         self.telegram_clients[str(chat_id)]['menu'] = "signalSelectRange"

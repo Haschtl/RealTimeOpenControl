@@ -1066,402 +1066,402 @@
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="14"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="20"/>
         <source>RealTime OpenControl</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="844"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="874"/>
         <source>Devices</source>
         <translation>Geräte</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="99"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="110"/>
         <source>Search devices</source>
         <translation>Geräte suchen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="207"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="237"/>
         <source>&amp;Plugins</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="250"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="280"/>
         <source>Page 2</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="866"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="896"/>
         <source>Scripts</source>
         <translation>Skripte</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="308"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="338"/>
         <source>toolBar</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="958"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="988"/>
         <source>Events</source>
         <translation>Events</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="356"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="386"/>
         <source>Graph</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="399"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="429"/>
         <source>Recording length:</source>
         <translation>Aufzeichnungslänge:</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="412"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="442"/>
         <source> Values</source>
         <translation> Werte</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="441"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="471"/>
         <source>Delete all signals</source>
         <translation>Alle Signale löschen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="464"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="494"/>
         <source>Open new graph</source>
         <translation>Neuen Graph öffnen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1119"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1149"/>
         <source>Devices RAW</source>
         <translation>Geräte RAW</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="569"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="599"/>
         <source>Search</source>
         <translation>Suche</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="615"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="645"/>
         <source>File</source>
         <translation>Datei</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="637"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="667"/>
         <source>Edit subwindows</source>
         <translation>Unterfenster anpassen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="643"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="673"/>
         <source>Subwindows</source>
         <translation>Unterfenster</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="662"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="692"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="687"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="717"/>
         <source>Language</source>
         <translation>Sprache</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="718"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="748"/>
         <source>Network</source>
         <translation>Netzwerk</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="736"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="766"/>
         <source>TCP - Server</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="744"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="774"/>
         <source>Telegram-Bot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="751"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="781"/>
         <source>Connect to remote host</source>
         <translation>Mit Remote Host verbinden</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="758"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="788"/>
         <source>Active connections</source>
         <translation>Aktive Verbindungen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="774"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="804"/>
         <source>Database</source>
         <translation>Datenbank</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="790"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="820"/>
         <source>Export data</source>
         <translation>Daten exportieren</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="814"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="844"/>
         <source>Please use RIGHT CLICK in graph</source>
         <translation>Bitte nutze Rechtsklick im Graph</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="798"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="828"/>
         <source>Quit</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="803"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="833"/>
         <source>Edit plot</source>
         <translation>Plot anpassen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="811"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="841"/>
         <source>Export plot</source>
         <translation>Plot exportieren</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="830"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="860"/>
         <source>Signals</source>
         <translation>Signale</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="833"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="863"/>
         <source>Signals-Subwindow</source>
         <translation>Signale-Unterfenster</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="855"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="885"/>
         <source>Plugins</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="890"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="920"/>
         <source>Save session</source>
         <translation>Session speichern</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="900"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="930"/>
         <source>Load session</source>
         <translation>Session laden</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="905"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="935"/>
         <source>RTOC Help</source>
         <translation>RTOC Hilfe</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="910"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="940"/>
         <source>About RTOC</source>
         <translation>Über RTOC</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="915"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="945"/>
         <source>Import data</source>
         <translation>Daten importieren</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="926"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="956"/>
         <source>Minimize to SystemTray</source>
         <translation>Minimieren in SystemTray</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="934"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="964"/>
         <source>Multiproessing - Listener</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="942"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="972"/>
         <source>Deutsch</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="950"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="980"/>
         <source>English</source>
         <translation>Englisch</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1043"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1073"/>
         <source>RTOC - Web</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="997"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1027"/>
         <source>Check for updates</source>
         <translation>Auf Updates prüfen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1035"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1065"/>
         <source>Port: 5050</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1007"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1037"/>
         <source>Clear cache</source>
         <translation>Cache leeren</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1012"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1042"/>
         <source>Plugin-Repository</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1017"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1047"/>
         <source>Add/remove devices</source>
         <translation>Plugins hinzufügen/entfernen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1051"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1081"/>
         <source>Active</source>
         <translation>Aktiv</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1056"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1086"/>
         <source>Enter Bot-Token</source>
         <translation>Bot-Token eingeben</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1061"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1091"/>
         <source>Set Backup-Interval</source>
         <translation>Backup-Intervall festlegen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1066"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1096"/>
         <source>Daily</source>
         <translation>Täglich</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1071"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1101"/>
         <source>Set Backup-Path</source>
         <translation>Backup-Pfad festlegen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1076"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1106"/>
         <source>Delete Backups</source>
         <translation>Backups löschen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1081"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1111"/>
         <source>Backup 1</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1184"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1214"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1091"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1121"/>
         <source>New Host</source>
         <translation>Neuer Host</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1096"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1126"/>
         <source>None</source>
         <translation>Keine</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1101"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1131"/>
         <source>Update-Rate: 1 Hz</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1129"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1159"/>
         <source>RTOC-Server suchen</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1147"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1177"/>
         <source>Update-Rate: 1Hz</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1155"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1185"/>
         <source>Neuer Host</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1163"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1193"/>
         <source>keine</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1171"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1201"/>
         <source>Search RTOC-Server</source>
         <translation>RTOC-Server suchen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1179"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1209"/>
         <source>Console</source>
         <translation>Konsole</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1189"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1219"/>
         <source>Push local data to database (backup)</source>
         <translation>Lokale Daten in die Datenbank laden (Backup)</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1194"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1224"/>
         <source>Replace local data with data from database</source>
         <translation>Lokale Daten durch Daten aus der Datenbank ersetzen.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1199"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1229"/>
         <source>Export database</source>
         <translation>Datenbank exportieren</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="874"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="904"/>
         <source>Load script</source>
         <translation>Skript laden</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="877"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="907"/>
         <source>Load script from file</source>
         <translation>Skript aus Datei laden</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="882"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="912"/>
         <source>Save script</source>
         <translation>Skript speichern</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="885"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="915"/>
         <source>Save script to file</source>
         <translation>Skript in Datei speichern</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="895"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="925"/>
         <source>Last edited</source>
         <translation>Zuletzt bearbeitet</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="963"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="993"/>
         <source>Enter bot-token</source>
         <translation>Bot-Token eingeben</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1025"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1055"/>
         <source>Activate</source>
         <translation>Aktiv</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1030"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1060"/>
         <source>Password protection</source>
         <translation>Passwort-Schutz</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1106"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1136"/>
         <source>Search RTOC-Servers</source>
         <translation>RTOC-Server suchen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1111"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="1141"/>
         <source>Backout-Interval: daily</source>
         <translation>Backup-Intervall: Täglich</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/ui/rtoc.ui" line="819"/>
+        <location filename="../RTOC_GUI/ui/rtoc.ui" line="849"/>
         <source>Windows</source>
         <translation>Fenster</translation>
     </message>
@@ -1507,12 +1507,12 @@
         <translation>Bitte passen Sie die PostgreSQL-Optionen in den Einstellungen an und starten Sie RTOC anschließend neu.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="160"/>
+        <location filename="../RTOC_GUI/Actions.py" line="161"/>
         <source>Password protection: Off</source>
         <translation>Passwortschutz: Aus</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="162"/>
+        <location filename="../RTOC_GUI/Actions.py" line="163"/>
         <source>Password protection: On</source>
         <translation>Passwortschutz: An</translation>
     </message>
@@ -1675,136 +1675,136 @@ Answer: </source>
 Antwort: </translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="112"/>
+        <location filename="../RTOC_GUI/Actions.py" line="113"/>
         <source>Export database</source>
         <translation>Datenbank exportieren</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="239"/>
+        <location filename="../RTOC_GUI/Actions.py" line="240"/>
         <source>Overwrite</source>
         <translation>Überschreiben</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="119"/>
+        <location filename="../RTOC_GUI/Actions.py" line="120"/>
         <source>Do you want to overwrite this file?</source>
         <translation>Möchten Sie diese Datei überschreiben?</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="135"/>
+        <location filename="../RTOC_GUI/Actions.py" line="136"/>
         <source>RTOC_Web Error</source>
         <translation>RTOC Web Fehler</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="135"/>
+        <location filename="../RTOC_GUI/Actions.py" line="136"/>
         <source>RTOC_Web can no longer be started in parallel with the user interface. Please stop RTOC and start RTOC_Web with &apos;python3 -m RTOC.RTLogger -w&apos;</source>
         <translation>RTOC_Web kann nicht mehr parallel zur Benutzeroberfläche gestartet werden. Bitte stoppen Sie RTOC und starten Sie RTOC_Web mit&apos;python3 -m RTOC.RTLogger -w&apos;.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="135"/>
+        <location filename="../RTOC_GUI/Actions.py" line="136"/>
         <source>If you need the GUI, then start a local remote connection with &apos;python3 -m RTOC -r 127.0.0.1&apos;</source>
         <translation>Wenn Sie die GUI benötigen, dann starten Sie eine lokale Remote-Verbindung mit&apos;python3 -m RTOC -r 127.0.0.1&apos;.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="148"/>
+        <location filename="../RTOC_GUI/Actions.py" line="149"/>
         <source>Enter bot token</source>
         <translation>Bot-Token eingeben</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="148"/>
+        <location filename="../RTOC_GUI/Actions.py" line="149"/>
         <source>Please create a bot in Telegram with &quot;Botfather&quot;,
 generate a bot and enter its token here</source>
         <translation>Bitte erstellen Sie einen Bot im Telegramm mit &quot;Botfather&quot;,
 generieren Sie einen Bot und tragen Sie diesen hier ein.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="155"/>
+        <location filename="../RTOC_GUI/Actions.py" line="156"/>
         <source>Enter TCP-Password</source>
         <translation>TCP-Passwort eingeben</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="155"/>
+        <location filename="../RTOC_GUI/Actions.py" line="156"/>
         <source>Protect your transfer from unauthorized users 
 Leave empty to disable password</source>
         <translation>Schützen Sie Ihre Übertragung vor unbefugten Benutzern. 
 Leer lassen, um das Passwort zu deaktivieren.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="165"/>
+        <location filename="../RTOC_GUI/Actions.py" line="166"/>
         <source>Enter TCP Port</source>
         <translation>TCP-Port eingeben</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="165"/>
+        <location filename="../RTOC_GUI/Actions.py" line="166"/>
         <source>Enter the port for TCP-Communication with RTOC.</source>
         <translation>Geben Sie den Port für die TCP-Kommunikation mit RTOC ein.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="172"/>
+        <location filename="../RTOC_GUI/Actions.py" line="173"/>
         <source>Port: </source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="178"/>
+        <location filename="../RTOC_GUI/Actions.py" line="179"/>
         <source>Please enter a value between 0 and 65535</source>
         <translation>Bitte geben Sie einen Wert zwischen 0 und 6553535 ein.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="178"/>
+        <location filename="../RTOC_GUI/Actions.py" line="179"/>
         <source>You input was invalid.</source>
         <translation>Ihre Eingabe war ungültig.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="202"/>
+        <location filename="../RTOC_GUI/Actions.py" line="203"/>
         <source>Do you really want to delete all data?</source>
         <translation>Möchten Sie wirklich alle Daten löschen?</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="202"/>
+        <location filename="../RTOC_GUI/Actions.py" line="203"/>
         <source>(Irrevocably)</source>
         <translation>(Unwiderruflich)</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="204"/>
+        <location filename="../RTOC_GUI/Actions.py" line="205"/>
         <source>Do you also want to delete the data in the database?</source>
         <translation>Möchten Sie auch die Daten in der Datenbank löschen?</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="204"/>
+        <location filename="../RTOC_GUI/Actions.py" line="205"/>
         <source>(Irrevocably!!)</source>
         <translation>(Unwiderruflich!!!)</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="217"/>
+        <location filename="../RTOC_GUI/Actions.py" line="218"/>
         <source>Load session</source>
         <translation>Session laden</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/remoteWidget.py" line="222"/>
+        <location filename="../RTOC_GUI/remoteWidget.py" line="223"/>
         <source>Save session</source>
         <translation>Session speichern</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="239"/>
+        <location filename="../RTOC_GUI/Actions.py" line="240"/>
         <source>Do you want to overwrite the file or merge both files?</source>
         <translation>Möchten Sie die Datei überschreiben oder beide Dateien zusammenführen?</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="239"/>
+        <location filename="../RTOC_GUI/Actions.py" line="240"/>
         <source>With &quot;Overwrite&quot; the stored data will be lost.</source>
         <translation>Mit &quot;Überschreiben&quot; gehen die gespeicherten Daten verloren.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="239"/>
+        <location filename="../RTOC_GUI/Actions.py" line="240"/>
         <source>Merge</source>
         <translation>Zusammenführen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="272"/>
+        <location filename="../RTOC_GUI/Actions.py" line="273"/>
         <source>Excel-Table (*.xlsx)</source>
         <translation>Excel-Tabelle (*.xlsx)</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="274"/>
+        <location filename="../RTOC_GUI/Actions.py" line="275"/>
         <source>CSV-File (*.csv)</source>
         <translation>CSV-Datei (*.csv)</translation>
     </message>
@@ -1814,17 +1814,17 @@ Leer lassen, um das Passwort zu deaktivieren.</translation>
         <translation>Exportieren</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="267"/>
+        <location filename="../RTOC_GUI/Actions.py" line="268"/>
         <source>Excel-Table (*.xlsx);;CSV-File (*.csv)</source>
         <translation>Excel-Tabelle (*.xlsx);;CSV-Datei (*.csv)</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="342"/>
+        <location filename="../RTOC_GUI/Actions.py" line="343"/>
         <source>About</source>
         <translation>Über</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="342"/>
+        <location filename="../RTOC_GUI/Actions.py" line="343"/>
         <source>RealTime OpenControl (RTOC) is a free open source software under the BSD-3 license.
 
 All icons are provided under the Creative Commons Attribution-NoDerivs 3.0 Unported license by icons8 (https://icons8.de)
@@ -1837,37 +1837,37 @@ Alle Symbole werden unter der Creative Commons Attribution-NoDerivs 3.0 Unported
 Copyright (C) 2019 Sebastian Keller</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="385"/>
+        <location filename="../RTOC_GUI/Actions.py" line="386"/>
         <source>Language changed</source>
         <translation>Sprache geändert</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="385"/>
+        <location filename="../RTOC_GUI/Actions.py" line="386"/>
         <source>Please restart RTOC</source>
         <translation>Bitte starte RTOC neu</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="391"/>
+        <location filename="../RTOC_GUI/Actions.py" line="392"/>
         <source>Installed version: {}</source>
         <translation>Installierte Version: {}</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="393"/>
+        <location filename="../RTOC_GUI/Actions.py" line="394"/>
         <source>Excuse me. I couldn&apos;t find RTOC on PyPi. Please have a look at &apos;https://pypi.org/project/RTOC/&apos;.</source>
         <translation>Entschuldigen Sie mich. Ich konnte RTOC auf PyPi nicht finden. Schauen Sie sich bitte die Seite&apos;https://pypi.org/project/RTOC/&apos; an.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="396"/>
+        <location filename="../RTOC_GUI/Actions.py" line="397"/>
         <source>, Newest version: {}</source>
         <translation>, Neueste Version: {}</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="398"/>
+        <location filename="../RTOC_GUI/Actions.py" line="399"/>
         <source>RTOC is up to date.</source>
         <translation>RTOC ist auf dem neuesten Stand.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="400"/>
+        <location filename="../RTOC_GUI/Actions.py" line="401"/>
         <source>New version available. Update in terminal:
 
  &quot;pip3 install RTOC --upgrade&quot;
@@ -1877,111 +1877,111 @@ Copyright (C) 2019 Sebastian Keller</translation>
  &quot;pip3 install RTOC --upgrade&quot;</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="403"/>
+        <location filename="../RTOC_GUI/Actions.py" line="404"/>
         <source>RTOC was not installed with PyPi.</source>
         <translation>RTOC wurde nicht mit PyPi installiert.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="404"/>
+        <location filename="../RTOC_GUI/Actions.py" line="405"/>
         <source>To check for new versions, install RTOC with &quot;pip3 install RTOC&quot;.</source>
         <translation>Um nach neuen Versionen zu suchen, installieren Sie RTOC mit &quot;pip3 install RTOC&quot;.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="406"/>
+        <location filename="../RTOC_GUI/Actions.py" line="407"/>
         <source>Version</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="409"/>
+        <location filename="../RTOC_GUI/Actions.py" line="410"/>
         <source>Clear cache</source>
         <translation>Cache leeren</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="409"/>
+        <location filename="../RTOC_GUI/Actions.py" line="410"/>
         <source>Are you sure you want to empty the cache?</source>
         <translation>Sind Sie sicher, dass Sie den Cache leeren wollen?</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="409"/>
+        <location filename="../RTOC_GUI/Actions.py" line="410"/>
         <source>This will cause all settings to be lost.</source>
         <translation>Dadurch gehen alle Einstellungen verloren.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="479"/>
+        <location filename="../RTOC_GUI/Actions.py" line="480"/>
         <source>Call device-function</source>
         <translation>Gerätefunktion ausführen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="479"/>
+        <location filename="../RTOC_GUI/Actions.py" line="480"/>
         <source>Function parameters</source>
         <translation>Funktion-Argumente</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="496"/>
+        <location filename="../RTOC_GUI/Actions.py" line="497"/>
         <source>Function-arguments invalid</source>
         <translation>Funktion-Argumente fehlerhaft</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="496"/>
+        <location filename="../RTOC_GUI/Actions.py" line="497"/>
         <source>Please enter valid arguments</source>
         <translation>Bitte geben Sie gültige Argumente ein</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="518"/>
+        <location filename="../RTOC_GUI/Actions.py" line="519"/>
         <source>Change device parameter</source>
         <translation>Geräteparameter ändern</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="531"/>
+        <location filename="../RTOC_GUI/Actions.py" line="532"/>
         <source>Value invalid</source>
         <translation>Wert ungültig</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="531"/>
+        <location filename="../RTOC_GUI/Actions.py" line="532"/>
         <source>Please enter a valid value for this parameter</source>
         <translation>Bitte geben Sie einen gültigen Wert für diesen Parameter ein.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="539"/>
+        <location filename="../RTOC_GUI/Actions.py" line="540"/>
         <source>New Host</source>
         <translation>Neuer Host</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="560"/>
+        <location filename="../RTOC_GUI/Actions.py" line="561"/>
         <source>Connect with new host</source>
         <translation>Mit neuem Host verbinden</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="560"/>
+        <location filename="../RTOC_GUI/Actions.py" line="561"/>
         <source>Connect to new remote RTOC. Enter a valid address
 (Including port &quot;:&quot;)</source>
         <translation>Verbinden Sie sich mit dem neuen Remote-RTOC. Geben Sie eine gültige Adresse ein
 (Einschließlich Port &quot;:&quot;)</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="563"/>
+        <location filename="../RTOC_GUI/Actions.py" line="564"/>
         <source>Enter name</source>
         <translation>Name eingeben</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="563"/>
+        <location filename="../RTOC_GUI/Actions.py" line="564"/>
         <source>Enter a name for this host
 (May not contain &quot;.&quot; or &quot;:&quot;)</source>
         <translation>Geben Sie einen Namen für diesen Host ein.
 (Darf nicht &quot;.&quot; enthalten. oder &quot;:&quot;))</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="590"/>
+        <location filename="../RTOC_GUI/Actions.py" line="591"/>
         <source>Change remote update-rate</source>
         <translation>Ändern der Remote-Update-Rate</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="590"/>
+        <location filename="../RTOC_GUI/Actions.py" line="591"/>
         <source>Change the update-rate for pulling from remote servers</source>
         <translation>Ändern der Aktualisierungsrate für die Signale von Remote-Servern</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="599"/>
+        <location filename="../RTOC_GUI/Actions.py" line="600"/>
         <source>Your input was wrong.</source>
         <translation>Deine Eingabe war falsch.</translation>
     </message>
@@ -1991,74 +1991,74 @@ Copyright (C) 2019 Sebastian Keller</translation>
         <translation>Fertig</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="613"/>
+        <location filename="../RTOC_GUI/Actions.py" line="614"/>
         <source>RTOC-Search completed</source>
         <translation>RTOC-Suche abgeschlossen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="613"/>
+        <location filename="../RTOC_GUI/Actions.py" line="614"/>
         <source>{} servers found:
 {}</source>
         <translation>{} Server gefunden:
 {}</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="629"/>
+        <location filename="../RTOC_GUI/Actions.py" line="630"/>
         <source>Password</source>
         <translation>Passwort</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="629"/>
+        <location filename="../RTOC_GUI/Actions.py" line="630"/>
         <source>The RTOC server {} is password-protected. Please enter your password.</source>
         <translation>Der RTOC-Server {} ist passwortgeschützt. Bitte gib dein Passwort ein.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="651"/>
+        <location filename="../RTOC_GUI/Actions.py" line="652"/>
         <source>Save password</source>
         <translation>Passwort speichern</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="651"/>
+        <location filename="../RTOC_GUI/Actions.py" line="652"/>
         <source>Do you want to save this password?</source>
         <translation>Möchten Sie dieses Passwort speichern?</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="662"/>
+        <location filename="../RTOC_GUI/Actions.py" line="663"/>
         <source>Connection established</source>
         <translation>Verbindung hergestellt</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="662"/>
+        <location filename="../RTOC_GUI/Actions.py" line="663"/>
         <source>Connection to {} on port {} established.</source>
         <translation>Verbindung zu {} an Port {} hergestellt.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/remoteWidget.py" line="107"/>
+        <location filename="../RTOC_GUI/remoteWidget.py" line="108"/>
         <source>Protected</source>
         <translation>Geschützt</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="646"/>
+        <location filename="../RTOC_GUI/Actions.py" line="647"/>
         <source>Connection to {} on port {} not established</source>
         <translation>Verbindung zu {} auf Port {} nicht hergestellt</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="646"/>
+        <location filename="../RTOC_GUI/Actions.py" line="647"/>
         <source>Password is wrong.</source>
         <translation>Das Passwort ist falsch.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="656"/>
+        <location filename="../RTOC_GUI/Actions.py" line="657"/>
         <source>Connection error</source>
         <translation>Verbindungsfehler</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="656"/>
+        <location filename="../RTOC_GUI/Actions.py" line="657"/>
         <source>Error. Connection to {} on port {} could not be established.</source>
         <translation>Fehler. Die Verbindung zu {} auf Port {} konnte nicht hergestellt werden.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="656"/>
+        <location filename="../RTOC_GUI/Actions.py" line="657"/>
         <source>Retry?</source>
         <translation>Erneut versuchen?</translation>
     </message>
@@ -2158,17 +2158,17 @@ Copyright (C) 2019 Sebastian Keller</translation>
         <translation>Fehler beim Verbinden mit dem Remote-RTOC</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/signalWidget.py" line="656"/>
+        <location filename="../RTOC_GUI/signalWidget.py" line="660"/>
         <source>Remove from database</source>
         <translation>Aus der Datenbank entfernen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/signalWidget.py" line="656"/>
+        <location filename="../RTOC_GUI/signalWidget.py" line="660"/>
         <source>Do you want to remove that signal from the database, too?</source>
         <translation>Möchten Sie dieses Signal auch aus der Datenbank entfernen?</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/signalWidget.py" line="656"/>
+        <location filename="../RTOC_GUI/signalWidget.py" line="660"/>
         <source>The events that are assigned to the signal are also deleted.</source>
         <translation>Die Events, die dem Signal zugeordnet sind, werden ebenfalls gelöscht.</translation>
     </message>
@@ -2193,42 +2193,42 @@ Copyright (C) 2019 Sebastian Keller</translation>
         <translation>Verbunden</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/remoteWidget.py" line="101"/>
+        <location filename="../RTOC_GUI/remoteWidget.py" line="102"/>
         <source>Wrong password</source>
         <translation>Falsches Passwort</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/remoteWidget.py" line="115"/>
+        <location filename="../RTOC_GUI/remoteWidget.py" line="116"/>
         <source>Disconnect</source>
         <translation>Verbindung trennen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/remoteWidget.py" line="115"/>
+        <location filename="../RTOC_GUI/remoteWidget.py" line="116"/>
         <source>Do you want to disconnect {}?</source>
         <translation>Möchten Sie die Verbindung zu {} trennen?</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/remoteWidget.py" line="115"/>
+        <location filename="../RTOC_GUI/remoteWidget.py" line="116"/>
         <source>Transferred signals will remain.</source>
         <translation>Übertragene Signale bleiben erhalten.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/remoteWidget.py" line="119"/>
+        <location filename="../RTOC_GUI/remoteWidget.py" line="120"/>
         <source>Could not disconnect from {}.</source>
         <translation>Die Verbindung mit {} konnte nicht getrennt werden.</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/remoteWidget.py" line="190"/>
+        <location filename="../RTOC_GUI/remoteWidget.py" line="191"/>
         <source>Delete signal</source>
         <translation>Signal löschen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/remoteWidget.py" line="228"/>
+        <location filename="../RTOC_GUI/remoteWidget.py" line="229"/>
         <source>Download completed</source>
         <translation>Download abgeschlossen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/remoteWidget.py" line="228"/>
+        <location filename="../RTOC_GUI/remoteWidget.py" line="229"/>
         <source>Session downloaded successfully.</source>
         <translation>Sitzung erfolgreich heruntergeladen.</translation>
     </message>
@@ -2253,27 +2253,27 @@ Copyright (C) 2019 Sebastian Keller</translation>
         <translation>Event/Signal erzeugen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2022"/>
+        <location filename="../RTLogger/telegramBot.py" line="2041"/>
         <source>Automation</source>
         <translation>Automatisierung</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="521"/>
+        <location filename="../RTLogger/telegramBot.py" line="534"/>
         <source>No notifications</source>
         <translation>Keine Benachrichtigungen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="521"/>
+        <location filename="../RTLogger/telegramBot.py" line="534"/>
         <source>Only errors</source>
         <translation>Nur Fehler</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="521"/>
+        <location filename="../RTLogger/telegramBot.py" line="534"/>
         <source>Warnings</source>
         <translation>Warnungen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="521"/>
+        <location filename="../RTLogger/telegramBot.py" line="534"/>
         <source>All events</source>
         <translation>Alle Events</translation>
     </message>
@@ -2305,12 +2305,12 @@ Copyright (C) 2019 Sebastian Keller</translation>
 {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="228"/>
+        <location filename="../RTLogger/telegramBot.py" line="241"/>
         <source>{} was started.</source>
         <translation>{} wurde gestartet.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="275"/>
+        <location filename="../RTLogger/telegramBot.py" line="288"/>
         <source>*Hello {}!*
 I&apos;m your {}-bot.
 I will help you to manage the devices you installed. I can also show you the measurement data and notify you at events.</source>
@@ -2319,44 +2319,44 @@ Ich bin dein {}-Bot.
 Ich helfe dir bei der Verwaltung deiner Geräte. Ich kann dir auch die Messdaten zeigen und dich bei Events benachrichtigen.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="290"/>
+        <location filename="../RTLogger/telegramBot.py" line="303"/>
         <source>The RTOC bot is in maintenance mode. An administrator must unlock the access.</source>
         <translation>Der RTOC-Bot befindet sich im Wartungsmodus. Ein Administrator muss den Zugriff freischalten.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="297"/>
+        <location filename="../RTLogger/telegramBot.py" line="310"/>
         <source>You don&apos;t have permission for this bot.</source>
         <translation>Du hast keine Berechtigung für diesen Bot.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="401"/>
+        <location filename="../RTLogger/telegramBot.py" line="414"/>
         <source>I&apos;m busy right now, please give me more time.</source>
         <translation>Ich bin gerade beschäftigt, bitte gib mir mehr Zeit.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="491"/>
+        <location filename="../RTLogger/telegramBot.py" line="504"/>
         <source>*Mainmenu*</source>
         <translation>*Hauptmenü*</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="526"/>
+        <location filename="../RTLogger/telegramBot.py" line="539"/>
         <source>Current level: *{}*
 </source>
         <translation>Aktuelles Niveau: *{}*
 </translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="526"/>
+        <location filename="../RTLogger/telegramBot.py" line="539"/>
         <source>Choose an notification level.</source>
         <translation>Event-Benachrichtigung festlegen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="535"/>
+        <location filename="../RTLogger/telegramBot.py" line="548"/>
         <source>Settings applied</source>
         <translation>Einstellungen angepasst</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="541"/>
+        <location filename="../RTLogger/telegramBot.py" line="554"/>
         <source>Name    |  Value  | Unit
 ------- | ------- | -------
 </source>
@@ -2365,188 +2365,188 @@ Ich helfe dir bei der Verwaltung deiner Geräte. Ich kann dir auch die Messdaten
 </translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="552"/>
+        <location filename="../RTLogger/telegramBot.py" line="565"/>
         <source>No signals available</source>
         <translation>Keine Signale verfügbar</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="562"/>
+        <location filename="../RTLogger/telegramBot.py" line="575"/>
         <source>*Devices*</source>
         <translation>*Geräte*</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="595"/>
+        <location filename="../RTLogger/telegramBot.py" line="608"/>
         <source>Stop device</source>
         <translation>Gerät stoppen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="601"/>
+        <location filename="../RTLogger/telegramBot.py" line="614"/>
         <source>Functions</source>
         <translation>Funktionen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="603"/>
+        <location filename="../RTLogger/telegramBot.py" line="616"/>
         <source>Parameters</source>
         <translation>Parameter</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="605"/>
+        <location filename="../RTLogger/telegramBot.py" line="618"/>
         <source>Change samplerate</source>
         <translation>Samplerate ändern</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="598"/>
+        <location filename="../RTLogger/telegramBot.py" line="611"/>
         <source>Start device</source>
         <translation>Gerät starten</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="585"/>
+        <location filename="../RTLogger/telegramBot.py" line="598"/>
         <source>Device-error</source>
         <translation>Gerätefehler</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="590"/>
+        <location filename="../RTLogger/telegramBot.py" line="603"/>
         <source>Unknown device</source>
         <translation>Unbekanntes Gerät</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="620"/>
+        <location filename="../RTLogger/telegramBot.py" line="633"/>
         <source>*Change samplerate
 Current samplerate: {} Hz</source>
         <translation>*Samplerate ändern*
 Derzeitige Samplerate: {} Hz</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="630"/>
+        <location filename="../RTLogger/telegramBot.py" line="643"/>
         <source>Samplerate was changed</source>
         <translation>Samplerate wurde geändert</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1676"/>
+        <location filename="../RTLogger/telegramBot.py" line="1695"/>
         <source>I did not understand your message</source>
         <translation>Ich habe deine Nachricht nicht verstanden.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="650"/>
+        <location filename="../RTLogger/telegramBot.py" line="663"/>
         <source>*Functions*</source>
         <translation>*Funktionen*</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="675"/>
+        <location filename="../RTLogger/telegramBot.py" line="688"/>
         <source>*Parameters*</source>
         <translation>*Parameter*</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="748"/>
+        <location filename="../RTLogger/telegramBot.py" line="761"/>
         <source>Remove shortcut</source>
         <translation>Shortcut entfernen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="746"/>
+        <location filename="../RTLogger/telegramBot.py" line="759"/>
         <source>Create shortcut</source>
         <translation>Shortcut erzeugen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="707"/>
+        <location filename="../RTLogger/telegramBot.py" line="720"/>
         <source>Please specify the parameters to be passed to the function. (If necessary)</source>
         <translation>Bitte geben Sie die Parameter an, die an die Funktion übergeben werden sollen. (Falls erforderlich)</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="752"/>
+        <location filename="../RTLogger/telegramBot.py" line="765"/>
         <source>No parameters</source>
         <translation>Keine Parameter</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="717"/>
+        <location filename="../RTLogger/telegramBot.py" line="730"/>
         <source>*Error*. 
 Parameter {} not found or device {} not started.</source>
         <translation>*Fehler*. 
 Parameter {} nicht gefunden oder Gerät {} wurde nicht gestartet.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="724"/>
+        <location filename="../RTLogger/telegramBot.py" line="737"/>
         <source>Current value: *{}*
 Write me a new value if you want to change it.</source>
         <translation>Aktueller Wert: *{}*
 Schreibe mir einen neuen Wert, wenn du ihn ändern willst.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="765"/>
+        <location filename="../RTLogger/telegramBot.py" line="778"/>
         <source>_{} is not a valid format._</source>
         <translation>_{} ist kein gültiges Format._</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="773"/>
+        <location filename="../RTLogger/telegramBot.py" line="786"/>
         <source>Function was executed.</source>
         <translation>Die Funktion wurde ausgeführt.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="775"/>
+        <location filename="../RTLogger/telegramBot.py" line="788"/>
         <source>Error in function.</source>
         <translation>Fehler in der Funktion.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="885"/>
+        <location filename="../RTLogger/telegramBot.py" line="898"/>
         <source>Request graph</source>
         <translation>Graph anfordern</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="989"/>
+        <location filename="../RTLogger/telegramBot.py" line="1002"/>
         <source>Select period</source>
         <translation>Zeitraum auswählen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="923"/>
+        <location filename="../RTLogger/telegramBot.py" line="936"/>
         <source>Hide events</source>
         <translation>Events ausblenden</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="917"/>
+        <location filename="../RTLogger/telegramBot.py" line="930"/>
         <source>Show events</source>
         <translation>Events anzeigen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="996"/>
+        <location filename="../RTLogger/telegramBot.py" line="1009"/>
         <source>Deselect all</source>
         <translation>Alle abwählen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="992"/>
+        <location filename="../RTLogger/telegramBot.py" line="1005"/>
         <source>Select all</source>
         <translation>Alle auswählen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="882"/>
+        <location filename="../RTLogger/telegramBot.py" line="895"/>
         <source>Select all with unit &quot;{}&quot;</source>
         <translation>Alle mit Einheit &quot;{}&quot; auswählen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="970"/>
+        <location filename="../RTLogger/telegramBot.py" line="983"/>
         <source>Delete selected signals!</source>
         <translation>Ausgewählte Signale löschen!</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="980"/>
+        <location filename="../RTLogger/telegramBot.py" line="993"/>
         <source>Delete selected events!</source>
         <translation>Ausgewählte Events löschen!</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1006"/>
+        <location filename="../RTLogger/telegramBot.py" line="1019"/>
         <source>Download selected signals!</source>
         <translation>Ausgewählte Signale herunterladen!</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1021"/>
+        <location filename="../RTLogger/telegramBot.py" line="1034"/>
         <source>View: Devices</source>
         <translation>Ansicht: Geräte</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1024"/>
+        <location filename="../RTLogger/telegramBot.py" line="1037"/>
         <source>View: Signals</source>
         <translation>Ansicht: Signale</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="861"/>
+        <location filename="../RTLogger/telegramBot.py" line="874"/>
         <source>
 *Signals*
 
@@ -2561,7 +2561,7 @@ Hier können Sie sich über Signale informieren und ich kann dir Grafiken schick
 Wählen Sie zunächst ein oder mehrere Signale aus und klicke auf &quot;</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="864"/>
+        <location filename="../RTLogger/telegramBot.py" line="877"/>
         <source>&quot;.
 
 I can also display the events in the plot and delete selected signals or events.
@@ -2580,47 +2580,47 @@ Verfügbarer Zeitraum:
 {} - {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="900"/>
+        <location filename="../RTLogger/telegramBot.py" line="913"/>
         <source>{} can not be plotted.</source>
         <translation>{} kann nicht dargestellt werden.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="906"/>
+        <location filename="../RTLogger/telegramBot.py" line="919"/>
         <source>I&apos;m going to create a graph with {} signals. This may take a while.</source>
         <translation>Ich werde ein Graphen mit {} Signalen erstellen. Dies kann eine Weile dauern.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="915"/>
+        <location filename="../RTLogger/telegramBot.py" line="928"/>
         <source>No signals selected.</source>
         <translation>Keine Signale ausgewählt.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="921"/>
+        <location filename="../RTLogger/telegramBot.py" line="934"/>
         <source>Events will be plotted.</source>
         <translation>Die Events werden dargestellt.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="928"/>
+        <location filename="../RTLogger/telegramBot.py" line="941"/>
         <source>Events will not be plotted.</source>
         <translation>Die Events werden nicht dargestellt.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="931"/>
+        <location filename="../RTLogger/telegramBot.py" line="944"/>
         <source>You can&apos;t hide events, they are already hidden!</source>
         <translation>Du kannst die Events nicht verstecken, sie sind bereits versteckt!</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="938"/>
+        <location filename="../RTLogger/telegramBot.py" line="951"/>
         <source>Signal removed from selection.</source>
         <translation>Signal aus der Auswahl entfernt.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1854"/>
+        <location filename="../RTLogger/telegramBot.py" line="1873"/>
         <source>Empty signal</source>
         <translation>Leeres Signal</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1066"/>
+        <location filename="../RTLogger/telegramBot.py" line="1085"/>
         <source>
 Latest Event:
 </source>
@@ -2634,7 +2634,7 @@ Letztes Event:
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1076"/>
+        <location filename="../RTLogger/telegramBot.py" line="1095"/>
         <source>Signal selected:
 {}
 Events: {}</source>
@@ -2643,22 +2643,22 @@ Events: {}</source>
 Events: {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="978"/>
+        <location filename="../RTLogger/telegramBot.py" line="991"/>
         <source>Selected signals have been deleted!</source>
         <translation>Ausgewählte Signale wurden gelöscht!</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="987"/>
+        <location filename="../RTLogger/telegramBot.py" line="1000"/>
         <source>Events of selected signals have been deleted!</source>
         <translation>Ereignisse ausgewählter Signale wurden gelöscht!</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1009"/>
+        <location filename="../RTLogger/telegramBot.py" line="1022"/>
         <source>I&apos;m collecting the data now...</source>
         <translation>Ich sammle jetzt die Daten.....</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1079"/>
+        <location filename="../RTLogger/telegramBot.py" line="1098"/>
         <source>Signal names consist of
 &lt;Device&gt;.&lt;Signal&gt;
 Your message didn&apos;t look that way.
@@ -2668,12 +2668,12 @@ Your message didn&apos;t look that way.
 Deine Nachricht sah nicht so aus.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1042"/>
+        <location filename="../RTLogger/telegramBot.py" line="1055"/>
         <source>Signals of {}</source>
         <translation>Signale von {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1094"/>
+        <location filename="../RTLogger/telegramBot.py" line="1113"/>
         <source>Here you can set which range I should display.
 If you only specify one date, I assume you want to have the dates from that point until now.
 If you want to specify a time period, separate two times with a &quot;-&quot;. You don&apos;t have to give a time.
@@ -2684,7 +2684,7 @@ Wenn du einen Zeitraum angeben möchten, trenne zwei Zeiten mit einem &quot;-&qu
 Beispiel: &quot;16.05.19 - 13.06.19 14:33&quot;</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1095"/>
+        <location filename="../RTLogger/telegramBot.py" line="1114"/>
         <source>
 Selected period:
 {} - {}
@@ -2699,54 +2699,54 @@ Verfügbarer Zeitraum:
 </translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1103"/>
+        <location filename="../RTLogger/telegramBot.py" line="1122"/>
         <source>Last minute</source>
         <translation>Letzte Minute</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1106"/>
+        <location filename="../RTLogger/telegramBot.py" line="1125"/>
         <source>Last 10 minutes</source>
         <translation>Letzten 10 Minuten</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1109"/>
+        <location filename="../RTLogger/telegramBot.py" line="1128"/>
         <source>Last hour</source>
         <translation>Letzte Stunde</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1112"/>
+        <location filename="../RTLogger/telegramBot.py" line="1131"/>
         <source>Last 24h</source>
         <translation>Letzte 24h</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1115"/>
+        <location filename="../RTLogger/telegramBot.py" line="1134"/>
         <source>Last week</source>
         <translation>Letzte Woche</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1118"/>
+        <location filename="../RTLogger/telegramBot.py" line="1137"/>
         <source>Last month</source>
         <translation>Letzter Monat</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1121"/>
+        <location filename="../RTLogger/telegramBot.py" line="1140"/>
         <source>All</source>
         <translation>Alle</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1128"/>
+        <location filename="../RTLogger/telegramBot.py" line="1147"/>
         <source>Please send me a period I can understand.</source>
         <translation>Bitte sende mit einen Zeitraum, den ich verstehen kann.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1134"/>
+        <location filename="../RTLogger/telegramBot.py" line="1153"/>
         <source>Selected period:
 {} - {}</source>
         <translation>Ausgewählter Zeitraum:
 {} - {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1150"/>
+        <location filename="../RTLogger/telegramBot.py" line="1169"/>
         <source>
 *Create event or signal*
 
@@ -2771,63 +2771,63 @@ Du kannst mir auch Messwerte schicken (z.B. &apos;5 V&apos;).
 Du kannst das Event/den Messwert auch einem Signal zuordnen, indem du ein Signal aus der Liste auswählst oder einen Signalnamen (&quot;Gerät.Signal&quot;) angibst.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1160"/>
+        <location filename="../RTLogger/telegramBot.py" line="1179"/>
         <source>Signal selected: {}.</source>
         <translation>Signal ausgewählt: {}.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1189"/>
+        <location filename="../RTLogger/telegramBot.py" line="1208"/>
         <source>Value transmitted.</source>
         <translation>Messwert wurde übermittelt.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1204"/>
+        <location filename="../RTLogger/telegramBot.py" line="1223"/>
         <source>Event transmitted.</source>
         <translation>Event wurde übermittelt.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1241"/>
+        <location filename="../RTLogger/telegramBot.py" line="1260"/>
         <source>Set notification level</source>
         <translation>Event-Benachrichtigung festlegen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1243"/>
+        <location filename="../RTLogger/telegramBot.py" line="1262"/>
         <source>General</source>
         <translation>Allgemein</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1246"/>
+        <location filename="../RTLogger/telegramBot.py" line="1265"/>
         <source>Telegram-Bot</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1249"/>
+        <location filename="../RTLogger/telegramBot.py" line="1268"/>
         <source>Backup</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1222"/>
+        <location filename="../RTLogger/telegramBot.py" line="1241"/>
         <source>
 IP-Adress: {}</source>
         <translation>
 IP-Adresse: {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1227"/>
+        <location filename="../RTLogger/telegramBot.py" line="1246"/>
         <source>
 There are {}GB of {}GB available.</source>
         <translation>
 Es sind noch {}GB von {}GB verfügbar.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1231"/>
+        <location filename="../RTLogger/telegramBot.py" line="1250"/>
         <source>
 Data is beeing saved in PostgreSQL-database</source>
         <translation>
 Die Daten werden in der PostgreSQL-Datenbank gespeichert.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1232"/>
+        <location filename="../RTLogger/telegramBot.py" line="1251"/>
         <source>
 Database uses...
 Total: {}
@@ -2840,244 +2840,244 @@ Für Signale: {}
 Für Events: {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1234"/>
+        <location filename="../RTLogger/telegramBot.py" line="1253"/>
         <source>
 There are {} of {} available</source>
         <translation>
 Es sind {} von {} verfügbar.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1235"/>
+        <location filename="../RTLogger/telegramBot.py" line="1254"/>
         <source>-Settings*</source>
         <translation>-Einstellungen*</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1347"/>
+        <location filename="../RTLogger/telegramBot.py" line="1366"/>
         <source>Telegram Bot: InlineMenu</source>
         <translation>Telegram Bot: InlineMenü</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1353"/>
+        <location filename="../RTLogger/telegramBot.py" line="1372"/>
         <source>Telegram Bot: KeyboardMenu</source>
         <translation>Telegram Bot: TastaturMenü</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1335"/>
+        <location filename="../RTLogger/telegramBot.py" line="1354"/>
         <source>OnlyAdmin: On</source>
         <translation>NurAdmins: An</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1341"/>
+        <location filename="../RTLogger/telegramBot.py" line="1360"/>
         <source>OnlyAdmin: Off</source>
         <translation>NurAdmins: Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1332"/>
+        <location filename="../RTLogger/telegramBot.py" line="1351"/>
         <source>Registered users</source>
         <translation>Angemeldete Nutzer</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1277"/>
+        <location filename="../RTLogger/telegramBot.py" line="1296"/>
         <source>*Telegram-Bot settings*</source>
         <translation>*Telegram-Bot Einstellungen*</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1290"/>
+        <location filename="../RTLogger/telegramBot.py" line="1309"/>
         <source>Currently registered telegram-users</source>
         <translation>Derzeit registrierte Telegram-Nutzer</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1312"/>
+        <location filename="../RTLogger/telegramBot.py" line="1331"/>
         <source>Admin</source>
         <translation>Admin</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1318"/>
+        <location filename="../RTLogger/telegramBot.py" line="1337"/>
         <source>Read</source>
         <translation>Lesen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1315"/>
+        <location filename="../RTLogger/telegramBot.py" line="1334"/>
         <source>Write</source>
         <translation>Schreiben</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1328"/>
+        <location filename="../RTLogger/telegramBot.py" line="1347"/>
         <source>Blocked</source>
         <translation>Blockiert</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1326"/>
+        <location filename="../RTLogger/telegramBot.py" line="1345"/>
         <source>You can&apos;t change your own permissions.</source>
         <translation>Du kannst deine eigenen Berechtigungen nicht ändern.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1329"/>
+        <location filename="../RTLogger/telegramBot.py" line="1348"/>
         <source>You now have access to this bot.</source>
         <translation>Du hast nun Zugriff auf diesen Bot.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1359"/>
+        <location filename="../RTLogger/telegramBot.py" line="1378"/>
         <source>Telegram-Bot: On</source>
         <translation>Telegram-Bot: An</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1365"/>
+        <location filename="../RTLogger/telegramBot.py" line="1384"/>
         <source>Telegram-Bot: Off</source>
         <translation>Telegram-Bot: Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1377"/>
+        <location filename="../RTLogger/telegramBot.py" line="1396"/>
         <source>**started**</source>
         <translation>**gestartet**</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1379"/>
+        <location filename="../RTLogger/telegramBot.py" line="1398"/>
         <source>**stopped**</source>
         <translation>**gestoppt**</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1381"/>
+        <location filename="../RTLogger/telegramBot.py" line="1400"/>
         <source>{} was {}.</source>
         <translation>{} wurde {}.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1383"/>
+        <location filename="../RTLogger/telegramBot.py" line="1402"/>
         <source>{} could not be {}.</source>
         <translation>{} konnte nicht {} werden.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1454"/>
+        <location filename="../RTLogger/telegramBot.py" line="1473"/>
         <source>Backup: On</source>
         <translation>Backup: An</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1446"/>
+        <location filename="../RTLogger/telegramBot.py" line="1465"/>
         <source>Create backup now</source>
         <translation>Jetzt Backup erstellen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1451"/>
+        <location filename="../RTLogger/telegramBot.py" line="1470"/>
         <source>Auto-resampling: Off</source>
         <translation>Auto-Resamling: Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1451"/>
+        <location filename="../RTLogger/telegramBot.py" line="1470"/>
         <source>Auto-resampling: {} Hz</source>
         <translation>Auto-Resampling: {} Hz</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1491"/>
+        <location filename="../RTLogger/telegramBot.py" line="1510"/>
         <source>Backup, if full: On</source>
         <translation>Backup, wenn voll: An</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1497"/>
+        <location filename="../RTLogger/telegramBot.py" line="1516"/>
         <source>Backup, if full: Off</source>
         <translation>Backup, wenn voll: Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1503"/>
+        <location filename="../RTLogger/telegramBot.py" line="1522"/>
         <source>Backup on close: On</source>
         <translation>Backup beim Beenden: An</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1509"/>
+        <location filename="../RTLogger/telegramBot.py" line="1528"/>
         <source>Backup on close: Off</source>
         <translation>Backup beim Beenden: Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1515"/>
+        <location filename="../RTLogger/telegramBot.py" line="1534"/>
         <source>Load backup on start: On</source>
         <translation>Backup beim Start laden: An</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1521"/>
+        <location filename="../RTLogger/telegramBot.py" line="1540"/>
         <source>Load backup on start: Off</source>
         <translation>Backup beim Start laden: Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1527"/>
+        <location filename="../RTLogger/telegramBot.py" line="1546"/>
         <source>Backup-Interval: {}s</source>
         <translation>Backup-Intervall: {}s</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1460"/>
+        <location filename="../RTLogger/telegramBot.py" line="1479"/>
         <source>Backup: Off</source>
         <translation>Backup: Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1475"/>
+        <location filename="../RTLogger/telegramBot.py" line="1494"/>
         <source>Resample database</source>
         <translation>Datenbank resamplen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1466"/>
+        <location filename="../RTLogger/telegramBot.py" line="1485"/>
         <source>Download database</source>
         <translation>Datenbank herunterladen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1441"/>
+        <location filename="../RTLogger/telegramBot.py" line="1460"/>
         <source>Delete all data</source>
         <translation>Alle Daten löschen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1427"/>
+        <location filename="../RTLogger/telegramBot.py" line="1446"/>
         <source>*Backup settings*</source>
         <translation>*Backup Einstellungen*</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1443"/>
+        <location filename="../RTLogger/telegramBot.py" line="1462"/>
         <source>**Delete all data**</source>
         <translation>**Alle Daten löschen**</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1442"/>
+        <location filename="../RTLogger/telegramBot.py" line="1461"/>
         <source>Do you really want to delete all data (signals + events)?</source>
         <translation>Möchten Sie wirklich alle Daten (Signale + Events) löschen?</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1449"/>
+        <location filename="../RTLogger/telegramBot.py" line="1468"/>
         <source>Backup was created.</source>
         <translation>Die Sicherung wurde erstellt.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1473"/>
+        <location filename="../RTLogger/telegramBot.py" line="1492"/>
         <source>Database sent.</source>
         <translation>Datenbank gesendet.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1476"/>
+        <location filename="../RTLogger/telegramBot.py" line="1495"/>
         <source>In which samplerate should the data be resampled?</source>
         <translation>In welcher Samplerate sollen die Daten neu abgetastet werden?</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1563"/>
+        <location filename="../RTLogger/telegramBot.py" line="1582"/>
         <source>That wasn&apos;t a valid input.</source>
         <translation>Das war keine gültige Eingabe.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1485"/>
+        <location filename="../RTLogger/telegramBot.py" line="1504"/>
         <source>Signals are now beeing resampled.This can take quite a while, depending on the size of the database.</source>
         <translation>Die Signale werden nun neu abgetastet, was je nach Größe der Datenbank einige Zeit dauern kann.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1487"/>
+        <location filename="../RTLogger/telegramBot.py" line="1506"/>
         <source>Signals have been resampled.</source>
         <translation>Die Signale wurden neu abgetastet.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1500"/>
+        <location filename="../RTLogger/telegramBot.py" line="1519"/>
         <source>Backup, if full</source>
         <translation>Backup, wenn voll</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1512"/>
+        <location filename="../RTLogger/telegramBot.py" line="1531"/>
         <source>Backup on close</source>
         <translation>Backup beim Beenden</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1524"/>
+        <location filename="../RTLogger/telegramBot.py" line="1543"/>
         <source>Load backup on start</source>
         <translation>Backup beim Start laden</translation>
     </message>
@@ -3087,257 +3087,257 @@ Es sind {} von {} verfügbar.</translation>
         <translation>Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1545"/>
+        <location filename="../RTLogger/telegramBot.py" line="1564"/>
         <source>1x per minute</source>
         <translation>1x pro Minute</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1547"/>
+        <location filename="../RTLogger/telegramBot.py" line="1566"/>
         <source>2x per hour</source>
         <translation>2x pro Stunde</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1549"/>
+        <location filename="../RTLogger/telegramBot.py" line="1568"/>
         <source>1x per hour</source>
         <translation>1x pro Stunde</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1551"/>
+        <location filename="../RTLogger/telegramBot.py" line="1570"/>
         <source>2x per day</source>
         <translation>2x am Tag</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1553"/>
+        <location filename="../RTLogger/telegramBot.py" line="1572"/>
         <source>1x per day</source>
         <translation>1x am Tag</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1555"/>
+        <location filename="../RTLogger/telegramBot.py" line="1574"/>
         <source>2x per week</source>
         <translation>2x in der Woche</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1557"/>
+        <location filename="../RTLogger/telegramBot.py" line="1576"/>
         <source>1x per week</source>
         <translation>1x in der Woche</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1538"/>
+        <location filename="../RTLogger/telegramBot.py" line="1557"/>
         <source>At what intervals should backups be performed? Give me the seconds or select an element from the list.
 Backup interval and local recording duration should match the signal sampling rates.</source>
         <translation>In welchen Abständen sollten Backups durchgeführt werden? Gib mir die Sekunden oder wähle ein Element aus der Liste.
 Das Sicherungsintervall und die lokale Aufzeichnungsdauer sollten mit den Signal-Sampleraten zusammenpassen.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1566"/>
+        <location filename="../RTLogger/telegramBot.py" line="1585"/>
         <source>Backup-Interval changed.</source>
         <translation>Das Backup-Intervall wurde geändert.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1594"/>
+        <location filename="../RTLogger/telegramBot.py" line="1613"/>
         <source>Change recording length</source>
         <translation>Aufzeichnungslänge ändern</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1599"/>
+        <location filename="../RTLogger/telegramBot.py" line="1618"/>
         <source>Change global samplerate</source>
         <translation>Globale Samplerate ändern</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1608"/>
+        <location filename="../RTLogger/telegramBot.py" line="1627"/>
         <source>TCP-Server: On</source>
         <translation>TCP-Server: An</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1614"/>
+        <location filename="../RTLogger/telegramBot.py" line="1633"/>
         <source>TCP-Server: Off</source>
         <translation>TCP-Server: Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1602"/>
+        <location filename="../RTLogger/telegramBot.py" line="1621"/>
         <source>Restart server</source>
         <translation>Server neustarten</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1588"/>
+        <location filename="../RTLogger/telegramBot.py" line="1607"/>
         <source>*General settings*</source>
         <translation>*Allgemeine Einstellungen*</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1605"/>
+        <location filename="../RTLogger/telegramBot.py" line="1624"/>
         <source>**Something didn&apos;t work.**
 Either I don&apos;t have the necessary rights, or my home is not a Linux device.</source>
         <translation>**Irgendwas hat nicht funktioniert.**
 Entweder habe ich nicht die notwendigen Rechte, oder mein Zuhause ist kein Linux-Gerät.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1633"/>
+        <location filename="../RTLogger/telegramBot.py" line="1652"/>
         <source>*Change database resampling*
 Current resampling: {}</source>
         <translation>*Datenbank-Resampling ändern*
 Aktuelles Resampling: {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1643"/>
+        <location filename="../RTLogger/telegramBot.py" line="1662"/>
         <source>Resampling has been deactivated</source>
         <translation>Resampling wurde deaktiviert.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1650"/>
+        <location filename="../RTLogger/telegramBot.py" line="1669"/>
         <source>Resampling has been changed</source>
         <translation>Das Resampling wurde geändert.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1662"/>
+        <location filename="../RTLogger/telegramBot.py" line="1681"/>
         <source>*Change samplerate for all running devices*</source>
         <translation>*Samplerate für alle laufenden Geräte ändern*.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1671"/>
+        <location filename="../RTLogger/telegramBot.py" line="1690"/>
         <source>Samplerate has been changed</source>
         <translation>Die Samplerate wurde geändert.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1685"/>
+        <location filename="../RTLogger/telegramBot.py" line="1704"/>
         <source>The recording length does not affect the recording lenght of the database, which is unlimited. 
 Current recording length: {}</source>
         <translation>Die Aufzeichnungsdauer hat keinen Einfluss auf die Aufzeichnungslänge der Datenbank, welche unbegrenzt ist. 
 Aktuelle Aufzeichnungsdauer: {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1687"/>
+        <location filename="../RTLogger/telegramBot.py" line="1706"/>
         <source>Current recording length: {}</source>
         <translation>Aktuelle Aufzeichnungslänge: {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1701"/>
+        <location filename="../RTLogger/telegramBot.py" line="1720"/>
         <source>Recording length has been changed</source>
         <translation>Die Aufzeichnungslänge wurde geändert.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1712"/>
+        <location filename="../RTLogger/telegramBot.py" line="1731"/>
         <source>**I couldn&apos;t create a plot.**
 You need to install &quot;matplotlib&quot; and &quot;tkinker&quot; on my server.**</source>
         <translation>**Ich konnte keinen Graph erstellen. **
 Du musst &quot;matplotlib&quot; und &quot;Tkinker&quot; auf meinem Server installieren.**</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1769"/>
+        <location filename="../RTLogger/telegramBot.py" line="1788"/>
         <source>%d.%m %H:%M</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1771"/>
+        <location filename="../RTLogger/telegramBot.py" line="1790"/>
         <source>%d.%m %H:%M:%S</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1779"/>
+        <location filename="../RTLogger/telegramBot.py" line="1798"/>
         <source>Plot completed at {}%.</source>
         <translation>Plot zu {}% abgeschlossen.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1783"/>
+        <location filename="../RTLogger/telegramBot.py" line="1802"/>
         <source>Time [s]</source>
         <translation>Zeit [s]</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1867"/>
+        <location filename="../RTLogger/telegramBot.py" line="1886"/>
         <source>Duration: {}</source>
         <translation>Dauer: {}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1868"/>
+        <location filename="../RTLogger/telegramBot.py" line="1887"/>
         <source> values</source>
         <translation> Werte</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1894"/>
+        <location filename="../RTLogger/telegramBot.py" line="1913"/>
         <source>I could not create any info for this signal.</source>
         <translation>Ich konnte für dieses Signal keine Info erzeugen.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1915"/>
+        <location filename="../RTLogger/telegramBot.py" line="1934"/>
         <source>Please enter a name for this shortcut.</source>
         <translation>Bitte geben Sie einen Namen für diese Verknüpfung ein.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1939"/>
+        <location filename="../RTLogger/telegramBot.py" line="1958"/>
         <source>For this function/this parameter already exists a shortcut!</source>
         <translation>Für diese Funktion/diesen Parameter existiert bereits eine Verknüpfung!</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1924"/>
+        <location filename="../RTLogger/telegramBot.py" line="1943"/>
         <source>You cannot name the shortcut like an entry in the main menu.</source>
         <translation>Sie können die Verknüpfung nicht wie einen Eintrag im Hauptmenü benennen.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1926"/>
+        <location filename="../RTLogger/telegramBot.py" line="1945"/>
         <source>Please choose a different name. This one is already in use.</source>
         <translation>Bitte wählen Sie einen anderen Namen. Dieser ist bereits vorhanden.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1936"/>
+        <location filename="../RTLogger/telegramBot.py" line="1955"/>
         <source>Shortcut has been created</source>
         <translation>Es wurde eine Verknüpfung erstellt.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1980"/>
+        <location filename="../RTLogger/telegramBot.py" line="1999"/>
         <source>Sorry, I couldn&apos;t find that shortcut!</source>
         <translation>Sorry, ich konnte die Verknüpfung nicht finden!</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2349"/>
+        <location filename="../RTLogger/telegramBot.py" line="2368"/>
         <source>You reached the end of the universe</source>
         <translation>Du hast das Ende des Universums erreicht.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2037"/>
+        <location filename="../RTLogger/telegramBot.py" line="2056"/>
         <source>Global actions: On</source>
         <translation>Globale Aktionen: An</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2039"/>
+        <location filename="../RTLogger/telegramBot.py" line="2058"/>
         <source>Global actions: Off</source>
         <translation>Globale Aktionen: Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2041"/>
+        <location filename="../RTLogger/telegramBot.py" line="2060"/>
         <source>Global events: On</source>
         <translation>Globale Events: An</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2043"/>
+        <location filename="../RTLogger/telegramBot.py" line="2062"/>
         <source>Global events: Off</source>
         <translation>Globale Events: Aus</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2045"/>
+        <location filename="../RTLogger/telegramBot.py" line="2064"/>
         <source>Edit actions</source>
         <translation>Aktionen bearbeiten</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2048"/>
+        <location filename="../RTLogger/telegramBot.py" line="2067"/>
         <source>Edit events</source>
         <translation>Events bearbeiten</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2062"/>
+        <location filename="../RTLogger/telegramBot.py" line="2081"/>
         <source>Global events</source>
         <translation>Globale Events</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2076"/>
+        <location filename="../RTLogger/telegramBot.py" line="2095"/>
         <source>Create new global event</source>
         <translation>Neues globales Event erzeugen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2077"/>
+        <location filename="../RTLogger/telegramBot.py" line="2096"/>
         <source>Give the new event a name</source>
         <translation>Gib dem neuen Event einen Namen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2100"/>
+        <location filename="../RTLogger/telegramBot.py" line="2119"/>
         <source># Event: {}
 Text: {}
 Priority: {}
@@ -3352,104 +3352,104 @@ Signal: {}.{}
 Bedingung: \n{}</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2146"/>
+        <location filename="../RTLogger/telegramBot.py" line="2165"/>
         <source>Edit condition</source>
         <translation>Bedingung bearbeiten</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2154"/>
+        <location filename="../RTLogger/telegramBot.py" line="2173"/>
         <source>Set assigned signal</source>
         <translation>Signal-Zuordnung ändern</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2165"/>
+        <location filename="../RTLogger/telegramBot.py" line="2184"/>
         <source>Trigger: Rising</source>
         <translation>Auslöser: Steigend</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2161"/>
+        <location filename="../RTLogger/telegramBot.py" line="2180"/>
         <source>Trigger: Falling</source>
         <translation>Auslöser: Fallend</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2169"/>
+        <location filename="../RTLogger/telegramBot.py" line="2188"/>
         <source>Trigger: Rising+Falling</source>
         <translation>Auslöser: Steigend+Fallend</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2177"/>
+        <location filename="../RTLogger/telegramBot.py" line="2196"/>
         <source>Trigger: True</source>
         <translation>Auslöser: Wahr</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2173"/>
+        <location filename="../RTLogger/telegramBot.py" line="2192"/>
         <source>Trigger: False</source>
         <translation>Auslöser: Unwahr</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2181"/>
+        <location filename="../RTLogger/telegramBot.py" line="2200"/>
         <source>Change event-ID</source>
         <translation>EventID ändern</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2186"/>
+        <location filename="../RTLogger/telegramBot.py" line="2205"/>
         <source>Change text</source>
         <translation>Text ändern</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2199"/>
+        <location filename="../RTLogger/telegramBot.py" line="2218"/>
         <source>Priority: </source>
         <translation>Priorität: </translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2203"/>
+        <location filename="../RTLogger/telegramBot.py" line="2222"/>
         <source>Delete event</source>
         <translation>Event löschen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2209"/>
+        <location filename="../RTLogger/telegramBot.py" line="2228"/>
         <source>Test event</source>
         <translation>Event testen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2318"/>
+        <location filename="../RTLogger/telegramBot.py" line="2337"/>
         <source>Available signals:
 </source>
         <translation>Verfügbare Signale:
 </translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2158"/>
+        <location filename="../RTLogger/telegramBot.py" line="2177"/>
         <source>Select a signal or enter a new signalname.</source>
         <translation>Wählen Sie ein Signal oder geben Sie einen neuen Signalnamen ein.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2182"/>
+        <location filename="../RTLogger/telegramBot.py" line="2201"/>
         <source>Enter an EventID now.</source>
         <translation>Geben Sie jetzt eine EventID ein.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2187"/>
+        <location filename="../RTLogger/telegramBot.py" line="2206"/>
         <source>Enter the event text now.</source>
         <translation>Geben Sie jetzt den Event-Text ein.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2250"/>
+        <location filename="../RTLogger/telegramBot.py" line="2269"/>
         <source>Global actions</source>
         <translation>Globale Aktionen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2265"/>
+        <location filename="../RTLogger/telegramBot.py" line="2284"/>
         <source>Create new global action</source>
         <translation>Neue globale Aktion erstellen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2266"/>
+        <location filename="../RTLogger/telegramBot.py" line="2285"/>
         <source>Give the new action a name</source>
         <translation>Geben Sie der neuen Aktion einen Namen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2280"/>
+        <location filename="../RTLogger/telegramBot.py" line="2299"/>
         <source># Action: {}
 Event-ListenIDs: {}
 Script: 
@@ -3462,34 +3462,34 @@ Skript:
 </translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2328"/>
+        <location filename="../RTLogger/telegramBot.py" line="2347"/>
         <source>Edit code</source>
         <translation>Code bearbeiten</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2330"/>
+        <location filename="../RTLogger/telegramBot.py" line="2349"/>
         <source>Select eventID</source>
         <translation>EventID auswählen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2339"/>
+        <location filename="../RTLogger/telegramBot.py" line="2358"/>
         <source>Delete action</source>
         <translation>Aktion löschen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2345"/>
+        <location filename="../RTLogger/telegramBot.py" line="2364"/>
         <source>Test action</source>
         <translation>Aktion testen</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2323"/>
+        <location filename="../RTLogger/telegramBot.py" line="2342"/>
         <source>{} parameters:
 </source>
         <translation>{} Parameter:
 </translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2325"/>
+        <location filename="../RTLogger/telegramBot.py" line="2344"/>
         <source>
 
 {} functions:
@@ -3500,17 +3500,17 @@ Skript:
 </translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2336"/>
+        <location filename="../RTLogger/telegramBot.py" line="2355"/>
         <source>Select events to call this action.</source>
         <translation>Wählen Sie Events aus, welche diese Aktion aufrufen.</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2369"/>
+        <location filename="../RTLogger/telegramBot.py" line="2388"/>
         <source>Action has been executed</source>
         <translation>Aktion wurde ausgeführt</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2381"/>
+        <location filename="../RTLogger/telegramBot.py" line="2400"/>
         <source>Action is incorrect</source>
         <translation>Aktion ist fehlerhaft</translation>
     </message>
@@ -3854,7 +3854,7 @@ Bitte installieren Sie es mit &quot;pip3 install psycopg2&quot;. und stellen Sie
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../RTOC_GUI/Actions.py" line="629"/>
+        <location filename="../RTOC_GUI/Actions.py" line="630"/>
         <source>TCP-Password</source>
         <translation>TCP-Passwort</translation>
     </message>
@@ -3909,17 +3909,17 @@ Bitte installieren Sie es mit &quot;pip3 install psycopg2&quot;. und stellen Sie
         <translation>Dreieck</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="1706"/>
+        <location filename="../RTLogger/telegramBot.py" line="1725"/>
         <source>Invalid input</source>
         <translation>Ungültige Eingabe</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2306"/>
+        <location filename="../RTLogger/telegramBot.py" line="2325"/>
         <source>Active</source>
         <translation>Aktiv</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2310"/>
+        <location filename="../RTLogger/telegramBot.py" line="2329"/>
         <source>Inactive</source>
         <translation>Inaktiv</translation>
     </message>
@@ -3934,7 +3934,36 @@ Bitte installieren Sie es mit &quot;pip3 install psycopg2&quot;. und stellen Sie
         <translation> Zurück</translation>
     </message>
     <message>
-        <location filename="../RTLogger/telegramBot.py" line="2024"/>
+        <location filename="../RTOC_GUI/signalWidget.py" line="468"/>
+        <source>Duration: {}/~{}</source>
+        <translation>Dauer: {}/~{}</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_GUI/signalWidget.py" line="469"/>
+        <source>Values: {}/{}</source>
+        <translation>Werte: {}/{}</translation>
+    </message>
+    <message>
+        <location filename="../RTOC_GUI/signalWidget.py" line="489"/>
+        <source>Samplerate (latest): {} ({}) Hz</source>
+        <translation>Samplerate (aktuell): {} ({}) Hz</translation>
+    </message>
+    <message>
+        <location filename="../RTLogger/telegramBot.py" line="203"/>
+        <source>Error while sending photo:
+{}</source>
+        <translation>Fehler beim Senden des Fotos:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../RTLogger/telegramBot.py" line="212"/>
+        <source>Error while sending file:
+{}</source>
+        <translation>Fehler beim Senden der Datei:
+{}</translation>
+    </message>
+    <message>
+        <location filename="../RTLogger/telegramBot.py" line="2043"/>
         <source>
 
 
@@ -3945,16 +3974,12 @@ Global events are created when a specified condition is met. For example &quot;T
 
 Global actions are executed when an event with a specified ID has been created. The action consists of a piece of Python code.
         </source>
-        <translation>
-
-
-Hier können Sie globale Ereignisse und Aktionen anzeigen und bearbeiten.
+        <translation>Hier können Sie globale Ereignisse und Aktionen anzeigen und bearbeiten.
 
 Globale Ereignisse werden erzeugt, wenn eine bestimmte Bedingung erfüllt ist. Zum Beispiel &quot;Temperatur am Sensor X überschreitet 80°C&quot;. Wenn die Bedingung erfüllt ist, wird das angegebene Ereignis erzeugt. (Ereignis=[Nachricht, Priorität, ID])
 
 
-Globale Aktionen werden ausgeführt, wenn ein Ereignis mit einer bestimmten ID erstellt wurde. Die Aktion besteht aus einem Stück Python-Code.
-</translation>
+Globale Aktionen werden ausgeführt, wenn ein Ereignis mit einer bestimmten ID erstellt wurde. Die Aktion besteht aus einem Stück Python-Code.</translation>
     </message>
 </context>
 <context>

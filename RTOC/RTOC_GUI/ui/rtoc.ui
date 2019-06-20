@@ -38,7 +38,7 @@
   </widget>
   <widget class="QDockWidget" name="deviceWidget">
    <property name="sizePolicy">
-    <sizepolicy hsizetype="Ignored" vsizetype="Preferred">
+    <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
      <horstretch>0</horstretch>
      <verstretch>0</verstretch>
     </sizepolicy>
@@ -156,7 +156,7 @@
           <x>0</x>
           <y>0</y>
           <width>398</width>
-          <height>88</height>
+          <height>95</height>
          </rect>
         </property>
         <property name="sizePolicy">
@@ -273,7 +273,7 @@
           <x>0</x>
           <y>0</y>
           <width>400</width>
-          <height>98</height>
+          <height>96</height>
          </rect>
         </property>
         <attribute name="label">

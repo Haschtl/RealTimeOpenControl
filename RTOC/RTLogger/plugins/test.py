@@ -13,9 +13,9 @@ logging = log.getLogger(__name__)
 devicename = "test"
 
 class Plugin(LoggerPlugin):
-    def __init__(self, stream=None, plot=None, event=None):
+    def __init__(self, *args, **kwargs):
         # Plugin setup
-        super(Plugin, self).__init__(stream, plot, event)
+        super(Plugin, self).__init__(*args, **kwargs)
         self.setDeviceName(devicename)
         self.smallGUI = True
         self._startTime = time.time()
@@ -40,7 +40,7 @@ class Plugin(LoggerPlugin):
         #     self.samplerate= 1
         self.stream(
             y=[self.samplerate, timedelta, delay, error],
-            snames=['Samplerate', 'Delta', 'Delay', 'Error'],
+            snames=['Samplerate.a', 'Delta', 'Delay', 'Error'],
             )
         time.sleep(delay)
 

@@ -4,6 +4,25 @@ Backend Source-code
 
 LoggerPlugin.py
 ====================
+
+This class is imported by any plugin written for RTOC.
+
+It includes all functions to interact with RTOC. Every plugin must inherit this class! Your plugin must look like this
+
+.. code-block:: python
+
+  ::
+
+      from RTOC.LoggerPlugin import LoggerPlugin
+
+      class Plugin(LoggerPlugin):
+          def __init__(self, *args, **kwargs):
+              LoggerPlugin.__init__(self, *args, **kwargs)
+              ...
+          ...
+
+If you need to pass arguments to your class initialization, use kwargs. ('stream', 'plot', 'event', 'telegramBot' cannot be used as kwarg-name)
+
 .. automodule:: RTOC.LoggerPlugin
     :members:
     :undoc-members:
