@@ -18,12 +18,13 @@ lock = Lock()
 
 class LoggerPlugin:
     """
-    
+
 
     Args:
         stream (method): The callback-method for the stream-method
         plot (method): The callback-method for the plot-method
         event (method): The callback-method for the event-method
+        telegramBot (object): Object for telegram-methods
 
     """
     def __init__(self, stream=None, plot=None, event=None, telegramBot=None, *args, **kwargs):
