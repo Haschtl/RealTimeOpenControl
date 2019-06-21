@@ -1796,9 +1796,9 @@ class RT_data:
                 for idx, a in enumerate(ans):
                     if a < 10000:
                         ans[idx] = time.time()
+                ans = min(ans)
             else:
-                ans = 0
-            ans = min(ans)
+                ans = time.time()
         else:
             ans = time.time()
         #else:
@@ -1832,11 +1832,11 @@ class RT_data:
                         ans[idx] = float(i[0])
                     else:
                         ans[idx] = 0
+                ans = max(ans)
             else:
-                ans = 0
-            ans = max(ans)
+                ans = time.time()
         else:
-            ans = 0
+            ans = time.time()
 
         # x_local = column(self._signals.values(), 2)
         # ans = max(max(x_local), ans)
@@ -1872,7 +1872,7 @@ class RT_data:
             if xmin != [] and xmin is not None:
                 xmin = xmin[0][0]
             else:
-                xmin = 0
+                xmin = time.time()
 
             xmax = self._execute_n_fetchall(
                 "select X[array_upper(X,1)] from "+SIGNAL_TABLE_NAME+" where ID = "+str(sigID))

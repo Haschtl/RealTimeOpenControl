@@ -577,7 +577,7 @@ class LoggerPlugin:
 class _perpetualTimer():
 
     def __init__(self, hFunction, samplerate=1, lock=None):
-        self.thread_counter = 0
+        # self.thread_counter = 0
         self._samplerate = samplerate
         self._lock = lock
         self._cancel = True
@@ -589,10 +589,10 @@ class _perpetualTimer():
     def _handle_function(self):
         start = time.time()
         self._lastStart = time.perf_counter()
-        self.thread_counter -= 1
-        if self.thread_counter != 0:
-            logging.warning('there should not be a running thread, but unfortunately it is.')
-            print(self.thread_counter)
+        # self.thread_counter -= 1
+        # if self.thread_counter != 0:
+        #     logging.warning('there should not be a running thread, but unfortunately it is.')
+        #     print(self.thread_counter)
 
         if not self._cancel:
             with self._lock:
@@ -606,7 +606,7 @@ class _perpetualTimer():
         if not self._cancel and not self._lock.locked():
             # with self._lock:
             self._thread = Timer(timedelta, self._handle_function)
-            self.thread_counter += 1
+            # self.thread_counter += 1
             self._thread.start()
 
     def setSamplerate(self, rate):
@@ -626,15 +626,16 @@ class _perpetualTimer():
         self.cancel()
         self._cancel = False
         with self._lock:
-            if self.thread_counter <= 0:
+            #if self.thread_counter <= 0:
+            if self._thread is None:
                 self._thread = Timer(delayed, self._handle_function)
-                self.thread_counter += 1
+                #self.thread_counter += 1
                 self._thread.start()
-                if self.thread_counter<0:
-                    logging.warning('Something is not right...')
+                # if self.thread_counter<0:
+                #     logging.warning('Something is not right...')
             else:
                 logging.warning('You cannot start a second perpetual timer.')
-                print(self.thread_counter)
+                # print(self.thread_counter)
 
 
     def cancel(self):
@@ -642,5 +643,5 @@ class _perpetualTimer():
         if self._thread is not None:
             with self._lock:
                 self._thread.cancel()
-                self.thread_counter -= 1
+                # self.thread_counter -= 1
                 self._thread = None

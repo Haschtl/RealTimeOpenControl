@@ -896,7 +896,6 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
             self.signals_range[chat_id] = []
             self.menuHandler(bot, chat_id)
         else:
-            a = strung.split('.')
             units = self.logger.database.getUniqueUnits()
             multiSelectorList = []
             for unit in units:
@@ -911,7 +910,7 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
                         # pass
                         plot_signals.append(sig)
                     else:
-                        names = sig.split('.')
+                        names = self.str2signal(sig)
                         sigID = self.logger.database.getSignalID(names[0], names[1])
                         if sigID != -1:
                             plot_signals.append(sig)
@@ -966,7 +965,7 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
                 xmin, xmax = self.signals_range[chat_id]
                 for sigName in self.signals_selected[chat_id]:
                     if sigName != 'Events':
-                        sigID = self.logger.database.getSignalID(*sigName.split('.'))
+                        sigID = self.logger.database.getSignalID(*self.str2signal(sigName))
                         if sigID != -1:
                             self.logger.database.removeSignal(sigID, xmin, xmax, True)
                 self.signals_selected[chat_id] = []
@@ -976,7 +975,7 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
                 xmin, xmax = self.signals_range[chat_id]
                 for sigName in self.signals_selected[chat_id]:
                     if sigName != 'Events':
-                        sigID = self.logger.database.getSignalID(*sigName.split('.'))
+                        sigID = self.logger.database.getSignalID(*self.str2signal(sigName))
                         if sigID != -1:
                             self.logger.database.removeEvents(sigID, xmin, xmax, True)
                 self.send_message(chat_id=chat_id,
@@ -1004,7 +1003,7 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
                 self.send_message(chat_id=chat_id,
                                   text=translate('RTOC', 'I\'m collecting the data now...'))
                 sigIDs = [self.logger.database.getSignalID(
-                    *i.split('.')) for i in self.signals_selected[chat_id]]
+                    *self.str2signal(i)) for i in self.signals_selected[chat_id]]
                 xmin, xmax = self.signals_range[chat_id]
                 dir = self.logger.config['global']['documentfolder']
                 self.logger.database.signalsToCSV(
@@ -1056,11 +1055,20 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
         device = self.telegram_clients[str(chat_id)]['menu'].split(':')[0]
         self.signalsDeviceSubHandler(bot, chat_id, device)
 
+    def str2signal(self, strung):
+        a = strung.split('.')
+        if len(a)>2:
+            # b=['.'.join(a[:-1]),a[-1]]
+            b=[a[0],'.'.join(a[1:])]
+            return b
+        elif len(a) == 2:
+            return a
+
     def selectSignal(self, bot, chat_id, strung):
         a = strung.split('.')
         if len(a)>2:
             self.send_message(chat_id, translate('RTOC', 'Please rename this signal. Signals should not contain "." and ":".'))
-            b=['.'.join(a[:-2]),a[-1]]
+            b=['.'.join(a[:-1]),a[-1]]
             self.selectSignal2(bot, chat_id, strung, b)
             b=[a[0],'.'.join(a[1:])]
             self.selectSignal2(bot, chat_id, strung, b)
@@ -1069,10 +1077,11 @@ Selected period:\n{} - {}\nAvailable period:\n{} - {}''').format(xminSel, xmaxSe
 
 
     def selectSignal2(self, bot, chat_id, strung, a):
-        a = strung.split('.')
         if len(a) == 2:
             if strung not in self.signals_selected[chat_id]:
                 sigID = self.logger.database.getSignalID(a[0], a[1])
+                if sigID == -1:
+                    return
                 xmin, xmax, sigLen = self.logger.database.getSignalInfo(sigID)
                 if xmin != None:
                     self.signals_selected[chat_id].append(strung)
@@ -1754,7 +1763,8 @@ You can also send me measured values (e.g. '5 V'). \n
         maxLen = 0
 
         for idx, signalname in enumerate(signalnames):
-            a = signalname.split('.')
+            # a = signalname.split('.')
+            a = self.str2signal(signalname)
             signal = self.logger.database.getSignal_byName(
                 a[0], a[1], xmin=xmin_plot, xmax=xmax_plot, database=True, maxN=1000)
             # bot.send_chat_action(chat_id=chat_id,
