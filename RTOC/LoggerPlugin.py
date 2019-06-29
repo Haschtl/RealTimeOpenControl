@@ -1,4 +1,4 @@
-# LoggerPlugin v2.6
+# LoggerPlugin v2.7
 import traceback
 import time
 import sys
@@ -10,31 +10,36 @@ logging = log.getLogger(__name__)
 
 try:
     from . import jsonsocket
+    from .RTLogger import scriptLibrary as rtoc
 except (SystemError, ImportError):
     import jsonsocket
+    import RTLogger.scriptLibrary as rtoc
 
 lock = Lock()
 
 
 class LoggerPlugin:
     """
-
-
     Args:
-        stream (method): The callback-method for the stream-method
-        plot (method): The callback-method for the plot-method
-        event (method): The callback-method for the event-method
-        telegramBot (object): Object for telegram-methods
-
+        logger (RTLogger): The parent RTLogger-instance
     """
-    def __init__(self, stream=None, plot=None, event=None, telegramBot=None, *args, **kwargs):
+    def __init__(self, logger=None, *args, **kwargs):
         # Plugin setup
         # self.setDeviceName()
         self._devicename = "noDevice"
-        self._cb = stream
-        self._ev = event
-        self._plt = plot
-        self._bot = telegramBot
+        self.rtoc = rtoc
+        if logger is not None:
+            self.logger = logger
+            self._cb = logger.database.addDataCallback
+            self._ev = logger.database.addNewEvent
+            self._plt = logger.database.plot
+            self._bot = logger.telegramBot
+        else:
+            self._logger = None
+            self._cb = None
+            self._ev = None
+            self._plt = None
+            self._bot = None
         self._sock = None
         self._tcppassword = ''
         self._tcpport = 5050
@@ -532,7 +537,7 @@ class LoggerPlugin:
 
     def telegram_send_message(self, text, priority=0, permission='write'):
         """
-        Sends a message to all clients (or only admins).
+        Sends a message to all clients with given permission and higher permission.
 
         Args:
             text (str): Text to be send to the clients.
@@ -546,7 +551,7 @@ class LoggerPlugin:
 
     def telegram_send_photo(self, path, priority=0, permission='write'):
         """
-        Sends the picture at a given path to all clients (or only admins).
+        Sends the picture at a given path to all clients with given permission and higher permission.
 
         Args:
             path (str): Path to the picture to send.
@@ -560,7 +565,7 @@ class LoggerPlugin:
 
     def telegram_send_document(self, path, priority=0, permission='write'):
         """
-        Sends any document at a given path to all clients (or only admins).
+        Sends any document at a given path to all clients with given permission and higher permission.
 
         Args:
             path (str): Path to the file to send.
@@ -572,6 +577,23 @@ class LoggerPlugin:
         else:
             logging.warning('TelegramBot is not enabled or wrong configured! Can not send file "{}"'.format(path))
 
+    def telegram_send_plot(self, signals={}, title='', text='', events=[], dpi=300, priority=0, permission='write'):
+        """
+        Sends any document at a given path to all clients with given permission and higher permission.
+
+        Args:
+            signals (dict): Contains multiple sets of x-y data, e.g. ``{'signal1':[1,2,3,4,5],[4,3,6,5,7]}``
+            title (str): The title displayed above the graph.
+            text (str): The plot-description text
+            events (list): A list containing pseudo-events (text+vertical-line), e.g. ``[[10, 'Hello world at x=10']]``
+            dpi (int): Resolution of plot.
+            priority (int): Priority to decide, which allow each client to disable notifications (0: Information, 1: Warning, 2: Error)
+            permission (str): Choose user-permission (blocked, read, write, admin)
+        """
+        if self._bot is not None:
+            self._bot.send_plot(signals, title, text, events, dpi, priority, permission)
+        else:
+            logging.warning('TelegramBot is not enabled or wrong configured! Can not send plot')
 
 
 class _perpetualTimer():

@@ -26,16 +26,23 @@ By default any new client connected to this bot will have no permissions. You ca
 The first client connected to the bot will automatically be admin. The admin has the permission to change the permissions of all users.
 
 - **blocked**: No permissions at all
+- **custom**: Can only call user-specifig shortcuts, cannot receive event-notifications
 - **read**: Can receive event-notifications and plot signals
 - **write**: Can create global Events/Actions, send Events/Signals, access devices
 - **admin**: Full permissions. Can delete signals, access settings menu
 
 .. image:: ../screenshots/telegramBot.png
 
+Custom permission
++++++++++++++++++++++++
+The custom permission has a special role. A user with 'custom' permission will not receive notifications for events and will only see shortcuts, created for this user. Thereby you can provide a very simple bot to users, which will only be able to call selected functions or modify parameters. For example a bot with only two buttons to control the heating in the livingroom: 'Set Temperature' and 'Enable/Disable'
+
+
 Mainmenu
 ==================
 
-- <USER_ACTIONS>
+- <CUSTOM_ACTIONS> [**read**,**write**,**admin**]
+- <USER SHORTCUTS> [**custom**,**write**,**admin**]
 - Latest values [**read**,**write**,**admin**]
 - Signals [**read**,**write**,**admin**]
 - Devices [**write**,**admin**]
@@ -103,6 +110,9 @@ General
 TelegramBot
 ++++++++++++++++++++++
 
+- Telegram bot appeareance: You can switch between the inlinekeyboard-button style and chat style
+- OnlyAdmin - mode: If enabled, only admins have access to the bot.
+- Previews: Admins can preview the different permissions to check them.
 - Telegram clients: List of connected clients. Admins can change user-permissions.
 
 Backup-Settings
@@ -138,3 +148,13 @@ A telegram action must return either a text, a picture or any other file.
 ``return 'picture', <dir/to/picture.jpg>`` to return a picture.
 
 ``return 'document', <dir/to/file>`` to return any other file.
+
+User Shortcuts
+===========================
+Any Telegram client can define his own shortcuts to plugin-functions and parameters. These shortcuts will be displayed in the main menu.
+
+To define a new shortcut, you can either modify the shortcuts manually in the :ref:`telegram_clients.json` file.
+
+Clients with 'write' or 'admin' permission can create shortcuts right in the Telegram bot. You can press the 'Create shortcut' button in every plugin-parameter or function submenu.
+
+**Important: ** Every telegram function (telegram_send_message,...) inside a plugin-function will send the message, file or image only to the client, who called the shortcut.

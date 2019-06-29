@@ -46,6 +46,6 @@ try:
     # a=logger.getThread()
     # if a is not None:
     # 	a.join()
-except KeyboardInterrupt:
+except (KeyboardInterrupt, SystemExit):
     # logger.close()
     print("LoggerWebServer stopped by user")

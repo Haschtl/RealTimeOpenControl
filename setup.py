@@ -185,7 +185,7 @@ setup(
         'GUI':  ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter"],
         'Webserver': ["dash", 'gevent', 'dash_daq', 'dash_table', 'plotly', 'flask'],
         'Telegram': ["matplotlib", "python-telegram-bot", ],
-        'ALL': ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter", "dash", 'gevent', 'dash_daq', 'plotly', 'flask', "matplotlib", "python-telegram-bot", 'dash_table']
+        'ALL': ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter", "dash", 'gevent', 'dash_daq', 'plotly', 'flask', "matplotlib", "python-telegram-bot", 'dash_table', 'statsmodels', 'scikit-learn', 'scikit-metrics', 'patsy']
     },
     **setupOpts
 )

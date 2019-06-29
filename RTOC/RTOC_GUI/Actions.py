@@ -431,14 +431,14 @@ class Actions:
         for name in self.logger.devicenames.keys():
             if self.logger.pluginStatus[name] is True:
                 for fun in self.logger.pluginFunctions.keys():
-                    hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir']
+                    hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir', 'telegram_send_plot', 'telegram_send_photo', 'telegram_send_message', 'telegram_send_document']
 
                     if fun.startswith(name+'.') and fun not in [name+'.'+i for i in hiddenFuncs]:
                         parStr = ', '.join(self.logger.pluginFunctions[fun][1])
                         funStr = fun+'('+parStr+')'
                         self.pluginCallWidget.addItem(funStr)
                 for fun in self.logger.pluginParameters.keys():
-                    hiddenParams = ["run", "smallGUI", 'widget', 'samplerate','lockPerpetialTimer']
+                    hiddenParams = ["run", "smallGUI", 'widget','lockPerpetialTimer', 'logger']
 
                     if fun.startswith(name+'.') and fun not in [name+'.'+i for i in hiddenParams]:
                         self.pluginCallWidget.addItem(fun)

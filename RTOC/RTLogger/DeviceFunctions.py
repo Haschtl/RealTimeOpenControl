@@ -86,7 +86,7 @@ class DeviceFunctions:
                 # if callback is None:
                 self.pluginObjects[
                     name] = importlib.import_module(
-                    fullname).Plugin(stream=self.database.addDataCallback, plot=self.database.plot, event=self.database.addNewEvent, telegramBot=self.telegramBot)
+                    fullname).Plugin(logger=self)
                 # else:
                 #     self.pluginObjects[name] = importlib.import_module(
                 #         fullname).Plugin(callback, self.addNewEvent)

@@ -40,6 +40,8 @@ Getting started
 ================================================
 Follow one of the installation-instructions (pip, builds, source): :doc:`INSTALLATION`
 
+See this :doc:`/EXAMPLE` to get an idea of the capabilities of RTOC.
+
 Writing your first plugin
 --------------------------------
 Have a look at the plugin-documentation: :doc:`PLUGINS`
@@ -118,6 +120,12 @@ Table of contents
   RTOC.RTLogger
   RTOC
   View source on Github <https://github.com/Haschtl/RealTimeOpenControl/tree/master/RTOC>
+
+.. toctree::
+  :maxdepth: 5
+  :caption: Usecases
+
+  EXAMPLE
 
 .. toctree::
   :maxdepth: 5

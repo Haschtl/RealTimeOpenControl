@@ -17,6 +17,7 @@ class ScriptFunctions:
         s = self.replacePluginMethods(s)
         s = self.replaceSignalNames(s)
         s = self.replaceLoggerFunctions(s)
+        s = self.replaceTelegramFunctions(s)
         s, init = self.replaceGlobalVariables(s)
         s = s.replace('global.', 'self.')
         s = self.replaceLibraryFunctions(s)
@@ -89,6 +90,15 @@ class ScriptFunctions:
 
         s = s.replace("while True:", "while self.run:")
         s = s.replace("sendTCP(", "self._sendTCP(")
+        return s
+
+    def replaceTelegramFunctions(self, s):
+        s = s.replace("telegram.send_photo(", "self.telegramBot.send_photo(")
+
+        s = s.replace("telegram.send_document(", "self.telegramBot.send_document(")
+        s = s.replace("telegram.send_plot(", "self.telegramBot.send_plot(")
+
+        s = s.replace("telegram.send_message_to_all(", "self.telegramBot.send_message_to_all(")
         return s
 
     def replaceGlobalVariables(self, s):

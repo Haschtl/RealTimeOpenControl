@@ -343,12 +343,12 @@ class NetworkFunctions:
             dict[name]['parameters'] = []
             dict[name]['status'] = False
             for fun in self.pluginFunctions.keys():
-                hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir', 'telegram_send_message', 'telegram_send_photo', 'telegram_send_document']
+                hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir', 'telegram_send_message', 'telegram_send_photo', 'telegram_send_document', 'telegram_send_plot']
 
                 if fun.startswith(name+".") and fun not in [name+'.'+i for i in hiddenFuncs]:
                     dict[name]['functions'].append(fun.replace(name+".", ''))
             for fun in self.pluginParameters.keys():
-                hiddenParams = ["run", "smallGUI", 'widget', 'samplerate','lockPerpetialTimer']
+                hiddenParams = ["run", "smallGUI", 'widget', 'samplerate','lockPerpetialTimer','logger']
 
                 if fun.startswith(name+".") and fun not in [name+'.'+i for i in hiddenParams]:
                     value = self.getPluginParameter(name, "get", fun.replace(name+".", ''))

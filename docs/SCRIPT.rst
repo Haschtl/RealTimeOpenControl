@@ -66,6 +66,20 @@ plugin parameters and functions can be accessed in this way
   Device.FUNCTION(...)
   Device.PARAMETER = ...
 
+Access to telegram functions
+------------------------------------------------------------------
+You can send messages, pictures, files and graphs with the following functions. (e.g. ``telegram.send_message_to_all('Hi')``):
+
+.. automethod:: RTOC.RTLogger.telegramBot.telegramBot.send_message_to_all
+  :noindex:
+.. automethod:: RTOC.RTLogger.telegramBot.telegramBot.send_photo
+  :noindex:
+.. automethod:: RTOC.RTLogger.telegramBot.telegramBot.send_document
+  :noindex:
+.. automethod:: RTOC.RTLogger.telegramBot.telegramBot.send_plot
+  :noindex:
+
+
 Special stuff
 ----------------------
 The actual timestamp is available in the global variable ``clock``.

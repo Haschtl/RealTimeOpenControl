@@ -13,6 +13,12 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
+try:
+    from statsmodels.tsa.ar_model import AR
+    from sklearn.metrics import mean_squared_error
+except (ImportError, SystemError):
+    AR = None
+    logging.info('statsmodels and sklearn is not installed. Cannot use "rtoc.estimate".')
 
 def lsfit(self, x, y, func="linear", x0=None, n=None):
     """
@@ -75,7 +81,7 @@ def resample(self, x, y, n=None):
         x (list): x-values (a linspace)
         y (list): Interpolated y-values
     """
-    if n is None:
+    if n is None and self is not None:
         n = self.config['global']['recordLength']
     if len(x) == len(y):
         x2 = np.linspace(x[0], x[-1], n)
@@ -290,3 +296,128 @@ def norm(x, y, max=1, min=0, oldMin=None, oldMax=None):
     y = (y-oldMin)/oldMax
     y = y*max+min
     return x, y
+
+def predict(coef, history):
+    """
+    Make a prediction give regression coefficients and lag obs
+    """
+    yhat = coef[0]
+    for i in range(1, len(coef)):
+        yhat += coef[i] * history[-i]
+    return yhat
+
+def estimate(x,y, n):
+    """
+    Estimate n values in future for a signal using ARMA. You need to install the following python packages with pip3: ``pip3 install statsmodels scikit-learn scikit-metrics patsy``
+
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+        n (int): Number of values to be estimated
+
+    Returns:
+        x (list): List of estimated x-values
+        y (list): List of estimated y-values
+    """
+    if AR is None:
+        return
+
+    x, y = resample(None, x, y, n=len(x))
+    samplerate = 1/(x[1]-x[0])
+
+    #train = np.diff(y)
+    train = np.array(y)
+    test = np.linspace(x[-1]+1/samplerate, x[-1]+(1/samplerate)*n, n)
+    # size = int(len(data) * 0.66)
+    # train, test = data[0:size], data[size:]
+    # train autoregression
+    model = AR(train)
+    model_fit = model.fit(maxlag=6, disp=False)
+    window = model_fit.k_ar
+    coef = model_fit.params
+    # walk forward over time steps in test
+    history = [train[i] for i in range(len(train))]
+    predictions = list()
+    for t in range(len(test)):
+        yhat = predict(coef, history)
+        predictions.append(yhat)
+        history.append(yhat)
+    error = mean_squared_error(test, predictions)
+    print('Test MSE: %.3f' % error)
+
+    return test, predictions
+
+def correlate(x1,y1,x2,y2, mode='valid'):
+    """
+    Crosscorrelate two signals using numpy.correlate
+
+    Args:
+        x1 (list): List of x-values of signal 1
+        y1 (list): List of y-values of signal 1
+        x1 (list): List of x-values of signal 2
+        y1 (list): List of y-values of signal 2
+        mode: {'valid', 'same', 'full') Refer to the convolve docstring. Note that the default is ‘valid’, unlike convolve, which uses ‘full’.
+
+    Returns:
+        x (list): List of x-values
+        y (list): List of correlated y-values
+    """
+    maxL = max([len(y1), len(y2)])
+    x,ys = combine(None, [[x1,y1],[x2,y2]], n=maxL)
+    y = np.correlate(ys[0], ys[1], mode)
+
+    return x, y
+
+def forwardEuler(x,y, f, U_0, samplerate, T):
+    dt = 1/samplerate
+    N_t = int(round(float(T)/dt))
+    u = np.zeros(N_t+1)
+    t = np.linspace(0, N_t*dt, len(u))
+    u[0] = U_0
+    for n in range(N_t):
+        u[n+1] = u[n] + dt*f(u[n], t[n])
+    return t,u
+
+def CCN():
+    """
+    https://machinelearningmastery.com/how-to-get-started-with-deep-learning-for-time-series-forecasting-7-day-mini-course/
+
+    https://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/
+
+    
+    Estimate n values in future for a signal using Convolutional Neural Network model. You need to install the following python packages with pip3: ``pip3 install tensorflow keras``
+
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+        n (int): Number of values to be estimated
+
+    Returns:
+        x (list): List of estimated x-values
+        y (list): List of estimated y-values
+    """
+    from keras.models import Sequential
+    from keras.layers import Dense
+    from keras.layers import Flatten
+    from keras.layers.convolutional import Conv1D
+    from keras.layers.convolutional import MaxPooling1D
+    # define dataset
+    X = np.array([[10, 20, 30], [20, 30, 40], [30, 40, 50], [40, 50, 60]])
+    y = np.array([40, 50, 60, 70])
+    # reshape from [samples, timesteps] into [samples, timesteps, features]
+    X = X.reshape((X.shape[0], X.shape[1], 1))
+    # define model
+    model = Sequential()
+    model.add(Conv1D(filters=64, kernel_size=2, activation='relu', input_shape=(3, 1)))
+    model.add(MaxPooling1D(pool_size=2))
+    model.add(Flatten())
+    model.add(Dense(50, activation='relu'))
+    model.add(Dense(1))
+    model.compile(optimizer='adam', loss='mse')
+    # fit model
+    model.fit(X, y, epochs=1000, verbose=0)
+    # demonstrate prediction
+    x_input = np.array([50, 60, 70])
+    x_input = x_input.reshape((1, 3, 1))
+    yhat = model.predict(x_input, verbose=0)
+    print(yhat)
