@@ -1,9 +1,9 @@
 # RealTime OpenControl (RTOC)
 
-| [![Documentation Status](https://readthedocs.org/projects/realtimeopencontrol/badge/?version=latest)](https://realtimeopencontrol.readthedocs.io/en/latest/) | [![Builds v2.0](https://img.shields.io/badge/Builds%20version-1.6-brightgreen.svg?style=flat)](https://github.com/Haschtl/RealTimeOpenControl/releases) | [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) | [![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) |
+| [![Documentation Status](https://readthedocs.org/projects/realtimeopencontrol/badge/?version=latest)](https://realtimeopencontrol.readthedocs.io/en/latest/) | [![Builds 2.1.8v](https://img.shields.io/badge/Builds%20version-1.6-brightgreen.svg?style=flat)](https://github.com/Haschtl/RealTimeOpenControl/releases) | [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) | [![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) |
 
 
-### Version 2.0
+### Version 2.1.8
 ![Usecase](screenshots/RTOC-schematik.png)
 [Documentation](https://realtimeopencontrol.readthedocs.io/en/latest/)
 

@@ -7,7 +7,7 @@ import csv
 import os
 from io import StringIO
 import sys
-from PyQt5 import QtCore, QtGui, QtWidgets, QtPrintSupport
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QCoreApplication
 from PyQt5 import uic
 import traceback
@@ -16,6 +16,11 @@ import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
 
+try:
+    from PyQt5 import QtPrintSupport
+except:
+    QtPrintSupport=None
+    print('QtPrintSupport is not available')
 try:
     import pandas as pd
 except ImportError:
@@ -96,8 +101,12 @@ class RTOC_Import(QtWidgets.QMainWindow):
         self.model.dataChanged.connect(self.finishedEdit)
         self.pushButtonLoad.triggered.connect(self.loadCsvAction)
         self.pushButtonWrite.triggered.connect(self.writeCsv)
-        self.pushButtonPreview.triggered.connect(self.handlePreview)
-        self.pushButtonPrint.triggered.connect(self.handlePrint)
+        if QtPrintSupport is not None:
+            self.pushButtonPreview.triggered.connect(self.handlePreview)
+            self.pushButtonPrint.triggered.connect(self.handlePrint)
+        else:
+            self.pushButtonPreview.setVisible(False)
+            self.pushButtonPrint.setVisible(False)
         self.pushClear.triggered.connect(self.clearList)
 
         self.pushAddRow.clicked.connect(self.addRow)

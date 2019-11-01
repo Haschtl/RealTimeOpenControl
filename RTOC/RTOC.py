@@ -38,7 +38,7 @@ logging = log.getLogger(__name__)
 
 if os.name == 'nt':
     import ctypes
-    myappid = 'RTOC.2.1.1'  # arbitrary string
+    myappid = 'RTOC.2.1.8'  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 try:
@@ -163,7 +163,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
     """GUI-code is not documented."""
     foundRTOCServerCallback = QtCore.pyqtSignal(list)
 
-    def __init__(self, tcp=None, port=5050, forceLocal = False):
+    def __init__(self, tcp=None, port=5050, forceLocal = False, customConfigPath=None):
         super(RTOC, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
@@ -181,7 +181,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.forceQuit = False
         self.initPlotWidgets()
 
-        self.logger = RTLogger.RTLogger(tcp, port, True, forceLocal = forceLocal)
+        self.logger = RTLogger.RTLogger(tcp, port, True, forceLocal = forceLocal, customConfigPath=customConfigPath)
         self.config = self.logger.config
         self.settings = None  # window position settings
         self.loadPlotStyles()

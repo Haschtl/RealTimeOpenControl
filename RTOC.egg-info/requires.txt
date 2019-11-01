@@ -4,7 +4,6 @@ python-nmap
 whaaaaat
 prompt_toolkit
 pycryptodomex
-psycopg2
 
 [ALL]
 pyqt5
@@ -23,6 +22,11 @@ flask
 matplotlib
 python-telegram-bot
 dash_table
+statsmodels
+scikit-learn
+scikit-metrics
+patsy
+psycopg2
 
 [GUI]
 pyqt5
@@ -45,3 +49,4 @@ dash_daq
 dash_table
 plotly
 flask
+psycopg2

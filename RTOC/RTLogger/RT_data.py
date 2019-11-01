@@ -1,6 +1,5 @@
 #!/usr/local/bin/python3
 # coding: utf-8
-import psycopg2
 import time
 from collections import deque
 import sys
@@ -15,6 +14,11 @@ import json
 import psutil
 import copy
 import gzip
+try:
+    import psycopg2
+except Exception:
+    print('WARNING: psycopg2 is not installed, database disabled')
+    psycopg2 = None
 
 from PyQt5.QtCore import QTimer
 
@@ -822,6 +826,11 @@ class RT_data:
 # Datenbank und backupJSON
 
     def _connect(self):
+        if psycopg2 is None:
+            self.status = 'psycopg2 not installed'
+            self._connection = None
+            self._cursor = None
+            return False
         try:
             self._connection = psycopg2.connect(
                 user=self.config['postgresql']['user'],
@@ -1430,6 +1439,10 @@ class RT_data:
                 self.logger.clearCB()
             # self.clear()
 
+    def createLocalBackupNow(self):
+        self.backupJSON(self.config['backup']['path'])
+        logging.info('Backup saved in path: '+self.config['backup']['path'])
+
     def stop(self):
         """
         Stops the repeated backup-thread.
@@ -1802,10 +1815,15 @@ class RT_data:
         else:
             ans = time.time()
         #else:
-        x_local = column(self._signals.values(), 2)
-        x_local = [x for l in list(x_local) for x in l]
-        if list(x_local) != []:
-            ans = min(min(list(x_local)), ans)
+        try:
+            with localLock:
+                xdata = list(self._signals.values())
+                x_local = column(xdata, 2)
+                x_local = [x for l in list(x_local) for x in l]
+                if list(x_local) != []:
+                    ans = min(min(list(x_local)), ans)
+        except Exception:
+            logging.warning('Could not get local xmin, because _signals are in use')
 
         return ans
 
@@ -1840,11 +1858,15 @@ class RT_data:
 
         # x_local = column(self._signals.values(), 2)
         # ans = max(max(x_local), ans)
-
-        x_local = column(self._signals.values(), 2)
-        x_local = [x for l in list(x_local) for x in l]
-        if list(x_local) != []:
-            ans = max(max(list(x_local)), ans)
+        try:
+            with localLock:
+                xdata = list(self._signals.values())
+                x_local = column(xdata, 2)
+                x_local = [x for l in list(x_local) for x in l]
+                if list(x_local) != []:
+                    ans = max(max(list(x_local)), ans)
+        except Exception:
+            logging.warning('Could not get local xmax, because _signals are in use')
 
         return ans
 

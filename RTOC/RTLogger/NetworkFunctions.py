@@ -6,10 +6,12 @@ from threading import Thread
 # import sys
 # import subprocess
 
+
 try:
     from .. import jsonsocket
 except (ImportError, SystemError, ValueError):
     jsonsocket = None
+
 
 import logging as log
 log.basicConfig(level=log.DEBUG)
@@ -27,7 +29,6 @@ except ImportError:
     logging.warning(
         'Telegram for python not installed. Please install with "pip3 install python-telegram-bot"')
     telegramBot = None
-
 
 class NetworkFunctions:
     """

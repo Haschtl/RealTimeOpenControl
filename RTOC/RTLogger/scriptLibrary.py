@@ -41,7 +41,7 @@ def lsfit(self, x, y, func="linear", x0=None, n=None):
         y (list): Fitted y-values
         params (list): Identified parameters
     """
-    if n is None:
+    if n is None and self is not None:
         n = self.config['global']['recordLength']
     # Initial guess.
     if type(func) == str:  # automatic mode
@@ -384,7 +384,7 @@ def CCN():
 
     https://machinelearningmastery.com/time-series-prediction-lstm-recurrent-neural-networks-python-keras/
 
-    
+
     Estimate n values in future for a signal using Convolutional Neural Network model. You need to install the following python packages with pip3: ``pip3 install tensorflow keras``
 
     Args:
@@ -421,3 +421,35 @@ def CCN():
     x_input = x_input.reshape((1, 3, 1))
     yhat = model.predict(x_input, verbose=0)
     print(yhat)
+
+
+
+def PT2_estimation(x,y, n, k=100, t1=101, t2=100, t0=25):
+    """
+    Estimate n values in future for a signal with PT2-behavior.
+
+    Args:
+        x (list): List of x-values
+        y (list): List of y-values
+        n (int): Number of values to be estimated
+        k (float): Initial parameter for PT2
+        t1 (float): Initial parameter for PT2
+        t2 (float): Initial parameter for PT2
+        t0 (float): Initial parameter for PT2
+
+    Returns:
+        x (list): List of estimated x-values
+        y (list): List of estimated y-values
+    """
+    def _pt2(x, k, t1, t2, t0):
+        """
+        Verzögerungs-Übertragungsglied zweiter Ordnung. Z.b.: zur Temperaturanalyse
+        """
+        y = k*(1-(1/(t1-t2))*(t1*np.exp(-x/t1)-t2*np.exp(-x/t2)))+t0
+        return y
+
+    x, y, params = lsfit(None, x, y, func=_pt2, x0=[k, t1, t2, t0], n=None)
+    # perform fitting
+
+    # generate additional x-data
+    # calculate y-data

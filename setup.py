@@ -78,9 +78,9 @@ except LookupError:
 path = os.path.split(__file__)[0]
 # sys.path.insert(0, os.path.join(path, 'tools'))
 
-version = "2.1.1"
-forcedVersion = "2.1.1"
-gitVersion = "2.1.1"
+version = "2.1.8"
+forcedVersion = "2.1.8"
+gitVersion = "2.1.8"
 initVersion = 1.0
 
 
@@ -176,16 +176,15 @@ setup(
         'prompt_toolkit',
         # 'dash',
         'pycryptodomex',
-        'psycopg2',
         # 'pyGithub',
         # 'pandas',
         # 'ezodf'
     ],
     extras_require={
         'GUI':  ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter"],
-        'Webserver': ["dash", 'gevent', 'dash_daq', 'dash_table', 'plotly', 'flask'],
+        'Webserver': ["dash", 'gevent', 'dash_daq', 'dash_table', 'plotly', 'flask', 'psycopg2'],
         'Telegram': ["matplotlib", "python-telegram-bot", ],
-        'ALL': ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter", "dash", 'gevent', 'dash_daq', 'plotly', 'flask', "matplotlib", "python-telegram-bot", 'dash_table', 'statsmodels', 'scikit-learn', 'scikit-metrics', 'patsy']
+        'ALL': ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter", "dash", 'gevent', 'dash_daq', 'plotly', 'flask', "matplotlib", "python-telegram-bot", 'dash_table', 'statsmodels', 'scikit-learn', 'scikit-metrics', 'patsy','psycopg2']
     },
     **setupOpts
 )

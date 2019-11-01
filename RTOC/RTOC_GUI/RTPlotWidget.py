@@ -43,11 +43,11 @@ class RTPlotWidget(QtWidgets.QWidget, RTPlotActions):
         self.self = selfself
         self.id = id
         self.logger = logger
-        self.config = self.self.config
+        self.config = self.logger.config
         self.plotStyles = self.self.plotStyles
         self.active = True
         self.lastActive = time.time()
-        self.updatePlotSamplerate = 10
+        self.updatePlotSamplerate = self.logger.config['GUI']['plotRate']
         self.signalObjects = []
         self.lastUpdate = time.time()
         self.deviceTreeWidgetItems = []

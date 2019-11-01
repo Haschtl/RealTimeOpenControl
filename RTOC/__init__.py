@@ -12,7 +12,7 @@ logging = log.getLogger(__name__)
 # __package__ = "RTOC"
 # __main__ = __name__
 name = "RTOC"
-__version__ = "2.1.1"
+__version__ = "2.1.8"
 
 
 def main():
@@ -238,7 +238,7 @@ def startRemoteRTOC(remotepath):
     app.exec_()
 
 
-def startRTOC(tcp=None, port=None, local =False):
+def startRTOC(tcp=None, port=None, local =False, customConfigPath=None):
 
     from PyQt5 import QtCore
     from PyQt5 import QtWidgets
@@ -274,8 +274,8 @@ def startRTOC(tcp=None, port=None, local =False):
         translator.load(packagedir+"/locales/de_de.qm")
         app.installTranslator(translator)
 
-        
-    myapp = RTOC(tcp, port, local)
+
+    myapp = RTOC(tcp, port, local, customConfigPath)
     app, myapp = setStyleSheet(app, myapp)
 
     myapp.show()

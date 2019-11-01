@@ -119,9 +119,12 @@ class _Config(collections.MutableMapping, dict):
 
     def __setitem__(self, key, value):
         dict.__setitem__(self, key, value)
-        with open(self['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
-            json.dump(self, fp,  sort_keys=False, indent=4, separators=(',', ': '))
-        logging.info('Config saved')
+        try:
+            with open(self['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
+                json.dump(self, fp,  sort_keys=False, indent=4, separators=(',', ': '))
+                logging.info('Config saved')
+        except Exception:
+            logging.warning('Config could not be saved')
 
     def __delitem__(self, key):
         dict.__delitem__(self, key)
@@ -152,12 +155,12 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
         RT_data
         telegramBot
     """
-    def __init__(self, enableTCP=None, tcpport=None, isGUI=False, forceLocal=False):
+    def __init__(self, enableTCP=None, tcpport=None, isGUI=False, forceLocal=False, customConfigPath=None):
         self.run = True
         self.forceLocal = forceLocal
         self.isGUI = isGUI
         self.__config = _Config({})
-        self._load_config()
+        self._load_config(customConfigPath)
         self.pluginObjects = {}  # dict with all plugins
         self.pluginFunctions = {}
         self.pluginParameters = {}
@@ -319,17 +322,22 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
         logging.info('Config changed and saved!')
         self.save_config()
 
-    def _load_config(self):
+    def _load_config(self, customPath=None):
         # self.lastEditedList = []
+        if customPath is None:
+            userpath = os.path.expanduser('~/.RTOC')
+            if not os.path.exists(userpath):
+                os.mkdir(userpath)
+            if not os.path.exists(userpath+'/backup'):
+                os.mkdir(userpath+'/backup')
+            configpath = userpath+"/config.json"
+        else:
+            configpath = os.path.realpath(customPath)
+            userpath = os.path.dirname(configpath)
 
-        userpath = os.path.expanduser('~/.RTOC')
-        if not os.path.exists(userpath):
-            os.mkdir(userpath)
-        if not os.path.exists(userpath+'/backup'):
-            os.mkdir(userpath+'/backup')
-        if os.path.exists(userpath+"/config.json"):
+        if os.path.exists(configpath):
             try:
-                with open(userpath+"/config.json", encoding="UTF-8") as jsonfile:
+                with open(configpath, encoding="UTF-8") as jsonfile:
                     self.__config = _Config(json.load(jsonfile, encoding="UTF-8"))
                 # newlist = []
                 # self.config['global']['documentfolder'] = userpath

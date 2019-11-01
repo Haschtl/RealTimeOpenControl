@@ -20,7 +20,7 @@ except ImportError:
 class _SingleConnection(LoggerPlugin):
     def __init__(self, stream=None, plot=None, event=None, host='127.0.0.1', port=5050, name='RemoteDevice', password='', logger=None):
         # Plugin setup
-        super(_SingleConnection, self).__init__(stream, plot, event)
+        super(_SingleConnection, self).__init__(logger)
         self.setDeviceName(name)
         self.logger = logger
         self.host = host

@@ -512,9 +512,9 @@ class SignalWidget(QtWidgets.QWidget):
         for idx0, e in enumerate(self.plotWidget.self.eventWidget.events):
         # priority, time("%H:%M:%S %d.%m.%Y", text, devicename, signalname, value, id
             event = [e[1], e[2], e[0], e[5], e[6], e[3], e[4], e[7]]
-            event[0] = float(datetime.datetime.strptime(event[0], '%H:%M:%S %d.%m.%Y').timestamp())
             oldEvent = False
             if event[6] == self.signalname and event[5] == self.devicename:
+                event[0] = float(datetime.datetime.strptime(event[0], '%H:%M:%S %d.%m.%Y').timestamp())
                 for idx, eventItem in enumerate(self.eventItems):
                     if eventItem.id == event[7]:
                         # wenn schon geplottet, dann position anpassen
@@ -580,9 +580,9 @@ class SignalWidget(QtWidgets.QWidget):
             #     # logging.info('')
             #     pass
             # else:
+            self.updateEvents(offsetX, offsetY, scaleX, scaleY, ctime, current_time)
             if len(clock) > 0 and len(y) > 0:
                 self.updateLabel(clock, y, signal[4])
-                self.updateEvents(offsetX, offsetY, scaleX, scaleY, ctime, current_time)
                 if self.active:
                     # if clock[len(clock)-1] <= current_time+10000 and clock[len(clock)-1] > current_time-10000:
                     if self.logger.config['GUI']['xRelative']:

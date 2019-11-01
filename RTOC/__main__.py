@@ -44,7 +44,7 @@ def main():
                     'RTOC.py [-h] [-r <Remoteadress>]\n -h: Help\n-r (--remote) <Remoteadress>: TCP client for RTOC server\nFor options without GUI, run "python3 -m RTOC.RTLogger -h"')
                 sys.exit(0)
             elif opt == '-v':
-                logging.info("2.1.1")
+                logging.info("2.1.8")
             elif opt in ("-r", "--remote"):
                 remotepath = arg
                 startRemoteRTOC(remotepath)
@@ -248,7 +248,7 @@ def startRemoteRTOC(remotepath):
     app.exec_()
 
 
-def startRTOC(tcp=None, port=None, local =False):
+def startRTOC(tcp=None, port=None, local =False, customConfigPath=None):
 
     from PyQt5 import QtCore
     from PyQt5 import QtWidgets
@@ -287,7 +287,7 @@ def startRTOC(tcp=None, port=None, local =False):
         # el = gettext.translation('base', localedir='locales', languages=['en'])
         # el.install()
         # _ = el.gettext
-    myapp = RTOC(tcp, port, local)
+    myapp = RTOC(tcp, port, local, customConfigPath=customConfigPath)
     app, myapp = setStyleSheet(app, myapp)
 
     myapp.show()
