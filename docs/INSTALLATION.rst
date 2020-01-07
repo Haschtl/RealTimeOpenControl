@@ -19,11 +19,10 @@ RTOC is available in the Python package manager PIP::
   pip3 install RTOC
 
 
-This will download the basic RTOC without the dependencies needed for the GUI, Telegram and the Webserver. The default RTOC setup is suitable for running RTOC on embedded devices.
+This will download the basic RTOC without the dependencies needed for the GUI, Websockets and Telegram. The default RTOC setup is suitable for running RTOC on embedded devices.
 
 There are also different variations available to install::
 
-  pip3 install RTOC[Webserver]   # Includes all packages for webserver
   pip3 install RTOC[GUI]         # Includes all packages for GUI
   pip3 install RTOC[Telegram]    # Includes all packages for Telegram
   pip3 install RTOC[ALL]         # Includes all packages
@@ -51,9 +50,9 @@ If you want to use the GUI you must also install the following packages::
   pip3 install pyqt5 pyqtgraph markdown2 xlsxwriter scipy pandas ezodf pyGithub
 
 
-If you want full functionality, then you still need the following packages (for telegram bot and webserver)::
+If you want full functionality, then you still need the following packages (for telegram bot)::
 
-  pip3 install python-telegram-bot matplotlib dash gevent dash_daq dash_table plotly flask
+  pip3 install python-telegram-bot matplotlib
 
 
 You can use different stylesheets for the GUI if you want. Just install one of these with pip:

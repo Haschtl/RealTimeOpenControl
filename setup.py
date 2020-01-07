@@ -18,7 +18,6 @@
 # pip install 'RTOC'
 # pip install 'RTOC[Telegram]'
 # pip install 'RTOC[GUI]'
-# pip install 'RTOC[Webserver]'
 # pip install 'RTOC[ALL]'
 
 from os import path
@@ -78,9 +77,9 @@ except LookupError:
 path = os.path.split(__file__)[0]
 # sys.path.insert(0, os.path.join(path, 'tools'))
 
-version = "2.1.8"
-forcedVersion = "2.1.8"
-gitVersion = "2.1.8"
+version = "3.0"
+forcedVersion = "3.0"
+gitVersion = "3.0"
 initVersion = 1.0
 
 
@@ -178,13 +177,14 @@ setup(
         'pycryptodomex',
         # 'pyGithub',
         # 'pandas',
-        # 'ezodf'
+        # 'ezodf',
+        # websocket-server,
+		'websocket_client'
     ],
     extras_require={
         'GUI':  ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter"],
-        'Webserver': ["dash", 'gevent', 'dash_daq', 'dash_table', 'plotly', 'flask', 'psycopg2'],
         'Telegram': ["matplotlib", "python-telegram-bot", ],
-        'ALL': ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter", "dash", 'gevent', 'dash_daq', 'plotly', 'flask', "matplotlib", "python-telegram-bot", 'dash_table', 'statsmodels', 'scikit-learn', 'scikit-metrics', 'patsy','psycopg2']
+        'ALL': ["pyqt5", "pyqtgraph", "markdown2", "pyGithub", "pandas", "scipy", "ezodf", "xlsxwriter", "matplotlib", "python-telegram-bot", 'dash_table', 'statsmodels', 'scikit-learn', 'scikit-metrics', 'patsy','psycopg2']
     },
     **setupOpts
 )

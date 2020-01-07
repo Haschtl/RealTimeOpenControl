@@ -12,7 +12,7 @@ logging = log.getLogger(__name__)
 # __package__ = "RTOC"
 # __main__ = __name__
 name = "RTOC"
-__version__ = "2.1.8"
+__version__ = "3.0"
 
 
 def main():
@@ -33,7 +33,7 @@ def main():
         for opt, arg in opts:
             if opt == '-h':
                 logging.info(
-                    'RTOC.py [-h] [-r <Remoteadress>]\n -h: Help\n-r (--remote) <Remoteadress>: TCP client for RTOC server\nFor options without GUI, run "python3 -m RTOC.RTLogger -h"')
+                    'RTOC.py [-h] [-r <Remoteadress>]\n -h: Help\n-r (--remote) <Remoteadress>: Websocket client for RTOC server\nFor options without GUI, run "python3 -m RTOC.RTLogger -h"')
                 sys.exit(0)
             elif opt == '-v':
                 logging.info("")
@@ -69,7 +69,7 @@ def configureRTOC(arg):
         splitted = arg.split('=')
         if len(splitted) != 2:
             logging.info(
-                'Please provide options like this: "python3 -m RTOC -c tcpserver=False\nYour entry didn\'t include a "="')
+                'Please provide options like this: "python3 -m RTOC -c websocketserver=False\nYour entry didn\'t include a "="')
             sys.exit(1)
         else:
             if splitted[0] not in config.keys():
@@ -183,23 +183,13 @@ def setStyleSheet(app, myapp):
     # compile translationfile: % lrelease-qt5 lang/de_de.ts
     # use self.tr("TEXT TO TRANSLATE") in the code
 
-# def runInBackground():
-#     app = QtWidgets.QApplication(sys.argv)
-#     myapp = RTOC_TCP()
-#     app, myapp = setStyleSheet(app, myapp)
-#
-#     app.exec_()
-
 
 def startRemoteRTOC(remotepath):
 
     from PyQt5 import QtCore
     from PyQt5 import QtWidgets
 
-    # try:
     from .RTOC import RTOC
-    # except Exception:
-    #    from RTOC import RTOC, RTOC_TCP
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -229,7 +219,7 @@ def startRemoteRTOC(remotepath):
 
 
     myapp = RTOC(False)
-    myapp.config['tcp']['active'] = True
+    myapp.config['websocket']['active'] = True
 
     app, myapp = setStyleSheet(app, myapp)
     logging.info(remotepath)
@@ -238,15 +228,12 @@ def startRemoteRTOC(remotepath):
     app.exec_()
 
 
-def startRTOC(tcp=None, port=None, local =False, customConfigPath=None):
+def startRTOC(websocket=None, port=None, local =False, customConfigPath=None):
 
     from PyQt5 import QtCore
     from PyQt5 import QtWidgets
 
-    # try:
     from .RTOC import RTOC
-    # except Exception:
-    #    from RTOC import RTOC, RTOC_TCP
 
     app = QtWidgets.QApplication(sys.argv)
 
@@ -275,7 +262,7 @@ def startRTOC(tcp=None, port=None, local =False, customConfigPath=None):
         app.installTranslator(translator)
 
 
-    myapp = RTOC(tcp, port, local, customConfigPath)
+    myapp = RTOC(websocket, port, local, customConfigPath)
     app, myapp = setStyleSheet(app, myapp)
 
     myapp.show()

@@ -77,8 +77,7 @@ def settingsMenu(logger):
                 'choices': [
                     'General',
                     'Telegram',
-                    # 'RTOC Web',
-                    'TCP-Server',
+                    'Websocket-Server',
                     'Backup',
                     'Back'
                 ]
@@ -88,10 +87,8 @@ def settingsMenu(logger):
         main = main['menu']
         if main == 'Telegram':
             telegramSettingsMenu(logger)
-        # elif main == 'RTOC Web':
-        #     webSettingsMenu(logger)
-        elif main == 'TCP-Server':
-            tcpSettingsMenu(logger)
+        elif main == 'Websocket-Server':
+            websocketSettingsMenu(logger)
         elif main == 'Backup':
             backupSettingsMenu(logger)
         elif main == 'General':
@@ -139,47 +136,32 @@ def telegramSettingsMenu(logger):
     logger.save_config()
 
 
-# def webSettingsMenu(logger):
-#     menu = [
-#         {
-#             'type': 'confirm',
-#             'name': 'rtoc_web',
-#             'message': 'Enable the RTOC-Webserver? ',
-#             'default': str(logger.config['rtoc_web'])
-#         },
-#     ]
-#
-#     main = prompt(menu, style=style)
-#     logger.config['rtoc_web'] = bool(main['rtoc_web'])
-#     logger.save_config()
-
-
-def tcpSettingsMenu(logger):
+def websocketSettingsMenu(logger):
     menu = [
         {
             'type': 'input',
-            'name': 'tcpPort',
-            'message': 'Enter a TCP-Port [5050]: ',
-            'default': str(logger.config['tcp']['port'])
+            'name': 'websocketPort',
+            'message': 'Enter a Websocket-Port [5050]: ',
+            'default': str(logger.config['websocket']['port'])
         },
         {
             'type': 'password',
-            'name': 'tcppassword',
-            'message': 'Enter a TCP-Password (leave blank for unsecured TCP): ',
-            'default': str(logger.config['tcp']['password'])
+            'name': 'websocketpassword',
+            'message': 'Enter a Websocket-Password (leave blank for unsecured Websocket): ',
+            'default': str(logger.config['websocket']['password'])
         },
         {
             'type': 'confirm',
-            'name': 'tcpserver',
-            'message': 'Enable the TCP-Server? ',
-            'default': str(logger.config['tcp']['active'])
+            'name': 'websocketserver',
+            'message': 'Enable the Websocket-Server? ',
+            'default': str(logger.config['websocket']['active'])
         },
     ]
 
     main = prompt(menu, style=style)
-    logger.config['tcp']['active'] = bool(main['tcpserver'])
-    logger.config['tcp']['port'] = int(main['tcpPort'])
-    logger.config['tcp']['password'] = str(main['tcppassword'])
+    logger.config['websocket']['active'] = bool(main['websocketserver'])
+    logger.config['websocket']['port'] = int(main['websocketPort'])
+    logger.config['websocket']['password'] = str(main['websocketpassword'])
     logger.save_config()
 
 

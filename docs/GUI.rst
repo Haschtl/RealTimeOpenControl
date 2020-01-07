@@ -5,7 +5,7 @@ Graphical user interface
 .. image:: ../screenshots/overview3.png
 
 You can use the GUI to control your plugins, manipulate your measurements, try scripts, import data and configure your settings.
-You can also view and control RTOC-servers remotely. Unfortunately this is limited to short recordings due to the TCP-protocol, which cannot handle long datasizes. This will maybe be fixed in future releases.
+You can also view and control RTOC-servers remotely and subscribe to signals, which will then be casted to your device.
 
 Titlebar
 ========================================
@@ -23,7 +23,7 @@ Systembar-structure
   ├── Devices
   │   ├── Add/Remove devices
   ├── Network
-  │   ├── TCP-Server
+  │   ├── Websocket-Server
   │   ├──   ├── Active
   │   ├──   ├── Password-Protection
   │   ├──   ├── Port: 5050
@@ -153,7 +153,7 @@ On the right side you can define signals, that will be taken from the data-table
 4. The color on the right of each signal indicates, if this signal can be imported (mouse-over gives more information on failure)
 5. Click "Import data" to load the signals to RTOC. Invalid signals will be skipped
 
-Remote-control via TCP
+Remote-control via Websocket
 ========================================
 
 .. image:: ../screenshots/remoteWidget.png

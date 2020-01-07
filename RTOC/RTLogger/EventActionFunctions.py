@@ -31,7 +31,7 @@ class EventActionFunctions:
         Loads global events from file and stores them in dict 'self.globalEvents'
         """
         print('Loading global events from file')
-        userpath = os.path.expanduser('~/.RTOC')
+        userpath = os.path.expanduser(self.config['global']['documentfolder'])
         if not os.path.exists(userpath):
             os.mkdir(userpath)
 
@@ -70,11 +70,11 @@ class EventActionFunctions:
             'dname': '',
             'active': False
         }
-        for name in self.globalEvents.keys():
-            tmp = self.globalEvents[name]
-            self.globalEvents[name] = empty
-            for key in tmp.keys():
-                self.globalEvents[name][key] = tmp[key]
+        # for name in self.globalEvents.keys():
+        #     tmp = self.globalEvents[name]
+        #     self.globalEvents[name] = empty
+        #     for key in tmp.keys():
+        #         self.globalEvents[name][key] = tmp[key]
 
     def saveGlobalEvents(self):
         """
@@ -114,7 +114,8 @@ class EventActionFunctions:
         events = self.checkGlobalEvents(self.globalEvents)
         for key in events.keys():
             event = events[key]
-            if event['errors'] == False and devicename+"."+signalname in event["cond"] and event['active']:
+            # if event['errors'] == False 
+            if devicename+"."+signalname in event["cond"] and event['active']:
                 ok, cond = self.checkCondition(event['cond'])
                 if ok:
                     cond = bool(cond)
@@ -148,6 +149,9 @@ class EventActionFunctions:
                 else:
                     print('ERROR:\n'+cond)
 
+    def resetGlobalEventState(self):
+        self.activeGlobalEvents = {}
+        
     def loadGlobalActions(self):
         """
         Loads global actions from file and stores them in dict 'self.globalActions'
@@ -182,11 +186,11 @@ class EventActionFunctions:
             "script": "",
             "active": False
         }
-        for name in self.globalActions.keys():
-            tmp = self.globalActions[name]
-            self.globalActions[name] = empty
-            for key in tmp.keys():
-                self.globalActions[name][key] = tmp[key]
+        # for name in self.globalActions.keys():
+        #     tmp = self.globalActions[name]
+        #     self.globalActions[name] = empty
+        #     for key in tmp.keys():
+        #         self.globalActions[name][key] = tmp[key]
 
     def saveGlobalActions(self):
         """
@@ -225,15 +229,28 @@ class EventActionFunctions:
         actions = self.checkGlobalActions(self.globalActions)
         for key in actions.keys():
             action = actions[key]
-            if action['errors'] is False:
-                for actionId in action['listenID']:
-                    if actionId == id and action['active']:
-                        # Execute action
-                        ok, prints = self.executeScript(action['script'])
-                        print('Performing global action for eventID: ' +
-                              str(id)+' with value: '+str(value))
-                        print('Action is: '+str(action)+', Execution: '+str(ok))
-                        print('Returns:' + str(prints))
+            # if action['errors'] is False:
+            for actionId in action['listenID']:
+                if actionId == id and action['active']:
+                    # Execute action
+                    ok, prints = self.executeScript(action['script'])
+                    print('Performing global action for eventID: ' +
+                            str(id)+' with value: '+str(value))
+                    print('Action is: '+str(action)+', Execution: '+str(ok))
+                    print('Returns:' + str(prints))
+                    if not ok:
+                        break
+
+    def editGlobalEvent(self, name='testEvent', cond='', text='TestEvent', priority=0, retur='', id='testID', trigger='rising', sname='', dname='', active=True):
+        self.globalEvents[name] = {'cond': cond, 'text': text,
+                                   'priority': priority, 'return': retur, 'id': id, 'trigger': trigger, 'sname': sname, 'dname': dname, 'active': active}
+
+
+    def editGlobalAction(self, name='testAction', listenID='testID', script='', parameters='', active=True):
+        if type(listenID) == str:
+            listenID = [listenID]
+        self.globalActions[name] = {'listenID': listenID,
+                                    'script': script, 'parameters': parameters, 'active': active}
 
     def addGlobalEvent(self, name='testEvent', cond='', text='TestEvent', priority=0, retur='', id='testID', trigger='rising', sname='', dname='', active=True):
         countname = name
@@ -256,6 +273,18 @@ class EventActionFunctions:
             listenID = [listenID]
         self.globalActions[name] = {'listenID': listenID,
                                     'script': script, 'parameters': parameters, 'active': active}
+                                    
+    # def addGlobalAction(self, name='testAction', listenID='testID', script='', parameters='', active=True):
+    #     countname = name
+    #     i = 2
+    #     while countname in self.globalEvents.keys():
+    #         countname = name+str(i)
+    #         i += 1
+    #     name = countname
+    #     if type(listenID) == str:
+    #         listenID = [listenID]
+    #     self.globalActions[name] = {'listenID': listenID,
+    #                                 'script': script, 'parameters': parameters, 'active': active}
 
     def removeGlobalAction(self, key):
         if key in self.globalActions.keys():

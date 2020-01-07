@@ -753,21 +753,21 @@
     <property name="toolTipsVisible">
      <bool>true</bool>
     </property>
-    <widget class="QMenu" name="menuTCP_Server_2">
+    <widget class="QMenu" name="menuWebsocketServer">
      <property name="geometry">
       <rect>
-       <x>0</x>
-       <y>0</y>
+       <x>718</x>
+       <y>253</y>
        <width>196</width>
        <height>126</height>
       </rect>
      </property>
      <property name="title">
-      <string>TCP - Server</string>
+      <string>Websocket - Server</string>
      </property>
-     <addaction name="actionTCPServer_2"/>
-     <addaction name="actionTCPPassword_2"/>
-     <addaction name="actionTCPPort_2"/>
+     <addaction name="actionWebsocketServer"/>
+     <addaction name="actionWebsocketPassword"/>
+     <addaction name="actionWebsocketPort"/>
     </widget>
     <widget class="QMenu" name="MeniuTelegramBot">
      <property name="title">
@@ -789,13 +789,11 @@
      </property>
      <addaction name="actionkeine_3"/>
     </widget>
-    <addaction name="menuTCP_Server_2"/>
-    <addaction name="HTMLServerAction_2"/>
+    <addaction name="menuWebsocketServer"/>
     <addaction name="MeniuTelegramBot"/>
     <addaction name="separator"/>
     <addaction name="menuMit_Remotehost_verbinden"/>
     <addaction name="menuAktive_Verbindungen"/>
-    <addaction name="actionUpdate_Rate_1Hz_2"/>
     <addaction name="separator"/>
     <addaction name="actionSearchRTOCServer"/>
    </widget>
@@ -1047,7 +1045,7 @@
     <string>Add/remove devices</string>
    </property>
   </action>
-  <action name="actionTCPServer_2">
+  <action name="actionWebsocketServer">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -1055,12 +1053,12 @@
     <string>Activate</string>
    </property>
   </action>
-  <action name="actionTCPPassword_2">
+  <action name="actionWebsocketPassword">
    <property name="text">
     <string>Password protection</string>
    </property>
   </action>
-  <action name="actionTCPPort_2">
+  <action name="actionWebsocketPort">
    <property name="text">
     <string>Port: 5050</string>
    </property>

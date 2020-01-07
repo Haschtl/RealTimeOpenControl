@@ -64,7 +64,7 @@ class SettingsWidget(QtWidgets.QWidget):
         self.clearSignalStylesButton.clicked.connect(self.clearSignalStyles)
         self.clearLastEditedListButton.clicked.connect(partial(self.clear, 'lastSessions'))
         self.clearTelegramClientListButton.clicked.connect(self.clearTelegram)
-        self.clearTCPHostListButton.clicked.connect(partial(self.clear, ['tcp', 'knownHosts']))
+        self.clearTCPHostListButton.clicked.connect(partial(self.clear, ['websocket', 'knownHosts']))
 
         self.resetButton.clicked.connect(self.reset)
         self.abortButton.clicked.connect(self.abort)

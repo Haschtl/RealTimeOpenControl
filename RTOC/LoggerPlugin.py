@@ -1,4 +1,4 @@
-# LoggerPlugin v2.7
+# LoggerPlugin v3.0
 import traceback
 import time
 import sys
@@ -7,12 +7,14 @@ from threading import Thread, Timer, Lock
 import logging as log
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
+from functools import partial
+from collections import deque
+import datetime
+
 
 try:
-    from . import jsonsocket
     from .RTLogger import scriptLibrary as rtoc
 except (SystemError, ImportError):
-    import jsonsocket
     import RTLogger.scriptLibrary as rtoc
 
 lock = Lock()
@@ -40,15 +42,11 @@ class LoggerPlugin:
             self._ev = None
             self._plt = None
             self._bot = None
-        self._sock = None
-        self._tcppassword = ''
-        self._tcpport = 5050
-        self._tcpaddress = ''
-        self._tcpthread = False
         self.widget = None
         self._pluginThread = None
         self._oldPerpetualTimer = False
         self.lockPerpetialTimer = Lock()
+        self._log = deque([], 100)
         # -------------
         self.run = False  # False -> stops thread
         """ Use this parameter to start/stop threads. This makes sure, RTOC can close your plugin correctly."""
@@ -73,6 +71,9 @@ class LoggerPlugin:
             packagedir = os.path.dirname(os.path.realpath(dir))
 
         return packagedir
+
+    def updateInfo(self):
+        self.logger.analysePlugins()
 
     def stream(self, y=[], snames=[], dname=None, unit=None, x=None, slist=None, sdict=None):
         """
@@ -236,150 +237,6 @@ class LoggerPlugin:
             logging.warning("No event connected")
             return False
 
-    def createTCPClient(self, address="localhost", password=None, tcpport=5050, threaded=False):
-        '''
-        Creates a TCP client. Used to talk to RTOC via TCP. Read :doc:`TCP` for more information.
-        You need to call this once, before you can use `sendTCP()`
-
-        Args:
-            address (str): address of RTOC-server. (Default: localhost)
-            password (str or None): Provide a encryption-password, if RTOC server is password protected.
-            tcpport (int): TCP-Port of RTOC-server. (Default: 5050)
-            threaded (bool): If you want to transmit the data in a seperate thread, set `threaded=True`. If you need the tcp-response, set `threaded=False`.
-        '''
-        if threaded:
-            self._tcpthread = True
-        else:
-            self._tcpthread = False
-
-        self._tcpaddress = address
-        self._tcpport = tcpport
-        self._sock = jsonsocket.Client()
-        if password is not None:
-            self._tcppassword = password
-            self._sock.setKeyword(password)
-
-    def sendTCP(self, y=None, sname=None, dname=None, unit=None, x=None, getSignal=None, getLatest=None, getEvent=None, getSignalList=False, getEventList=False, getPluginList=False, getSession=False, plot=False, event=None, remove=None, plugin=None, logger=None, stream=None, timeout=5):
-        """
-        Use any of the arguments described in :doc:`TCP`.
-
-        Before you can use this function, you need to connect to a server with `createTCPClient()`.
-
-        Args:
-            x (list): A list containing x-values
-            y (list): A list containing y-values
-            sname (list or str): list, if plot is False. str, if plot is True.
-            dname (str): Devicename of signal/event
-            unit (list or str): Signal-unit
-            plot (bool): False: xy-pairs are interpreted as different signals, True: xy-pairs are one signal
-            event ([text, id, value]): Submit an event
-            remove: :py:meth:`.NetworkFunctions.remove`
-            plugin: :py:meth:`.NetworkFunctions.handleTcpPlugins`
-            logger: :py:meth:`.NetworkFunctions.handleTcpLogger`
-            getSignal: :py:meth:`.NetworkFunctions.getSignal`
-            getLatest: :py:meth:`.NetworkFunctions.getLatest`
-            getEvent: :py:meth:`.NetworkFunctions.getEvent`
-            getSignalList: :py:meth:`.NetworkFunctions.getSignalList`
-            getEventList: :py:meth:`.NetworkFunctions.getEventList`
-            getPluginList: :py:meth:`.NetworkFunctions.getPluginList`
-            getSession: :py:meth:`.RT_data.generateSessionJSON`
-            timeout: TCP-Client Timeout (Default: 5s)
-
-        Returns:
-            tcp_response (dict), if createTCPClient(threaded=False)
-
-            None, if createTCPClient(threaded=True)
-
-        """
-        if self._tcpthread:
-            t = Thread(target=self._sendTCP, args=(y, sname, dname, unit, x, getSignal, getLatest, getEvent, getSignalList, getEventList, getPluginList, getSession, plot, event, remove, plugin, logger, stream, timeout))
-            t.start()
-        else:
-            return self._sendTCP(y, sname, dname, unit, x, getSignal, getLatest, getEvent, getSignalList, getEventList, getPluginList, getSession, plot, event, remove, plugin, logger, stream, timeout)
-
-    def _sendTCP(self, y=None, sname=None, dname=None, unit=None, x=None, getSignal=None, getLatest=None, getEvent=None, getSignalList=False, getEventList=False, getPluginList=False, getSession=False, plot=False, event=None, remove=None, plugin=None, logger=None, stream=None, timeout=5):
-        with lock:
-
-            if x is None and y is not None and not plot:
-                x = [time.time()]*len(y)
-            dicti = {}
-            if y is not None:
-                dicti['plot'] = plot
-                dicti['y'] = y
-                dicti['x'] = x
-                dicti['sname'] = sname
-                dicti['dname'] = dname
-                dicti['unit'] = unit
-            if getSignalList:
-                dicti['getSignalList'] = True
-            if getEventList:
-                dicti['getEventList'] = True
-            if event is not None:
-                dicti['event'] = event
-            if getEvent is not None:
-                dicti['getEvent'] = getEvent
-            if getSignal is not None:
-                dicti['getSignal'] = getSignal
-            if getLatest is not None:
-                dicti['getLatest'] = getLatest
-            if remove is not None:
-                dicti['remove'] = remove
-            if plugin is not None:
-                dicti['plugin'] = plugin
-            if logger is not None:
-                dicti['logger'] = logger
-            if getPluginList:
-                dicti['getPluginList'] = True
-            if getSession:
-                dicti['getSession'] = True
-            # if self._tcppassword != '' and self._tcppassword is not None:
-                # hash_object = hashlib.sha256(self._tcppassword.encode('utf-8'))
-                # hex_dig = hash_object.hexdigest()
-                # dicti['password'] = hex_dig
-            if self._sock:
-                try:
-                    self._sock.connect(self._tcpaddress, self._tcpport, self._tcppassword, timeout=timeout)
-                    self._sock.send(dicti)
-                    response = self._sock.recv()
-                    # self._sock.close()
-                    if response is None:
-                        # if 'password' in response.keys():
-                        logging.error('passwordprotected')
-                        return None
-                    else:
-                        return response
-                except ConnectionRefusedError:
-                    logging.error('TCP Connection refused')
-                    # try:
-                    #     self._sock.close()
-                    # except Exception:
-                    #     logging.debug(traceback.format_exc())
-                    return False
-                except jsonsocket.NoPasswordProtectionError:
-                    return False
-                except jsonsocket.WrongPasswordError:
-                    return False
-                except jsonsocket.PasswordProtectedError:
-                    return False
-                except jsonsocket.NoPasswordProtectionError:
-                    return False
-                except Exception:
-                    tb = traceback.format_exc()
-                    logging.debug(tb)
-                    logging.error("Error sending over TCP")
-                    # try:
-                    #     self._sock.close()
-                    # except Exception:
-                    #     logging.debug(traceback.format_exc())
-                    # self._sock = jsonsocket.Client()
-                    return False
-                finally:
-                    self._sock.close()
-            else:
-                logging.error("Please createTCPClient first")
-                self.createTCPClient()
-                return False
-
     def setDeviceName(self, devicename="noDevice"):
         """
         Use this function to set a default devicename. If you do this, you don't need to submit the devicename with any call of any function
@@ -404,9 +261,6 @@ class LoggerPlugin:
             self.widget.close()
         if self._pluginThread and not self._oldPerpetualTimer:
             self._pluginThread.cancel()
-
-        # if self._sock:
-            # self._sock.close()
 
     def setSamplerate(self, rate):
         """
@@ -451,6 +305,117 @@ class LoggerPlugin:
         self._samplerate = samplerate
         if self._pluginThread is not None and not self._oldPerpetualTimer:
             self._pluginThread.setSamplerate(samplerate)
+
+    def info(self, msg):
+        date = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        message = [date, 0, str(msg)]
+        self._log.append(message)
+        logging.info(msg)
+
+    def warning(self, msg):
+        date = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        message = [date, 1, str(msg)]
+        self._log.append(message)
+        logging.warning(msg)
+
+    def error(self, msg):
+        date = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        message = [date, 2, str(msg)]
+        self._log.append(message)
+        logging.error(msg)
+
+    def debug(self, msg):
+        date = str(datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+        message = [date, -1, str(msg)]
+        self._log.append(message)
+        logging.debug(msg)
+
+    def createPersistentVariable(self, name, fallback=None, dname=None, docs=None):
+        """
+        Creates a persistent variable, which can be edited and will be restored after restart/reboot.
+        You can create it like this:
+        self.createPersistentVariable('perVar', 5)
+
+        After this, you can access it's value with 'self.perVar' and edit it in the same way.
+
+        Args:
+            name (str): Name of the parameter,
+            fallback (any): Alternative value, if parname is not available (for initialization),
+            dname (str): Devicename, selected by default
+
+        Returns:
+            PersistentVariable: Parameter to be used in Logger.
+
+        """
+        # if dname == None:
+        #     dname = self._devicename
+        # return PersistentVariable(self.logger, parname, fallback, dname)
+        
+        # Create 'private' parameter with _ in front: self._name
+        if self.logger.isPersistentVariable(name, dname):
+            fallback = self.logger.loadPersistentVariable(name, None, dname)
+        
+        setattr(self.__class__, '_'+name, fallback)
+
+        # This intermediate function handles the strange double self arguments
+        def setter(self, name, dname, selfself, value):
+            self._setPersistentAttribute(name, value, dname)
+
+        # Make sure, that the parameters are "the values, which would be represented at this point with print(...)"
+        setpart = partial(setter, self, name, dname)
+        getpart = partial(getattr, self, '_'+name)
+
+        # Create an attribute with the actual name. The getter refers to it's self._name attribute. The setter function to self._setGroupAttribute(name, value, parameter)
+        setattr(self.__class__, name, property(getpart, setpart))
+        
+        # If contains docs, create a third attribute at self.__doc_PARNAME__
+        if docs != None:
+            setattr(self, '__doc_'+name+'__', docs)
+    
+    def _setPersistentAttribute(self, name, value, dname):
+        setattr(self.__class__, '_'+name, value)
+        self.logger.savePersistentVariable(name, value, dname)
+
+
+    def initPersistentVariable(self, parname, value=None, dname=None):
+        if dname == None:
+            dname = self._devicename
+        return self.logger.initPersistentVariable(parname, value, dname)
+
+    def loadPersistentVariable(self, parname, fallback=None, dname=None):
+        """
+        Loads a persistent variable, which can be edited and will be restored after restart/reboot.
+
+        Args:
+            parname (str): Name of the parameter,
+            fallback (any): Alternative value, if parname is not available (for initialization),
+            dname (str): Devicename, selected by default
+
+        Returns:
+            any: Parameter-value
+
+        """
+        if dname == None:
+            dname = self._devicename
+        return self.logger.loadPersistentVariable(parname, fallback, dname)
+
+    def savePersistentVariable(self, parname, value, dname=None):
+        """
+        Saves a persistent variable to a file in RTOC-directory.
+
+        Args:
+            parname (str): Name of the parameter,
+            fallback (any): Alternative value, if parname is not available (for initialization),
+            dname (str): Devicename, selected by default
+
+        Returns:
+            bool: True, if variable successfully saved.
+
+        """
+        if dname == None:
+            dname = self._devicename
+        return self.logger.savePersistentVariable(parname, value, dname)
+        
 
     def setPerpetualTimer(self, fun, samplerate=None, interval = None, old = False):
         """
@@ -595,6 +560,42 @@ class LoggerPlugin:
         else:
             logging.warning('TelegramBot is not enabled or wrong configured! Can not send plot')
 
+class PersistentVariable(object):
+    def __init__(self, logger, parname, fallback, dname):
+        self._default = fallback
+        self._value = fallback
+        self._dname = dname
+        self._parname = parname
+        self._logger = logger
+        self.loadValue()
+
+    def loadValue(self):
+        self._value = self._logger.loadPersistentVariable(self._parname, self._default, self._dname)
+        return self._value
+
+    def saveValue(self):
+        return self._logger.savePersistentVariable(self._parname, self._value, self._dname)
+
+    def resetValue(self):
+        self._value = self._default
+
+    @property
+    def dname(self): 
+        return self._dname 
+
+    @dname.setter
+    def dname(self, dname):
+        self._dname = dname
+
+    @property
+    def value(self): 
+        return self._value 
+
+    @value.setter
+    def value(self, value):
+        self._value = value
+        self.saveValue()
+
 
 class _perpetualTimer():
 
@@ -611,10 +612,6 @@ class _perpetualTimer():
     def _handle_function(self):
         start = time.time()
         self._lastStart = time.perf_counter()
-        # self.thread_counter -= 1
-        # if self.thread_counter != 0:
-        #     logging.warning('there should not be a running thread, but unfortunately it is.')
-        #     print(self.thread_counter)
 
         if not self._cancel:
             with self._lock:

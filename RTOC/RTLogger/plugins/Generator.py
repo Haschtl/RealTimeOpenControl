@@ -5,29 +5,53 @@ import math
 import random
 from PyQt5 import uic
 from PyQt5 import QtWidgets
-import logging as log
-log.basicConfig(level=log.INFO)
-logging = log.getLogger(__name__)
 devicename = "Generator"
 
 
 class Plugin(LoggerPlugin):
+    """
+This is an example Plugin, which generates some signals.
+    """
     def __init__(self, *args, **kwargs):
         # Plugin setup
         super(Plugin, self).__init__(*args, **kwargs)
         self.setDeviceName(devicename)
         self.smallGUI = True
 
-        self.gen_freq = 1
-        self.gen_level = 1           # Gain of function
-        self._sname = "Square"
-        self.offset = 0
-        self.phase = 0
+        self.gen_freq = self.initPersistentVariable('gen_freq', 1)
+        self.gen_level = self.initPersistentVariable('gen_level', 1)           # Gain of function
+        self._sname = self.initPersistentVariable('_sname', "Square")
+        self.offset = self.initPersistentVariable('offset', 1)
+        self.phase = self.initPersistentVariable('phase', 1)
         self._lastValue = 0
+        self.exampleString = self.initPersistentVariable('exampleString', "Hello")
+        self.exampleBoolean = self.initPersistentVariable('exampleBoolean', True)
+        self.__doc_exampleBoolean__ = "Beispiel-Boolean"
+        self.__doc_exampleString__ = "Beispiel-Text"
+        self.__doc_offset__ = "Y-Offset of selected signal"
+        self.__doc_phase__ = "X-Phase of selected signal"
+        self.__doc_gen_freq__ = "Frequency of selected signal"
+        self.__doc_gen_level__ = "Amplitude of selected signal"
 
         self.setPerpetualTimer(self.__updateT, samplerate=10)
         self.gen_start = time.time()
         self.start()
+        self._test = 2
+        self.info('Generator started')
+
+    @property
+    def test(self):
+        """
+        Getter für test
+        """
+        return self._test
+
+    @test.setter
+    def test(self, value):
+        """
+        Setter für test
+        """
+        self._test = value
 
     def __updateT(self):
         if self._sname == "Square":
@@ -43,13 +67,32 @@ class Plugin(LoggerPlugin):
         elif self._sname == "DC":
             self.__dc()
 
+    def setFrequency(self, freq: float, inverse:bool=False):
+        """
+Set frequency of this signal. 
+Args:
+            freq (float): Frequency [1/s]
+            inverse (bool): If true, 'freq' will be the samplerate
+        """
+        if type(freq) not in [int, float]:
+            self.info('Generator: freq-Type wrong')
+            return False
+
+        if inverse is True:
+            freq = 1/freq
+            self.info('Generator: inverse freq')
+
+        self.info('Setting frequency')
+        self.gen_freq = freq
+        return True
+
     # loadGUI needs to return a QWidget, which will be implemented into the Plugins-Area
     def loadGUI(self):
         self.widget = QtWidgets.QWidget()
         packagedir = self.getDir(__file__)
         uic.loadUi(packagedir+"/Funktionsgenerator/gen_function.ui", self.widget)
-        self.setCallbacks()
-        self.setLabels()
+        self._setCallbacks()
+        self._setLabels()
         return self.widget
 
     # # # # # Plugin specific functions
@@ -111,7 +154,7 @@ class Plugin(LoggerPlugin):
         self._lastValue = self.gen_level + self.offset
         self.stream(self._lastValue, self._sname, unit=[""])
 
-    def setCallbacks(self):
+    def _setCallbacks(self):
         #self.connect(self.widget.samplerate, SIGNAL("valueChanged()",self.changeSamplerate))
         self.widget.samplerate.valueChanged.connect(self.__changeSamplerate)
         self.widget.frequency.valueChanged.connect(self.__changeFrequency)
@@ -147,12 +190,52 @@ class Plugin(LoggerPlugin):
         #           self.widget.function.currentText())
         self._sname = self.widget.function.currentText()
 
-    def setLabels(self):
+    def changeExampleString(self, name:str):
+        self.exampleString = name
+        
+    def changeType(self, stype:str='Square'):
+        """
+Change signal-type. 
+Args:
+            type (string): Choose one: 'Square','Sawtooth','Random','Sinus','AC','DC'
+        """
+        if stype == "Square":
+            self._sname = stype
+        elif stype == "Sawtooth":
+            self._sname = stype
+        elif stype == "Random":
+            self._sname = stype
+        elif stype == "Sinus":
+            self._sname = stype
+        elif stype == "AC":
+            self._sname = stype
+        elif stype == "DC":
+            self._sname = stype
+
+        self.savePersistentVariable('_sname', self._sname)
+
+    def _setLabels(self):
         self.widget.samplerate.setValue(self.samplerate)
         self.widget.frequency.setValue(self.gen_freq)
         self.widget.gain.setValue(self.gen_level)
         self.widget.offset.setValue(self.offset)
         self.widget.phase.setValue(self.phase)
+
+    def setAlphaColor(self, red=0, green=255, blue=0, alpha=255):
+        """
+{"type": "RGBA_Color", "red": {"min": 0, "max":255}, "green": {"min": 0, "max":255}, "blue": {"min": 0, "max":255}, "alpha": {"min": 0, "max":255}}
+Set Color, each from 0-255
+        """
+        self.info("R: {}, G: {}, B: {}, A: {}".format(red, green, blue, alpha))
+
+
+    def setColor(self, red=0, green=255, blue=0):
+        """
+{"type": "RGB_Color", "red": {"min": 0, "max":255}, "green": {"min": 0, "max":255}, "blue": {"min": 0, "max":255}}
+Set Color, each from 0-255
+        """
+        self.info("R: {}, G: {}, B: {}, A: {}".format(red, green, blue))
+
 
 
 if __name__ == "__main__":

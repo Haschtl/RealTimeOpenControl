@@ -6,7 +6,7 @@ This example uses the following RTOC-features:
 
 - PostgreSQL-database for long-time logging
 - Telegram-Bot with different permissions
-- Remote-TCP connection
+- Remote-Websocket connection
 - Automation (Event-Action-System)
 
 
@@ -35,32 +35,29 @@ Setup
 1. Install RTOC: :ref:`Installation`
 2. Setup PostgreSQL Database: :ref:`Long-time measurements in postgreSQL database (optional)`
 3. Setup Telegram-Bot: :ref:`Telegram-Bot setup`
-4. You should also set a tcp-password in :ref:`config.json`
+4. You should also set a websocket-password in :ref:`config.json`
 5. Download/program a plugin. Refer to :ref:`Plugin repository` and :ref:`Writing Plugins`.
 6. Add the plugin to :ref:`autorun_devices`.
-7. Start RTOC with `python3 -m RTOC`. Use `loggerServer.py` or `loggerWebServer.py` to run RTOC as a service on linux.
+7. Start RTOC with `python3 -m RTOC`. Use `loggerServer.py` to run RTOC as a service on linux.
 
 Remote access
 =================
 
-Remote-TCP (Person B)
+Remote-Websocket-Client (Person B)
 ----------------------
 Person B uses a computer with RTOC installed. Have a look at the :doc:`/GUI`-Documentation for more information. He can view all of the data in the database of the RTOC-server and has access to all functions and parameters from the heating system. He can manipulate the data with the RTOC-GUI.
+Person B can instead also use the RTOC_Remote Android App
 
-Admin (Person A)
+Admin-Telegram-Client (Person A)
 ----------------------
 Person A uses the Telegram-Bot to access the heating system. He has also access to all functions and parameters from the heating system and can view and edit all of the data. He can also modify the event-action (automation).
 
-Custom (Person C)
+Custom-Telegram-Client (Person C)
 ----------------------
 Person C just wants to set the room temperature for example. But does not want to use the complexe structure of the Telegram-Bot to do this (Devices->Heatpump->Functions->SetTemp). Therefore the telegram administators can set the permissions for Person C to 'custom'. Then Person C will only see shortcuts, which have been created for only this user. This can be done in two ways:
 1. Set the permission of Person C to 'Write' and create shortcuts for the desired functions/parameters and change the permission to 'Custom' afterwards.
 2. Edit the client-shortcuts in :ref:`telegram_clients.json`.
 
-Read (Person D)
+Read-Telegram-Client (Person D)
 ----------------------
 Person D just wants to view the measurements. Therefore an administrator can set his permission to 'Read'.
-
-Webserver (Person B and C)
------------------------------
-If the :ref:`RTOC Webserver` is started, any user in the local network can access the webserver from computers and smartphones. You can only view the measurements and a list of all events

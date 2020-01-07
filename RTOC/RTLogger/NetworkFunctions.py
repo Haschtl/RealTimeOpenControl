@@ -5,10 +5,11 @@ import traceback
 from threading import Thread
 # import sys
 # import subprocess
+from .RTWebsocketServer import RTWebsocketServer
 
 
 try:
-    from .. import jsonsocket
+    from . import jsonsocket
 except (ImportError, SystemError, ValueError):
     jsonsocket = None
 
@@ -17,12 +18,6 @@ import logging as log
 log.basicConfig(level=log.DEBUG)
 logging = log.getLogger(__name__)
 
-# try:
-#     from .RTOC_Web import RTOC_Web
-# except ImportError:
-#     logging.warning(
-#         'Dash (Plotly) for python not installed. Please install with "pip3 install dash"')
-#     RTOC_Web = None
 try:
     from .telegramBot import telegramBot
 except ImportError:
@@ -65,6 +60,24 @@ class NetworkFunctions:
                 'Telegram for python not installed. Please install with "pip3 install python-telegram-bot"')
             return False
 
+    def toggleWebsocketServer(self, value=None):
+        """
+        Toggles websocket-server on/off and sets value ['websocket']['active'] in config.
+
+        Args:
+            value (bool): True to enable websocket server, False to disable websocket server.
+
+        Returns:
+            bool: True, if toggling was successfully
+        """
+        if value is None:
+            value = self.config['websocket']['active']
+        self.config['websocket']['active'] = value
+        if value is True:
+            self.websocket = RTWebsocketServer(self, port=self.config['websocket']['port'],  password=self.config['websocket']['password'])
+        else:
+            self.websocket.stop()
+            
     def toggleTcpServer(self, value=None):
         """
         Toggles tcp-server on/off and sets value ['tcp']['active'] in config.
@@ -101,32 +114,59 @@ class NetworkFunctions:
                 self.tcp.close()
             return True
 
-    def setTCPPassword(self, strung):
+    def setWebsocketPassword(self, strung):
         """
-        Sets the tcp password for tcp-server
+        Sets the websocket password for websocket-server
 
         Args:
             strung (str): Your password-string.
         """
-        self.config['tcp']['password'] = strung
-        if self.tcp:
+        self.config['websocket']['password'] = strung
+        if self.websocket:
             if strung == '' or strung is None:
-                self.tcp.setKeyword(None)
+                self.websocket.setPassword(None)
             elif type(strung) == str:
-                self.tcp.setKeyword(strung)
+                self.websocket.setPassword(strung)
 
-    def setTCPPort(self, port):
+    def setWebsocketPort(self, port):
         """
-        Sets the tcp port for tcp-server in config
+        Sets the websocket port for websocket-server in config
 
         Args:
-            port (int): Your desired tcp-port.
+            port (int): Your desired websocket-port.
         """
-        self.config['tcp']['port'] = port
+        self.config['websocket']['port'] = port
 
     def sendTCP(self, hostname="localhost", *args, **kwargs):
         """
-        See :py:meth:`.LoggerPlugin.sendTCP` for more information
+        Use any of the arguments described in :doc:`TCP`.
+
+        Before you can use this function, you need to connect to a server with `createTCPClient()`.
+
+        Args:
+            x (list): A list containing x-values
+            y (list): A list containing y-values
+            sname (list or str): list, if plot is False. str, if plot is True.
+            dname (str): Devicename of signal/event
+            unit (list or str): Signal-unit
+            plot (bool): False: xy-pairs are interpreted as different signals, True: xy-pairs are one signal
+            event ([text, id, value]): Submit an event
+            plugin: :py:meth:`.NetworkFunctions.handleTcpPlugins`
+            logger: :py:meth:`.NetworkFunctions.handleTcpLogger`
+            getSignal: :py:meth:`.NetworkFunctions.getSignal`
+            getLatest: :py:meth:`.NetworkFunctions.getLatest`
+            getEvent: :py:meth:`.NetworkFunctions.getEvent`
+            getSignalList: :py:meth:`.NetworkFunctions.getSignalList`
+            getEventList: :py:meth:`.NetworkFunctions.getEventList`
+            getPluginList: :py:meth:`.NetworkFunctions.getPluginList`
+            getSession: :py:meth:`.RT_data.generateSessionJSON`
+            timeout: TCP-Client Timeout (Default: 5s)
+
+        Returns:
+            tcp_response (dict), if createTCPClient(threaded=False)
+
+            None, if createTCPClient(threaded=True)
+
         """
         self.tcpclient.createTCPClient(hostname)
         return self.tcpclient._sendTCP(*args, **kwargs)
@@ -168,8 +208,6 @@ class NetworkFunctions:
                         ans['latest'] = self.getLatest(msg['getLatest'])
                     if 'getSession' in msg.keys():
                         ans['session'] = self.database.generateSessionJSON(scripts=None)
-                    if 'remove' in msg.keys():
-                        ans['remove'] = self.remove(msg['remove'])
                     if 'plugin' in msg.keys():
                         ans['plugin'] = self.handleTcpPlugins(msg['plugin'])
                     if 'logger' in msg.keys():
@@ -198,9 +236,6 @@ class NetworkFunctions:
                 print(tb)
                 logging.warning("Error in TCP-Connection")
                 ans['error'] = True
-                # password = self.config['tcp']['password']
-                # self.tcp.close()
-                # self.tcp = jsonsocket.Server("0.0.0.0", self.config['tcp']['port'], password)
                 self.tcp.send({'error':True})
             finally:
                 if self.tcp.client:
@@ -230,7 +265,7 @@ class NetworkFunctions:
 
     def handleTcpPlugins(self, pluginDicts):
         """
-        Calls plugin function, returns plugin parameter or sets plugin parameter, depending on pluginDicts. (used in tcp-requests)
+        Calls plugin function, returns plugin parameter or sets plugin parameter, depending on pluginDicts. (used in websocket-requests)
 
         Args:
             pluginDicts (dict): {'pluginName':{'start':True/False}} to start/stop plugin
@@ -330,45 +365,18 @@ class NetworkFunctions:
             signalNames.pop(signalNames.index(['RTOC', '']))
         return signalNames
 
-    def getPluginDict(self):
-        """
-        Returns a dictonary containing all plugin information, which is used in tcp-requests
+    
 
-        Returns:
-            dict: {'functions':[], 'parameters':[], 'status':bool}
-        """
-        dict = {}
-        for name in self.devicenames.keys():
-            dict[name] = {}
-            dict[name]['functions'] = []
-            dict[name]['parameters'] = []
-            dict[name]['status'] = False
-            for fun in self.pluginFunctions.keys():
-                hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir', 'telegram_send_message', 'telegram_send_photo', 'telegram_send_document', 'telegram_send_plot']
+    
 
-                if fun.startswith(name+".") and fun not in [name+'.'+i for i in hiddenFuncs]:
-                    dict[name]['functions'].append(fun.replace(name+".", ''))
-            for fun in self.pluginParameters.keys():
-                hiddenParams = ["run", "smallGUI", 'widget', 'samplerate','lockPerpetialTimer','logger']
-
-                if fun.startswith(name+".") and fun not in [name+'.'+i for i in hiddenParams]:
-                    value = self.getPluginParameter(name, "get", fun.replace(name+".", ''))
-                    if type(value) not in [str, int, float, list, bool]:
-                        value = "Unknown datatype"
-                    dict[name]['parameters'].append([fun.replace(name+".", ''), value])
-            for fun in self.pluginStatus.keys():
-                if name == fun:
-                    dict[name]['status'] = self.pluginStatus[fun]
-        return dict
-
-    def getEventList(self):
+    def getEventList(self, latest=None):
         """
         Returns eventlist, which is used in tcp-requests
 
         Returns:
             :py:meth:`.RT_data.events`
         """
-        return self.database.events(beauty=True)
+        return self.database.events(beauty=True, latest=None)
 
     def getEvent(self, nameList):
         """
@@ -401,6 +409,7 @@ class NetworkFunctions:
         Args:
             sigList (list): List of device.signalnames
 
+            sigList (dict): Single signal with keys: dname, sname, xmin, xmax, database, maxN
             sigList (str): If sigList== 'all', all signals are returned
 
         Returns:
@@ -457,15 +466,3 @@ class NetworkFunctions:
             latest = self.database.getLatest()
             ans = latest
         return ans
-
-    def remove(self, remList):
-        """
-        Removes latest xy-pairs for given signalnames, which is used in tcp-requests
-
-        Args:
-            remList (list): List of device.signalnames
-
-
-        **THIS IS NOT IMPLEMENTED YET**
-        """
-        return 'Not implemented'

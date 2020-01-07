@@ -13,6 +13,7 @@ from .NetworkFunctions import NetworkFunctions
 from .DeviceFunctions import DeviceFunctions
 from .EventActionFunctions import EventActionFunctions
 from .RT_data import RT_data
+from .RTWebsocketServer import RTWebsocketServer
 
 from ..LoggerPlugin import LoggerPlugin
 from . import RTRemote
@@ -35,7 +36,6 @@ defaultconfig = {
         "recordLength": 500000,
         "name": "RTOC-Remote",
         "documentfolder": "~/.RTOC",
-        "webserver_port": 8050,
         "globalActionsActivated": False,
         "globalEventsActivated": False
     },
@@ -93,8 +93,16 @@ defaultconfig = {
         "active": False,
         "port": 5050,
         "password": '',
+    },
+    "websocket": {
+        "active": False,
+        "port": 5050,
+        "password": None,
+        "ssl": False,
+        "keyfile": "",
+        "certfile": "",
         "knownHosts": {},
-        "remoteRefreshRate": 1,
+        "host_whitelist": ['127.0.0.1', 'localhost'],
     },
     "backup": {
         "active": False,
@@ -120,10 +128,11 @@ class _Config(collections.MutableMapping, dict):
     def __setitem__(self, key, value):
         dict.__setitem__(self, key, value)
         try:
-            with open(self['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
+            with open(self['global']['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
                 json.dump(self, fp,  sort_keys=False, indent=4, separators=(',', ': '))
                 logging.info('Config saved')
-        except Exception:
+        except Exception as e:
+            logging.error(e)
             logging.warning('Config could not be saved')
 
     def __delitem__(self, key):
@@ -138,13 +147,42 @@ class _Config(collections.MutableMapping, dict):
     def __contains__(self, x):
         return dict.__contains__(self, x)
 
+    def deepcopy(self):
+        copy = {}
+        for outerkey in self.keys():
+            if type(self[outerkey]) == dict:
+                copy[outerkey] = {}
+                for innerkey in self[outerkey].keys():
+                    if type(self[outerkey][innerkey]) == dict:
+                        copy[outerkey][innerkey] = {}
+                        for innerinnerkey in self[outerkey][innerkey].keys():
+                            copy[outerkey][innerkey][innerinnerkey] = self[outerkey][innerkey][innerinnerkey]
+                    else:
+                        copy[outerkey][innerkey] = self[outerkey][innerkey]
+            else:
+                copy[outerkey] = self[outerkey]
+        return copy
+
+    def reduced(self):
+        reduced_config = self.deepcopy()
+        reduced_config['postgresql'].pop('user')
+        reduced_config['postgresql'].pop('password')
+        reduced_config['postgresql'].pop('host')
+        reduced_config['postgresql'].pop('port')
+        reduced_config['postgresql'].pop('database')
+        reduced_config.pop('GUI')
+        reduced_config['telegram'].pop('token')
+        reduced_config['tcp'].pop('password')
+        reduced_config['websocket'].pop('password')
+        return reduced_config
+
 
 # , QObject):
 class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFunctions):
     """
     This is the main backend-class.
 
-    It combines data-storage, tcp-server, scripting, event/action-system and the telegram-bot.
+    It combines data-storage, websocket-server, scripting, event/action-system and the telegram-bot.
 
     Check out the following modules for more information:
         DeviceFunctions
@@ -155,7 +193,7 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
         RT_data
         telegramBot
     """
-    def __init__(self, enableTCP=None, tcpport=None, isGUI=False, forceLocal=False, customConfigPath=None):
+    def __init__(self, enableWebsocket=None, websocketPort=None, isGUI=False, forceLocal=False, customConfigPath=None):
         self.run = True
         self.forceLocal = forceLocal
         self.isGUI = isGUI
@@ -164,7 +202,11 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
         self.pluginObjects = {}  # dict with all plugins
         self.pluginFunctions = {}
         self.pluginParameters = {}
+        self.pluginParameterDocstrings = {}
+        self.pluginInfos = {}
         self.pluginStatus = {}
+        self.persistentVariables = {}
+        self.autorunPlugins = []
         self.starttime = time.time()
         # self.maxLength = self.config['global']['recordLength']
         self.__latestSignal = []
@@ -177,10 +219,10 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
         self.globalActions = {}
         self.getDeviceList()
         self.tcp = None
-        if enableTCP is not None:
-            self.config['tcp']['active'] = enableTCP
-        if tcpport is not None:
-            self.config['tcp']['port'] = int(tcpport)
+        if websocketPort is not None and type(websocketPort) in [int, float]:
+            self.config['websocket']['port'] = int(websocketPort)
+        if enableWebsocket is not None and type(enableWebsocket == bool):
+            self.config['websocket']['active'] = enableWebsocket
 
         # self.clearSignals()
         self.callback = None
@@ -196,13 +238,18 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
         self.reloadDevicesRAWCallback = None
         self.reloadSignalsGUICallback = None
         self.executedCallback = None
-
-        self.tcpclient = LoggerPlugin(None, None, None)
-        self.rtoc_web = None
+        self.websocketDevice_callback = None 
+        self.loadSystemActions()
+        # self.tcpclient = LoggerPlugin(None, None, None)
         self.__tcpserver = None
         self.database = RT_data(self)
-
+        self.initPersistentVariables()
         self.toggleTcpServer(self.config['tcp']['active'])
+        if self.config['websocket']['active']:
+            self.websocket = RTWebsocketServer(self, port=self.config['websocket']['port'],  password=self.config['websocket']['password'])
+        else:
+            logging.info('Websocket server disabled')
+            self.websocket = None
         self.remote = RTRemote.RTRemote(self)
         # if telegramBot is not None:
         #     self.telegramBot = telegramBot(self)
@@ -216,6 +263,24 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
 
         # if self.config['backup']['active'] and not self.forceLocal:  # or self.config['postgresql']['active']:
         #     self.database.start()
+
+    def loadSystemActions(self):
+        self.userActions = {}
+        userpath = self.config['global']['documentfolder']
+        if os.path.exists(userpath+"/telegramActions.json"):
+            try:
+                with open(userpath+"/telegramActions.json", encoding="UTF-8") as jsonfile:
+                    self.userActions = json.load(jsonfile, encoding="UTF-8")
+            except:
+                # print(traceback.print_exc())
+                logging.error('Error in Telegram-UserActions-JSON-File')
+
+    def executeUserAction(self, strung):
+        if strung in self.userActions.keys():
+            action = self.userActions[strung]
+            return self.executeScript(action)
+        else:
+            return False, 'Cannot find action "'+strung+'"'
 
     def getDir(self, dir=None):
         """
@@ -240,14 +305,17 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
 
     def stop(self):
         """
-        Stops everything (TCP-Server, Telegram-Bot, Plugins)
+        Stops everything (Websocket-Server, Telegram-Bot, Plugins)
         """
         # Stops all plugins
         self.run = False
         self.tcpRunning = False
         if self.tcp:
             self.tcp.close()
-        logging.info("TCPServer beendet")
+            logging.info("TCP-Server beendet")
+        if self.websocket:
+            self.websocket.stop()
+            logging.info("WebsocketServer beendet")
         self.remote.stop()
 
         for name in self.devicenames.keys():
@@ -332,8 +400,12 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
                 os.mkdir(userpath+'/backup')
             configpath = userpath+"/config.json"
         else:
-            configpath = os.path.realpath(customPath)
-            userpath = os.path.dirname(configpath)
+            userpath = os.path.expanduser(customPath)
+            if not os.path.exists(userpath):
+                os.mkdir(userpath)
+            if not os.path.exists(userpath+'/backup'):
+                os.mkdir(userpath+'/backup')
+            configpath = userpath+"/config.json"
 
         if os.path.exists(configpath):
             try:
@@ -363,6 +435,12 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
             logging.warning('No config-file found.')
             self.__config = _Config(defaultconfig)
             self.__config['backup']['path'] = userpath+'/backup'
+            self.__config['global']['documentfolder'] = userpath
+            if not os.path.exists(configpath):
+
+                with open(configpath, 'w+', encoding="utf-8") as fp:
+                    json.dump(self.__config, fp,  sort_keys=False, indent=4, separators=(',', ': '))
+            # self.save_config()
 
         self.__config['global']['documentfolder'] = userpath
 
@@ -381,14 +459,13 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
                         logging.warning(
                             'Telegram chat ids were saved without shortcuts. Empty list added')
 
-        if type(self.__config['tcp']['knownHosts']) == list:
+        if type(self.__config['websocket']['knownHosts']) == list:
             newdict = {}
-            for id in self.__config['tcp']['knownHosts']:
+            for id in self.__config['websocket']['knownHosts']:
                 newdict[id] = ['RenameDevice', '']
-            self.__config['tcp']['knownHosts'] = newdict
+            self.__config['websocket']['knownHosts'] = newdict
         # conf = dict(self.config)
         # conf['telegram_bot'] = False
-        # conf['rtoc_web'] = False
         # with open(self.config['global']['documentfolder']+"/config.json", 'w', encoding="utf-8") as fp:
         #     json.dump(conf, fp,  sort_keys=False, indent=4, separators=(',', ': '))
 
@@ -409,10 +486,52 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
             json.dump(self.config, fp,  sort_keys=False, indent=4, separators=(',', ': '))
 
     def _load_autorun_plugins(self):
-        userpath = os.path.expanduser('~/.RTOC/autorun_devices')
+        userpath = os.path.expanduser(self.config['global']['documentfolder']+'/autorun_devices')
         if not os.path.exists(userpath):
             with open(userpath, 'w', encoding="UTF-8") as f:
                 f.write('')
+        else:
+            plugins = self.getAutorunPlugins()
+            for p in plugins:
+                self.startPlugin(p)
+
+    def setAutorunPlugins(self, plugins):
+        userpath = os.path.expanduser(self.config['global']['documentfolder']+'/autorun_devices')
+
+        with open(userpath, 'w', encoding="UTF-8") as f:
+            for p in plugins:
+                f.write(p+'\n')
+        self.autorunPlugins = plugins
+
+    def addAutorunPlugin(self, plugin):
+        plugins = self.getAutorunPlugins()
+        if plugin not in plugins:
+            plugins.append(plugin)
+            self.autorunPlugins = plugins
+            self.setAutorunPlugins(plugins)
+            if self.websocketDevice_callback:
+                self.websocketDevice_callback(plugin)
+            return True
+        else:
+            return False
+    
+    def removeAutorunPlugin(self, plugin):
+        plugins = self.getAutorunPlugins()
+        if plugin in plugins:
+            plugins.pop(plugins.index(plugin))
+            self.autorunPlugins = plugins
+            self.setAutorunPlugins(plugins)
+            if self.websocketDevice_callback:
+                self.websocketDevice_callback(plugin)
+            return False
+        else:
+            return True
+    
+    def getAutorunPlugins(self):
+        userpath = os.path.expanduser(self.config['global']['documentfolder']+'/autorun_devices')
+        if not os.path.exists(userpath):
+            self.autorunPlugins = []
+            return []
         else:
             plugins = []
             try:
@@ -423,8 +542,8 @@ class RTLogger(DeviceFunctions, EventActionFunctions, ScriptFunctions, NetworkFu
             except Exception:
                 logging.debug(traceback.format_exc())
                 logging.error('error in '+userpath)
-            for p in plugins:
-                self.startPlugin(p)
+            self.autorunPlugins = plugins
+            return plugins
 
     def check_for_updates(self):
         """

@@ -6,6 +6,7 @@ import os
 # from collections import deque
 import numpy as np
 import sys
+from ..RTLogger.RTWebsocketClient import RTWebsocketClient
 
 from ..lib import pyqt_customlib as pyqtlib
 from .stylePlotGUI import plotStyler
@@ -259,22 +260,17 @@ class SignalEditWidget(QtWidgets.QWidget):
         signal = self.self.logger.database.getSignal(self.id)
         name = self.self.logger.database.getSignalName(self.id)
         textlist = []
-        for s in self.self.logger.config['tcp']['knownHosts'].keys():
-            textlist.append(self.self.logger.config['tcp']['knownHosts'][s][0]+' ('+s+')')
+        for s in self.self.logger.config['websocket']['knownHosts'].keys():
+            textlist.append(self.self.logger.config['websocket']['knownHosts'][s][0]+' ('+s+')')
         item, ok = pyqtlib.item_message(None, translate("RTOC",
             'Select host'), "Please select a known host", textlist, stylesheet="")
         if ok:
             idx = textlist.index(item)
-            for idx2, s in enumerate(self.self.logger.config['tcp']['knownHosts'].keys()):
+            for idx2, s in enumerate(self.self.logger.config['websocket']['knownHosts'].keys()):
                 if idx == idx2:
                     twoname = s.split(':')
                     host = twoname[0]
                     port = int(twoname[1])
-                    password = self.self.logger.config['tcp']['knownHosts'][s][1]
-                    self.self.logger.tcpclient.createTCPClient(host, password, port)
-                    ans = self.self.logger.tcpclient._sendTCP(x=list(signal[2]), y=list(
+                    password = self.self.logger.config['websocket']['knownHosts'][s][1]
+                    client = RTWebsocketClient(host, port, password).connect().send(x=list(signal[2]), y=list(
                         signal[3]), dname=self.self.logger.config['global']['name']+":"+name[0], sname=name[1], unit=signal[4])
-                    if ans:
-                        return
-        pyqtlib.info_message(translate('RTOC', "Error"), translate("RTOC",
-            'Signal could not be sent.'), translate('RTOC', 'Error connecting to remote RTOC'))

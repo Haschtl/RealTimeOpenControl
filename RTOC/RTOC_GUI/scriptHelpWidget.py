@@ -51,7 +51,7 @@ class ScriptHelpWidget(QtWidgets.QWidget):
                     self.listWidget.addItem(element)
         for element in self.logger.pluginFunctions.keys():
             if self.logger.pluginStatus[element.split('.')[0]] == True:
-                if element.split(".")[1] not in ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir']:
+                if element.split(".")[1] not in ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir']:
                     parStr = ', '.join(self.logger.pluginFunctions[element][1])
                     self.listWidget.addItem(element+"("+parStr+")")
         for element in self.logger.database.signalNames():

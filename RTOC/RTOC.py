@@ -38,7 +38,7 @@ logging = log.getLogger(__name__)
 
 if os.name == 'nt':
     import ctypes
-    myappid = 'RTOC.2.1.8'  # arbitrary string
+    myappid = 'RTOC.3.0'  # arbitrary string
     ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID(myappid)
 
 try:
@@ -162,8 +162,9 @@ class _SubWindow(QtWidgets.QMainWindow):
 class RTOC(QtWidgets.QMainWindow, Actions):
     """GUI-code is not documented."""
     foundRTOCServerCallback = QtCore.pyqtSignal(list)
+    reloadDevicesCallback = QtCore.pyqtSignal()
 
-    def __init__(self, tcp=None, port=5050, forceLocal = False, customConfigPath=None):
+    def __init__(self, websocket=None, port=5050, forceLocal = False, customConfigPath=None):
         super(RTOC, self).__init__()
         if getattr(sys, 'frozen', False):
             # frozen
@@ -181,7 +182,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.forceQuit = False
         self.initPlotWidgets()
 
-        self.logger = RTLogger.RTLogger(tcp, port, True, forceLocal = forceLocal, customConfigPath=customConfigPath)
+        self.logger = RTLogger.RTLogger(websocket, port, True, forceLocal = forceLocal, customConfigPath=customConfigPath)
         self.config = self.logger.config
         self.settings = None  # window position settings
         self.loadPlotStyles()
@@ -200,7 +201,8 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.logger.stopDeviceCallback = self.remoteDeviceStop
         self.logger.startDeviceCallback = self.remoteDeviceStart
         self.logger.recordingLengthChangedCallback = self.loggerChangedAlert
-        self.logger.reloadDevicesCallback = self.reloadDevices
+        self.logger.reloadDevicesCallback = self.reloadDevicesCallback.emit
+        self.reloadDevicesCallback.connect(self.reloadDevices)
         self.logger.reloadDevicesRAWCallback = self.reloadDevicesRAW
         self.logger.reloadSignalsGUICallback = self.reloadSignals
 
@@ -240,16 +242,14 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         if not self.config['GUI']['eventWidget']:
             self.eventWidgets.hide()
         # self.deviceRAWWidget.hide()
-        self.actionTCPServer_2.setChecked(self.config['tcp']['active'])
-        # self.HTMLServerAction_2.setChecked(self.config["rtoc_web"])
-        self.HTMLServerAction_2.setEnabled(False)
+        self.actionWebsocketServer.setChecked(self.config['websocket']['active'])
         self.actionTelegramBot_2.setChecked(self.config['telegram']['active'])
         self.actionBotToken_2.setText(self.config['telegram']['token'])
-        if self.config['tcp']['password'] == '':
-            self.actionTCPPassword_2.setText(translate('RTOC', 'Password protection: Off'))
+        if self.config['websocket']['password'] == '':
+            self.actionWebsocketPassword.setText(translate('RTOC', 'Password protection: Off'))
         else:
-            self.actionTCPPassword_2.setText(translate('RTOC', 'Password protection: On'))
-        self.actionTCPPort_2.setText(translate('RTOC', 'Port: {}').format(self.config['tcp']['port']))
+            self.actionWebsocketPassword.setText(translate('RTOC', 'Password protection: On'))
+        self.actionWebsocketPort.setText(translate('RTOC', 'Port: {}').format(self.config['websocket']['port']))
         self.updateLabels()
         if self.config['GUI']['restoreWidgetPosition']:
             self.readSettings()
@@ -310,21 +310,21 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         self.hide_action.setCheckable(True)
         self.hide_action.setChecked(self.config['GUI']['systemTray'])
         self.hide_action.triggered.connect(self.toggleSystemTray)
-        self.tcp_action = QtWidgets.QAction(translate('RTOC', "TCP Server"), self)
-        self.tcp_action.setCheckable(True)
-        self.tcp_action.setChecked(self.config['tcp']['active'])
-        self.tcp_action.triggered.connect(self.toggleTcpServer)
+        self.websocket_action = QtWidgets.QAction(translate('RTOC', "Websocket Server"), self)
+        self.websocket_action.setCheckable(True)
+        self.websocket_action.setChecked(self.config['websocket']['active'])
+        self.websocket_action.triggered.connect(self.toggleWebsocketServer)
         quit_action = QtWidgets.QAction(translate('RTOC', "Quit"), self)
         quit_action.triggered.connect(self.forceClose)
 
         tray_menu = QtWidgets.QMenu()
         tray_menu.addAction(show_action)
         tray_menu.addAction(self.hide_action)
-        tray_menu.addAction(self.tcp_action)
+        tray_menu.addAction(self.websocket_action)
         tray_menu.addAction(quit_action)
         self.tray_icon.setContextMenu(tray_menu)
         self.systemTrayAction.setChecked(self.config['GUI']['systemTray'])
-        self.actionTCPServer_2.setChecked(self.config['tcp']['active'])
+        self.actionWebsocketServer.setChecked(self.config['websocket']['active'])
 
     def reloadDevicesRAW(self):
         self.updateDeviceRAW()
@@ -342,7 +342,7 @@ class RTOC(QtWidgets.QMainWindow, Actions):
         for sigID in self.logger.database.signals().keys():
             if sigID not in plotted_ids:
                 devicename, signalname = self.logger.database.getSignalName(sigID)
-                dataunit = self.logger.signals[sigID][4]
+                dataunit = self.logger.database._signals[sigID][4]
                 self.addNewSignal(id, devicename, signalname, dataunit)
 
     def initDeviceWidget(self):

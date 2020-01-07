@@ -140,8 +140,6 @@ PyHamcrest==1.9.0
 PyInstaller==3.3.1
 PyJWT==1.7.1
 pylint==1.9.2
-pymodbus3==1.0.0
-pyModbusTCP==0.1.8
 PyOpenGL==3.1.0
 pyparsing==2.2.0
 PyQt5==5.9.2

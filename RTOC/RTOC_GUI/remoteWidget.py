@@ -47,14 +47,22 @@ class RemoteWidget(QtWidgets.QWidget):
         self.port = port
         self.listWidget.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         self.listWidget.customContextMenuRequested.connect(self.listItemRightClicked)
+        self.listWidget.itemSelectionChanged.connect(self.selectionChanged)
 
         self.disconnectButton.clicked.connect(self.disconnect)
         self.maxLengthSpinBox.editingFinished.connect(self.updateDataWindow)
         self.toDateTimeEdit.editingFinished.connect(self.updateDataWindow)
         self.fromDateTimeEdit.editingFinished.connect(self.updateDataWindow)
+        # self.maxLengthSpinBox.hide()
+        # self.toDateTimeEdit.hide()
+        # self.fromDateTimeEdit.hide()
+        self.timeRangeWidget.hide()
         self.clearButton.clicked.connect(self.clear)
+        self.clearButton.hide()
         self.pauseButton.clicked.connect(self.pause)
+        self.pauseButton.hide()
         self.saveButton.clicked.connect(self.saveRemoteSession)
+        self.saveButton.hide()
         self.remote = self.self.logger.remote.getConnection(self.hostname, self.port)
         self.remote.updateRemoteCallback = self.update.emit
         self.update.connect(self.updateRemote)
@@ -82,7 +90,7 @@ class RemoteWidget(QtWidgets.QWidget):
             self.hostLineEdit.setText(self.remote.host)
             self.portSpinBox.setValue(self.remote.port)
             self.nameLineEdit.setText(self.remote.name)
-            self.passwordLineEdit.setText(self.remote.tcppassword)
+            self.passwordLineEdit.setText(self.remote.__password)
             self.editLayout.show()
             self.pauseButton.hide()
             self.clearButton.hide()
@@ -95,6 +103,9 @@ class RemoteWidget(QtWidgets.QWidget):
         if self.remote.status == "connected":
             self.statusLabel.setText(translate('RTOC', 'Connected'))
             self.statusLabel.setStyleSheet('background-color: rgb(0, 82, 17)')
+        if self.remote.status == "connecting":
+            self.statusLabel.setText(translate('RTOC', 'Connecting...'))
+            self.statusLabel.setStyleSheet('background-color: rgb(80, 82, 87)')
         elif self.remote.status == "disconnected":
             self.statusLabel.setText(translate('RTOC', 'Error'))
             self.statusLabel.setStyleSheet('background-color: rgb(98, 1, 1)')
@@ -106,6 +117,9 @@ class RemoteWidget(QtWidgets.QWidget):
             self.statusLabel.setStyleSheet('background-color: rgb(98, 1, 1)')
         elif self.remote.status == "protected":
             self.statusLabel.setText(translate('RTOC', 'Protected'))
+            self.statusLabel.setStyleSheet('background-color: rgb(98, 1, 1)')
+        elif self.remote.status == "closed":
+            self.statusLabel.setText(translate('RTOC', 'Closed'))
             self.statusLabel.setStyleSheet('background-color: rgb(98, 1, 1)')
 
     def disconnect(self):
@@ -152,27 +166,34 @@ class RemoteWidget(QtWidgets.QWidget):
     #         for o in self.listWidget.selectedItems():
     #             selection.append(o.text())
 
+    def selectionChanged(self):
+        t = []
+        for o in self.listWidget.selectedItems():
+            t.append(o.text())
+        self.remote.sigSelectList = t
+
+
     def updateList(self):
         t = []
         for o in self.listWidget.selectedItems():
             t.append(o.text())
         self.listWidget.clear()
         for sig in self.remote.siglist:
-            self.listWidget.addItem('.'.join(sig))
+            self.listWidget.addItem(sig)
         for idx in range(self.listWidget.count()):
             sig = self.listWidget.item(idx)
             if sig.text() in t:
                 sig.setSelected(True)
                 self.listWidget.item(idx).setSelected(True)
         # self.self.logger.remote.sigSelectList = t
-        self.remote.sigSelectList = [i.split('.') for i in t]
+        # self.remote.sigSelectList = t
         # now tell RTRemote to only listen to selected Items
 
     def plotSignals(self):
         pass
 
     def closeEvent(self, event, *args, **kwargs):
-        self.remote.close()
+        self.remote.stop()
         self.parent.close()
         widgetIdx = -1
         for idx, widget in enumerate(self.self.remoteHostWidgets):

@@ -89,7 +89,7 @@ class ScriptFunctions:
         s = s.replace("exportData(", "self.exportData(")
 
         s = s.replace("while True:", "while self.run:")
-        s = s.replace("sendTCP(", "self._sendTCP(")
+        s = s.replace("sendWebsocket(", "self._sendWebsocket(")
         return s
 
     def replaceTelegramFunctions(self, s):
@@ -183,6 +183,7 @@ class ScriptFunctions:
             tb = traceback.format_exc()
             tb = tb+'\n'+code+"\nSYNTAX ERROR in condition"
             logging.error(tb)
+            logging.error(conditionStr)
             if self.executedCallback:
                 self.executedCallback(False, tb)
             return False, tb

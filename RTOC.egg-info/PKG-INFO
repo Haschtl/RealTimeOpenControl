@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: RTOC
-Version: 2.1.8
+Version: 3.0
 Summary: RealTime OpenControl
 Home-page: https://github.com/Haschtl/RealTimeOpenControl
 Author: Sebastian Keller
@@ -8,12 +8,26 @@ Author-email: sebastiankeller@online.de
 License: GNU
 Description: # RealTime OpenControl (RTOC)
         
-        | [![Documentation Status](https://readthedocs.org/projects/realtimeopencontrol/badge/?version=latest)](https://realtimeopencontrol.readthedocs.io/en/latest/) | [![Builds 2.1.8v](https://img.shields.io/badge/Builds%20version-1.6-brightgreen.svg?style=flat)](https://github.com/Haschtl/RealTimeOpenControl/releases) | [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) | [![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) |
+        | [![Documentation Status](https://readthedocs.org/projects/realtimeopencontrol/badge/?version=latest)](https://realtimeopencontrol.readthedocs.io/en/latest/) | [![Builds 3.0v](https://img.shields.io/badge/Builds%20version-1.6-brightgreen.svg?style=flat)](https://github.com/Haschtl/RealTimeOpenControl/releases) | [![PyPI pyversions](https://img.shields.io/pypi/pyversions/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI version fury.io](https://badge.fury.io/py/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![PyPI license](https://img.shields.io/pypi/l/ansicolortags.svg)](https://pypi.python.org/pypi/RTOC/) | [![GitHub release](https://img.shields.io/github/release/Naereen/StrapDown.js.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) | [![Github all releases](https://img.shields.io/github/downloads/Naereen/StrapDown.js/total.svg)](https://github.com/Haschtl/RealTimeOpenControl/releases/) |
         
         
-        ### Version 2.1.8
+        ### Version 3.0
         ![Usecase](screenshots/RTOC-schematik.png)
         [Documentation](https://realtimeopencontrol.readthedocs.io/en/latest/)
+        
+        
+        
+        > ## New in version 3.0
+        >
+        > - Introducing the [Android App](https://play.google.com/store/apps/details?id=io.RTOC.RTOCRemote&hl=en) with full RTOC remote control
+        > - Websocket-API
+        > - TCP is deprecated and removed from GUI. Use websockets instead.
+        > - New Plugin Functions: 
+        >   - self.warning(), self.info(), self.error(), self.debug() # Log available in the Android-App
+        >   - Persistent Variables: Variables are stored in a file and automatically loaded and saved
+        >   - Doc-Strings for functions and Plugin-class are displayed in Android-App. Doc-Strings for Parameters need to be defined seperate: self.\_\_doc_PARAMETER\_\_
+        > - Webserver has been removed, because the Android App provides a better interface and could also run as a WebApp on any device. But I only published the App, If you need a WebApp, contact me.
+        > - Several bugfixes
         
         RealTime OpenControl is a simple way for real-time data recording, visualization and editing.
         
@@ -21,14 +35,15 @@ Description: # RealTime OpenControl (RTOC)
         
         There are different ways to access data on an RTOC-Server:
         
+        - **NEW**: With WebApp / [Android App](https://play.google.com/store/apps/details?id=io.RTOC.RTOCRemote&hl=en) 
         - From GUI (PyQT5) (full access)
-        - From another RTOC-Server with TCP (partial access)
+        - From another RTOC-Server with Websockets (partial access)
         - From any device with a Telegram-Bot (full access)
-        - From any device with an HTML-website (only viewable)
         - From any device with PostgreSQL-Database (only access to data, no controlling of RTOC)
         
         ### Possible applications
         
+        - Endlessly customizable home automation
         - General long time data recording and automation due to postgreSQL integration
         - Central measurement data recording of laboratory instruments with PC connection (e.g. power supply unit, multimeter, sensors, microcontroller)
         - Central recording of measurement data from Internet devices (e.g. mobile weather stations, drones, smartphones)
@@ -65,7 +80,7 @@ Description: # RealTime OpenControl (RTOC)
         - send data as stream(=append) or plot(=replace) to RTOC
         - send events
         
-        Plugins can **not** access all measurements. This can be done with a TCP connection to RTOC.
+        Plugins can **not** access all measurements. This can be done with a websocket connection to RTOC.
         
         [Example-Plugins here.](https://realtimeopencontrol.readthedocs.io/en/latest/PLUGINS.html)
         
@@ -88,7 +103,7 @@ Description: # RealTime OpenControl (RTOC)
         
         In some cases you don't want to run the GUI (e.g. raspberry). Then you can still configure RTOC in a terminal: `python3 -m RTOC.RTLogger -c`
         
-        If you just want to run the TCP-Server after configuration, you can do this with `python3 -m RTOC.RTLogger`. The best way, to run this code on embedded devices, is, to setup a systemd-service for automated startup. But you can also run/stop RTOC in background with 'python3 -m RTOC.RTLogger -s start/stop'.
+        If you just want to run the Websocket-Server after configuration, you can do this with `python3 -m RTOC.RTLogger`. The best way, to run this code on embedded devices, is, to setup a systemd-service for automated startup. But you can also run/stop RTOC in background with 'python3 -m RTOC.RTLogger -s start/stop'.
         
         If you want to start the HTML server on port 8050, you need to run it with 'python3 -m RTOC.RTLogger -w'.
         
@@ -101,23 +116,27 @@ Description: # RealTime OpenControl (RTOC)
         
         
         
-        ### Simple local TCP-Datastream
+        ### Simple local Websocket-Server
         
-        TCP clients can establish a connection to the RTOC server on the same computer or in the network (check firewall settings). With the necessary port shares on the router and dynamic DNS, the RTOC server can also be accessed from the Internet.
+        Websocket clients can establish a connection to the RTOC server on the same computer or in the network (check firewall settings). With the necessary port shares on the router and dynamic DNS, the RTOC server can also be accessed from the Internet. 
         
-        TCP communication takes place with JSONs, which allows communication in all programming languages and also, for example, with an ESP8266/ESP32 microcontroller. This connection can also be end-to-end-encrypted with AES.
+        Websocket communication-protocoll is in JSON format, which allows communication in all programming languages and also, for example, with an ESP8266/ESP32 microcontroller. The communication can also be end-to-end-encrypted with AES. In this case, you need to implement the right encryption yourself.
         
-        The client can
+        A client can
         
         - send data as stream(=append) or plot(=replace) to RTOC
         - send events
         - access all measurement data and events of the RTOC-server
         - access all RTOC-server functions
         - access all RTOC-server plugin functions and parameters
+        - subscribe to signals
         
-        The connection between RTOC server and client can be encrypted end-to-end (DES) with a password.
+        The server will
         
-        [Example for TCP here.](https://realtimeopencontrol.readthedocs.io/en/latest/TCP.html)
+        - send events to the clients
+        - send subscribed signals to clients 
+        
+        [Example for Websockets here.](https://realtimeopencontrol.readthedocs.io/en/latest/Websocket.html)
         
         ### Include Telegram-messanger
         
@@ -160,6 +179,5 @@ Classifier: Topic :: Software Development :: User Interfaces
 Requires-Python: >=3
 Description-Content-Type: text/markdown
 Provides-Extra: GUI
-Provides-Extra: Webserver
 Provides-Extra: Telegram
 Provides-Extra: ALL

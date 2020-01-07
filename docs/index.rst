@@ -20,13 +20,9 @@ Telegram-Bot
 +++++++++++++++++++++++++++++
 The Telegram-Bot offers access to RTOC from any device with `Telegram <https://www.telegram.com>`_ installed. More information here: :doc:`/TELEGRAM`
 
-TCP-Server
+Websocket-Server
 ++++++++++++++++++++
-Communication with RTLogger from other processes or devices. Suitable for embedded devices with graphical user interface. More information here: :doc:`/TCP`
-
-Webserver
-++++++++++++++++++++++
-View plots and events from any network device. More information here: :doc:`/WEBSERVER`
+Communication with RTLogger from other processes or devices. Suitable for embedded devices with graphical user interface. More information here: :doc:`/Websocket`
 
 Graphical user interface (RTOC-GUI)
 ++++++++++++++++++++++++++++++++++++
@@ -60,10 +56,10 @@ FAQ
 - How do I create my first script? :doc:`SCRIPT`
 - What does the trigger mean? :ref:`Trigger-System`
 - RTOC library and default functions for scripts: :mod:`.RTLogger.scriptLibrary`
-- Can I access the data from any device? :doc:`TELEGRAM` or :doc:`TCP`
+- Can I access the data from any device? :doc:`TELEGRAM` or :doc:`Websocket`
 - How do I use the graphical user interface? :doc:`GUI`
 - How do I create a telegram bot? :ref:`Telegram-Bot setup`
-- How do I control an RTOC server via TCP in the network? :ref:`Remote-control via TCP`
+- How do I control an RTOC server via Websocket in the network? :ref:`Remote-control via Websocket`
 - Where can I find examples for plugins? `RTOC repository <https://github.com/Haschtl/RTOC-Plugins>`_
 
 
@@ -110,8 +106,7 @@ Table of contents
   TELEGRAM
   SCRIPT
   GUI
-  WEBSERVER
-  TCP
+  WEBSOCKET
 
 .. toctree::
   :maxdepth: 5

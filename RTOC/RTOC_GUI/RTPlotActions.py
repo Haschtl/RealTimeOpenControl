@@ -133,6 +133,7 @@ class Console(pgconsole.ConsoleWidget):
 
         s = s.replace("while True:", "while logger.run:")
         s = s.replace("sendTCP(", "logger.sendTCP(")
+        s = s.replace("sendWebsocket(", "logger.sendWebsocket(")
         return s
 
 

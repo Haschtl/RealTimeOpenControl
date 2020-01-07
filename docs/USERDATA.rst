@@ -52,7 +52,6 @@ language                   "en"           "en","de"   Selected language
 recordLength               500000         int         Local recording limit
 name                       "RTOC-Remote"  str         Name displayed in Telegram
 documentfolder             "~/.RTOC"      str         ! Do not change !
-webserver_port             8050           int         Port of webserver (disabled)
 globalActionsActivated     False          bool        Global actions (in-)active
 globalEventsActivated      False          bool        Global events (in-)active
 =========================  =============  =========== =========================
@@ -119,17 +118,16 @@ inlineMenu                 False          bool                                  
 onlyAdmin                  False          bool                                    If True, only admins will be able to access the bot
 =========================  =============  ======================================= =========================
 
-tcp
+websockets
 ++++++++++++++++++++
 
 =========================  =============  =========== =========================
 Entry                      Default        Type        Information
 =========================  =============  =========== =========================
-active                     False          bool        De/activate TCP-server
-port                       5050           int         TCP-port
-password                   ''             str         Optional password for TCP-encryption (AES)
-knownHosts                 {}             dict        Recent TCP-hosts for remote connection are stored here
-remoteRefreshRate          1              float       Refresh-rate for remote session
+active                     False          bool        De/activate Websocket-server
+port                       5050           int         Websocket-port
+password                   ''             str         Optional password for Websocket-encryption (AES)
+knownHosts                 {}             dict        Recent Websocket-hosts for remote connection are stored here
 =========================  =============  =========== =========================
 
 backup

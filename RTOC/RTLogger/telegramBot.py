@@ -75,6 +75,7 @@ class telegramBot():
         self.current_plugin = {}
         self.current_call = {}
         self.last_messages = {}
+        self.bot = None
         self.signals_selected = {}
         self.signals_range = {}
         self.helper = {}
@@ -84,16 +85,6 @@ class telegramBot():
         self.menuCommands = [translate('RTOC', 'Latest values'), translate('RTOC', 'Signals'), translate('RTOC', 'Settings')]
         self.writeMenuCommands = [translate('RTOC', 'Devices'), translate('RTOC', 'Create Event/Signal'), translate('RTOC', 'Automation')]
         self.adjustEventNotificationCommands = [translate('RTOC', "No notifications"), translate('RTOC', "Only errors"), translate('RTOC', "Warnings"), translate('RTOC', "All events")]
-
-        self.userActions = {}
-        userpath = self.logger.config['global']['documentfolder']
-        if os.path.exists(userpath+"/telegramActions.json"):
-            try:
-                with open(userpath+"/telegramActions.json", encoding="UTF-8") as jsonfile:
-                    self.userActions = json.load(jsonfile, encoding="UTF-8")
-            except:
-                # print(traceback.print_exc())
-                logging.error('Error in Telegram-UserActions-JSON-File')
 
     def setToken(self, token):
         self.token = token
@@ -128,6 +119,8 @@ class telegramBot():
             return
 
     def check_chat_id(self, chat_id):
+        if self.bot == None:
+            return
         if chat_id is not None:
             if str(chat_id) not in list(self.telegram_clients.keys()):
                 print('new telegram client connected')
@@ -215,6 +208,8 @@ class telegramBot():
             self.send_message(chat_id=int(id), text=message, delete=False)
 
     def send_photo(self, path, priority=0, permission='write', chat_ids=None):
+        if self.bot == None:
+            return
         if self._pluginCall_chat_id is not None:
             chat_ids = [self._pluginCall_chat_id]
         if chat_ids == None:
@@ -231,6 +226,8 @@ class telegramBot():
                 self.send_message(id, text)
 
     def send_document(self, path, priority=0, permission='write', chat_ids=None):
+        if self.bot == None:
+            return
         if self._pluginCall_chat_id is not None:
             chat_ids = [self._pluginCall_chat_id]
         if chat_ids == None:
@@ -247,6 +244,8 @@ class telegramBot():
                 self.send_message(id, text)
 
     def send_plot(self, signals={}, title='', text='', events=[], dpi=300, priority=0, permission='write', chat_ids=None):
+        if self.bot == None:
+            return
         if self._pluginCall_chat_id is not None:
             chat_ids = [self._pluginCall_chat_id]
         plt.gcf().clear()
@@ -408,6 +407,8 @@ class telegramBot():
         return menu
 
     def _permissionCheck(self, chat_id):
+        if self.bot == None:
+            return
         if self.logger.config['telegram']['onlyAdmin'] and self.telegram_clients[str(chat_id)]['permission'] != 'admin':
             #logging.info('Aborted telegram answer, because telegram-option "onlyAdmin" is active.')
             text = translate('RTOC', 'The RTOC bot is in maintenance mode. An administrator must unlock the access.')
@@ -426,6 +427,8 @@ class telegramBot():
         return True
 
     def send_message(self, chat_id, text, parse_mode=ParseMode.MARKDOWN, disable_notification=True, delete=True):
+        if self.bot == None:
+            return
         if not self._permissionCheck(chat_id):
             return
 
@@ -601,7 +604,7 @@ class telegramBot():
         commands = []
         perm = self.telegram_clients[str(chat_id)]['permission']
         if perm not in ['read', 'blocked', 'custom']:
-            for c in self.userActions.keys():
+            for c in self.logger.userActions.keys():
                 if c.startswith('_'):
                     if perm == 'admin':
                         commands += [c]
@@ -630,7 +633,7 @@ class telegramBot():
                 self.signalsHandler(bot, chat_id)
             elif idx == 2:
                 self.settingsHandler(bot, chat_id)
-        elif strung in list(self.userActions.keys()):
+        elif strung in list(self.logger.userActions.keys()):
             self.executeUserAction(bot, chat_id, strung)
         elif strung in self.createShortcutList(bot, chat_id):
             self.callShortcut(bot, chat_id, strung)
@@ -771,7 +774,7 @@ class telegramBot():
         name = self.current_plugin[chat_id]
         commands = []
         for fun in self.logger.pluginFunctions.keys():
-            hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir','telegram_send_message', 'telegram_send_photo', 'telegram_send_document', 'telegram_send_plot']
+            hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir','telegram_send_message', 'telegram_send_photo', 'telegram_send_document', 'telegram_send_plot']
             hiddenFuncs = [name+'.'+i for i in hiddenFuncs]
             if fun.startswith(name+".") and fun not in hiddenFuncs:
                 parStr = ', '.join(self.logger.pluginFunctions[fun][1])
@@ -1772,10 +1775,10 @@ You can also send me measured values (e.g. '5 V'). \n
             translate('RTOC', 'Change global samplerate'),
             ]
 
-        if self.logger.config['tcp']['active']:
-            commands += [translate('RTOC', "TCP-Server: On")]
+        if self.logger.config['websocket']['active']:
+            commands += [translate('RTOC', "Websocket-Server: On")]
         else:
-            commands += [translate('RTOC', "TCP-Server: Off")]
+            commands += [translate('RTOC', "Websocket-Server: Off")]
         commands += [translate('RTOC', 'Restart server')]
 
         self.sendMenuMessage(bot, chat_id, commands, translate('RTOC', '*General settings*'))
@@ -1798,16 +1801,16 @@ You can also send me measured values (e.g. '5 V'). \n
             text = translate('RTOC', '**Something didn\'t work.**\nEither I don\'t have the necessary rights, or my home is not a Linux device.')
             self.send_message(chat_id, text)
             return
-        elif strung == translate('RTOC', "TCP-Server: On"):
-            ok = self.logger.toggleTcpServer(False)
+        elif strung == translate('RTOC', "Websocket-Server: On"):
+            ok = self.logger.toggleWebsocketServer(False)
             self.logger.save_config()
-            self.sendStartStopMessage(chat_id, 'TCP-Server', False, ok)
+            self.sendStartStopMessage(chat_id, 'Websocket-Server', False, ok)
             self.settingsGeneralHandler(bot, chat_id)
             return
-        elif strung == translate('RTOC', "TCP-Server: Off"):
-            ok = self.logger.toggleTcpServer(True)
+        elif strung == translate('RTOC', "Websocket-Server: Off"):
+            ok = self.logger.toggleWebsocketServer(True)
             self.logger.save_config()
-            self.sendStartStopMessage(chat_id, 'TCP-Server', True, ok)
+            self.sendStartStopMessage(chat_id, 'Websocket-Server', True, ok)
             self.settingsGeneralHandler(bot, chat_id)
             return
         else:
@@ -2554,8 +2557,7 @@ Global actions are executed when an event with a specified ID has been created. 
         self.globalActionHandler(bot, chat_id)
 
     def executeUserAction(self, bot, chat_id, strung):
-        action = self.userActions[strung]
-        ok, ans = self.logger.executeScript(action)
+        ok, ans = self.logger.executeUserAction(strung)
         if ok and len(ans) == 2:
             try:
                 text = translate('RTOC', 'Action has been executed')

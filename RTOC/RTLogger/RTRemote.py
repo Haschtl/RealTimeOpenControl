@@ -3,9 +3,8 @@ import time
 import traceback
 import json
 import socket
-from ..LoggerPlugin import LoggerPlugin
 import logging as log
-
+from .RTWebsocketClient import RTWebsocketClient
 
 log.basicConfig(level=log.INFO)
 logging = log.getLogger(__name__)
@@ -17,218 +16,235 @@ except ImportError:
     nmap = None
 
 
-class _SingleConnection(LoggerPlugin):
-    def __init__(self, stream=None, plot=None, event=None, host='127.0.0.1', port=5050, name='RemoteDevice', password='', logger=None):
+class _SingleConnection():
+    def __init__(self, parent, host='127.0.0.1', port=5050, name='RemoteDevice', password='', logger=None, ssl=False):
         # Plugin setup
-        super(_SingleConnection, self).__init__(logger)
-        self.setDeviceName(name)
         self.logger = logger
+        self.parent = parent
         self.host = host
         self.name = name
         self.port = port
+        self.__password = password
+        self.ssl = ssl
 
         self.getPlugins = True
         self.getSignals = True
         self.getEvents = True
 
+        self.connected = False
+
         self.pause = False
         self.maxLength = 0
         self.status = 'connecting...'
         self.siglist = []
-        self.sigSelectList = []
+        self._sigSelectList = []
         self.pluglist = []
         self.eventlist = {}
 
         self.xmax = time.time() + 60*60
         self.xmin = self.xmax - 60*60*24
         self.maxN = 1000
-        #self.createTCPClient(host, None, port)
-        self.tcppassword = password
+        self.__password = password
         self.updateRemoteCallback = None
-        self.setPerpetualTimer(self.updateT, samplerate=1)
-        self.startTCPLogging()
 
-    # THIS IS YOUR THREAD
+        self.connect()
 
-    def updateT(self):
-        if not self.pause:
-            self.getAll(self.getSignals, self.getEvents, self.getPlugins)
+    def connect(self, host=None, port=None, password=None, ssl=None):
+        if host != None and type(host)==str:
+            self.host = host
+        if port != None and type(port)==int:
+            self.port = port
+        if password != None and type(password)==str:
+            self.__password = password
+        if self.port == 443:
+            self.ssl = True
+        if ssl != None and type(ssl)==bool:
+            self.ssl = ssl
+        self.RTwebsocket = RTWebsocketClient()
+        self.RTwebsocket.on_open = self.initAfterConnection
+        self.RTwebsocket.on_error = self.connectionError
+        self.RTwebsocket.on_close = self.connectionClosed
+        self.RTwebsocket.handle_signal = self.handle_signal
+        self.RTwebsocket.handle_event = self.handle_event
+        self.RTwebsocket.handle_pluginList = self.handle_pluginList
+        self.RTwebsocket.handle_signalList = self.handle_signalList
+        self.RTwebsocket.handle_events = self.handle_events
+        self.RTwebsocket.handle_logger = self.handle_logger
+        self.RTwebsocket.handle_authorize = self.handle_authorize
+        self.RTwebsocket.handle_RTOCError = self.handle_RTOCError
+        print('Connecting to {}:{} with {} and ssl: {}'.format(self.host, self.port, self.__password, self.ssl))
+        self.RTwebsocket.connect(self.host, self.port, self.__password, self.ssl)
 
-    def getAll(self, signals=True, events=True,plugins=True):
+    def initAfterConnection(self):
+        # print('Successfully connected')
         self.status = 'connecting...'
-        if signals:
-            ans1 = self.getAllSignals()
+        # self.RTwebsocket.send(subscribeAll='signal')
+        self.RTwebsocket.send(getPluginList=True)
+        self.RTwebsocket.send(logger={'info':True})
+        self.RTwebsocket.send(getSignalList=True)
+        self.RTwebsocket.send(getEventList=10)
+
+        if self.updateRemoteCallback is not None:
+            self.updateRemoteCallback()
+
+    def handle_RTOCError(self):
+        print('Protection error')
+        self.status = 'protected'
+        self.connected = False
+
+    def connectionError(self, error):
+        print('Connection error')
+        self.status = "error"
+        self.connected = False
+
+    def connectionClosed(self):
+        print('Connection has been closed')
+        self.status = "closed"
+        self.connected = False
+
+    def handle_authorize(self, value):
+        if value:
+            print('Connection has been establlished')
+            self.status = "connected"
+            self.connected = True
         else:
-            ans1 = True
-        if events:
-            ans2 = self.getAllEvents()
-        else:
-            ans2 = True
-        ans3 = self.getAllInfo()
-        if plugins:
-            ans4 = self.getAllPlugins()
-        else:
-            ans4 = True
-        ans = [ans1, ans2, ans3, ans4]
-        logging.debug(ans)
-        if any(ans) == True:
-            if self.updateRemoteCallback is not None and self.status != "connected":
-                self.status = "connected"
+            print('Connection is password protected')
+            self.status = "protected"
+            self.connected = False
+
+
+
+    def handle_signal(self, signal):
+        self.connected = True
+        self.status = 'connected'
+        # self.logger.database.plot(signal['x'], signal['y'], sname=signal['sname'],
+        #             dname=self.name+":"+signal['dname'], unit=signal['unit'])
+        if signal['dname'].startswith(self.name+':'):
+            return
+        if signal['dname']+'.'+signal['sname'] not in self.siglist:
+            self.siglist.append(signal['dname']+'.'+signal['sname'])
+            if self.updateRemoteCallback is not None:
                 self.updateRemoteCallback()
-        else:
-            self.status = "error"
+        if signal['dname']+'.'+signal['sname'] not in self.sigSelectList:
+            return
+        self.logger.database.plot(signal['x'], signal['y'], sname=signal['sname'],
+                    dname=self.name+":"+signal['dname'], unit=signal['unit'], hold="on")
+        # if self.updateRemoteCallback is not None:
+        #     self.updateRemoteCallback()
+
+    def handle_event(self, event):
+        print('Remote got event')
+        self.connected = True
+        self.status = 'connected'
+        self.logger.database.addNewEvent(event['text'], event['sname'], self.name+":"+str(event['dname']), x=event['x'], priority=event['priority'], id=event['eventId'], value=event['value'])
+        # if self.updateRemoteCallback is not None:
+        #     self.updateRemoteCallback()
+
+    def handle_pluginList(self, pluginList):
+        print('Remote got pluginlist')
+        self.connected = True
+        self.status = 'connected'
+        if pluginList != self.pluglist:
+            self.pluglist = pluginList
+            self.parent.getRemoteDeviceList()
+        # if self.updateRemoteCallback is not None:
+        #     self.updateRemoteCallback()
+    
+    def handle_signalList(self, signalList):
+        print('Remote got signallist')
+        # signalList = ['.'.join(sig) for sig in signalList]
+        self.connected = True
+        self.status = 'connected'
+        if signalList != [sig.split('.') for sig in self.siglist]:
+            # self.siglist = []
+            for sig in signalList: 
+                if not sig[0].startswith(self.name+':'):
+                    self.siglist.append('.'.join(sig))
+            # self.siglist = ['.'.join(i) for i in signalList]
+            # if self.siglist != []:
+            #     selection = []  # self.siglist
+            #     #selection = [".".join(i) for i in selection]
+            #     for i in self.siglist:
+            #         if i in self.sigSelectList and len(i[0].split(':')) == 1:
+            #             selection.append(".".join(i))
             if self.updateRemoteCallback is not None:
                 self.updateRemoteCallback()
 
-    def getAllSignals(self):
-        ans = self._sendTCP(getSignalList=True)
-        if ans:
-            if 'signalList' in ans.keys():
-                if ans['signalList'] != self.siglist:
-                    self.siglist = ans['signalList']
-                    if self.updateRemoteCallback is not None:
-                        self.updateRemoteCallback()
-                    # self.updateList()
-                if self.siglist != []:
-                    selection = []  # self.siglist
-                    #selection = [".".join(i) for i in selection]
-                    for i in self.siglist:
-                        if i in self.sigSelectList and len(i[0].split(':')) == 1:
-                            selection.append(".".join(i))
-                    for s in selection:
-                        ssplit = s.split('.')
-                        ans = self._sendTCP(getSignal={'dname':ssplit[0], 'sname':ssplit[1], 'xmin': self.xmin, 'xmax': self.xmax, 'maxN': self.maxN}, timeout=20)
-                        if ans != False:
-                            if 'signals' in ans.keys():
-                                for sig in ans['signals'].keys():
-                                    signame = sig.split('.')
-                                    s = ans['signals'][sig]
-                                    u = s[2]
-                                    self.logger.database.plot(s[0], s[1], sname=signame[1],
-                                              dname=self.name+":"+signame[0], unit=u)
-                return True
-        return False
+    @property
+    def sigSelectList(self):
+        return self._sigSelectList
 
-    def getAllEvents(self):
-        ans = self._sendTCP(getEventList=True)
-        if ans:
-            if 'events' in ans.keys():
-                if ans['events'] != self.eventlist:
-                    selection = {}
-                    for evID in ans['events'].keys():
-                        name = ans['events'][evID][0:2]
-                        if name in self.sigSelectList and len(name[0].split(':')) == 1:
-                            selection[evID] = ans['events'][evID]
-                    self.updateEvents(selection)
-                return True
-        return False
+    @sigSelectList.setter
+    def sigSelectList(self, newList):
+        oldList = list(self._sigSelectList)
+        for sig in newList:
+            if sig not in oldList:
+                self.RTwebsocket.send(subscribe=['signal', sig])
+        for sig in oldList:
+            if sig not in newList:
+                self.RTwebsocket.send(unsubscribe=['signal', sig])
+        # if newList != oldList:
+        #     if self.updateRemoteCallback is not None:
+        #         self.updateRemoteCallback()
+        self._sigSelectList = newList
 
-    def getAllInfo(self):
-        ans = self._sendTCP(logger={'info': True})
-        if ans:
-            if 'logger' in ans.keys():
-                maxLength = ans['logger']['info']['recordLength']
-                if maxLength != self.maxLength:
-                    self.maxLength = maxLength
-                    if self.updateRemoteCallback is not None:
-                        self.updateRemoteCallback()
-                return True
-        return False
 
-    def getAllPlugins(self):
-        ans = self._sendTCP(getPluginList=True)
-        if ans:
-            if 'pluginList' in ans.keys():
-                if ans['pluginList'] != self.pluglist:
-                    self.pluglist = ans['pluginList']
-                return True
-        return False
+    def handle_events(self, events):
+        print('handle events')
+        self.status = 'connected'
+        pass
 
-    def updateEvents(self, newEventList):
-        # {ID: [DEVICE_ID,SIGNAL_ID,EVENT_ID,TEXT,TIME,VALUE,PRIORITY], ...}
-        for evID in newEventList.keys():
-            if evID not in self.eventlist.keys():
-                # self.eventlist[evID] = newEventList[evID]
-                ev = newEventList[evID]
-                self.event(x=ev[4], text=ev[3], sname=str(ev[1]),
-                           dname=self.name+":"+str(ev[0]), priority=ev[6])
+    def handle_logger(self, logger):
+        print('handle logger')
+        self.connected = True
+        self.status = 'connected'
+        maxLength = logger['info']['config']['global']['recordLength']
+        if maxLength != self.maxLength:
+            self.maxLength = maxLength
+            # if self.updateRemoteCallback is not None:
+            #     self.updateRemoteCallback()
 
-        self.eventlist = newEventList
+    def getSignal(self, dname, sname):
+        self.connected = True
+        self.status = 'connected'
+        self.RTwebsocket.send(getSignal={'dname':dname, 'sname':sname, 'xmin': self.xmin, 'xmax': self.xmax, 'maxN': self.maxN})
 
     def resizeLogger(self, newsize):
-        ans = self._sendTCP(logger={'resize': newsize})
-        if ans:
-            self.maxLength = newsize
-        return ans
+        self.RTwebsocket.send(logger={'resize': newsize})
+        self.maxLength = newsize
 
     def toggleDevice(self, plugin, state):
-        ans = self._sendTCP(plugin={plugin: {'start': state}})
-        return ans
+        self.RTwebsocket.send(plugin={plugin: {'start': state}})
 
     def clear(self, signals=[]):
         if signals == []:
             signals = 'all'
-        ans = self._sendTCP(logger={'clear': signals})
+        self.RTwebsocket.send(logger={'clear': signals})
         # logging.debug(ans)
 
     def stop(self):
-        self.close()
+        self.RTwebsocket.disconnect()
         self.siglist = []
         self.pluglist = []
         self.eventlist = {}
         logging.info('Remote-Connection to {} stopped'.format(self.host))
 
-    def startTCPLogging(self):
-        if self.run:
-            self.cancel()
-        else:
-            self.createTCPClient(self.host, self.tcppassword, self.port)
-            try:
-                ok = self._sendTCP()
-                # logging.debug(ok)
-                if ok is None:
-                    self.status = 'protected'
-                elif ok != False:
-                    ok = True
-            except Exception:
-                tb = traceback.format_exc()
-                logging.debug(tb)
-                ok = False
-            if ok:
-                self.getAll()
-                self.start()
-                self.status = 'connected'
-            elif ok is False:
-                self.__base_address = ""
-                self.cancel()
-                self.status = "error"
-            else:
-                self.__base_address = ""
-                self.cancel()
-                self.status = "wrongPassword"
-
     def getSession(self):
-        ans = self._sendTCP(getSession=True)
-        if ans:
-            # logging.debug(ans)
-            return ans['session']
+        self.RTwebsocket.send(getSession=True)
 
     def callPluginFunction(self, device, function, parameter):
-        ans = self._sendTCP(plugin={device: {function: parameter}})
-        return ans
+        self.RTwebsocket.send(plugin={device: {function: parameter}})
 
     def saveSettings(self, host, port, name, password):
-        for c in self.logger.config['tcp']['knownHosts'].keys():
+        for c in self.logger.config['websocket']['knownHosts'].keys():
             if c == self.host+":"+str(self.port):
-                self.logger.config['tcp']['knownHosts'].pop(c)
+                self.logger.config['websocket']['knownHosts'].pop(c)
                 break
-        self.logger.config['tcp']['knownHosts'][host+':'+str(port)] = [name, password]
+        self.logger.config['websocket']['knownHosts'][host+':'+str(port)] = [name, password]
         self.host = host
         self.port = port
         self.name = name
-        self.tcppassword = password
-        self.stop()
-        self.start()
+        self.__password = password
 
 
 class RTRemote():
@@ -254,29 +270,22 @@ class RTRemote():
             c.stop()
         self.connections = []
 
-    def setSamplerate(self, samplerate=1):
-        self.logger.config['tcp']['remoteRefreshRate'] = samplerate
-        for c in self.connections:
-            c.samplerate = samplerate
-
-    def connect(self, hostname='127.0.0.1', port=5050, name='RemoteDevice', password=''):
+    def connect(self, hostname=None, port=None, name=None, password=None, ssl=None):
         if len(hostname.split(':')) == 2:
             port = int(hostname.split(':')[1])
             hostname = hostname.split(':')[0]
-
         for c in self.connections:
             if c.host == hostname and c.port == port:
-                c.tcppassword = password
-                if not c.run:
-                    c.start()
+                # c.__password = password
+                # c.ssl = ssl
+                if not c.connected:
+                    c.connect(hostname, port, password, ssl)
                     self.getRemoteDeviceList()
                 return
 
-        newConnection = _SingleConnection(
-            self.logger.database.addDataCallback, self.logger.database.plot, self.logger.database.addNewEvent, hostname, port, name, password, self.logger)
-        #newConnection.tcppassword = password
+        newConnection = _SingleConnection(self, hostname, port, name, password, self.logger, ssl)
+            # self.logger.database.addDataCallback, self.logger.database.plot, self.logger.database.addNewEvent, 
         # if newConnection.run:
-        newConnection.samplerate = self.logger.config['tcp']['remoteRefreshRate']
         self.connections.append(newConnection)
         self.getRemoteDeviceList()
 
@@ -405,7 +414,7 @@ class RTRemote():
             if name == c.name:
                 c.pause = value
 
-    def searchTCPHosts(self, port=5050, emitter=None):
+    def searchWebsocketHosts(self, port=5050, emitter=None):
         hostlist = []
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("8.8.8.8", 80))

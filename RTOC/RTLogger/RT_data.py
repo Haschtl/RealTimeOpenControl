@@ -96,9 +96,12 @@ class RT_data:
         """Status of database-connection"""
         self._callback = None
         self._newSignalCallback = None
+        self._newSignalWebsocketCallback = None
         self._newEventCallback = None
         self._handleScriptCallback = None
         self._recordingLengthChangedCallback = None
+        self.websocketEvent_callback = None
+        self.websocketSignal_callback = None
         self._startTime = time.time()
         if logger is not None:
             self.config = logger.config
@@ -122,8 +125,6 @@ class RT_data:
         self._cursor = None
         if self.logger is None:
             self.isGUI = False
-            self.webserver = True
-            """ Is true, if running as webserver, False, if not."""
             ok = self._connect()
             dev, sig, ev = self._checkDatabases()
             self.clear(not dev, not sig, not ev, True)
@@ -132,7 +133,6 @@ class RT_data:
             self.start()
         else:
             self.isGUI = self.logger.isGUI
-            self.webserver = False
             if not self.logger.forceLocal:
                 if self.logger.config['postgresql']['active']:
                     ok = self._connect()
@@ -388,6 +388,8 @@ class RT_data:
 
         if self._newSignalCallback:
             self._newSignalCallback(sigID, devicename, signalname, unit)
+        if self._newSignalWebsocketCallback:
+            self._newSignalWebsocketCallback(x, y, unit, devicename, signalname, sigID)
         return sigID
 
     def _createDevice(self, devicename, devID=None):
@@ -442,6 +444,8 @@ class RT_data:
                 self._handleScriptCallback(devicename, signalname)
             if self._callback and createCallback:
                 self._callback(devicename, signalname)
+            if self.websocketSignal_callback:
+                self.websocketSignal_callback(x, y, dataunit, devicename, signalname, sigID)
             if self.config['global']['globalEventsActivated'] and self.logger is not None:
                 self.logger.performGlobalEvents(y, dataunit, devicename, signalname, x)
 
@@ -556,7 +560,7 @@ class RT_data:
             x = [x]
 
         if type(y) == list and type(snames) == list:
-            if x == []:
+            if x == [] or x == None:
                 x = [time.time()]*len(y)
             if unit == [] or unit is None or type(unit) == str:
                 unit = [""]*len(y)
@@ -676,7 +680,7 @@ class RT_data:
             dev = self.getSignalName(sigID)
             # unit = self.getSignalUnit(sigID)
             if len(self._signals[sigID][2]) > 0:
-                ans['.'.join(dev)] = [self._signals[sigID][2][-1], self._signals[sigID][3][-1], self._signals[sigID][4]]
+                ans['.'.join(dev)] = [self._signals[sigID][2][-1], self._signals[sigID][3][-1], self._signals[sigID][4], sigID, self._signals[sigID][2][0], self._signals[sigID][2][-1]]
         return ans
 
     def addNewEvent(self, text="", sname="noName", dname="noDevice", x=None, priority=0, id=None, value=None):
@@ -722,6 +726,9 @@ class RT_data:
 
         if self._newEventCallback:
             self._newEventCallback(x, text, dname, sname, priority, value, id, eventID)
+        
+        if self.websocketEvent_callback:
+            self.websocketEvent_callback(x, text, dname, sname, priority, value, id, eventID)
 
         if self.config['telegram']['active'] and self.logger is not None:
             if self.logger.telegramBot is not None:
@@ -763,7 +770,7 @@ class RT_data:
         else:
             return False
 
-    def events(self, beauty=False):
+    def events(self, beauty=False, latest=None):
         """
         Returns all locally stored events.
 
@@ -776,10 +783,13 @@ class RT_data:
         if beauty:
             ev = {}
             with localEventLock:
-                for evID in self._events.keys():
+                for idx, evID in enumerate(self._events.keys()):
                     name = self.getEventName(evID)
                     old = self._events[evID]
                     ev[evID]=[name[0],name[1],*old[2:]]
+                    if type(latest) == int:
+                        if idx >=latest:
+                            break
             return ev
         else:
             return dict(self._events)
@@ -1419,10 +1429,7 @@ class RT_data:
 
     def __updateT(self):
         if self.config['postgresql']['active']:
-            if not self.webserver:
-                self.pushToDatabase()
-            if self.webserver:
-                self.pullFromDatabase(dev=True, sig=True, ev=True)
+            self.pushToDatabase()
             elif self.logger is not None:
                 if not self.config['postgresql']['onlyPush']:
                     self.pullFromDatabase(dev=True, sig=True, ev=True)
@@ -2008,12 +2015,15 @@ class RT_data:
         """
         if evID in self._events.keys():
             self._events.pop(evID)
+            if not database:
+                return True
         elif not database:
             return False
         if database is True:
             ans = self._execute_n_commit(
                 "DELETE from "+EVENT_TABLE_NAME+" where ID = "+str(evID)+"")
         print('event has been deleted')
+        return ans
 
     def removeEvents(self, sigID, xmin=None, xmax=None, database=True):
         """
@@ -2045,7 +2055,7 @@ class RT_data:
             logging.info(ans)
             logging.info('Events from Signal: {} have been deleted. Database: {}'.format(sigID, database))
 
-    def getSignal(self, sigID, xmin=None, xmax=None, database=False, maxN=None):
+    def getSignal(self, sigID, xmin=None, xmax=None, database=False, maxN=None, returnID=True):
         """
         Returns signal with given sigID in between xmin and xmax.
 
@@ -2056,10 +2066,10 @@ class RT_data:
             database (bool): If True, the signal will be returned from database.
             maxN (int): Signal will be filtered, that the signal-length has a maximum of n
         """
-        if xmin == None:
-            xmin = 0
         if xmax == None:
             xmax = float(time.time())*2
+        if xmin == None:
+            xmin = -xmax
 
         signal = None
         if self.logger.config['postgresql']['active'] and database:
@@ -2090,6 +2100,10 @@ class RT_data:
                                 break
 
         if signal is not None:
+            if len(signal[2]) == 0:
+                return None
+            xMin = min(signal[2])
+            xMax = max(signal[2])
             for idx, x in enumerate(signal[2]):
                 if x > xmin:
                     signal[2] = list(signal[2])[idx:]
@@ -2112,6 +2126,9 @@ class RT_data:
                             newY.append(signal[3][idx])
                     signal[2] = newX
                     signal[3] = newY
+
+            if returnID:
+                signal = [*signal, sigID, xMin, xMax]
             return signal
         else:
             return None

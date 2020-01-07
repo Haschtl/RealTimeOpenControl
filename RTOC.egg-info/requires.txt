@@ -4,6 +4,7 @@ python-nmap
 whaaaaat
 prompt_toolkit
 pycryptodomex
+websocket_client
 
 [ALL]
 pyqt5
@@ -14,11 +15,6 @@ pandas
 scipy
 ezodf
 xlsxwriter
-dash
-gevent
-dash_daq
-plotly
-flask
 matplotlib
 python-telegram-bot
 dash_table
@@ -41,12 +37,3 @@ xlsxwriter
 [Telegram]
 matplotlib
 python-telegram-bot
-
-[Webserver]
-dash
-gevent
-dash_daq
-dash_table
-plotly
-flask
-psycopg2

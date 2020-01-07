@@ -5,7 +5,7 @@ from functools import partial
 from PyQt5.QtCore import QCoreApplication
 import traceback
 from threading import Thread
-
+import time
 from ..lib import pyqt_customlib as pyqtlib
 # from ..lib import general_lib as lib
 from .remoteWidget import RemoteWidget
@@ -39,15 +39,11 @@ class Actions:
         self.importDataAction.triggered.connect(self.importDataTriggered)
         self.settingsAction.triggered.connect(self.settingsTriggered)
         self.exportDataAction.triggered.connect(self.exportDataTriggered)
-        self.actionTCPServer_2.triggered.connect(self.toggleTcpServer)
-        self.HTMLServerAction_2.triggered.connect(self.toggleHtmlServer)
+        self.actionWebsocketServer.triggered.connect(self.toggleWebsocketServer)
         self.actionTelegramBot_2.triggered.connect(self.toggleTelegramBot)
         self.actionBotToken_2.triggered.connect(self.setBotToken)
-        self.actionTCPPassword_2.triggered.connect(self.setTCPPassword)
-        self.actionTCPPort_2.triggered.connect(self.setTCPPort)
-        self.actionUpdate_Rate_1Hz_2.triggered.connect(self.setRemoteSamplerate)
-        self.actionUpdate_Rate_1Hz_2.setText(
-            'Update-Rate: '+str(self.config['tcp']['remoteRefreshRate'])+" Hz")
+        self.actionWebsocketPassword.triggered.connect(self.setWebsocketPassword)
+        self.actionWebsocketPort.triggered.connect(self.setWebsocketPort)
         self.actionSearchRTOCServer.triggered.connect(self.searchRTOCServer)
         self.foundRTOCServerCallback.connect(self.foundRTOCServer, QtCore.Qt.QueuedConnection)
 
@@ -120,22 +116,13 @@ class Actions:
                     overwrite = pyqtlib.alert_message(translate('RTOC', 'Overwrite'), translate('RTOC', 'Do you want to overwrite this file?'))
                 self.logger.database.exportCSV(fileName, True)
 
-    def toggleTcpServer(self):
-        if self.config['tcp']['active']:
-            self.config['tcp']['active'] = False
+    def toggleWebsocketServer(self):
+        if self.config['websocket']['active']:
+            self.config['websocket']['active'] = False
         else:
-            self.config['tcp']['active'] = True
-        self.logger.toggleTcpServer(self.config['tcp']['active'])
-        self.actionTCPServer_2.setChecked(self.config['tcp']['active'])
-
-    def toggleHtmlServer(self):
-        # if self.config["rtoc_web"]:
-        #     self.config["rtoc_web"] = False
-        # else:
-        #     self.config["rtoc_web"] = True
-        pyqtlib.info_message(translate('RTOC', "RTOC_Web Error"), translate('RTOC', "RTOC_Web can no longer be started in parallel with the user interface. Please stop RTOC and start RTOC_Web with 'python3 -m RTOC.RTLogger -w'"),
-                             translate('RTOC', "If you need the GUI, then start a local remote connection with 'python3 -m RTOC -r 127.0.0.1'"))
-        # self.HTMLServerAction_2.setChecked(self.config["rtoc_web"])
+            self.config['websocket']['active'] = True
+        self.logger.toggleWebsocketServer(self.config['websocket']['active'])
+        self.actionWebsocketServer.setChecked(self.config['websocket']['active'])
 
     def toggleTelegramBot(self):
         if self.config['telegram']['active']:
@@ -152,25 +139,25 @@ class Actions:
             self.logger.telegramBot.setToken(ans)
             self.actionBotToken_2.setText(self.config['telegram']['token'])
 
-    def setTCPPassword(self):
+    def setWebsocketPassword(self):
         ans, ok = pyqtlib.text_message(
-            self, translate('RTOC', "Enter TCP-Password"), translate('RTOC', 'Protect your transfer from unauthorized users \nLeave empty to disable password'), self.config['tcp']['password'])
+            self, translate('RTOC', "Enter Websocket-Password"), translate('RTOC', 'Protect your transfer from unauthorized users \nLeave empty to disable password'), self.config['websocket']['password'])
         if ok:
-            self.logger.setTCPPassword(ans)
+            self.logger.setWebsocketPassword(ans)
             if ans == '':
-                self.actionTCPPassword_2.setText(translate('RTOC', 'Password protection: Off'))
+                self.actionWebsocketPassword.setText(translate('RTOC', 'Password protection: Off'))
             else:
-                self.actionTCPPassword_2.setText(translate('RTOC', 'Password protection: On'))
+                self.actionWebsocketPassword.setText(translate('RTOC', 'Password protection: On'))
 
-    def setTCPPort(self):
+    def setWebsocketPort(self):
         ans, ok = pyqtlib.text_message(
-            self, translate('RTOC', "Enter TCP Port"), translate('RTOC', 'Enter the port for TCP-Communication with RTOC.'), str(self.config['tcp']['port']))
+            self, translate('RTOC', "Enter Websocket Port"), translate('RTOC', 'Enter the port for Websocket-Communication with RTOC.'), str(self.config['websocket']['port']))
         if ok:
             try:
                 ans = int(ans)
                 if ans >= 0 and ans <= 65535:
-                    self.logger.setTCPPort(ans)
-                    self.actionTCPPort_2.setText(translate('RTOC', 'Port: ')+str(ans))
+                    self.logger.setWebsocketPort(ans)
+                    self.actionWebsocketPort.setText(translate('RTOC', 'Port: ')+str(ans))
                 else:
                     pyqtlib.info_message(translate('RTOC', 'Error'), translate('RTOC',
                         'Please enter a value between 0 and 65535'), '')
@@ -188,7 +175,7 @@ class Actions:
 
     def systemTrayClickAction(self, reason):
         if reason == QtWidgets.QSystemTrayIcon.Context:
-            self.tcp_action.setChecked(self.config['tcp']['active'])
+            self.websocket_action.setChecked(self.config['websocket']['active'])
             self.hide_action.setChecked(self.config['GUI']['systemTray'])
         elif reason == QtWidgets.QSystemTrayIcon.DoubleClick:
             self.tray_icon.hide()
@@ -420,18 +407,10 @@ class Actions:
 
     def updateDeviceRAW(self):
         self.pluginCallWidget.clear()
-        #dict = self.logger.getPluginDict()
-        # for sig in dict.keys():
-        #     if dict[sig]['status']:
-        #         for element in dict[sig]['functions']:
-        #             ls =
-        #             self.pluginCallWidget.addItem(sig+"."+element+'('+ls+')')
-        #         for element in dict[sig]['parameters']:
-        #             self.pluginCallWidget.addItem(sig+"."+element[0])
         for name in self.logger.devicenames.keys():
             if self.logger.pluginStatus[name] is True:
                 for fun in self.logger.pluginFunctions.keys():
-                    hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "createTCPClient", "sendTCP", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir', 'telegram_send_plot', 'telegram_send_photo', 'telegram_send_message', 'telegram_send_document']
+                    hiddenFuncs = ["loadGUI", "updateT", "stream", "plot", "event", "close", "cancel", "start", "setSamplerate","setDeviceName",'setPerpetualTimer','setInterval','getDir', 'telegram_send_plot', 'telegram_send_photo', 'telegram_send_message', 'telegram_send_document']
 
                     if fun.startswith(name+'.') and fun not in [name+'.'+i for i in hiddenFuncs]:
                         parStr = ', '.join(self.logger.pluginFunctions[fun][1])
@@ -444,17 +423,17 @@ class Actions:
                         self.pluginCallWidget.addItem(fun)
 
         self.logger.remote.getDevices()
-        dict = self.logger.remote.devices
+        dicti = self.logger.remote.devices
         # logging.debug(dict)
-        for host in dict.keys():  # iterating hosts
-            for sig in dict[host]:  # iterating RTRemote.SingleConn.pluglist (getPluginList)
-                if dict[host][sig]['status']:
-                    for element in dict[host][sig]['functions']:
+        for host in dicti.keys():  # iterating hosts
+            for sig in dicti[host]:  # iterating RTRemote.SingleConn.pluglist (getPluginList)
+                if dicti[host][sig]['status']:
+                    for element in dicti[host][sig]['functions']:
                         # self.pluginCallWidget.addItem(host+":"+sig+"."+element+'()')
-                        item = QtWidgets.QListWidgetItem(host+":"+sig+"."+element+'()')
+                        item = QtWidgets.QListWidgetItem(host+":"+sig+"."+element[0]+'()')
                         item.setBackground(QtGui.QColor(13, 71, 97))
                         self.pluginCallWidget.addItem(item)
-                    for element in dict[host][sig]['parameters']:
+                    for element in dicti[host][sig]['parameters']:
                         # self.pluginCallWidget.addItem(host+":"+sig+"."+element[0])
                         item = QtWidgets.QListWidgetItem(host+":"+sig+"."+element[0])
                         item.setBackground(QtGui.QColor(13, 71, 97))
@@ -540,12 +519,12 @@ class Actions:
         newAction = self.menuMit_Remotehost_verbinden.addAction(translate('RTOC', 'New Host'))
         self.menuMit_Remotehost_verbinden.addSeparator()
         activeConnections = self.logger.remote.activeConnections()
-        for s in self.config['tcp']['knownHosts'].keys():
+        for s in self.config['websocket']['knownHosts'].keys():
             if s not in activeConnections:
                 action = self.menuMit_Remotehost_verbinden.addAction(
-                    self.config['tcp']['knownHosts'][s][0]+' ('+s+')')
+                    self.config['websocket']['knownHosts'][s][0]+' ('+s+')')
                 action.triggered.connect(
-                    partial(self.connectHost, s, self.config['tcp']['knownHosts'][s][0], self.config['tcp']['knownHosts'][s][1]))
+                    partial(self.connectHost, s, self.config['websocket']['knownHosts'][s][0], self.config['websocket']['knownHosts'][s][1]))
         for s in activeConnections:
             action = self.menuAktive_Verbindungen.addAction(s)
 
@@ -566,14 +545,14 @@ class Actions:
             if ok:
                 ans2 = ans2.replace('.', 'Dot').replace(':', 'DDot')
                 if len(ans.split(':')) == 2:
-                    if ans not in self.config['tcp']['knownHosts'].keys():
-                        self.config['tcp']['knownHosts'][ans] = [ans2, '']
+                    if ans not in self.config['websocket']['knownHosts'].keys():
+                        self.config['websocket']['knownHosts'][ans] = [ans2, '']
                         # self.logger.remote.connect(ans)
                     connected = self.connectHost(ans, ans2)
                 elif len(ans.split(':')) == 1:
                     ans = ans+':5050'
-                    if ans not in self.config['tcp']['knownHosts'].keys():
-                        self.config['tcp']['knownHosts'][ans] = [ans2, '']
+                    if ans not in self.config['websocket']['knownHosts'].keys():
+                        self.config['websocket']['knownHosts'][ans] = [ans2, '']
                         # self.logger.remote.connect(ans)
                     connected = self.connectHost(ans, ans2)
                 return connected
@@ -584,20 +563,9 @@ class Actions:
         widget = RemoteWidget(self, host, remoteHostWidget, name, port)
         remoteHostWidget.setWidget(widget)
         self.remoteHostWidgets.append(remoteHostWidget)
-        self.tabifyDockWidget(self.graphWidget, self.remoteHostWidgets[-1])
+        # self.tabifyDockWidget(self.graphWidget, self.remoteHostWidgets[-1])
+        self.tabifyDockWidget(self.deviceWidget, self.remoteHostWidgets[-1])
         self.remoteHostWidgets[-1].show()
-
-    def setRemoteSamplerate(self):
-        ans, ok = pyqtlib.text_message(
-            self, translate('RTOC', 'Change remote update-rate'), translate('RTOC', 'Change the update-rate for pulling from remote servers'), '1')
-        if ok:
-            try:
-                samplerate = int(ans)
-                self.logger.remote.setSamplerate(samplerate)
-                self.actionUpdate_Rate_1Hz_2.setText('Update-Rate: '+str(samplerate))
-            except ValueError:
-                logging.debug(traceback.format_exc())
-                pyqtlib.info_message(translate('RTOC', 'Error'), translate('RTOC', 'Your input was wrong.'), '')
 
     def settingsTriggered(self):
         default = RTLogger.defaultconfig
@@ -605,7 +573,7 @@ class Actions:
         self.settingsWidget.show()
 
     def searchRTOCServer(self):
-        t = Thread(target=self.logger.remote.searchTCPHosts,
+        t = Thread(target=self.logger.remote.searchWebsocketHosts,
                    args=(5050, self.foundRTOCServerCallback,))
         t.start()
 
@@ -622,21 +590,21 @@ class Actions:
         self.logger.remote.connect(host, port, name, password)
         retry = True
         host = hostsplit[0]
-        self.logger.remote.getConnection(host, port).tcppassword = password
+        self.logger.remote.getConnection(host, port).__password = password
         while retry:
             retry = False
             status = self.logger.remote.getConnection(host, port).status
             if status == "protected":
                 text, ok2 = pyqtlib.text_message(None, translate('RTOC', 'Password'), translate('RTOC',
-                    "The RTOC server {} is password-protected. Please enter your password.").format(hostname),  translate('RTOC', 'TCP-Password'))
+                    "The RTOC server {} is password-protected. Please enter your password.").format(hostname),  translate('RTOC', 'Websocket-Password'))
                 if ok2:
-                    self.logger.remote.getConnection(host, port).tcppassword = text
+                    # self.logger.remote.getConnection(host, port).__password = text
                     self.logger.remote.connect(host, port, name, text)
                     retry = True
                     ok3 = pyqtlib.alert_message(translate('RTOC', 'Save password'), translate('RTOC',
                         'Do you want to save this password?'), '')
                     if ok3:
-                        self.logger.config['tcp']['knownHosts'][hostname][1] = text
+                        self.logger.config['websocket']['knownHosts'][hostname][1] = text
             elif status == "connected":
                 pyqtlib.info_message(translate('RTOC', 'Connection established'), translate('RTOC',
                     'Connection to {} on port {} established.').format(host, port), '')
@@ -646,25 +614,29 @@ class Actions:
             elif status == "wrongPassword":
                 text, ok = pyqtlib.text_message(None, translate('RTOC', 'Protected'), translate('RTOC', 'Connection to {} on port {} not established').format(host, port), translate('RTOC', 'Password is wrong.'))
                 if ok:
-                    self.logger.remote.getConnection(host, port).tcppassword = text
+                    # self.logger.remote.getConnection(host, port).__password = text
                     self.logger.remote.connect(host, port, name, text)
                     retry = True
                     ok3 = pyqtlib.alert_message(translate('RTOC', 'Save password'), translate('RTOC',
                         'Do you want to save this password?'), '')
                     if ok3:
-                        self.logger.config['tcp']['knownHosts'][hostname][1] = text
+                        self.logger.config['websocket']['knownHosts'][hostname][1] = text
             elif status == "error":
                 ok = pyqtlib.alert_message(translate('RTOC', 'Connection error'), translate('RTOC', 'Error. Connection to {} on port {} could not be established.').format(host, port), translate('RTOC', 'Retry?'))
                 if ok:
                     self.logger.remote.connect(host, port, name, password)
                     retry = True
             elif status == "connecting...":
-                retry = False
-                pyqtlib.info_message(translate('RTOC', 'Connection established'), translate('RTOC',
-                    'Connection to {} on port {} established.').format(host, port), '')
-
-                self.addRemoteHostWidget(host, name, port)
-                return True
+                retry = True
+                # pyqtlib.info_message(translate('RTOC', 'Connection established'), translate('RTOC',
+                #     'Connection to {} on port {} established.').format(host, port), '')
+                time.sleep(0.1)
+                # self.addRemoteHostWidget(host, name, port)
+                # return True
+            elif status == "closed":
+                print(status)
+                pyqtlib.info_message('Connection closed',
+                                     'The connection has been accidently closed', "Maybe you're trying to connect to an SSL-encrypted port, which is not on Port 443.".format(status))
             else:
                 print(status)
                 pyqtlib.info_message('End of the universe',
