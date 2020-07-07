@@ -6,6 +6,8 @@
 ### Version 3.0
 ![Usecase](screenshots/RTOC-schematik.png)
 [Documentation](https://realtimeopencontrol.readthedocs.io/en/latest/)
+[Web App](https://real-time-open-control.web.app)
+[Android App](https://play.google.com/store/apps/details?id=io.RTOC.RTOCRemote&hl=en)
 
 
 
