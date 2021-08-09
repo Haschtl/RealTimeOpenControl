@@ -148,7 +148,7 @@ python-telegram-bot==10.1.0
 python-vlc==3.0.102
 pytz==2018.4
 pyusb==1.0.2
-pywin32==223
+pywin32==301
 pywinpty==0.5.4
 PyYAML==3.13
 pyzmq==17.0.0
