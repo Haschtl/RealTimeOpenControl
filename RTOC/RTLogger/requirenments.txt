@@ -192,7 +192,7 @@ tornado==5.0.2
 tqdm==4.28.1
 traitlets==4.3.2
 twine==1.12.1
-Twisted==18.9.0
+Twisted==22.1.0
 urllib3==1.23
 verboselogs==1.7
 virtualenv==16.0.0
