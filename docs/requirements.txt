@@ -98,7 +98,7 @@ nbconvert==5.3.1
 nbformat==4.4.0
 netaddr==0.7.19
 netifaces==0.10.7
-notebook==5.7.8
+notebook==6.4.10
 Nuitka64==5.1.281
 numpy==1.14.5
 numpydoc==0.8.0
