@@ -88,7 +88,7 @@ MinimalModbus==0.7
 mistune==0.8.3
 monotonic==1.5
 Naked==0.1.31
-nbconvert==5.3.1
+nbconvert==6.3.0
 nbformat==4.4.0
 netaddr==0.7.19
 netifaces==0.10.7
